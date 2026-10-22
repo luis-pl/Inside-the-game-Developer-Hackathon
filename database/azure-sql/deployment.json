@@ -1,0 +1,21 @@
+{
+  "subscriptionId": "40baf6ea-db75-448e-8482-ec1d0449d05b",
+  "resourceGroup": "rg-inside-game-demo",
+  "server": "sql-inside-game-01a160e1-ca",
+  "database": "inside-game",
+  "location": "canadacentral",
+  "useFreeLimit": true,
+  "freeLimitExhaustionBehavior": "AutoPause",
+  "authentication": "Microsoft Entra only",
+  "syntheticSeed": 20261021,
+  "status": "deployed-and-validated",
+  "tables": 30,
+  "foreignKeys": 43,
+  "matches": 10,
+  "syntheticVersion": "2.0.0",
+  "qualityStatus": "passed",
+  "auditedMatches": 10,
+  "integrityTests": 31,
+  "auditorNegativeTests": 16,
+  "qualityAuditedAt": "2026-10-22T02:12:07.062Z"
+}

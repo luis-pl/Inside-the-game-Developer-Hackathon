@@ -1,0 +1,233 @@
+{
+  "status": "passed",
+  "testedAt": "2026-10-22T02:12:07.050Z",
+  "tests": [
+    {
+      "name": "valid graph publishes",
+      "passed": true,
+      "errorNumber": null
+    },
+    {
+      "name": "missing team",
+      "passed": true,
+      "errorNumber": 51001
+    },
+    {
+      "name": "missing shot details",
+      "passed": true,
+      "errorNumber": 51002
+    },
+    {
+      "name": "cross-team recipient",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "wrong event subtype",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "invalid xG",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "invalid event clock",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "fraction precision rejected",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "duplicate event order",
+      "passed": true,
+      "errorNumber": 2627
+    },
+    {
+      "name": "cross-match relation",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "duplicate active slot",
+      "passed": true,
+      "errorNumber": 2601
+    },
+    {
+      "name": "12th slot rejected",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "missing status with coordinates",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "explicit missing sample accepted",
+      "passed": true,
+      "errorNumber": null
+    },
+    {
+      "name": "frame beyond period",
+      "passed": true,
+      "errorNumber": 51003
+    },
+    {
+      "name": "misaligned exact link",
+      "passed": true,
+      "errorNumber": 51004
+    },
+    {
+      "name": "link beyond tolerance",
+      "passed": true,
+      "errorNumber": 51004
+    },
+    {
+      "name": "period mismatch rejected",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "immutable run metadata",
+      "passed": true,
+      "errorNumber": 51009
+    },
+    {
+      "name": "published children sealed",
+      "passed": true,
+      "errorNumber": 51008
+    },
+    {
+      "name": "published parent sealed",
+      "passed": true,
+      "errorNumber": 51005
+    },
+    {
+      "name": "anonymous 360 paired polygon",
+      "passed": true,
+      "errorNumber": 51010
+    },
+    {
+      "name": "non-numeric polygon",
+      "passed": true,
+      "errorNumber": 51010
+    },
+    {
+      "name": "invalid JSON object",
+      "passed": true,
+      "errorNumber": 547
+    },
+    {
+      "name": "unpublished matches hidden",
+      "passed": true,
+      "errorNumber": null
+    },
+    {
+      "name": "assist recipient must shoot",
+      "passed": true,
+      "errorNumber": 51021
+    },
+    {
+      "name": "incomplete pass cannot assist",
+      "passed": true,
+      "errorNumber": 51021
+    },
+    {
+      "name": "assist must precede shot",
+      "passed": true,
+      "errorNumber": 51021
+    },
+    {
+      "name": "shot code/name must agree",
+      "passed": true,
+      "errorNumber": 51022
+    },
+    {
+      "name": "possession has one team",
+      "passed": true,
+      "errorNumber": 51023
+    },
+    {
+      "name": "negative shot height rejected",
+      "passed": true,
+      "errorNumber": 547
+    }
+  ],
+  "counts": {
+    "countries": 1,
+    "competitions": 1,
+    "seasons": 1,
+    "competition_seasons": 1,
+    "teams": 4,
+    "players": 56,
+    "managers": 4,
+    "stadiums": 4,
+    "referees": 2,
+    "matches": 10,
+    "match_teams": 20,
+    "match_team_managers": 20,
+    "match_lineups": 280,
+    "lineup_cards": 24,
+    "lineup_positions": 220,
+    "events": 10815,
+    "event_relations": 459,
+    "event_passes": 5797,
+    "event_shots": 225,
+    "shot_freeze_players": 4950,
+    "event_tactics": 40,
+    "tactical_lineups": 440,
+    "frames_360": 225,
+    "frame_360_players": 4950,
+    "tracking_runs": 10,
+    "tracking_periods": 20,
+    "tracking_frames": 54020,
+    "tracking_player_positions": 1188440,
+    "tracking_ball_positions": 54020,
+    "event_tracking_links": 10815
+  },
+  "insights": {
+    "shotSummary": [
+      {
+        "team_id": 1,
+        "team_name": "Synthetic FC 1",
+        "shots": 11,
+        "shots_on_target": 3,
+        "goals": 0,
+        "xg": 0.554186208767995
+      },
+      {
+        "team_id": 2,
+        "team_name": "Synthetic FC 2",
+        "shots": 10,
+        "shots_on_target": 8,
+        "goals": 0,
+        "xg": 0.39294442438532134
+      }
+    ],
+    "shotsOnTarget": 11,
+    "positionsAtSecond600": 22,
+    "heatmapCells": 79,
+    "duelGroups": 20,
+    "pressureGroups": 20,
+    "nearbyPlayers": 5
+  },
+  "integrity": [
+    {
+      "incomplete_frames": 0
+    },
+    {
+      "bad_links": 0
+    },
+    {
+      "incomplete_periods": 0
+    },
+    {
+      "max_error_m": 2.5121479338940402e-14
+    }
+  ]
+}

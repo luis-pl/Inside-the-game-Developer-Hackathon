@@ -1,0 +1,101 @@
+{
+  "outcomeCodes": [
+    {
+      "wrong_shot_outcome_names": 160
+    }
+  ],
+  "shotGeometry": [
+    {
+      "off_target_inside_goal": 80
+    }
+  ],
+  "assistRecipient": [
+    {
+      "assist_to_other_player": 240
+    }
+  ],
+  "assistCompletion": [
+    {
+      "incomplete_pass_assists": 40
+    }
+  ],
+  "possessions": [
+    {
+      "possession_conflicts": 1190
+    }
+  ],
+  "pressures": [
+    {
+      "distant_pressures": 1029,
+      "max_distance_m": 52.2466030035249
+    }
+  ],
+  "scores": [
+    {
+      "match_id": 900001,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900002,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900003,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900004,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900005,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900006,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900007,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900008,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900009,
+      "home_score": 1,
+      "away_score": 1
+    },
+    {
+      "match_id": 900010,
+      "home_score": 1,
+      "away_score": 1
+    }
+  ],
+  "ballSpeed": [
+    {
+      "max_ball_m_per_second": 38.64949159079319
+    }
+  ],
+  "ballHeight": [
+    {
+      "min_ball_z": 0,
+      "max_ball_z": 0
+    }
+  ],
+  "playerBounds": [
+    {
+      "outside_field": 0
+    }
+  ]
+}

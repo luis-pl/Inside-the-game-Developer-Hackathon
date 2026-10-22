@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "tests": [
+    {
+      "name": "swapped shot code/name",
+      "expected": "shot_code_name",
+      "passed": true
+    },
+    {
+      "name": "incomplete assist",
+      "expected": "assist_complete",
+      "passed": true
+    },
+    {
+      "name": "assist targets other player",
+      "expected": "assist_receiver",
+      "passed": true
+    },
+    {
+      "name": "off-target shot inside goal",
+      "expected": "off_target_geometry",
+      "passed": true
+    },
+    {
+      "name": "player teleports",
+      "expected": "player_speed",
+      "passed": true
+    },
+    {
+      "name": "ball teleports",
+      "expected": "ball_speed",
+      "passed": true
+    },
+    {
+      "name": "distant pressure",
+      "expected": "contact_distance",
+      "passed": true
+    },
+    {
+      "name": "score not supported by goals",
+      "expected": "score_matches_goals",
+      "passed": true
+    },
+    {
+      "name": "conflicting possession teams",
+      "expected": "possession_team",
+      "passed": true
+    },
+    {
+      "name": "360 has no actor",
+      "expected": "snapshot_actor",
+      "passed": true
+    },
+    {
+      "name": "invalid card code",
+      "expected": "card_code_name",
+      "passed": true
+    },
+    {
+      "name": "position id/name mismatch",
+      "expected": "position_code_name",
+      "passed": true
+    },
+    {
+      "name": "pass endpoint detached from ball",
+      "expected": "pass_endpoint",
+      "passed": true
+    },
+    {
+      "name": "actions during dead ball",
+      "expected": "live_action",
+      "passed": true
+    },
+    {
+      "name": "wrong duel result code",
+      "expected": "duel_code_name",
+      "passed": true
+    },
+    {
+      "name": "wrong 50/50 result code",
+      "expected": "fifty_code_name",
+      "passed": true
+    }
+  ]
+}

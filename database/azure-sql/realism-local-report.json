@@ -1,0 +1,175 @@
+{
+  "status": "passed",
+  "reports": [
+    {
+      "match": 900001,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 4.789879015001524,
+        "maxPlayerAcceleration": 5.373413926691024,
+        "maxBallSpeed": 21.107495557354838,
+        "minOutfieldDistance": 7341.61650465892,
+        "maxOutfieldDistance": 7534.812763468638,
+        "shots": 21,
+        "pressures": 267,
+        "duels": 110,
+        "passes": 584,
+        "cards": 1
+      },
+      "errors": {}
+    },
+    {
+      "match": 900002,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 5.249574523394142,
+        "maxPlayerAcceleration": 5.188599228214011,
+        "maxBallSpeed": 21.867204477014532,
+        "minOutfieldDistance": 7328.491384288184,
+        "maxOutfieldDistance": 7585.863737531402,
+        "shots": 19,
+        "pressures": 262,
+        "duels": 112,
+        "passes": 589,
+        "cards": 1
+      },
+      "errors": {}
+    },
+    {
+      "match": 900003,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 4.883657833957751,
+        "maxPlayerAcceleration": 5.462849387095683,
+        "maxBallSpeed": 20.16108663110548,
+        "minOutfieldDistance": 7323.7841317242455,
+        "maxOutfieldDistance": 7553.938679053759,
+        "shots": 24,
+        "pressures": 239,
+        "duels": 106,
+        "passes": 572,
+        "cards": 1
+      },
+      "errors": {}
+    },
+    {
+      "match": 900004,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 5.446630930024097,
+        "maxPlayerAcceleration": 5.243911251173712,
+        "maxBallSpeed": 20.175210121318397,
+        "minOutfieldDistance": 7336.501689073156,
+        "maxOutfieldDistance": 7626.294582868642,
+        "shots": 22,
+        "pressures": 255,
+        "duels": 116,
+        "passes": 582,
+        "cards": 3
+      },
+      "errors": {}
+    },
+    {
+      "match": 900005,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 5.051354189266201,
+        "maxPlayerAcceleration": 5.02296681119796,
+        "maxBallSpeed": 23.141942120496196,
+        "minOutfieldDistance": 7352.565879400988,
+        "maxOutfieldDistance": 7515.197278575607,
+        "shots": 20,
+        "pressures": 258,
+        "duels": 112,
+        "passes": 579,
+        "cards": 1
+      },
+      "errors": {}
+    },
+    {
+      "match": 900006,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 5.0684501004354,
+        "maxPlayerAcceleration": 5.277799853139757,
+        "maxBallSpeed": 23.08718921186551,
+        "minOutfieldDistance": 7325.507557627844,
+        "maxOutfieldDistance": 7568.262149621886,
+        "shots": 24,
+        "pressures": 260,
+        "duels": 100,
+        "passes": 576,
+        "cards": 5
+      },
+      "errors": {}
+    },
+    {
+      "match": 900007,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 4.860481426381028,
+        "maxPlayerAcceleration": 4.698632383273604,
+        "maxBallSpeed": 20.47361819057776,
+        "minOutfieldDistance": 7321.647623246768,
+        "maxOutfieldDistance": 7683.383854093417,
+        "shots": 25,
+        "pressures": 254,
+        "duels": 96,
+        "passes": 562,
+        "cards": 2
+      },
+      "errors": {}
+    },
+    {
+      "match": 900008,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 5.024226227794736,
+        "maxPlayerAcceleration": 4.994377952864376,
+        "maxBallSpeed": 20.323766371384526,
+        "minOutfieldDistance": 7348.35932505215,
+        "maxOutfieldDistance": 7629.360134719195,
+        "shots": 22,
+        "pressures": 258,
+        "duels": 116,
+        "passes": 592,
+        "cards": 4
+      },
+      "errors": {}
+    },
+    {
+      "match": 900009,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 4.5446801082362445,
+        "maxPlayerAcceleration": 4.971964562326315,
+        "maxBallSpeed": 22.393028657753515,
+        "minOutfieldDistance": 7318.213658500488,
+        "maxOutfieldDistance": 7631.283104467299,
+        "shots": 23,
+        "pressures": 256,
+        "duels": 110,
+        "passes": 579,
+        "cards": 3
+      },
+      "errors": {}
+    },
+    {
+      "match": 900010,
+      "status": "passed",
+      "metrics": {
+        "maxPlayerSpeed": 5.1626810742759375,
+        "maxPlayerAcceleration": 5.151956657610349,
+        "maxBallSpeed": 19.940345427326875,
+        "minOutfieldDistance": 7324.001467092083,
+        "maxOutfieldDistance": 7663.589222727233,
+        "shots": 25,
+        "pressures": 247,
+        "duels": 108,
+        "passes": 582,
+        "cards": 3
+      },
+      "errors": {}
+    }
+  ]
+}

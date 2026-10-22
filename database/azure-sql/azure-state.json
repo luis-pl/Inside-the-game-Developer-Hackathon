@@ -1,0 +1,19 @@
+{
+  "autoPauseDelay": 60,
+  "backupStorageRedundancy": "Local",
+  "freeLimitExhaustionBehavior": "AutoPause",
+  "id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.Sql/servers/sql-inside-game-01a160e1-ca/databases/inside-game",
+  "location": "canadacentral",
+  "maxSizeBytes": 34359738368,
+  "minCapacity": 0.5,
+  "name": "inside-game",
+  "sku": {
+    "capacity": 2,
+    "family": "Gen5",
+    "name": "GP_S_Gen5",
+    "size": null,
+    "tier": "GeneralPurpose"
+  },
+  "status": "Online",
+  "useFreeLimit": true
+}

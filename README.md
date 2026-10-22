@@ -48,8 +48,19 @@ Bring your own stack. Recommended defaults:
 .
 ├── README.md        # You are here
 ├── .gitignore       # Keep build artifacts out
-└── src/             # Add your code here
+├── src/inside_game/ # Python backend scaffold
+├── frontend/        # Frontend scaffold
+├── prompts/         # Agent prompts, pending implementation
+├── tests/           # Tests, pending implementation
+├── docs/            # Repository documentation
+├── database/        # Existing Azure SQL schema and synthetic data tools
+├── drafts/          # Design references
+├── AGENTS.md        # Repository guidance
+└── pyproject.toml   # Python package metadata
 ```
+
+The initial scaffold is documented in [docs/repository-structure.md](docs/repository-structure.md).
+The new backend modules are placeholders; their application logic is pending implementation.
 
 ## 📋 Submission checklist
 

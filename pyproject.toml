@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inside-the-game-developer-hackathon"
+version = "0.0.0"
+description = "Estructura inicial del sistema de analítica deportiva Inside the game."
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]

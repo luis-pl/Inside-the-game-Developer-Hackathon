@@ -1,0 +1,2445 @@
+{
+  "tables": [
+    {
+      "name": "countries",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "country_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "competitions",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "competition_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "competition_name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "competition_gender",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "competition_youth",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "competition_international",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "country_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "seasons",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "season_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "season_name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "competition_seasons",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "competition_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "season_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_updated",
+          "type": "timestamp",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "match_available",
+          "type": "timestamp",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "match_updated_360",
+          "type": "timestamp",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "match_available_360",
+          "type": "timestamp",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "raw_payload",
+          "type": "jsonb",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "teams",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "gender",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "players",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "player_name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "player_nickname",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "managers",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "manager_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "nickname",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "dob",
+          "type": "date",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "stadiums",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "stadium_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "referees",
+      "group": "catalogos",
+      "fields": [
+        {
+          "name": "referee_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "matches",
+      "group": "partidos",
+      "fields": [
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "competition_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "season_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "match_date",
+          "type": "date",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "kick_off",
+          "type": "time",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "home_score",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "away_score",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "match_week",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "competition_stage_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "competition_stage_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "stadium_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "referee_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "match_status",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "match_status_360",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "last_updated",
+          "type": "timestamp",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "last_updated_360",
+          "type": "timestamp",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "data_version",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "shot_fidelity_version",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "xy_fidelity_version",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "raw_payload",
+          "type": "jsonb",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "match_teams",
+      "group": "partidos",
+      "fields": [
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "side",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "team_group",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "lineup_raw_payload",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "match_team_managers",
+      "group": "partidos",
+      "fields": [
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "manager_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "manager_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "match_lineups",
+      "group": "partidos",
+      "fields": [
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "jersey_number",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "raw_payload",
+          "type": "jsonb",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "lineup_cards",
+      "group": "partidos",
+      "fields": [
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "card_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "time",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "card_type",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "lineup_positions",
+      "group": "partidos",
+      "fields": [
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "position_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "position_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "from_time",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "to_time",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "from_period",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "to_period",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "start_reason",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "end_reason",
+          "type": "text",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "group": "eventos",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "event_index",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "timestamp",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "minute",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "second",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "type_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "type_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "possession",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "possession_team_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "play_pattern_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "play_pattern_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "location_x",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "location_y",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "duration",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "under_pressure",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "counterpress",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "off_camera",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "out",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "details",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "raw_payload",
+          "type": "jsonb",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "period_time_ms",
+          "type": "bigint",
+          "pk": false,
+          "required": false,
+          "generated": true
+        }
+      ]
+    },
+    {
+      "name": "event_relations",
+      "group": "eventos",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "related_event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "event_passes",
+      "group": "eventos",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "event_type_id",
+          "type": "int",
+          "pk": false,
+          "required": true,
+          "default": 30
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "recipient_player_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "length",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "angle",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "height",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "end_x",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "end_y",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "body_part",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "pass_type",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "outcome",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "technique",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "shot_assist",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "goal_assist",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "cross",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "cut_back",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "switch",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "backheel",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "deflected",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "miscommunication",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "aerial_won",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "through_ball",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "inswinging",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "outswinging",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "event_shots",
+      "group": "eventos",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "event_type_id",
+          "type": "int",
+          "pk": false,
+          "required": true,
+          "default": 16
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "statsbomb_xg",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "end_x",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "end_y",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "end_z",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "key_pass_id",
+          "type": "uuid",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "shot_type",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "outcome",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "technique",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "body_part",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "aerial_won",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "follows_dribble",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "first_time",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "open_goal",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "deflected",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "shot_freeze_players",
+      "group": "eventos",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "shot_team_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "frame_player_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "location_x",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "location_y",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "teammate",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "event_tactics",
+      "group": "capturas",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "event_type_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "formation",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "tactical_lineups",
+      "group": "capturas",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "position_id",
+          "type": "int",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position_name",
+          "type": "text",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "jersey_number",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "frames_360",
+      "group": "capturas",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "visible_area",
+          "type": "jsonb",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "raw_payload",
+          "type": "jsonb",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "frame_360_players",
+      "group": "capturas",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "frame_player_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "location_x",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "location_y",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "teammate",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "actor",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "keeper",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "tracking_runs",
+      "fields": [
+        {
+          "name": "run_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "label",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "seed",
+          "type": "bigint",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "generator_name",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "generator_version",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "config",
+          "type": "jsonb",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "sample_rate_hz",
+          "type": "double precision",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "pitch_length_m",
+          "type": "double precision",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "pitch_width_m",
+          "type": "double precision",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "is_synthetic",
+          "type": "boolean",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "max_event_offset_ms",
+          "type": "int",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "tracking_periods",
+      "fields": [
+        {
+          "name": "run_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "duration_ms",
+          "type": "bigint",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "home_attacks_positive_x",
+          "type": "boolean",
+          "pk": false,
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "tracking_frames",
+      "fields": [
+        {
+          "name": "run_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "frame_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "period_time_ms",
+          "type": "bigint",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "ball_in_play",
+          "type": "boolean",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "tracking_player_positions",
+      "fields": [
+        {
+          "name": "run_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "frame_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "player_id",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "x_m",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "y_m",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "is_on_pitch",
+          "type": "boolean",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "position_status",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "sample_method",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "confidence",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "on_pitch_slot",
+          "type": "int",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "tracking_ball_positions",
+      "fields": [
+        {
+          "name": "run_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "frame_index",
+          "type": "int",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "x_m",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "y_m",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "z_m",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        },
+        {
+          "name": "position_status",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "sample_method",
+          "type": "text",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "confidence",
+          "type": "double precision",
+          "pk": false,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "event_tracking_links",
+      "fields": [
+        {
+          "name": "event_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "run_id",
+          "type": "uuid",
+          "pk": true,
+          "required": true
+        },
+        {
+          "name": "match_id",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "period",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "frame_index",
+          "type": "int",
+          "pk": false,
+          "required": true
+        },
+        {
+          "name": "alignment_method",
+          "type": "text",
+          "pk": false,
+          "required": true
+        }
+      ]
+    }
+  ],
+  "refs": [
+    [
+      "competition_seasons",
+      [
+        "competition_id"
+      ],
+      "competitions",
+      [
+        "competition_id"
+      ]
+    ],
+    [
+      "competition_seasons",
+      [
+        "season_id"
+      ],
+      "seasons",
+      [
+        "season_id"
+      ]
+    ],
+    [
+      "teams",
+      [
+        "country_id"
+      ],
+      "countries",
+      [
+        "country_id"
+      ]
+    ],
+    [
+      "players",
+      [
+        "country_id"
+      ],
+      "countries",
+      [
+        "country_id"
+      ]
+    ],
+    [
+      "managers",
+      [
+        "country_id"
+      ],
+      "countries",
+      [
+        "country_id"
+      ]
+    ],
+    [
+      "stadiums",
+      [
+        "country_id"
+      ],
+      "countries",
+      [
+        "country_id"
+      ]
+    ],
+    [
+      "referees",
+      [
+        "country_id"
+      ],
+      "countries",
+      [
+        "country_id"
+      ]
+    ],
+    [
+      "matches",
+      [
+        "competition_id",
+        "season_id"
+      ],
+      "competition_seasons",
+      [
+        "competition_id",
+        "season_id"
+      ]
+    ],
+    [
+      "matches",
+      [
+        "stadium_id"
+      ],
+      "stadiums",
+      [
+        "stadium_id"
+      ]
+    ],
+    [
+      "matches",
+      [
+        "referee_id"
+      ],
+      "referees",
+      [
+        "referee_id"
+      ]
+    ],
+    [
+      "match_teams",
+      [
+        "match_id"
+      ],
+      "matches",
+      [
+        "match_id"
+      ]
+    ],
+    [
+      "match_teams",
+      [
+        "team_id"
+      ],
+      "teams",
+      [
+        "team_id"
+      ]
+    ],
+    [
+      "match_team_managers",
+      [
+        "match_id",
+        "team_id"
+      ],
+      "match_teams",
+      [
+        "match_id",
+        "team_id"
+      ]
+    ],
+    [
+      "match_team_managers",
+      [
+        "manager_id"
+      ],
+      "managers",
+      [
+        "manager_id"
+      ]
+    ],
+    [
+      "match_lineups",
+      [
+        "match_id",
+        "team_id"
+      ],
+      "match_teams",
+      [
+        "match_id",
+        "team_id"
+      ]
+    ],
+    [
+      "match_lineups",
+      [
+        "player_id"
+      ],
+      "players",
+      [
+        "player_id"
+      ]
+    ],
+    [
+      "lineup_cards",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ]
+    ],
+    [
+      "lineup_positions",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ]
+    ],
+    [
+      "events",
+      [
+        "match_id"
+      ],
+      "matches",
+      [
+        "match_id"
+      ]
+    ],
+    [
+      "events",
+      [
+        "match_id",
+        "team_id"
+      ],
+      "match_teams",
+      [
+        "match_id",
+        "team_id"
+      ]
+    ],
+    [
+      "events",
+      [
+        "match_id",
+        "possession_team_id"
+      ],
+      "match_teams",
+      [
+        "match_id",
+        "team_id"
+      ]
+    ],
+    [
+      "events",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ]
+    ],
+    [
+      "event_relations",
+      [
+        "match_id",
+        "event_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "event_id"
+      ]
+    ],
+    [
+      "event_relations",
+      [
+        "match_id",
+        "related_event_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "event_id"
+      ]
+    ],
+    [
+      "event_passes",
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "event_type_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "type_id"
+      ]
+    ],
+    [
+      "event_shots",
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "event_type_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "type_id"
+      ]
+    ],
+    [
+      "event_tactics",
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "event_type_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "type_id"
+      ]
+    ],
+    [
+      "frames_360",
+      [
+        "match_id",
+        "event_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "event_id"
+      ]
+    ],
+    [
+      "event_passes",
+      [
+        "match_id",
+        "team_id",
+        "recipient_player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ]
+    ],
+    [
+      "event_shots",
+      [
+        "match_id",
+        "team_id",
+        "key_pass_id"
+      ],
+      "event_passes",
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ]
+    ],
+    [
+      "shot_freeze_players",
+      [
+        "match_id",
+        "shot_team_id",
+        "event_id"
+      ],
+      "event_shots",
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ]
+    ],
+    [
+      "shot_freeze_players",
+      [
+        "match_id",
+        "player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "player_id"
+      ]
+    ],
+    [
+      "tactical_lineups",
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ],
+      "event_tactics",
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ]
+    ],
+    [
+      "tactical_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ]
+    ],
+    [
+      "frame_360_players",
+      [
+        "event_id"
+      ],
+      "frames_360",
+      [
+        "event_id"
+      ]
+    ],
+    [
+      "tracking_runs",
+      [
+        "match_id"
+      ],
+      "matches",
+      [
+        "match_id"
+      ]
+    ],
+    [
+      "tracking_periods",
+      [
+        "run_id",
+        "match_id"
+      ],
+      "tracking_runs",
+      [
+        "run_id",
+        "match_id"
+      ]
+    ],
+    [
+      "tracking_frames",
+      [
+        "run_id",
+        "period",
+        "match_id"
+      ],
+      "tracking_periods",
+      [
+        "run_id",
+        "period",
+        "match_id"
+      ]
+    ],
+    [
+      "tracking_player_positions",
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ],
+      "tracking_frames",
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ]
+    ],
+    [
+      "tracking_player_positions",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ],
+      "match_lineups",
+      [
+        "match_id",
+        "team_id",
+        "player_id"
+      ]
+    ],
+    [
+      "tracking_ball_positions",
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ],
+      "tracking_frames",
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ]
+    ],
+    [
+      "event_tracking_links",
+      [
+        "match_id",
+        "period",
+        "event_id"
+      ],
+      "events",
+      [
+        "match_id",
+        "period",
+        "event_id"
+      ]
+    ],
+    [
+      "event_tracking_links",
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ],
+      "tracking_frames",
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ]
+    ]
+  ],
+  "unique": {
+    "match_teams": [
+      [
+        "match_id",
+        "side"
+      ]
+    ],
+    "match_lineups": [
+      [
+        "match_id",
+        "player_id"
+      ]
+    ],
+    "events": [
+      [
+        "match_id",
+        "event_index"
+      ],
+      [
+        "match_id",
+        "event_id"
+      ],
+      [
+        "match_id",
+        "team_id",
+        "event_id",
+        "type_id"
+      ],
+      [
+        "match_id",
+        "period",
+        "event_id"
+      ]
+    ],
+    "event_passes": [
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ]
+    ],
+    "event_shots": [
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ]
+    ],
+    "event_tactics": [
+      [
+        "match_id",
+        "team_id",
+        "event_id"
+      ]
+    ],
+    "tracking_runs": [
+      [
+        "run_id",
+        "match_id"
+      ]
+    ],
+    "tracking_periods": [
+      [
+        "run_id",
+        "period",
+        "match_id"
+      ]
+    ],
+    "tracking_frames": [
+      [
+        "run_id",
+        "period",
+        "period_time_ms"
+      ],
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "match_id"
+      ]
+    ],
+    "tracking_player_positions": [
+      [
+        "run_id",
+        "period",
+        "frame_index",
+        "team_id",
+        "on_pitch_slot"
+      ]
+    ]
+  },
+  "checks": {
+    "match_teams": [
+      "\"side\" IN ('home','away')",
+      "jsonb_typeof(\"lineup_raw_payload\") = 'object'"
+    ],
+    "matches": [
+      "\"home_score\" >= 0",
+      "\"away_score\" >= 0",
+      "jsonb_typeof(\"raw_payload\") = 'object'"
+    ],
+    "match_team_managers": [
+      "\"manager_index\" >= 0"
+    ],
+    "match_lineups": [
+      "\"jersey_number\" >= 0",
+      "jsonb_typeof(\"raw_payload\") = 'object'"
+    ],
+    "lineup_cards": [
+      "\"card_index\" >= 0",
+      "\"period\" BETWEEN 1 AND 5"
+    ],
+    "lineup_positions": [
+      "\"position_index\" >= 0",
+      "\"from_period\" BETWEEN 1 AND 5",
+      "\"to_period\" BETWEEN 1 AND 5"
+    ],
+    "events": [
+      "\"event_index\" > 0",
+      "\"period\" BETWEEN 1 AND 5",
+      "\"minute\" >= 0",
+      "\"second\" BETWEEN 0 AND 59",
+      "\"duration\" >= 0 AND \"duration\" < 'Infinity'::float8",
+      "\"player_id\" IS NULL OR \"team_id\" IS NOT NULL",
+      "\"location_x\" > '-Infinity'::float8 AND \"location_x\" < 'Infinity'::float8",
+      "\"location_y\" > '-Infinity'::float8 AND \"location_y\" < 'Infinity'::float8",
+      "jsonb_typeof(\"details\") = 'object'",
+      "jsonb_typeof(\"raw_payload\") = 'object'"
+    ],
+    "event_relations": [
+      "\"event_id\" <> \"related_event_id\""
+    ],
+    "event_passes": [
+      "\"event_type_id\" = 30",
+      "\"length\" >= 0 AND \"length\" < 'Infinity'::float8",
+      "\"angle\" > '-Infinity'::float8 AND \"angle\" < 'Infinity'::float8",
+      "jsonb_typeof(\"height\") = 'object'",
+      "\"end_x\" > '-Infinity'::float8 AND \"end_x\" < 'Infinity'::float8",
+      "\"end_y\" > '-Infinity'::float8 AND \"end_y\" < 'Infinity'::float8",
+      "jsonb_typeof(\"body_part\") = 'object'",
+      "jsonb_typeof(\"pass_type\") = 'object'",
+      "jsonb_typeof(\"outcome\") = 'object'",
+      "jsonb_typeof(\"technique\") = 'object'"
+    ],
+    "event_shots": [
+      "\"event_type_id\" = 16",
+      "\"statsbomb_xg\" BETWEEN 0 AND 1",
+      "\"end_x\" > '-Infinity'::float8 AND \"end_x\" < 'Infinity'::float8",
+      "\"end_y\" > '-Infinity'::float8 AND \"end_y\" < 'Infinity'::float8",
+      "\"end_z\" > '-Infinity'::float8 AND \"end_z\" < 'Infinity'::float8",
+      "jsonb_typeof(\"shot_type\") = 'object'",
+      "jsonb_typeof(\"outcome\") = 'object'",
+      "jsonb_typeof(\"technique\") = 'object'",
+      "jsonb_typeof(\"body_part\") = 'object'"
+    ],
+    "event_tactics": [
+      "\"event_type_id\" IN (35,36)"
+    ],
+    "shot_freeze_players": [
+      "\"frame_player_index\" >= 0",
+      "\"location_x\" > '-Infinity'::float8 AND \"location_x\" < 'Infinity'::float8",
+      "\"location_y\" > '-Infinity'::float8 AND \"location_y\" < 'Infinity'::float8"
+    ],
+    "frame_360_players": [
+      "\"frame_player_index\" >= 0",
+      "\"location_x\" > '-Infinity'::float8 AND \"location_x\" < 'Infinity'::float8",
+      "\"location_y\" > '-Infinity'::float8 AND \"location_y\" < 'Infinity'::float8"
+    ],
+    "frames_360": [
+      "jsonb_typeof(\"visible_area\") = 'array'",
+      "jsonb_array_length(\"visible_area\") % 2 = 0",
+      "jsonb_typeof(\"raw_payload\") = 'object'"
+    ],
+    "competition_seasons": [
+      "jsonb_typeof(\"raw_payload\") = 'object'"
+    ],
+    "tracking_runs": [
+      "\"sample_rate_hz\" > 0 AND \"sample_rate_hz\" <= 1000",
+      "\"pitch_length_m\" > 0 AND \"pitch_length_m\" < 'Infinity'::float8",
+      "\"pitch_width_m\" > 0 AND \"pitch_width_m\" < 'Infinity'::float8",
+      "\"max_event_offset_ms\" >= 0",
+      "jsonb_typeof(\"config\")='object'",
+      "\"is_synthetic\"=true"
+    ],
+    "tracking_periods": [
+      "\"period\" BETWEEN 1 AND 5",
+      "\"duration_ms\" > 0"
+    ],
+    "tracking_frames": [
+      "\"frame_index\" >= 0",
+      "\"period_time_ms\" >= 0"
+    ],
+    "event_tracking_links": [
+      "\"alignment_method\" IN ('exact','within_tolerance','manual')"
+    ],
+    "tracking_player_positions": [
+      "\"position_status\" IN ('available','missing')",
+      "(\"position_status\"='available' AND \"x_m\" IS NOT NULL AND \"y_m\" IS NOT NULL) OR (\"position_status\"='missing' AND \"x_m\" IS NULL AND \"y_m\" IS NULL)",
+      "\"sample_method\" IN ('generated','interpolated','extrapolated','missing')",
+      "(\"position_status\"='missing') = (\"sample_method\"='missing')",
+      "\"confidence\" BETWEEN 0 AND 1",
+      "\"x_m\" > '-Infinity'::float8 AND \"x_m\" < 'Infinity'::float8",
+      "\"y_m\" > '-Infinity'::float8 AND \"y_m\" < 'Infinity'::float8",
+      "(\"is_on_pitch\" AND \"on_pitch_slot\" IS NOT NULL AND \"on_pitch_slot\" BETWEEN 1 AND 11) OR (NOT \"is_on_pitch\" AND \"on_pitch_slot\" IS NULL)"
+    ],
+    "tracking_ball_positions": [
+      "\"position_status\" IN ('available','missing')",
+      "(\"position_status\"='available' AND \"x_m\" IS NOT NULL AND \"y_m\" IS NOT NULL) OR (\"position_status\"='missing' AND \"x_m\" IS NULL AND \"y_m\" IS NULL)",
+      "\"sample_method\" IN ('generated','interpolated','extrapolated','missing')",
+      "(\"position_status\"='missing') = (\"sample_method\"='missing')",
+      "\"confidence\" BETWEEN 0 AND 1",
+      "\"x_m\" > '-Infinity'::float8 AND \"x_m\" < 'Infinity'::float8",
+      "\"y_m\" > '-Infinity'::float8 AND \"y_m\" < 'Infinity'::float8",
+      "\"z_m\" >= 0 AND \"z_m\" < 'Infinity'::float8",
+      "\"position_status\"<>'missing' OR \"z_m\" IS NULL"
+    ]
+  },
+  "source": "https://github.com/hudl/open-data",
+  "version": 2,
+  "defaults": {
+    "tracking_runs": {
+      "is_synthetic": "true",
+      "config": "'{}'::jsonb",
+      "max_event_offset_ms": "100"
+    },
+    "tracking_player_positions": {
+      "is_on_pitch": "true",
+      "position_status": "'available'",
+      "sample_method": "'generated'"
+    },
+    "tracking_ball_positions": {
+      "position_status": "'available'",
+      "sample_method": "'generated'"
+    },
+    "event_tracking_links": {
+      "alignment_method": "'within_tolerance'"
+    }
+  }
+}

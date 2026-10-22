@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import { writeFileSync } from 'node:fs';
+import { generateMatch } from './scenario-v2.mjs';
+import { auditData } from './audit-data.mjs';
+const base=generateMatch(0).tables,tests=[];
+assert.equal(auditData(base).status,'passed');
+function negative(name,expected,mutate){const data=structuredClone(base);mutate(data);const r=auditData(data);assert(r.errors[expected],`${name} must trigger ${expected}`);tests.push({name,expected,passed:true});}
+negative('swapped shot code/name','shot_code_name',t=>{t.event_shots[0].outcome={id:96,name:'Off T'};});
+negative('incomplete assist','assist_complete',t=>{const s=t.event_shots.find(s=>s.key_pass_id);t.event_passes.find(p=>p.event_id===s.key_pass_id).outcome={id:9,name:'Incomplete'};});
+negative('assist targets other player','assist_receiver',t=>{const s=t.event_shots.find(s=>s.key_pass_id),p=t.event_passes.find(p=>p.event_id===s.key_pass_id);p.recipient_player_id=p.team_id*100+1;});
+negative('off-target shot inside goal','off_target_geometry',t=>{const s=t.event_shots.find(s=>s.outcome.id===98);s.end_y=40;s.end_z=1;});
+negative('player teleports','player_speed',t=>{t.tracking_player_positions.find(p=>p.period===1&&p.frame_index===1000&&p.on_pitch_slot===7).x_m+=40;});
+negative('ball teleports','ball_speed',t=>{t.tracking_ball_positions.find(p=>p.period===1&&p.frame_index===1000).x_m+=50;});
+negative('distant pressure','contact_distance',t=>{const e=t.events.find(e=>e.type_id===17),time=(e.minute-(e.period-1)*45)*60+e.second;t.tracking_player_positions.find(p=>p.period===e.period&&p.frame_index===time&&p.player_id===e.player_id).x_m+=40;});
+negative('score not supported by goals','score_matches_goals',t=>{t.matches[0].home_score++;});
+negative('conflicting possession teams','possession_team',t=>{const e=t.events.find(e=>e.type_id===30);e.possession_team_id=t.match_teams.find(t=>t.team_id!==e.team_id).team_id;});
+negative('360 has no actor','snapshot_actor',t=>{const id=t.frames_360[0].event_id;t.frame_360_players.filter(p=>p.event_id===id).forEach(p=>p.actor=false);});
+negative('invalid card code','card_code_name',t=>{const e=t.events.find(e=>e.details?.foul_committed?.card);assert(e,'Fixture needs a yellow card');e.details.foul_committed.card.id=65;});
+negative('position id/name mismatch','position_code_name',t=>{t.events.find(e=>e.player_id!==null).position_id=99;});
+negative('pass endpoint detached from ball','pass_endpoint',t=>{t.event_passes[0].end_x+=10;});
+negative('actions during dead ball','live_action',t=>{const e=t.events.find(e=>e.type_id===16),time=(e.minute-(e.period-1)*45)*60+e.second;t.tracking_frames.find(f=>f.period===e.period&&f.frame_index===time).ball_in_play=false;});
+negative('wrong duel result code','duel_code_name',t=>{t.events.find(e=>e.type_id===4).details.duel.outcome.id=1;});
+negative('wrong 50/50 result code','fifty_code_name',t=>{t.events.find(e=>e.type_id===33).details['50_50'].outcome.id=108;});
+writeFileSync(new URL('./audit-tests-report.json',import.meta.url),JSON.stringify({status:'passed',tests},null,2)+'\n');
+console.log(JSON.stringify({status:'passed',negativeTests:tests.length}));

@@ -1,0 +1,17 @@
+{
+  "name": "inside-game-azure-sql",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "schema": "python build_schema.py",
+    "deploy": "node deploy.mjs",
+    "seed": "node synthetic.mjs",
+    "validate": "node validate.mjs",
+    "audit": "node audit-cloud.mjs",
+    "audit:local": "node audit-data.mjs",
+    "audit:tests": "node audit-tests.mjs"
+  },
+  "dependencies": {
+    "mssql": "12.7.10"
+  }
+}
