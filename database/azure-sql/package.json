@@ -9,7 +9,9 @@
     "validate": "node validate.mjs",
     "audit": "node audit-cloud.mjs",
     "audit:local": "node audit-data.mjs",
-    "audit:tests": "node audit-tests.mjs"
+    "audit:tests": "node audit-tests.mjs",
+    "audit:coverage": "node audit-coverage.mjs",
+    "profile": "node profile-capabilities.mjs"
   },
   "dependencies": {
     "mssql": "12.7.10"

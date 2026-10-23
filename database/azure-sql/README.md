@@ -36,18 +36,20 @@ Todo el contenido se genera con la semilla `20261021`. No son partidos, personas
 | Competiciones / temporadas | 1 / 1 |
 | Equipos / jugadores registrados | 4 / 56 |
 | Partidos de 90 minutos | 10 |
-| Eventos | 10.815 |
-| Pases / tiros | 5.797 / 225 |
-| Capturas 360 | 225 |
+| Eventos | 25.012 |
+| Pases / tiros | 5.752 / 209 |
+| Capturas 360 | 209 |
 | Frames de tracking a 1 Hz | 54.020 |
 | Posiciones de jugadores activos | 1.188.440 |
 | Posiciones del balón | 54.020 |
 
-Hay 22 jugadores activos por frame, dos períodos de 45 minutos y muestras de los extremos de ambos períodos. Cada evento tiene un enlace exacto a su frame. Los tres suplentes de cada equipo están inscritos en la alineación; este generador no realiza sustituciones y no les atribuye posiciones en cancha.
+Hay 22 jugadores activos por frame, dos períodos de 45 minutos y muestras de los extremos de ambos períodos. Cada evento tiene un enlace exacto a su frame. Hay tres sustituciones por equipo y partido: los 56 inscritos tienen intervalos reales de participación sintética. El tracking y las capturas cambian de identidad desde el segundo siguiente al cambio; no se atribuyen coordenadas en cancha a jugadores fuera de su intervalo activo.
 
-`raw_payload`, `tracking_runs` y `config` identifican la procedencia sintética y la versión **2.0.0**, revisada con controles deportivos. El campo heredado `statsbomb_xg` contiene un **xG de demostración**, calculado por distancia y ángulo. No es una predicción del modelo de StatsBomb ni una medida válida de rendimiento deportivo real.
+`raw_payload`, `tracking_runs` y `config` identifican la procedencia sintética y la versión **3.0.0**. La revisión comprueba tanto coherencia como cobertura analítica. El campo heredado `statsbomb_xg` contiene un **xG de demostración**, calculado por distancia y ángulo. No es una predicción del modelo de StatsBomb ni una medida válida de rendimiento deportivo real.
 
-El escenario representa amistosos de entrenamiento con dos tiempos de 45 minutos, sin cambios ni tiempo añadido. El balón sigue al poseedor, viaja desde cada pase a su recepción/intercepción, alcanza el final del tiro y tiene períodos fuera de juego durante las detenciones. Después de cada gol se reinicia desde el centro. Las presiones y disputas requieren cercanía física; las asistencias requieren un pase completado al rematador. Las velocidades y aceleraciones entre muestras se auditan. No es una simulación táctica profesional ni una distribución calibrada de todas las acciones del fútbol.
+El escenario representa amistosos de entrenamiento con dos tiempos de 45 minutos, cambios y sin tiempo añadido. Incluye intercepciones, quites, regates completos e incompletos, conducciones, recepciones, desposesiones, malos controles, bloqueos, despejes y duelos aéreos con ganador/perdedor relacionados. Se anotan córners y saques de banda tras salidas del balón, además de faltas, saques de meta y centro. Hay pases rasos y elevados y remates de cabeza y ambas piernas.
+
+El balón sigue al poseedor, viaja desde cada pase hasta su recepción/intercepción, alcanza el final del tiro y tiene detenciones. Las acciones de contacto se comprueban con el tracking; las asistencias exigen un pase completado al rematador. También se auditan velocidades, aceleraciones y los intervalos de sustitución. Es una simulación preparada para demostraciones, sin distribuciones profesionales calibradas ni arbitraje completo. No simula la caminata hacia/desde el banco. Los escenarios no anotados y las limitaciones se detallan en [DATA-QUALITY.md](DATA-QUALITY.md).
 
 La cobertura 360 es sintética de campo completo, no una cámara real. Los eventos se obtienen mediante una transformación afín de metros a 120 × 80 y rotación al equipo que actúa. La portería física mide 7,32 × 2,44 m; sus coordenadas normalizadas se derivan de esa transformación.
 
@@ -65,6 +67,8 @@ La cobertura 360 es sintética de campo completo, no una cámara real. Los event
 
 Los tiros a puerta usan los resultados `Goal`, `Saved` y `Saved to Post`; se excluyen las tandas del período 5. La duración sumada de presiones puede contener solapamientos. `under_pressure` indica presión recibida.
 
+[queries-coverage.sql](queries-coverage.sql) añade nueve consultas sobre cobertura por partido, intercepciones, regates, conducciones, quites, disputas aéreas, sustituciones, minutos y reanudaciones. [El catálogo de operaciones](../../docs/data-operations-catalog.md) relaciona preguntas analíticas, fuentes, cálculos y límites para diseñar las interfaces del agente de datos. Los tipos sin tabla especializada se almacenan en `events.details`; no necesitan tablas ficticias separadas.
+
 El tracking utiliza metros sobre un campo fijo de 105 × 68; los eventos/capturas usan coordenadas de 120 × 80 orientadas al equipo que actúa. `tracking_periods.home_attacks_positive_x` permite transformar entre ambos sistemas. No se deben mezclar directamente.
 
 La posición está almacenada **cada segundo**. Para tiempos intermedios es necesaria una consulta con interpolación explícita; una posición interpolada debe identificarse como tal. El esquema también admite datos ausentes mediante `position_status` y `sample_method`. Una captura 360 es una colección de coordenadas alrededor de un evento, no una imagen ni seguimiento continuo. Sus filas siguen siendo anónimas; la identidad procede del tracking.
@@ -78,7 +82,7 @@ SQL Server comprueba las FK inmediatamente y no tiene los triggers diferidos de 
 3. Sólo entonces cambia a `ready`. Las vistas `analytics` ocultan partidos incompletos.
 4. Los partidos publicados y sus filas asociadas quedan bloqueados para cambios mediante triggers. Una corrección normal importa otra versión con nuevos identificadores. La reparación administrativa de esta demo conserva los identificadores mediante un respaldo y una transacción con bloqueo; no se habilita esta operación al rol lector.
 
-`quality-rules.sql` añade controles al publicar: coherencia de asistencias, códigos de tiros y equipo de cada posesión. Para la versión sintética 2.0.0 exige además marcadores coherentes con goles, cercanía en presiones/disputas y 22 jugadores más el balón en cada frame. La auditoría `audit-cloud.mjs` comprueba las reglas temporales y geométricas más detalladas leyendo la carga de Azure.
+`quality-rules.sql` añade controles al publicar: coherencia de asistencias, códigos de tiros y equipo de cada posesión. Para las versiones sintéticas 2.0.0 y 3.0.0 exige además marcadores coherentes con goles, cercanía en presiones/disputas y 22 jugadores más el balón en cada frame. Para 3.0.0 también exige las familias mínimas de acciones, seis sustituciones y actores activos. `audit-cloud.mjs` comprueba las reglas temporales y geométricas leyendo Azure; `audit-coverage.mjs` verifica variantes y relaciones efectivamente presentes.
 
 Las FK compuestas conservan la pertenencia a partido/equipo, la inscripción del jugador y el tipo de evento. Un índice único filtrado limita los puestos activos 1–11 por equipo/frame sin impedir múltiples posiciones fuera de cancha con puesto nulo. Las FK se cargan con comprobación de restricciones habilitada.
 
@@ -106,6 +110,7 @@ npm run seed
 # Sobre la base ya cargada:
 npm run validate
 npm run audit
+npm run audit:coverage
 # Controles del generador y del propio auditor, sin cambiar Azure:
 npm run audit:local
 npm run audit:tests
@@ -113,4 +118,4 @@ npm run audit:tests
 
 Si Azure CLI no está en PATH, define `AZURE_CLI_PATH` con la ruta a `az.cmd`. Se obtiene un token de Azure SQL en memoria: no se guarda en archivos ni se imprime. `deploy` rechaza sobrescribir un esquema existente y `seed` rechaza sobrescribir partidos.
 
-`seed-report.json` registra la carga; `validation-report.json` registra las pruebas de integridad y los resultados analíticos; `realism-cloud-report.json` registra la auditoría de los datos efectivamente almacenados. `audit-tests-report.json` demuestra que el auditor detecta errores provocados. `azure-state.json` registra la configuración del recurso. La revisión y sus límites se explican en `DATA-QUALITY.md`. Los respaldos de la reparación están en `backups/`, excluidos de Git.
+`seed-report.json` registra la carga; `validation-report.json` registra integridad y consultas; `realism-cloud-report.json` registra la coherencia de las filas leídas de Azure; `coverage-cloud-report.json` registra cobertura, variantes y ejemplos analíticos ejecutados. `audit-tests-report.json` demuestra que el auditor detecta errores provocados. `azure-state.json` registra el recurso. La revisión y sus límites están en `DATA-QUALITY.md`. Los respaldos están en `backups/`, excluidos de Git. `scenario-v3.mjs` y `load-v3.mjs` son el generador/cargador actuales; los archivos v2 se conservan como referencia histórica.

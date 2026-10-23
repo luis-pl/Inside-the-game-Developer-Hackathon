@@ -1,0 +1,1813 @@
+{
+  "testedAt": "2026-10-23T01:21:13.636Z",
+  "status": "passed",
+  "source": "Rows read from Azure SQL; synthetic 3.0.0",
+  "checks": [
+    {
+      "name": "Exactly ten published matches at 3.0.0",
+      "passed": true
+    },
+    {
+      "name": "Type 2 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 3 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 4 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 6 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 9 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 10 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 14 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 16 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 17 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 19 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 21 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 22 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 23 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 30 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 33 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 35 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 36 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 38 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 39 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 42 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Type 43 exists in every match",
+      "passed": true
+    },
+    {
+      "name": "Dribble Complete",
+      "passed": true
+    },
+    {
+      "name": "Dribble Incomplete",
+      "passed": true
+    },
+    {
+      "name": "Every aerial contest has linked winner and loser",
+      "passed": true
+    },
+    {
+      "name": "Three substitutions per team per match",
+      "passed": true
+    },
+    {
+      "name": "One recorded reception per completed pass",
+      "passed": true
+    },
+    {
+      "name": "Restart Corner",
+      "passed": true
+    },
+    {
+      "name": "Restart Throw-in",
+      "passed": true
+    },
+    {
+      "name": "Restart Free Kick",
+      "passed": true
+    },
+    {
+      "name": "Restart Goal Kick",
+      "passed": true
+    },
+    {
+      "name": "Restart Kick Off",
+      "passed": true
+    },
+    {
+      "name": "Shot body Head",
+      "passed": true
+    },
+    {
+      "name": "Shot body Left Foot",
+      "passed": true
+    },
+    {
+      "name": "Shot body Right Foot",
+      "passed": true
+    },
+    {
+      "name": "Pass height Ground Pass",
+      "passed": true
+    },
+    {
+      "name": "Pass height Low Pass",
+      "passed": true
+    },
+    {
+      "name": "Pass height High Pass",
+      "passed": true
+    },
+    {
+      "name": "All 56 registered players actually have playing samples",
+      "passed": true
+    },
+    {
+      "name": "Carries do not overlap annotated dribbles",
+      "passed": true
+    },
+    {
+      "name": "Failed tackler is the beaten challenger, not the carrier",
+      "passed": true
+    },
+    {
+      "name": "Won and failed tackle attempts are present",
+      "passed": true
+    },
+    {
+      "name": "Nine analytic example queries return rows",
+      "passed": true
+    }
+  ],
+  "sections": {
+    "versions": [
+      {
+        "version": "3.0.0",
+        "n": 10
+      }
+    ],
+    "types": [
+      {
+        "match_id": 900010,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 540
+      },
+      {
+        "match_id": 900008,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 10
+      },
+      {
+        "match_id": 900007,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 585
+      },
+      {
+        "match_id": 900007,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 14
+      },
+      {
+        "match_id": 900007,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 11
+      },
+      {
+        "match_id": 900003,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 26
+      },
+      {
+        "match_id": 900007,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 60
+      },
+      {
+        "match_id": 900009,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 7
+      },
+      {
+        "match_id": 900003,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 5
+      },
+      {
+        "match_id": 900003,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 84
+      },
+      {
+        "match_id": 900007,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 68
+      },
+      {
+        "match_id": 900005,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 265
+      },
+      {
+        "match_id": 900001,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900004,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 573
+      },
+      {
+        "match_id": 900004,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 703
+      },
+      {
+        "match_id": 900009,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 10
+      },
+      {
+        "match_id": 900009,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 65
+      },
+      {
+        "match_id": 900008,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900006,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 19
+      },
+      {
+        "match_id": 900008,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 22
+      },
+      {
+        "match_id": 900008,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 5
+      },
+      {
+        "match_id": 900001,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 542
+      },
+      {
+        "match_id": 900006,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 81
+      },
+      {
+        "match_id": 900010,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900007,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900007,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 12
+      },
+      {
+        "match_id": 900002,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900005,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 22
+      },
+      {
+        "match_id": 900007,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 94
+      },
+      {
+        "match_id": 900006,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 9
+      },
+      {
+        "match_id": 900004,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 13
+      },
+      {
+        "match_id": 900003,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 548
+      },
+      {
+        "match_id": 900007,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900002,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 11
+      },
+      {
+        "match_id": 900004,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900004,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 24
+      },
+      {
+        "match_id": 900004,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900003,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900009,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 11
+      },
+      {
+        "match_id": 900001,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 576
+      },
+      {
+        "match_id": 900001,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 23
+      },
+      {
+        "match_id": 900008,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 691
+      },
+      {
+        "match_id": 900006,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 535
+      },
+      {
+        "match_id": 900003,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 62
+      },
+      {
+        "match_id": 900006,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 90
+      },
+      {
+        "match_id": 900004,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900004,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 8
+      },
+      {
+        "match_id": 900010,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 46
+      },
+      {
+        "match_id": 900005,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 6
+      },
+      {
+        "match_id": 900006,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 22
+      },
+      {
+        "match_id": 900006,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 568
+      },
+      {
+        "match_id": 900002,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 17
+      },
+      {
+        "match_id": 900009,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 540
+      },
+      {
+        "match_id": 900003,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 24
+      },
+      {
+        "match_id": 900001,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 7
+      },
+      {
+        "match_id": 900006,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900010,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 94
+      },
+      {
+        "match_id": 900003,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 16
+      },
+      {
+        "match_id": 900006,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 65
+      },
+      {
+        "match_id": 900004,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 254
+      },
+      {
+        "match_id": 900009,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 249
+      },
+      {
+        "match_id": 900007,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900006,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 18
+      },
+      {
+        "match_id": 900001,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 70
+      },
+      {
+        "match_id": 900002,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 84
+      },
+      {
+        "match_id": 900003,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 582
+      },
+      {
+        "match_id": 900001,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 38
+      },
+      {
+        "match_id": 900007,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900005,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 713
+      },
+      {
+        "match_id": 900008,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 12
+      },
+      {
+        "match_id": 900009,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900006,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900004,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 11
+      },
+      {
+        "match_id": 900010,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 78
+      },
+      {
+        "match_id": 900006,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 11
+      },
+      {
+        "match_id": 900001,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 24
+      },
+      {
+        "match_id": 900004,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 7
+      },
+      {
+        "match_id": 900010,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 16
+      },
+      {
+        "match_id": 900010,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900003,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 11
+      },
+      {
+        "match_id": 900007,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 3
+      },
+      {
+        "match_id": 900003,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 41
+      },
+      {
+        "match_id": 900001,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 62
+      },
+      {
+        "match_id": 900005,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900003,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900010,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 7
+      },
+      {
+        "match_id": 900002,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900005,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 68
+      },
+      {
+        "match_id": 900010,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 11
+      },
+      {
+        "match_id": 900010,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 29
+      },
+      {
+        "match_id": 900006,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 46
+      },
+      {
+        "match_id": 900007,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 17
+      },
+      {
+        "match_id": 900010,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 567
+      },
+      {
+        "match_id": 900008,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900007,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 719
+      },
+      {
+        "match_id": 900001,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 7
+      },
+      {
+        "match_id": 900002,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 6
+      },
+      {
+        "match_id": 900003,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900001,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900008,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 234
+      },
+      {
+        "match_id": 900002,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 549
+      },
+      {
+        "match_id": 900007,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 18
+      },
+      {
+        "match_id": 900010,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 63
+      },
+      {
+        "match_id": 900010,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 16
+      },
+      {
+        "match_id": 900002,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 69
+      },
+      {
+        "match_id": 900001,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 26
+      },
+      {
+        "match_id": 900002,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 74
+      },
+      {
+        "match_id": 900004,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 21
+      },
+      {
+        "match_id": 900001,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 12
+      },
+      {
+        "match_id": 900007,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 14
+      },
+      {
+        "match_id": 900003,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900008,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900003,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 13
+      },
+      {
+        "match_id": 900010,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 18
+      },
+      {
+        "match_id": 900005,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 5
+      },
+      {
+        "match_id": 900001,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 77
+      },
+      {
+        "match_id": 900004,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 544
+      },
+      {
+        "match_id": 900002,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 11
+      },
+      {
+        "match_id": 900007,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900002,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 24
+      },
+      {
+        "match_id": 900004,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900009,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 41
+      },
+      {
+        "match_id": 900002,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 244
+      },
+      {
+        "match_id": 900006,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900006,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900003,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 238
+      },
+      {
+        "match_id": 900010,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 261
+      },
+      {
+        "match_id": 900001,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 714
+      },
+      {
+        "match_id": 900002,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 20
+      },
+      {
+        "match_id": 900005,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 574
+      },
+      {
+        "match_id": 900001,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 24
+      },
+      {
+        "match_id": 900010,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900008,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 14
+      },
+      {
+        "match_id": 900002,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 583
+      },
+      {
+        "match_id": 900009,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 15
+      },
+      {
+        "match_id": 900005,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 7
+      },
+      {
+        "match_id": 900005,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 19
+      },
+      {
+        "match_id": 900003,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 10
+      },
+      {
+        "match_id": 900010,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 707
+      },
+      {
+        "match_id": 900010,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 16
+      },
+      {
+        "match_id": 900008,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 74
+      },
+      {
+        "match_id": 900008,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900004,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 68
+      },
+      {
+        "match_id": 900001,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 249
+      },
+      {
+        "match_id": 900009,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900006,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 7
+      },
+      {
+        "match_id": 900006,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900003,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 7
+      },
+      {
+        "match_id": 900002,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 10
+      },
+      {
+        "match_id": 900010,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 8
+      },
+      {
+        "match_id": 900007,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 263
+      },
+      {
+        "match_id": 900009,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 13
+      },
+      {
+        "match_id": 900004,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 75
+      },
+      {
+        "match_id": 900008,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 24
+      },
+      {
+        "match_id": 900008,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 572
+      },
+      {
+        "match_id": 900005,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 60
+      },
+      {
+        "match_id": 900002,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900006,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 19
+      },
+      {
+        "match_id": 900008,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 538
+      },
+      {
+        "match_id": 900001,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 9
+      },
+      {
+        "match_id": 900007,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 11
+      },
+      {
+        "match_id": 900009,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 78
+      },
+      {
+        "match_id": 900009,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900009,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 60
+      },
+      {
+        "match_id": 900008,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 20
+      },
+      {
+        "match_id": 900009,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900009,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 4
+      },
+      {
+        "match_id": 900006,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 13
+      },
+      {
+        "match_id": 900004,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900002,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900004,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 9
+      },
+      {
+        "match_id": 900009,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900009,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 26
+      },
+      {
+        "match_id": 900003,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 703
+      },
+      {
+        "match_id": 900010,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900005,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900008,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 22
+      },
+      {
+        "match_id": 900007,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 16
+      },
+      {
+        "match_id": 900002,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 45
+      },
+      {
+        "match_id": 900005,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900008,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 54
+      },
+      {
+        "match_id": 900009,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 8
+      },
+      {
+        "match_id": 900001,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 8
+      },
+      {
+        "match_id": 900006,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 9
+      },
+      {
+        "match_id": 900005,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 537
+      },
+      {
+        "match_id": 900004,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 21
+      },
+      {
+        "match_id": 900005,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900004,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 88
+      },
+      {
+        "match_id": 900010,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 11
+      },
+      {
+        "match_id": 900001,
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "n": 6
+      },
+      {
+        "match_id": 900008,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 62
+      },
+      {
+        "match_id": 900004,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 12
+      },
+      {
+        "match_id": 900003,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 26
+      },
+      {
+        "match_id": 900002,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 17
+      },
+      {
+        "match_id": 900009,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 15
+      },
+      {
+        "match_id": 900009,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 700
+      },
+      {
+        "match_id": 900007,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 4
+      },
+      {
+        "match_id": 900005,
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "n": 60
+      },
+      {
+        "match_id": 900007,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 77
+      },
+      {
+        "match_id": 900002,
+        "type_id": 6,
+        "type_name": "Block",
+        "n": 8
+      },
+      {
+        "match_id": 900006,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 13
+      },
+      {
+        "match_id": 900008,
+        "type_id": 34,
+        "type_name": "Half End",
+        "n": 2
+      },
+      {
+        "match_id": 900001,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900008,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 82
+      },
+      {
+        "match_id": 900005,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 13
+      },
+      {
+        "match_id": 900003,
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "n": 71
+      },
+      {
+        "match_id": 900009,
+        "type_id": 30,
+        "type_name": "Pass",
+        "n": 572
+      },
+      {
+        "match_id": 900009,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 20
+      },
+      {
+        "match_id": 900005,
+        "type_id": 33,
+        "type_name": "50/50",
+        "n": 6
+      },
+      {
+        "match_id": 900007,
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "n": 548
+      },
+      {
+        "match_id": 900005,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 21
+      },
+      {
+        "match_id": 900004,
+        "type_id": 4,
+        "type_name": "Duel",
+        "n": 40
+      },
+      {
+        "match_id": 900006,
+        "type_id": 17,
+        "type_name": "Pressure",
+        "n": 247
+      },
+      {
+        "match_id": 900004,
+        "type_id": 16,
+        "type_name": "Shot",
+        "n": 25
+      },
+      {
+        "match_id": 900002,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900006,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 687
+      },
+      {
+        "match_id": 900008,
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "n": 8
+      },
+      {
+        "match_id": 900010,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900005,
+        "type_id": 14,
+        "type_name": "Dribble",
+        "n": 81
+      },
+      {
+        "match_id": 900010,
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "n": 6
+      },
+      {
+        "match_id": 900001,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 9
+      },
+      {
+        "match_id": 900005,
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "n": 21
+      },
+      {
+        "match_id": 900008,
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "n": 8
+      },
+      {
+        "match_id": 900005,
+        "type_id": 10,
+        "type_name": "Interception",
+        "n": 12
+      },
+      {
+        "match_id": 900003,
+        "type_id": 9,
+        "type_name": "Clearance",
+        "n": 11
+      },
+      {
+        "match_id": 900003,
+        "type_id": 18,
+        "type_name": "Half Start",
+        "n": 2
+      },
+      {
+        "match_id": 900002,
+        "type_id": 43,
+        "type_name": "Carry",
+        "n": 709
+      },
+      {
+        "match_id": 900001,
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "n": 4
+      },
+      {
+        "match_id": 900005,
+        "type_id": 19,
+        "type_name": "Substitution",
+        "n": 6
+      },
+      {
+        "match_id": 900002,
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "n": 17
+      }
+    ],
+    "dribbles": [
+      {
+        "outcome": "Complete",
+        "n": 733
+      },
+      {
+        "outcome": "Incomplete",
+        "n": 119
+      }
+    ],
+    "aerial": [
+      {
+        "losses": 125,
+        "wins": 125,
+        "linked_contests": 125
+      }
+    ],
+    "substitutions": [
+      {
+        "match_id": 900001,
+        "team_id": 1,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900003,
+        "team_id": 1,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900005,
+        "team_id": 1,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900007,
+        "team_id": 1,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900009,
+        "team_id": 1,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900001,
+        "team_id": 2,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900004,
+        "team_id": 2,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900006,
+        "team_id": 2,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900007,
+        "team_id": 2,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900010,
+        "team_id": 2,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900002,
+        "team_id": 3,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900003,
+        "team_id": 3,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900006,
+        "team_id": 3,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900008,
+        "team_id": 3,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900009,
+        "team_id": 3,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900002,
+        "team_id": 4,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900004,
+        "team_id": 4,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900005,
+        "team_id": 4,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900008,
+        "team_id": 4,
+        "changes": 3,
+        "replacements": 3
+      },
+      {
+        "match_id": 900010,
+        "team_id": 4,
+        "changes": 3,
+        "replacements": 3
+      }
+    ],
+    "receipts": [
+      {
+        "receipts": 5421,
+        "completed_passes": 5421
+      }
+    ],
+    "restarts": [
+      {
+        "restart": "Corner",
+        "n": 17
+      },
+      {
+        "restart": "Free Kick",
+        "n": 195
+      },
+      {
+        "restart": "Goal Kick",
+        "n": 52
+      },
+      {
+        "restart": "Kick Off",
+        "n": 36
+      },
+      {
+        "restart": "Throw-in",
+        "n": 32
+      }
+    ],
+    "shotBodies": [
+      {
+        "body": "Head",
+        "n": 61
+      },
+      {
+        "body": "Left Foot",
+        "n": 46
+      },
+      {
+        "body": "Right Foot",
+        "n": 102
+      }
+    ],
+    "passHeights": [
+      {
+        "height": "High Pass",
+        "n": 815
+      },
+      {
+        "height": "Low Pass",
+        "n": 614
+      },
+      {
+        "height": "Ground Pass",
+        "n": 4323
+      }
+    ],
+    "passFlags": [
+      {
+        "crosses": 171,
+        "cut_backs": 133,
+        "switches": 1182
+      }
+    ],
+    "roles": [
+      {
+        "tracked_players": 56
+      }
+    ],
+    "formation": [
+      {
+        "formation": 433,
+        "n": 100
+      }
+    ],
+    "carryOverlaps": [
+      {
+        "overlaps": 0
+      }
+    ],
+    "tackleResults": [
+      {
+        "outcome": "Lost In Play",
+        "n": 227
+      },
+      {
+        "outcome": "Won",
+        "n": 119
+      }
+    ],
+    "failedTackleAttribution": [
+      {
+        "bad_attributions": 0
+      }
+    ]
+  },
+  "exampleQueryRows": [
+    230,
+    12,
+    24,
+    714,
+    15,
+    9,
+    6,
+    28,
+    13
+  ]
+}

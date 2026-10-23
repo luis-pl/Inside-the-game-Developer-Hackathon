@@ -1,0 +1,985 @@
+{
+  "purpose": "Final hackathon capability scope proposal, not deployed agent/API/MCP functionality",
+  "evidence_observed_at": "2026-10-23T01:21:13.800Z",
+  "dataset_version": "3.0.0",
+  "family_count": 15,
+  "operation_count": 121,
+  "status_definitions": {
+    "observed": "Observado/consultable en la carga",
+    "computable": "Derivable con cálculo determinista y definición publicada",
+    "proxy": "Estimación o indicador con supuestos explícitos",
+    "partial": "Cobertura parcial, uniforme o desconocida según campo",
+    "unobserved": "Sin eventos/variación registrados en la carga actual",
+    "needs_model": "Requiere un modelo externo o calibración no disponible",
+    "needs_definition": "Entradas disponibles; falta elegir la función matemática"
+  },
+  "status_counts": {
+    "observed": 43,
+    "computable": 57,
+    "unobserved": 1,
+    "needs_model": 3,
+    "partial": 2,
+    "proxy": 13,
+    "needs_definition": 2
+  },
+  "common_dimensions": [
+    "match_ids",
+    "team_ids",
+    "player_ids",
+    "run_id",
+    "period",
+    "start_ms",
+    "end_ms",
+    "event_types",
+    "outcomes",
+    "flags",
+    "zone",
+    "group_by",
+    "time_bin",
+    "score_state"
+  ],
+  "families": [
+    {
+      "id": "catalog",
+      "proposed_interface": "describe_dataset",
+      "title": "Descubrimiento y cobertura",
+      "source_tables": [
+        "matches",
+        "events",
+        "tracking_runs"
+      ],
+      "operations": [
+        {
+          "id": "catalog.capabilities",
+          "status": "observed",
+          "label": "Capacidades del conjunto",
+          "definition": "Campos, tipos de evento, dominios observados y operaciones con estado de disponibilidad."
+        },
+        {
+          "id": "catalog.quality",
+          "status": "observed",
+          "label": "Procedencia y calidad",
+          "definition": "Versión sintética, muestreo, cobertura por jugador/período, NULL, límites y convenciones de coordenadas."
+        },
+        {
+          "id": "catalog.schema",
+          "status": "observed",
+          "label": "Esquema y relaciones",
+          "definition": "Metadatos de las 30 tablas y 250 columnas; describir las vistas analytics como superficie de lectura."
+        },
+        {
+          "id": "catalog.domains",
+          "status": "observed",
+          "label": "Valores disponibles",
+          "definition": "Enumeraciones realmente presentes para resultados, banderas, períodos, formatos y tipos de pase."
+        }
+      ]
+    },
+    {
+      "id": "entities",
+      "proposed_interface": "find_entities",
+      "title": "Búsqueda de entidades",
+      "source_tables": [
+        "competitions",
+        "seasons",
+        "competition_seasons",
+        "matches",
+        "teams",
+        "players",
+        "managers",
+        "stadiums",
+        "referees"
+      ],
+      "operations": [
+        {
+          "id": "entities.competitions",
+          "status": "observed",
+          "label": "Competición y temporada",
+          "definition": "Identificadores y nombres; una competición y una temporada en esta carga."
+        },
+        {
+          "id": "entities.matches",
+          "status": "observed",
+          "label": "Buscar partidos",
+          "definition": "Filtrar por equipo, rival, fecha, local/visitante y resultado; no asumir calendario completo."
+        },
+        {
+          "id": "entities.teams",
+          "status": "observed",
+          "label": "Buscar equipos",
+          "definition": "Cuatro equipos sintéticos, nombres y encuentros disponibles."
+        },
+        {
+          "id": "entities.players",
+          "status": "observed",
+          "label": "Buscar jugadores",
+          "definition": "56 inscritos; distinguir titulares y suplentes que ingresan, por partido e intervalo de actividad."
+        },
+        {
+          "id": "entities.staff_venues",
+          "status": "observed",
+          "label": "Personal y sede",
+          "definition": "Entrenadores, árbitros y estadios; son atributos sintéticos de contexto."
+        }
+      ]
+    },
+    {
+      "id": "context",
+      "proposed_interface": "get_match_context",
+      "title": "Contexto del partido",
+      "source_tables": [
+        "matches",
+        "match_teams",
+        "match_lineups",
+        "lineup_positions",
+        "lineup_cards",
+        "event_tactics",
+        "tactical_lineups",
+        "match_team_managers"
+      ],
+      "operations": [
+        {
+          "id": "context.summary",
+          "status": "observed",
+          "label": "Ficha del encuentro",
+          "definition": "Fecha, hora sin zona UTC inferida, equipos, marcador, sede y versión del conjunto."
+        },
+        {
+          "id": "context.lineups",
+          "status": "observed",
+          "label": "Alineaciones y posiciones",
+          "definition": "Titulares, suplentes, dorsal y posición declarada; on_pitch_slot no equivale al dorsal ni al ID de posición."
+        },
+        {
+          "id": "context.tactics",
+          "status": "observed",
+          "label": "Formación declarada",
+          "definition": "Starting XI y Tactical Shift con formación 433; los cambios actualizan participantes, no representan una variación de formación."
+        },
+        {
+          "id": "context.cards",
+          "status": "observed",
+          "label": "Tarjetas",
+          "definition": "Amarillas registradas; vincular faltas y jugadores por partido, período y reloj exacto."
+        },
+        {
+          "id": "context.minutes",
+          "status": "computable",
+          "label": "Minutos cubiertos",
+          "definition": "Intersección entre presencia activa, períodos y ventana solicitada; excluir el extremo final de cada período y los intervalos de jugadores sustituidos."
+        },
+        {
+          "id": "context.substitutions",
+          "status": "observed",
+          "label": "Sustituciones",
+          "definition": "Actor saliente y replacement entrante en details, con alineaciones e identidades de tracking actualizadas desde el segundo siguiente."
+        },
+        {
+          "id": "context.score_state",
+          "status": "computable",
+          "label": "Marcador en un instante",
+          "definition": "Acumular goles por período, reloj e índice; conservar el marcador anterior al inicio de la ventana."
+        },
+        {
+          "id": "context.results",
+          "status": "computable",
+          "label": "Resultados comparados",
+          "definition": "Victorias, empates y derrotas sobre los partidos disponibles; tabla parcial, no clasificación oficial."
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "proposed_interface": "query_events",
+      "title": "Exploración de acciones",
+      "source_tables": [
+        "events",
+        "event_relations"
+      ],
+      "operations": [
+        {
+          "id": "events.filter",
+          "status": "observed",
+          "label": "Filtrar acciones",
+          "definition": "Por partido, equipo, jugador, tipo, período, reloj, posesión, resultado, banderas y zona."
+        },
+        {
+          "id": "events.timeline",
+          "status": "observed",
+          "label": "Cronología",
+          "definition": "Ordenar por período, period_time_ms y event_index; no usar sólo el minuto global."
+        },
+        {
+          "id": "events.relations",
+          "status": "observed",
+          "label": "Relaciones entre eventos",
+          "definition": "Devolver extremos tipados; el enlace por sí solo no prueba causalidad ni equivale a una asistencia."
+        },
+        {
+          "id": "events.counts",
+          "status": "computable",
+          "label": "Frecuencias y series",
+          "definition": "Conteos por actor, zona, minuto, ventana y estado del marcador, con denominador explícito."
+        },
+        {
+          "id": "events.chains",
+          "status": "computable",
+          "label": "Secuencias registradas",
+          "definition": "Eventos anteriores y posteriores, motivos de tipos y cadenas dentro de una posesión/período."
+        }
+      ]
+    },
+    {
+      "id": "shots",
+      "proposed_interface": "query_shots",
+      "title": "Finalización y creación",
+      "source_tables": [
+        "events",
+        "event_shots",
+        "event_passes",
+        "event_relations"
+      ],
+      "operations": [
+        {
+          "id": "shots.list_map",
+          "status": "observed",
+          "label": "Lista y mapa de tiros",
+          "definition": "Tiros con origen, final 3D, jugador, instante, resultado y xG sintético; cantidades verificadas en el perfil adjunto."
+        },
+        {
+          "id": "shots.on_target",
+          "status": "computable",
+          "label": "Tiros a puerta",
+          "definition": "IDs 97, 100 y 116; excluir tanda por defecto. En esta carga: goles + Saved; no contar Blocked ni Off T."
+        },
+        {
+          "id": "shots.outcomes",
+          "status": "computable",
+          "label": "Resultados del tiro",
+          "definition": "Goles, paradas, bloqueos y fuera; 99/115/116 no aparecen en esta carga."
+        },
+        {
+          "id": "shots.xg",
+          "status": "computable",
+          "label": "xG agregado y acumulado",
+          "definition": "Sumar statsbomb_xg sin recalcularlo; devolver xg_model=toy-distance-angle-v2 e is_synthetic=true."
+        },
+        {
+          "id": "shots.quality",
+          "status": "computable",
+          "label": "Calidad y eficacia",
+          "definition": "xG/tiro, goles/tiro, goles menos xG y proporción a puerta; dividir por cero produce NULL con motivo."
+        },
+        {
+          "id": "shots.geometry",
+          "status": "computable",
+          "label": "Distancia y ángulo de tiro",
+          "definition": "Convertir primero a metros; centro y postes según campo/portería de la configuración del run."
+        },
+        {
+          "id": "shots.assists",
+          "status": "observed",
+          "label": "Pases clave y asistencias",
+          "definition": "key_pass_id relaciona el pase completado con el tiro del receptor; goal_assist exige resultado Goal."
+        },
+        {
+          "id": "shots.chains_xg",
+          "status": "computable",
+          "label": "xG de cadenas registradas",
+          "definition": "Asignar xG de posesiones a participantes ofensivos observados; no afirmar cobertura de todos los toques ni equivalencia automática con un producto xGChain."
+        },
+        {
+          "id": "shots.conceded",
+          "status": "computable",
+          "label": "Tiros y xG concedidos",
+          "definition": "Perspectiva del rival con filtros simétricos; son indicadores descriptivos del escenario sintético."
+        },
+        {
+          "id": "shots.keeper",
+          "status": "computable",
+          "label": "Actividad de portería",
+          "definition": "Shot Saved y tiros Saved representan las mismas paradas: enlazar sin contarlas dos veces; tasa sobre tiros a puerta definidos."
+        },
+        {
+          "id": "shots.headers",
+          "status": "observed",
+          "label": "Cabezazos y superficie de remate",
+          "definition": "Comparar Head, Left Foot y Right Foot, con altura del balón, first_time, xG y resultado."
+        },
+        {
+          "id": "shots.special_types",
+          "status": "unobserved",
+          "label": "Penaltis y tiros libres directos",
+          "definition": "No hay tiros Penalty ni Free Kick. Los pases desde faltas no sustituyen esos escenarios."
+        },
+        {
+          "id": "shots.postshot",
+          "status": "needs_model",
+          "label": "Post-shot xG o xGOT",
+          "definition": "No existe un modelo post-tiro ni valores almacenados; la geometría por sí sola no los proporciona."
+        }
+      ]
+    },
+    {
+      "id": "passes",
+      "proposed_interface": "query_passes",
+      "title": "Circulación y progresión",
+      "source_tables": [
+        "events",
+        "event_passes"
+      ],
+      "operations": [
+        {
+          "id": "passes.list_map",
+          "status": "observed",
+          "label": "Trayectorias de pase",
+          "definition": "Extremos, longitud, ángulo, duración, altura y receptor cuando se completó."
+        },
+        {
+          "id": "passes.completion",
+          "status": "computable",
+          "label": "Pases y acierto",
+          "definition": "En esta fuente outcome NULL significa completado; una pérdida posterior por regate fallido o mal control no vuelve incompleto el pase recibido."
+        },
+        {
+          "id": "passes.receptions",
+          "status": "observed",
+          "label": "Recepciones anotadas",
+          "definition": "Eventos Ball Receipt* enlazados con el pase completo, actor e instante de llegada; no representan todos los toques del partido."
+        },
+        {
+          "id": "passes.progression",
+          "status": "computable",
+          "label": "Progresión y distancia",
+          "definition": "Metros ganados hacia portería y reducción de distancia al gol; umbral de pase progresivo parametrizado y publicado."
+        },
+        {
+          "id": "passes.entries",
+          "status": "computable",
+          "label": "Entradas a zonas",
+          "definition": "Detectar cruces de frontera por origen/final hacia tercio final, área o zona configurada en metros."
+        },
+        {
+          "id": "passes.directions",
+          "status": "computable",
+          "label": "Dirección del pase",
+          "definition": "Adelante, atrás y lateral según componente longitudinal y tolerancia declarada."
+        },
+        {
+          "id": "passes.pressure_split",
+          "status": "computable",
+          "label": "Rendimiento bajo presión",
+          "definition": "Comparar acierto/progresión con y sin under_pressure, sin atribuir causalidad."
+        },
+        {
+          "id": "passes.restarts",
+          "status": "computable",
+          "label": "Reanudaciones",
+          "definition": "Tiro libre indirecto/pase, saque de meta, saque de centro, córner y saque de banda. No confundir Free Kick de pase con tiro libre directo a portería."
+        },
+        {
+          "id": "passes.combinations",
+          "status": "computable",
+          "label": "Sociedades y secuencias",
+          "definition": "Pares emisor-receptor, A-B-A y cadenas temporales de pases completos de la misma posesión."
+        },
+        {
+          "id": "passes.territory",
+          "status": "computable",
+          "label": "Cuota territorial de pases",
+          "definition": "Participación de pases/recepciones en zonas ofensivas con denominador explícito; no llamarlo posesión temporal."
+        },
+        {
+          "id": "passes.annotations",
+          "status": "partial",
+          "label": "Centros y etiquetas especiales",
+          "definition": "cross, cut_back y switch tienen una definición geométrica sintética explícita; through_ball y technique siguen sin anotación. Distinguir false de NULL y etiqueta de simulación de observación real."
+        },
+        {
+          "id": "passes.pattern_candidates",
+          "status": "proxy",
+          "label": "Cambios de orientación o pases filtrados geométricos",
+          "definition": "Puede detectarse un patrón por extremos/distancias/posiciones, etiquetado como inferido y con umbrales; no reemplaza la etiqueta original."
+        }
+      ]
+    },
+    {
+      "id": "defense",
+      "proposed_interface": "query_defensive_actions",
+      "title": "Defensa y presión",
+      "source_tables": [
+        "events",
+        "lineup_cards",
+        "event_shots",
+        "event_tracking_links",
+        "tracking_player_positions",
+        "tracking_ball_positions"
+      ],
+      "operations": [
+        {
+          "id": "defense.pressures",
+          "status": "observed",
+          "label": "Acciones de presión",
+          "definition": "Acciones Pressure con counterpress cuando corresponde; under_pressure es presión recibida y counterpress es una bandera aparte."
+        },
+        {
+          "id": "defense.duels",
+          "status": "observed",
+          "label": "Duelos y 50/50",
+          "definition": "Separar Tackle de Aerial Lost y 50/50; cada disputa puede tener perspectivas de ambos participantes, no sumar filas como disputas distintas."
+        },
+        {
+          "id": "defense.recoveries",
+          "status": "observed",
+          "label": "Recuperaciones",
+          "definition": "Ball Recovery con instante, actor, zona y contexto de secuencia."
+        },
+        {
+          "id": "defense.discipline",
+          "status": "computable",
+          "label": "Faltas y disciplina",
+          "definition": "Foul Committed y Foul Won son perspectivas de la misma falta: no sumarlas como faltas distintas."
+        },
+        {
+          "id": "defense.pressure_time",
+          "status": "computable",
+          "label": "Duración de presión",
+          "definition": "Entregar suma de duraciones y, por separado, unión de intervalos por equipo/período para tiempo único."
+        },
+        {
+          "id": "defense.pressure_outcomes",
+          "status": "proxy",
+          "label": "Resultado posterior a presión",
+          "definition": "Recuperación/pase fallado/tiro dentro de ventana configurable y mismo período; asociación temporal, no prueba de éxito causal."
+        },
+        {
+          "id": "defense.transitions",
+          "status": "computable",
+          "label": "Cambios de posesión registrados",
+          "definition": "Identificar cambio de equipo por posesión y event_index; excluir cabeceras y reinicios al definir pérdidas en juego."
+        },
+        {
+          "id": "defense.recovery_delay",
+          "status": "proxy",
+          "label": "Tiempo hasta recuperar",
+          "definition": "Medir entre cambios registrados y recuperación con cobertura; no asumir que todos los contactos tienen evento."
+        },
+        {
+          "id": "defense.ppda",
+          "status": "proxy",
+          "label": "PPDA definido para la demo",
+          "definition": "Pases rivales en zona declarada / acciones defensivas elegidas allí; documentar tipos incluidos y no presentarlo como PPDA de un proveedor sin reproducir su definición."
+        },
+        {
+          "id": "defense.blocking",
+          "status": "observed",
+          "label": "Bloqueos",
+          "definition": "Eventos Block con actor y relación con Shot Blocked; no contar ambas filas como dos tiros bloqueados."
+        },
+        {
+          "id": "defense.interceptions",
+          "status": "observed",
+          "label": "Intercepciones",
+          "definition": "Interception, resultado Success In Play, posición de contacto y cambio posterior de equipo con balón."
+        },
+        {
+          "id": "defense.tackles",
+          "status": "observed",
+          "label": "Quites",
+          "definition": "Duel/Tackle es un intento del defensor: Won al desposeer al portador, Lost In Play si ese defensor es superado. Dispossessed describe al portador; no es un intento de quite perdido por él."
+        },
+        {
+          "id": "defense.clearances",
+          "status": "observed",
+          "label": "Despejes",
+          "definition": "Clearance, cuerpo, extremo de trayectoria y aerial_won; incluir despejes al lateral seguidos de saque de banda rival."
+        },
+        {
+          "id": "defense.aerial",
+          "status": "observed",
+          "label": "Duelos aéreos ganados y perdidos",
+          "definition": "El perdedor tiene Duel/Aerial Lost; el ganador un Clearance con aerial_won=true, enlazado a ese duelo. No existe un tipo inventado Aerial Won."
+        }
+      ]
+    },
+    {
+      "id": "ball_skills",
+      "proposed_interface": "query_ball_actions",
+      "title": "Regates, conducciones y pérdidas",
+      "source_tables": [
+        "events",
+        "event_relations",
+        "event_tracking_links",
+        "tracking_player_positions",
+        "tracking_ball_positions"
+      ],
+      "operations": [
+        {
+          "id": "ball_skills.dribbles",
+          "status": "observed",
+          "label": "Regates por resultado",
+          "definition": "Dribble con outcome Complete/Incomplete; posiciones, instante, adversario y relación con Dribbled Past o Dispossessed."
+        },
+        {
+          "id": "ball_skills.dribble_rate",
+          "status": "computable",
+          "label": "Éxito de regate",
+          "definition": "Completos / intentos, por jugador, zona, presión o intervalo; describir el denominador y mantener NULL cuando no hay intentos."
+        },
+        {
+          "id": "ball_skills.carries",
+          "status": "observed",
+          "label": "Conducciones",
+          "definition": "Carry, duración, end_location y tracking del mismo jugador controlando el balón; separar conducción de pase y de regate anotado."
+        },
+        {
+          "id": "ball_skills.carry_progression",
+          "status": "computable",
+          "label": "Progresión con balón",
+          "definition": "Desplazamiento hacia el gol y distancia recorrida durante las conducciones, entradas al área/tercio final y conexiones con la acción siguiente."
+        },
+        {
+          "id": "ball_skills.miscontrols",
+          "status": "observed",
+          "label": "Malos controles y desposesiones",
+          "definition": "Miscontrol y Dispossessed tienen significados distintos; no convertir automáticamente todo pase fallado en pérdida individual por regate."
+        },
+        {
+          "id": "ball_skills.lost_zones",
+          "status": "computable",
+          "label": "Mapa de pérdidas",
+          "definition": "Unificar secuencias de mal control, regate fallido o pase incompleto por reglas publicadas para evitar contabilizar dos veces la misma pérdida."
+        },
+        {
+          "id": "ball_skills.after_dribble",
+          "status": "computable",
+          "label": "Acción tras superar un rival",
+          "definition": "Encontrar pase, tiro o pérdida posterior en la misma posesión, con ventana y continuidad explícitas."
+        }
+      ]
+    },
+    {
+      "id": "possessions",
+      "proposed_interface": "get_possessions",
+      "title": "Posesiones y ataques",
+      "source_tables": [
+        "events",
+        "event_passes",
+        "event_shots",
+        "tracking_frames"
+      ],
+      "operations": [
+        {
+          "id": "possessions.sequences",
+          "status": "observed",
+          "label": "Posesiones registradas",
+          "definition": "Agrupar por match_id/possession; el entero local no identifica una posesión global."
+        },
+        {
+          "id": "possessions.structure",
+          "status": "computable",
+          "label": "Características de ataque",
+          "definition": "Equipo, jugadores observados, pases, zonas, final, tiro y xG asociado de cada secuencia."
+        },
+        {
+          "id": "possessions.duration",
+          "status": "proxy",
+          "label": "Duración estimada de posesión",
+          "definition": "El primer/último evento no delimita todos los intervalos; definir propagación, límite de huecos y exclusión de balón parado."
+        },
+        {
+          "id": "possessions.share",
+          "status": "proxy",
+          "label": "Porcentaje temporal de posesión",
+          "definition": "No hay propietario por frame. Inferir con método explícito y reportar segundos sin asignar; conteo de eventos o posesiones no es posesión temporal."
+        },
+        {
+          "id": "possessions.directness",
+          "status": "computable",
+          "label": "Verticalidad y recorrido",
+          "definition": "Progresión longitudinal / recorrido observado y eventos antes del tiro, con fórmula y acciones incluidas publicadas."
+        },
+        {
+          "id": "possessions.attack_outcomes",
+          "status": "computable",
+          "label": "Final de ataque y transición",
+          "definition": "Posesiones con tiro, gol, pase fallado o siguiente equipo; no considerar automáticamente todo reinicio una recuperación defensiva."
+        }
+      ]
+    },
+    {
+      "id": "tracking",
+      "proposed_interface": "get_tracking",
+      "title": "Posiciones y movimiento",
+      "source_tables": [
+        "tracking_runs",
+        "tracking_periods",
+        "tracking_frames",
+        "tracking_player_positions",
+        "tracking_ball_positions"
+      ],
+      "operations": [
+        {
+          "id": "tracking.frame",
+          "status": "observed",
+          "label": "Posición en un segundo",
+          "definition": "Seleccionar explícitamente run_id y período: 22 jugadores y balón por frame, coordenadas fijas en metros."
+        },
+        {
+          "id": "tracking.window",
+          "status": "observed",
+          "label": "Ventanas y reproducción",
+          "definition": "Intervalos, jugadores/equipos, stride, balón y ball_in_play; reproducción del registro, sin vídeo ni alimentación en directo."
+        },
+        {
+          "id": "tracking.trajectories",
+          "status": "observed",
+          "label": "Trayectorias",
+          "definition": "Recorridos por jugador y balón separados por período y generación, con presencia y estado de posición."
+        },
+        {
+          "id": "tracking.distance",
+          "status": "computable",
+          "label": "Distancia recorrida",
+          "definition": "Suma de distancias entre muestras consecutivas válidas; separada de desplazamiento neto y sin saltar huecos/períodos."
+        },
+        {
+          "id": "tracking.kinematics",
+          "status": "proxy",
+          "label": "Velocidad y aceleración muestreadas",
+          "definition": "Diferencias finitas con dt real, método y suavizado declarados; no velocidad/acceleración instantánea profesional."
+        },
+        {
+          "id": "tracking.speed_zones",
+          "status": "computable",
+          "label": "Tiempo por umbral de velocidad",
+          "definition": "Intervalos de velocidad muestreada con umbrales publicados; resultados y cobertura dependen del muestreo a 1 Hz."
+        },
+        {
+          "id": "tracking.ball",
+          "status": "computable",
+          "label": "Movimiento del balón",
+          "definition": "Recorrido 2D/3D, altura, velocidad muestreada y tiempo vivo/parado; evitar equiparar 54.020 muestras con 54.020 segundos."
+        },
+        {
+          "id": "tracking.subsecond",
+          "status": "proxy",
+          "label": "Instantes intermedios",
+          "definition": "Interpolación explícita con bracket válido del mismo período/run; nunca declarar que se observó un instante sin muestra."
+        },
+        {
+          "id": "tracking.presence",
+          "status": "observed",
+          "label": "Presencia y sustituciones",
+          "definition": "14 inscritos y 11 activos por equipo en cada segundo. Los 14 participan en intervalos distintos; fuera de su intervalo no hay coordenadas observadas en cancha."
+        }
+      ]
+    },
+    {
+      "id": "context_event",
+      "proposed_interface": "get_event_context",
+      "title": "Contexto espacial de una acción",
+      "source_tables": [
+        "events",
+        "event_relations",
+        "event_shots",
+        "event_passes",
+        "frames_360",
+        "frame_360_players",
+        "shot_freeze_players",
+        "event_tracking_links",
+        "tracking_frames",
+        "tracking_player_positions"
+      ],
+      "operations": [
+        {
+          "id": "context_event.related",
+          "status": "observed",
+          "label": "Acción y eventos asociados",
+          "definition": "Evento seleccionado con pase clave, tiro, parada o relación, respetando IDs y cardinalidades."
+        },
+        {
+          "id": "context_event.positions",
+          "status": "observed",
+          "label": "Jugadores y balón alrededor del evento",
+          "definition": "Tracking identificado disponible para todos los eventos; ventana anterior/posterior separada por período."
+        },
+        {
+          "id": "context_event.freeze",
+          "status": "observed",
+          "label": "Freeze frame de tiro",
+          "definition": "Cada tiro tiene captura con jugadores identificados, compañeros/rivales y posiciones del tiro, incluidas las sustituciones."
+        },
+        {
+          "id": "context_event.360",
+          "status": "observed",
+          "label": "Captura 360",
+          "definition": "Capturas de tiros con 22 participantes anónimos; no existe player_id en frame_360_players."
+        },
+        {
+          "id": "context_event.neighbors",
+          "status": "computable",
+          "label": "Jugadores cercanos",
+          "definition": "Radio, rival más próximo, conteo alrededor de actor/ball y distancias; calcular en metros sobre un único sistema."
+        },
+        {
+          "id": "context_event.identity",
+          "status": "partial",
+          "label": "Identidad en 360",
+          "definition": "Usar la identidad del tracking o del freeze frame; no adjudicar automáticamente IDs a las filas anónimas por índice o coincidencia aproximada."
+        }
+      ]
+    },
+    {
+      "id": "spatial",
+      "proposed_interface": "get_spatial_aggregates",
+      "title": "Mapas, ocupación y forma",
+      "source_tables": [
+        "tracking_player_positions",
+        "tracking_frames",
+        "tracking_periods",
+        "events",
+        "event_passes",
+        "lineup_positions"
+      ],
+      "operations": [
+        {
+          "id": "spatial.event_heatmap",
+          "status": "computable",
+          "label": "Mapa de acciones",
+          "definition": "Conteos/densidades de acciones; no equivale a tiempo ocupado."
+        },
+        {
+          "id": "spatial.tracking_heatmap",
+          "status": "computable",
+          "label": "Mapa de ocupación temporal",
+          "definition": "Ponderar por dt al siguiente frame, sin último punto extra ni atravesar huecos; especificar si sólo balón en juego."
+        },
+        {
+          "id": "spatial.zone_time",
+          "status": "computable",
+          "label": "Tiempo y entradas en zonas",
+          "definition": "Intersección con polígonos o cuadrícula, dt y cruces; interpolación de fronteras sólo como estimación declarada."
+        },
+        {
+          "id": "spatial.centroid",
+          "status": "computable",
+          "label": "Centroide del equipo",
+          "definition": "Media x/y de participantes seleccionados; excluir portero por defecto y fijar orientación y fase."
+        },
+        {
+          "id": "spatial.shape",
+          "status": "computable",
+          "label": "Ancho y longitud",
+          "definition": "Extensión lateral y longitudinal, radio de giro y distancias medias al centroide en metros."
+        },
+        {
+          "id": "spatial.hull",
+          "status": "computable",
+          "label": "Área del bloque",
+          "definition": "Envolvente convexa y área m² de puntos elegidos; no equivale a territorio controlado ni huecos internos."
+        },
+        {
+          "id": "spatial.line_height",
+          "status": "computable",
+          "label": "Altura de línea y separación",
+          "definition": "Agrupar por roles declarados o por agrupación geométrica explícita; publicar método. El dorsal/slot no define una línea táctica."
+        },
+        {
+          "id": "spatial.balance",
+          "status": "computable",
+          "label": "Superioridades locales",
+          "definition": "Contar atacantes/defensores dentro de radio o zona y jugadores entre balón y portería."
+        },
+        {
+          "id": "spatial.voronoi",
+          "status": "proxy",
+          "label": "Territorio por proximidad",
+          "definition": "Celdas recortadas al campo o zona, puntos duplicados/degenerados controlados; territorio geométrico no es pitch control probabilístico."
+        },
+        {
+          "id": "spatial.lanes",
+          "status": "proxy",
+          "label": "Corredores de pase y tiro",
+          "definition": "Distancia de rivales a segmentos/corredores y márgenes; análisis geométrico estático, no probabilidad de intercepción."
+        },
+        {
+          "id": "spatial.line_breaks",
+          "status": "proxy",
+          "label": "Rupturas de línea",
+          "definition": "Cruces de líneas definidas e individuos superados según frame y dirección elegidos; no una anotación de origen."
+        },
+        {
+          "id": "spatial.space_model",
+          "status": "needs_model",
+          "label": "Pitch control y tiempo de llegada",
+          "definition": "Requiere modelo de movimiento/reacción y calibración; el tracking a 1 Hz y Voronoi no lo convierten en un dato medido."
+        }
+      ]
+    },
+    {
+      "id": "metrics",
+      "proposed_interface": "aggregate_metrics",
+      "title": "Agregaciones y series",
+      "source_tables": [
+        "events",
+        "event_passes",
+        "event_shots",
+        "tracking_frames",
+        "tracking_player_positions"
+      ],
+      "operations": [
+        {
+          "id": "metrics.group",
+          "status": "computable",
+          "label": "Agrupación de métricas",
+          "definition": "Por partido, equipo, jugador, rol declarado, período, zona, ventana, estado del marcador o presión."
+        },
+        {
+          "id": "metrics.series",
+          "status": "computable",
+          "label": "Series y acumulados",
+          "definition": "Bins temporales y ventanas móviles con límites por período y denominadores/cobertura."
+        },
+        {
+          "id": "metrics.rates",
+          "status": "computable",
+          "label": "Tasas y razones",
+          "definition": "Por intento, posesión registrada, minuto cubierto o 90 minutos; los ceros de denominador no generan infinitos."
+        },
+        {
+          "id": "metrics.ranking",
+          "status": "computable",
+          "label": "Rankings y contribuciones",
+          "definition": "Ordenar métricas verificables sobre el subconjunto disponible con número de partidos/minutos y procedencia sintética."
+        },
+        {
+          "id": "metrics.associations",
+          "status": "proxy",
+          "label": "Asociaciones descriptivas",
+          "definition": "Relacionar forma/espacio/presión con resultado posterior; diez partidos sintéticos no validan causalidad ni generalización."
+        },
+        {
+          "id": "metrics.models",
+          "status": "needs_model",
+          "label": "xT, OBV, EPV y calidad defensiva compuesta",
+          "definition": "No existen pesos, superficies o modelos calibrados. Elegir una definición explicable antes de exponer una puntuación."
+        }
+      ]
+    },
+    {
+      "id": "compare",
+      "proposed_interface": "compare_entities",
+      "title": "Comparaciones coherentes",
+      "source_tables": [
+        "matches",
+        "events",
+        "event_passes",
+        "event_shots",
+        "tracking_player_positions"
+      ],
+      "operations": [
+        {
+          "id": "compare.players",
+          "status": "computable",
+          "label": "Comparar jugadores",
+          "definition": "Mismos filtros, métricas, umbrales, minutos cubiertos y condición de titular/suplente."
+        },
+        {
+          "id": "compare.teams",
+          "status": "computable",
+          "label": "Comparar equipos",
+          "definition": "Con/sin balón según clasificación explícita, local/visitante, rival y partidos presentes."
+        },
+        {
+          "id": "compare.periods",
+          "status": "computable",
+          "label": "Comparar tiempos e intervalos",
+          "definition": "Separar primer/segundo tiempo y ventanas con distintas duraciones; no mezclar sus relojes locales."
+        },
+        {
+          "id": "compare.states",
+          "status": "computable",
+          "label": "Comparar escenarios observados",
+          "definition": "Ganando/empatando/perdiendo, bajo presión/libre y antes/después de sustituciones; describir asociación y tamaño de muestra."
+        }
+      ]
+    },
+    {
+      "id": "bundles",
+      "proposed_interface": "prepare_analysis_bundle",
+      "title": "Entradas para topología y analista",
+      "source_tables": [
+        "events",
+        "event_passes",
+        "event_tracking_links",
+        "tracking_frames",
+        "tracking_player_positions",
+        "tracking_ball_positions",
+        "lineup_positions"
+      ],
+      "operations": [
+        {
+          "id": "bundles.passing_network",
+          "status": "computable",
+          "label": "Red de pases observados",
+          "definition": "Nodos activos, aristas dirigidas y ponderadas por pases completos, cronología y posiciones de nodos con método declarado."
+        },
+        {
+          "id": "bundles.graph_metrics",
+          "status": "computable",
+          "label": "Conectividad de red de pases",
+          "definition": "Grados, strengths, densidad, componentes, centralidades y vulnerabilidad matemática; declarar dirigido/ponderado y uso de pesos como fuerza o coste."
+        },
+        {
+          "id": "bundles.point_cloud",
+          "status": "observed",
+          "label": "Nubes de puntos sincronizadas",
+          "definition": "IDs, equipo, rol, x/y en metros, balón, período/run/reloj y máscara válida; separar equipo defensor/atacante por evidencia o inferencia de fase."
+        },
+        {
+          "id": "bundles.distance_matrix",
+          "status": "computable",
+          "label": "Matrices de distancias",
+          "definition": "Entre compañeros, rivales y balón; simetría y diagonal para matrices de una misma nube."
+        },
+        {
+          "id": "bundles.proximity_graph",
+          "status": "computable",
+          "label": "Red de proximidad",
+          "definition": "Umbral métrico o k vecinos declarado, portero opcional, componentes, grados y radio de conexión; no confundir con pases ejecutados."
+        },
+        {
+          "id": "bundles.triangulation",
+          "status": "computable",
+          "label": "Triangulación espacial",
+          "definition": "Delaunay o triangulación declarada, celdas y adyacencias con política de degeneración; datos de entrada disponibles."
+        },
+        {
+          "id": "bundles.defensive_episode",
+          "status": "computable",
+          "label": "Episodio de defensa",
+          "definition": "Secuencia de frames, acciones, marcador y tiro/pase desenlace para aplicar funciones aún por definir."
+        },
+        {
+          "id": "bundles.topological_features",
+          "status": "needs_definition",
+          "label": "Persistencia y topología espacial",
+          "definition": "La nube admite filtraciones Rips/Čech/alfa, pero hay que fijar complejo, escala y dimensión. Un ciclo de grafo no es automáticamente un hueco explotable."
+        },
+        {
+          "id": "bundles.robustness",
+          "status": "proxy",
+          "label": "Robustez matemática ante retirar nodos",
+          "definition": "Recalcular conectividad al retirar un jugador del grafo; es una perturbación del modelo, no predecir una expulsión o sustitución real."
+        },
+        {
+          "id": "bundles.impenetrability",
+          "status": "needs_definition",
+          "label": "Impenetrabilidad defensiva",
+          "definition": "Proponer un perfil explicable de compactación, separaciones, corredores y resultados concedidos; no existe una verdad almacenada ni un score universal."
+        }
+      ]
+    }
+  ]
+}

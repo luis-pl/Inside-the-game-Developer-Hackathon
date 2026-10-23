@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "scope": "Feasibility examples using actual SELECT results; does not constitute an implemented analytics service",
+  "snapshot": {
+    "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+    "match_id": 900001,
+    "period": 1,
+    "period_time_ms": "100000",
+    "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0"
+  },
+  "spatial": [
+    {
+      "team_id": 1,
+      "outfield_players": 10,
+      "centroid_m": [
+        48.25532307199608,
+        33.81759037811332
+      ],
+      "longitudinal_span_m": 50.855781356895164,
+      "lateral_span_m": 46.52124615572235,
+      "convex_hull_area_m2": 1948.80032083659,
+      "radius_of_gyration_m": 25.271851096047563,
+      "distance_matrix_shape": [
+        10,
+        10
+      ],
+      "proximity_radius_m": 15,
+      "proximity_edges": 3,
+      "proximity_components": 7,
+      "graph_cycle_rank": 0,
+      "graph_cycle_rank_is_not_geometric_hole_count": true
+    },
+    {
+      "team_id": 2,
+      "outfield_players": 10,
+      "centroid_m": [
+        55.28930115755351,
+        34.72353802791308
+      ],
+      "longitudinal_span_m": 57.405029950057965,
+      "lateral_span_m": 56.78735891942486,
+      "convex_hull_area_m2": 2387.2129257229535,
+      "radius_of_gyration_m": 27.76698412301785,
+      "distance_matrix_shape": [
+        10,
+        10
+      ],
+      "proximity_radius_m": 15,
+      "proximity_edges": 3,
+      "proximity_components": 7,
+      "graph_cycle_rank": 0,
+      "graph_cycle_rank_is_not_geometric_hole_count": true
+    }
+  ],
+  "passing_graphs": [
+    {
+      "team_id": 1,
+      "nodes": 14,
+      "directed_edges": 111,
+      "completed_passes": 281,
+      "directed_density": 0.6098901098901099,
+      "highest_total_strength_player": 108,
+      "highest_total_strength": 70
+    },
+    {
+      "team_id": 2,
+      "nodes": 13,
+      "directed_edges": 109,
+      "completed_passes": 261,
+      "directed_density": 0.6987179487179487,
+      "highest_total_strength_player": 208,
+      "highest_total_strength": 63
+    }
+  ]
+}

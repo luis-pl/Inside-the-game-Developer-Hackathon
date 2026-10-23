@@ -80,6 +80,76 @@
       "name": "wrong 50/50 result code",
       "expected": "fifty_code_name",
       "passed": true
+    },
+    {
+      "name": "missing interceptions",
+      "expected": "required_event_coverage",
+      "passed": true
+    },
+    {
+      "name": "missing dribbles",
+      "expected": "required_event_coverage",
+      "passed": true
+    },
+    {
+      "name": "missing carries",
+      "expected": "required_event_coverage",
+      "passed": true
+    },
+    {
+      "name": "missing substitutions",
+      "expected": "substitution_coverage",
+      "passed": true
+    },
+    {
+      "name": "no failed dribbles",
+      "expected": "dribble_outcome_coverage",
+      "passed": true
+    },
+    {
+      "name": "aerial duel on ground",
+      "expected": "aerial_height",
+      "passed": true
+    },
+    {
+      "name": "aerial duel without winner",
+      "expected": "aerial_counterpart",
+      "passed": true
+    },
+    {
+      "name": "carry endpoint detached from ball",
+      "expected": "carry_endpoint",
+      "passed": true
+    },
+    {
+      "name": "replacement is opponent",
+      "expected": "substitution_roster",
+      "passed": true
+    },
+    {
+      "name": "substitution with live ball",
+      "expected": "substitution_dead_ball",
+      "passed": true
+    },
+    {
+      "name": "substitution interval mismatch",
+      "expected": "substitution_intervals",
+      "passed": true
+    },
+    {
+      "name": "receipt without pass link",
+      "expected": "receipt_pass",
+      "passed": true
+    },
+    {
+      "name": "no aerial-duel subtype",
+      "expected": "aerial_duel_coverage",
+      "passed": true
+    },
+    {
+      "name": "carrier mislabeled as failed tackler",
+      "expected": "failed_tackle_actor",
+      "passed": true
     }
   ]
 }

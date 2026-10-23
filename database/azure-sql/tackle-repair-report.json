@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "matches": [
+    {
+      "match": 900001,
+      "removed": 7,
+      "added": 22,
+      "status": "published"
+    },
+    {
+      "match": 900002,
+      "removed": 10,
+      "added": 24,
+      "status": "published"
+    },
+    {
+      "match": 900003,
+      "removed": 13,
+      "added": 17,
+      "status": "published"
+    },
+    {
+      "match": 900004,
+      "removed": 13,
+      "added": 18,
+      "status": "published"
+    },
+    {
+      "match": 900005,
+      "removed": 13,
+      "added": 25,
+      "status": "published"
+    },
+    {
+      "match": 900006,
+      "removed": 9,
+      "added": 26,
+      "status": "published"
+    },
+    {
+      "match": 900007,
+      "removed": 17,
+      "added": 27,
+      "status": "published"
+    },
+    {
+      "match": 900008,
+      "removed": 8,
+      "added": 32,
+      "status": "published"
+    },
+    {
+      "match": 900009,
+      "removed": 13,
+      "added": 17,
+      "status": "published"
+    },
+    {
+      "match": 900010,
+      "removed": 16,
+      "added": 19,
+      "status": "published"
+    }
+  ]
+}

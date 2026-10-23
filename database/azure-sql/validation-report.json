@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "testedAt": "2026-10-22T02:12:07.050Z",
+  "testedAt": "2026-10-23T01:20:40.837Z",
   "tests": [
     {
       "name": "valid graph publishes",
@@ -172,49 +172,49 @@
     "match_teams": 20,
     "match_team_managers": 20,
     "match_lineups": 280,
-    "lineup_cards": 24,
-    "lineup_positions": 220,
-    "events": 10815,
-    "event_relations": 459,
-    "event_passes": 5797,
-    "event_shots": 225,
-    "shot_freeze_players": 4950,
-    "event_tactics": 40,
-    "tactical_lineups": 440,
-    "frames_360": 225,
-    "frame_360_players": 4950,
+    "lineup_cards": 39,
+    "lineup_positions": 280,
+    "events": 25012,
+    "event_relations": 7076,
+    "event_passes": 5752,
+    "event_shots": 209,
+    "shot_freeze_players": 4598,
+    "event_tactics": 100,
+    "tactical_lineups": 1100,
+    "frames_360": 209,
+    "frame_360_players": 4598,
     "tracking_runs": 10,
     "tracking_periods": 20,
     "tracking_frames": 54020,
     "tracking_player_positions": 1188440,
     "tracking_ball_positions": 54020,
-    "event_tracking_links": 10815
+    "event_tracking_links": 25012
   },
   "insights": {
     "shotSummary": [
       {
         "team_id": 1,
         "team_name": "Synthetic FC 1",
-        "shots": 11,
-        "shots_on_target": 3,
-        "goals": 0,
-        "xg": 0.554186208767995
+        "shots": 14,
+        "shots_on_target": 6,
+        "goals": 1,
+        "xg": 1.0615838865393195
       },
       {
         "team_id": 2,
         "team_name": "Synthetic FC 2",
-        "shots": 10,
-        "shots_on_target": 8,
-        "goals": 0,
-        "xg": 0.39294442438532134
+        "shots": 9,
+        "shots_on_target": 4,
+        "goals": 2,
+        "xg": 0.6287962406666505
       }
     ],
-    "shotsOnTarget": 11,
+    "shotsOnTarget": 10,
     "positionsAtSecond600": 22,
-    "heatmapCells": 79,
-    "duelGroups": 20,
-    "pressureGroups": 20,
-    "nearbyPlayers": 5
+    "heatmapCells": 89,
+    "duelGroups": 15,
+    "pressureGroups": 25,
+    "nearbyPlayers": 11
   },
   "integrity": [
     {
@@ -227,7 +227,7 @@
       "incomplete_periods": 0
     },
     {
-      "max_error_m": 2.5121479338940402e-14
+      "max_error_m": 2.3092638912203256e-14
     }
   ]
 }

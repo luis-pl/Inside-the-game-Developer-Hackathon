@@ -1,0 +1,212 @@
+{
+  "tested_at_utc": "2026-10-23T03:48:32.310133+00:00",
+  "source": "MCP client -> HTTP API -> actual Azure SQL synthetic views",
+  "transport": "streamable-http",
+  "status": "passed",
+  "operations": [
+    {
+      "operation": "describe_dataset",
+      "passed": true,
+      "seconds": 0.047
+    },
+    {
+      "operation": "find_entities",
+      "passed": true,
+      "seconds": 0.141
+    },
+    {
+      "operation": "list_matches",
+      "passed": true,
+      "seconds": 0.046
+    },
+    {
+      "operation": "get_match_context",
+      "passed": true,
+      "seconds": 0.141
+    },
+    {
+      "operation": "get_team_summary",
+      "passed": true,
+      "seconds": 0.156
+    },
+    {
+      "operation": "get_player_summary",
+      "passed": true,
+      "seconds": 0.157
+    },
+    {
+      "operation": "get_shots",
+      "passed": true,
+      "seconds": 0.156
+    },
+    {
+      "operation": "get_passes",
+      "passed": true,
+      "seconds": 0.219
+    },
+    {
+      "operation": "get_defensive_actions",
+      "passed": true,
+      "seconds": 0.171
+    },
+    {
+      "operation": "get_ball_actions",
+      "passed": true,
+      "seconds": 0.157
+    },
+    {
+      "operation": "get_discipline",
+      "passed": true,
+      "seconds": 0.156
+    },
+    {
+      "operation": "get_substitutions",
+      "passed": true,
+      "seconds": 0.187
+    },
+    {
+      "operation": "get_possessions",
+      "passed": true,
+      "seconds": 0.157
+    },
+    {
+      "operation": "get_tracking_frame",
+      "passed": true,
+      "seconds": 1.047
+    },
+    {
+      "operation": "get_tracking_window",
+      "passed": true,
+      "seconds": 1.062
+    },
+    {
+      "operation": "get_event_context",
+      "passed": true,
+      "seconds": 1.906
+    },
+    {
+      "operation": "get_heatmap",
+      "passed": true,
+      "seconds": 1.157
+    },
+    {
+      "operation": "get_movement_summary",
+      "passed": true,
+      "seconds": 2.187
+    },
+    {
+      "operation": "get_metric_series",
+      "passed": true,
+      "seconds": 0.156
+    },
+    {
+      "operation": "compare_entities",
+      "passed": true,
+      "seconds": 0.157
+    },
+    {
+      "operation": "get_set_piece_sequences",
+      "passed": true,
+      "seconds": 0.218
+    },
+    {
+      "operation": "get_events",
+      "passed": true,
+      "seconds": 0.141
+    },
+    {
+      "operation": "get_sequences",
+      "passed": true,
+      "seconds": 0.281
+    },
+    {
+      "operation": "get_zone_summary",
+      "passed": true,
+      "seconds": 1.703
+    },
+    {
+      "operation": "get_rankings",
+      "passed": true,
+      "seconds": 0.282
+    },
+    {
+      "operation": "get_team_shape",
+      "passed": true,
+      "seconds": 1.171
+    },
+    {
+      "operation": "get_proximity_connectivity",
+      "passed": true,
+      "seconds": 1.204
+    },
+    {
+      "operation": "get_space_coverage",
+      "passed": true,
+      "seconds": 1.171
+    },
+    {
+      "operation": "get_passing_network",
+      "passed": true,
+      "seconds": 0.141
+    },
+    {
+      "operation": "get_pass_corridor",
+      "passed": true,
+      "seconds": 1.047
+    },
+    {
+      "operation": "get_line_breaks",
+      "passed": true,
+      "seconds": 1.719
+    },
+    {
+      "operation": "get_persistent_structure",
+      "passed": true,
+      "seconds": 1.234
+    },
+    {
+      "operation": "get_node_removal_robustness",
+      "passed": true,
+      "seconds": 1.125
+    },
+    {
+      "operation": "get_defensive_profile",
+      "passed": true,
+      "seconds": 1.719
+    }
+  ],
+  "checks": [
+    {
+      "label": "34 closed tools discovered",
+      "passed": true
+    },
+    {
+      "label": "Known team shots on target = 6",
+      "passed": true
+    },
+    {
+      "label": "Aerial contests = 9, no double counting",
+      "passed": true
+    },
+    {
+      "label": "Six substitutions",
+      "passed": true
+    },
+    {
+      "label": "22 active players in tracking",
+      "passed": true
+    },
+    {
+      "label": "Voronoi area = 7140 m2",
+      "passed": true
+    },
+    {
+      "label": "SQL rejected",
+      "passed": true
+    },
+    {
+      "label": "Unregistered tool rejected",
+      "passed": true
+    }
+  ]
+}

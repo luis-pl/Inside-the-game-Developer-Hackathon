@@ -1,0 +1,239 @@
+{
+  "tested_at_utc": "2026-10-23T03:48:35.950925+00:00",
+  "source": "HTTP contracts backed by actual Azure SQL analytics views",
+  "status": "passed",
+  "operations": [
+    {
+      "operation": "describe_dataset",
+      "status_code": 200,
+      "seconds": 0.016
+    },
+    {
+      "operation": "find_entities",
+      "status_code": 200,
+      "seconds": 0.0
+    },
+    {
+      "operation": "list_matches",
+      "status_code": 200,
+      "seconds": 0.0
+    },
+    {
+      "operation": "get_match_context",
+      "status_code": 200,
+      "seconds": 0.015
+    },
+    {
+      "operation": "get_team_summary",
+      "status_code": 200,
+      "seconds": 0.016
+    },
+    {
+      "operation": "get_player_summary",
+      "status_code": 200,
+      "seconds": 0.015
+    },
+    {
+      "operation": "get_shots",
+      "status_code": 200,
+      "seconds": 0.016
+    },
+    {
+      "operation": "get_passes",
+      "status_code": 200,
+      "seconds": 0.031
+    },
+    {
+      "operation": "get_defensive_actions",
+      "status_code": 200,
+      "seconds": 0.032
+    },
+    {
+      "operation": "get_ball_actions",
+      "status_code": 200,
+      "seconds": 0.015
+    },
+    {
+      "operation": "get_discipline",
+      "status_code": 200,
+      "seconds": 0.015
+    },
+    {
+      "operation": "get_substitutions",
+      "status_code": 200,
+      "seconds": 0.032
+    },
+    {
+      "operation": "get_possessions",
+      "status_code": 200,
+      "seconds": 0.031
+    },
+    {
+      "operation": "get_tracking_frame",
+      "status_code": 200,
+      "seconds": 1.016
+    },
+    {
+      "operation": "get_tracking_window",
+      "status_code": 200,
+      "seconds": 1.015
+    },
+    {
+      "operation": "get_event_context",
+      "status_code": 200,
+      "seconds": 1.906
+    },
+    {
+      "operation": "get_heatmap",
+      "status_code": 200,
+      "seconds": 1.11
+    },
+    {
+      "operation": "get_movement_summary",
+      "status_code": 200,
+      "seconds": 1.859
+    },
+    {
+      "operation": "get_metric_series",
+      "status_code": 200,
+      "seconds": 0.016
+    },
+    {
+      "operation": "compare_entities",
+      "status_code": 200,
+      "seconds": 0.015
+    },
+    {
+      "operation": "get_set_piece_sequences",
+      "status_code": 200,
+      "seconds": 0.032
+    },
+    {
+      "operation": "get_events",
+      "status_code": 200,
+      "seconds": 0.015
+    },
+    {
+      "operation": "get_sequences",
+      "status_code": 200,
+      "seconds": 0.157
+    },
+    {
+      "operation": "get_zone_summary",
+      "status_code": 200,
+      "seconds": 2.031
+    },
+    {
+      "operation": "get_rankings",
+      "status_code": 200,
+      "seconds": 0.187
+    },
+    {
+      "operation": "get_team_shape",
+      "status_code": 200,
+      "seconds": 1.047
+    },
+    {
+      "operation": "get_proximity_connectivity",
+      "status_code": 200,
+      "seconds": 1.047
+    },
+    {
+      "operation": "get_space_coverage",
+      "status_code": 200,
+      "seconds": 1.063
+    },
+    {
+      "operation": "get_passing_network",
+      "status_code": 200,
+      "seconds": 0.031
+    },
+    {
+      "operation": "get_pass_corridor",
+      "status_code": 200,
+      "seconds": 0.922
+    },
+    {
+      "operation": "get_line_breaks",
+      "status_code": 200,
+      "seconds": 1.14
+    },
+    {
+      "operation": "get_persistent_structure",
+      "status_code": 200,
+      "seconds": 1.032
+    },
+    {
+      "operation": "get_node_removal_robustness",
+      "status_code": 200,
+      "seconds": 1.078
+    },
+    {
+      "operation": "get_defensive_profile",
+      "status_code": 200,
+      "seconds": 1.375
+    }
+  ],
+  "checks": [
+    {
+      "name": "34 operations return HTTP 200",
+      "passed": true
+    },
+    {
+      "name": "Known home on-target total = 6",
+      "passed": true
+    },
+    {
+      "name": "Known total shots = 23",
+      "passed": true
+    },
+    {
+      "name": "Nine aerial contests are not doubled",
+      "passed": true
+    },
+    {
+      "name": "Six substitutions",
+      "passed": true
+    },
+    {
+      "name": "Frame has 22 active players",
+      "passed": true
+    },
+    {
+      "name": "Team minutes = 11 x 90",
+      "passed": true
+    },
+    {
+      "name": "Voronoi partitions 7140 square metres",
+      "passed": true
+    },
+    {
+      "name": "SQL request field rejected",
+      "passed": true
+    },
+    {
+      "name": "Comparison of two periods",
+      "passed": true
+    },
+    {
+      "name": "PPDA has opponent passes and defensive denominator",
+      "passed": true
+    },
+    {
+      "name": "Defensive profile has actual opponent-action anchors",
+      "passed": true
+    },
+    {
+      "name": "Known pressure count = 249",
+      "passed": true
+    },
+    {
+      "name": "Known pass count = 576",
+      "passed": true
+    },
+    {
+      "name": "Known dribble count = 77",
+      "passed": true
+    }
+  ]
+}

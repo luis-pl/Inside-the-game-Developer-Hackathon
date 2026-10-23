@@ -22,7 +22,7 @@ BEGIN
  -- The following assumptions describe this controlled synthetic scenario,
  -- rather than imposing its simplified rules on future real-data imports.
  IF EXISTS(SELECT 1 FROM statsbomb.matches WHERE match_id=@match_id
-   AND JSON_VALUE(raw_payload,'$.generator')='inside-game-demo' AND JSON_VALUE(raw_payload,'$.version')='2.0.0')
+   AND JSON_VALUE(raw_payload,'$.generator')='inside-game-demo' AND JSON_VALUE(raw_payload,'$.version') IN('2.0.0','3.0.0'))
  BEGIN
   IF EXISTS(SELECT 1 FROM statsbomb.matches m JOIN statsbomb.match_teams mt ON mt.match_id=m.match_id
     OUTER APPLY(SELECT COUNT(*) n FROM statsbomb.event_shots s WHERE s.match_id=m.match_id AND s.team_id=mt.team_id AND JSON_VALUE(s.outcome,'$.id')='97') g
@@ -37,6 +37,18 @@ BEGIN
     OUTER APPLY(SELECT COUNT(*) n FROM statsbomb.tracking_player_positions p WHERE p.run_id=f.run_id AND p.period=f.period AND p.frame_index=f.frame_index AND p.is_on_pitch=1 AND p.position_status='available') p
     WHERE f.match_id=@match_id AND (p.n<>22 OR NOT EXISTS(SELECT 1 FROM statsbomb.tracking_ball_positions b WHERE b.run_id=f.run_id AND b.period=f.period AND b.frame_index=f.frame_index AND b.position_status='available')))
     THROW 51026,'Synthetic tracking requires 22 active players and an available ball for every frame.',1;
+ END;
+ IF EXISTS(SELECT 1 FROM statsbomb.matches WHERE match_id=@match_id AND JSON_VALUE(raw_payload,'$.generator')='inside-game-demo' AND JSON_VALUE(raw_payload,'$.version')='3.0.0')
+ BEGIN
+  IF EXISTS(SELECT v.id FROM (VALUES(2),(3),(4),(6),(9),(10),(14),(16),(17),(19),(21),(22),(23),(30),(33),(35),(36),(38),(39),(42),(43)) v(id)
+    WHERE NOT EXISTS(SELECT 1 FROM statsbomb.events e WHERE e.match_id=@match_id AND e.type_id=v.id))
+    THROW 51027,'Synthetic analytic coverage is incomplete: required event family missing.',1;
+  IF (SELECT COUNT(*) FROM statsbomb.events WHERE match_id=@match_id AND type_id=19)<>6
+    THROW 51028,'Synthetic scenario requires three substitutions per team.',1;
+  IF EXISTS(SELECT 1 FROM statsbomb.events e JOIN statsbomb.event_tracking_links l ON l.event_id=e.event_id
+    LEFT JOIN statsbomb.tracking_player_positions p ON p.run_id=l.run_id AND p.period=l.period AND p.frame_index=l.frame_index AND p.player_id=e.player_id
+    WHERE e.match_id=@match_id AND e.player_id IS NOT NULL AND (p.player_id IS NULL OR p.is_on_pitch=0))
+    THROW 51029,'Synthetic event actor must be active at its linked tracking frame.',1;
  END;
 END;
 GO

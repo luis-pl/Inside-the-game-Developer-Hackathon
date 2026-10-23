@@ -12,10 +12,11 @@
   "tables": 30,
   "foreignKeys": 43,
   "matches": 10,
-  "syntheticVersion": "2.0.0",
-  "qualityStatus": "passed",
+  "syntheticVersion": "3.0.0",
+  "qualityStatus": "passed-coverage-and-coherence",
   "auditedMatches": 10,
   "integrityTests": 31,
-  "auditorNegativeTests": 16,
-  "qualityAuditedAt": "2026-10-22T02:12:07.062Z"
+  "auditorNegativeTests": 30,
+  "qualityAuditedAt": "2026-10-23T01:21:13.917Z",
+  "coverageChecks": 43
 }

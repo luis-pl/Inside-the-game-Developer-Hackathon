@@ -1,0 +1,5535 @@
+{
+  "observedAt": "2026-10-23T01:21:13.800Z",
+  "status": "passed",
+  "source": "Azure SQL, analytics views and metadata; SELECT only",
+  "sections": {
+    "tableCounts": [
+      {
+        "table_name": "countries",
+        "row_count": "1"
+      },
+      {
+        "table_name": "competitions",
+        "row_count": "1"
+      },
+      {
+        "table_name": "seasons",
+        "row_count": "1"
+      },
+      {
+        "table_name": "competition_seasons",
+        "row_count": "1"
+      },
+      {
+        "table_name": "teams",
+        "row_count": "4"
+      },
+      {
+        "table_name": "players",
+        "row_count": "56"
+      },
+      {
+        "table_name": "managers",
+        "row_count": "4"
+      },
+      {
+        "table_name": "stadiums",
+        "row_count": "4"
+      },
+      {
+        "table_name": "referees",
+        "row_count": "2"
+      },
+      {
+        "table_name": "matches",
+        "row_count": "10"
+      },
+      {
+        "table_name": "match_teams",
+        "row_count": "20"
+      },
+      {
+        "table_name": "match_team_managers",
+        "row_count": "20"
+      },
+      {
+        "table_name": "match_lineups",
+        "row_count": "280"
+      },
+      {
+        "table_name": "lineup_cards",
+        "row_count": "39"
+      },
+      {
+        "table_name": "lineup_positions",
+        "row_count": "280"
+      },
+      {
+        "table_name": "events",
+        "row_count": "25012"
+      },
+      {
+        "table_name": "event_relations",
+        "row_count": "7076"
+      },
+      {
+        "table_name": "event_passes",
+        "row_count": "5752"
+      },
+      {
+        "table_name": "event_shots",
+        "row_count": "209"
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "row_count": "4598"
+      },
+      {
+        "table_name": "event_tactics",
+        "row_count": "100"
+      },
+      {
+        "table_name": "tactical_lineups",
+        "row_count": "1100"
+      },
+      {
+        "table_name": "frames_360",
+        "row_count": "209"
+      },
+      {
+        "table_name": "frame_360_players",
+        "row_count": "4598"
+      },
+      {
+        "table_name": "tracking_runs",
+        "row_count": "10"
+      },
+      {
+        "table_name": "tracking_periods",
+        "row_count": "20"
+      },
+      {
+        "table_name": "tracking_frames",
+        "row_count": "54020"
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "row_count": "1188440"
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "row_count": "54020"
+      },
+      {
+        "table_name": "event_tracking_links",
+        "row_count": "25012"
+      }
+    ],
+    "columns": [
+      {
+        "table_name": "competition_seasons",
+        "column_name": "competition_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "competition_seasons",
+        "column_name": "season_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "competition_seasons",
+        "column_name": "match_updated",
+        "data_type": "datetime2",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competition_seasons",
+        "column_name": "match_available",
+        "data_type": "datetime2",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competition_seasons",
+        "column_name": "match_updated_360",
+        "data_type": "datetime2",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competition_seasons",
+        "column_name": "match_available_360",
+        "data_type": "datetime2",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competition_seasons",
+        "column_name": "raw_payload",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "competitions",
+        "column_name": "competition_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "competitions",
+        "column_name": "competition_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "competitions",
+        "column_name": "competition_gender",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competitions",
+        "column_name": "competition_youth",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competitions",
+        "column_name": "competition_international",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "competitions",
+        "column_name": "country_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "countries",
+        "column_name": "country_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "countries",
+        "column_name": "name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "event_type_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "recipient_player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "length",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "angle",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "height",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "end_x",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "end_y",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "body_part",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "pass_type",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "outcome",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "technique",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "shot_assist",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "goal_assist",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "cross",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "cut_back",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "switch",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "backheel",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "deflected",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "miscommunication",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "aerial_won",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "through_ball",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "inswinging",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_passes",
+        "column_name": "outswinging",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_relations",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_relations",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_relations",
+        "column_name": "related_event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "event_type_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "statsbomb_xg",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "end_x",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "end_y",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "end_z",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "key_pass_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "shot_type",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "outcome",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "technique",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "body_part",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "aerial_won",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "follows_dribble",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "first_time",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "open_goal",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_shots",
+        "column_name": "deflected",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tactics",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tactics",
+        "column_name": "event_type_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tactics",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tactics",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tactics",
+        "column_name": "formation",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tracking_links",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tracking_links",
+        "column_name": "run_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tracking_links",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tracking_links",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tracking_links",
+        "column_name": "frame_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "event_tracking_links",
+        "column_name": "alignment_method",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "event_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "timestamp",
+        "data_type": "nvarchar",
+        "max_length": 64,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "minute",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "second",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "type_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "type_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "possession",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "possession_team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "play_pattern_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "play_pattern_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "position_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "position_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "location_x",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "location_y",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "duration",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "under_pressure",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "counterpress",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "off_camera",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "out",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "details",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "raw_payload",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "events",
+        "column_name": "period_time_ms",
+        "data_type": "bigint",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": true
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "frame_player_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "location_x",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "location_y",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "teammate",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "actor",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "frame_360_players",
+        "column_name": "keeper",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "frames_360",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "frames_360",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "frames_360",
+        "column_name": "visible_area",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "frames_360",
+        "column_name": "raw_payload",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "card_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "time",
+        "data_type": "nvarchar",
+        "max_length": 64,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "card_type",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "reason",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_cards",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "position_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "position_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "position",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "from_time",
+        "data_type": "nvarchar",
+        "max_length": 64,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "to_time",
+        "data_type": "nvarchar",
+        "max_length": 64,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "from_period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "to_period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "start_reason",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "lineup_positions",
+        "column_name": "end_reason",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "managers",
+        "column_name": "manager_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "managers",
+        "column_name": "name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "managers",
+        "column_name": "nickname",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "managers",
+        "column_name": "dob",
+        "data_type": "date",
+        "max_length": 3,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "managers",
+        "column_name": "country_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_lineups",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_lineups",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_lineups",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_lineups",
+        "column_name": "jersey_number",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_lineups",
+        "column_name": "raw_payload",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_team_managers",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_team_managers",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_team_managers",
+        "column_name": "manager_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_team_managers",
+        "column_name": "manager_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_teams",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_teams",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_teams",
+        "column_name": "side",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_teams",
+        "column_name": "team_group",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "match_teams",
+        "column_name": "lineup_raw_payload",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "competition_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "season_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "match_date",
+        "data_type": "date",
+        "max_length": 3,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "kick_off",
+        "data_type": "time",
+        "max_length": 5,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "home_score",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "away_score",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "match_week",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "competition_stage_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "competition_stage_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "stadium_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "referee_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "match_status",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "match_status_360",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "last_updated",
+        "data_type": "datetime2",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "last_updated_360",
+        "data_type": "datetime2",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "data_version",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "shot_fidelity_version",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "xy_fidelity_version",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "raw_payload",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "matches",
+        "column_name": "data_status",
+        "data_type": "nvarchar",
+        "max_length": 32,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "players",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "players",
+        "column_name": "player_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "players",
+        "column_name": "player_nickname",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "players",
+        "column_name": "country_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "referees",
+        "column_name": "referee_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "referees",
+        "column_name": "name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "referees",
+        "column_name": "country_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "seasons",
+        "column_name": "season_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "seasons",
+        "column_name": "season_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "shot_team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "frame_player_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "position_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "position_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "location_x",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "location_y",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "shot_freeze_players",
+        "column_name": "teammate",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "stadiums",
+        "column_name": "stadium_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "stadiums",
+        "column_name": "name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "stadiums",
+        "column_name": "country_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "event_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "position_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "position_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tactical_lineups",
+        "column_name": "jersey_number",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "teams",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "teams",
+        "column_name": "team_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "teams",
+        "column_name": "gender",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "teams",
+        "column_name": "country_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "run_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "frame_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "x_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "y_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "z_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "position_status",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "sample_method",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_ball_positions",
+        "column_name": "confidence",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_frames",
+        "column_name": "run_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_frames",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_frames",
+        "column_name": "frame_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_frames",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_frames",
+        "column_name": "period_time_ms",
+        "data_type": "bigint",
+        "max_length": 8,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_frames",
+        "column_name": "ball_in_play",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_periods",
+        "column_name": "run_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_periods",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_periods",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_periods",
+        "column_name": "duration_ms",
+        "data_type": "bigint",
+        "max_length": 8,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_periods",
+        "column_name": "home_attacks_positive_x",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "run_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "period",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "frame_index",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "player_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "team_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "x_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "y_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "is_on_pitch",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "position_status",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "sample_method",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "confidence",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_player_positions",
+        "column_name": "on_pitch_slot",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "run_id",
+        "data_type": "uniqueidentifier",
+        "max_length": 16,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "match_id",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "label",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "seed",
+        "data_type": "bigint",
+        "max_length": 8,
+        "is_nullable": true,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "generator_name",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "generator_version",
+        "data_type": "nvarchar",
+        "max_length": 512,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "config",
+        "data_type": "nvarchar",
+        "max_length": -1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "sample_rate_hz",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "pitch_length_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "pitch_width_m",
+        "data_type": "float",
+        "max_length": 8,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "is_synthetic",
+        "data_type": "bit",
+        "max_length": 1,
+        "is_nullable": false,
+        "is_computed": false
+      },
+      {
+        "table_name": "tracking_runs",
+        "column_name": "max_event_offset_ms",
+        "data_type": "int",
+        "max_length": 4,
+        "is_nullable": false,
+        "is_computed": false
+      }
+    ],
+    "eventTypes": [
+      {
+        "type_id": 2,
+        "type_name": "Ball Recovery",
+        "events": 639,
+        "matches": 10,
+        "players": 54,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 3,
+        "type_name": "Dispossessed",
+        "events": 119,
+        "matches": 10,
+        "players": 45,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 4,
+        "type_name": "Duel",
+        "events": 471,
+        "matches": 10,
+        "players": 50,
+        "min_duration": 0,
+        "max_duration": 2
+      },
+      {
+        "type_id": 6,
+        "type_name": "Block",
+        "events": 68,
+        "matches": 10,
+        "players": 15,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 9,
+        "type_name": "Clearance",
+        "events": 125,
+        "matches": 10,
+        "players": 44,
+        "min_duration": 2,
+        "max_duration": 6
+      },
+      {
+        "type_id": 10,
+        "type_name": "Interception",
+        "events": 104,
+        "matches": 10,
+        "players": 41,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 14,
+        "type_name": "Dribble",
+        "events": 852,
+        "matches": 10,
+        "players": 54,
+        "min_duration": 0,
+        "max_duration": 2
+      },
+      {
+        "type_id": 16,
+        "type_name": "Shot",
+        "events": 209,
+        "matches": 10,
+        "players": 19,
+        "min_duration": 1,
+        "max_duration": 2
+      },
+      {
+        "type_id": 17,
+        "type_name": "Pressure",
+        "events": 2504,
+        "matches": 10,
+        "players": 52,
+        "min_duration": 2,
+        "max_duration": 2
+      },
+      {
+        "type_id": 18,
+        "type_name": "Half Start",
+        "events": 20,
+        "matches": 10,
+        "players": 0,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 19,
+        "type_name": "Substitution",
+        "events": 60,
+        "matches": 10,
+        "players": 12,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 21,
+        "type_name": "Foul Won",
+        "events": 195,
+        "matches": 10,
+        "players": 48,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 22,
+        "type_name": "Foul Committed",
+        "events": 195,
+        "matches": 10,
+        "players": 48,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 23,
+        "type_name": "Goal Keeper",
+        "events": 72,
+        "matches": 10,
+        "players": 4,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 30,
+        "type_name": "Pass",
+        "events": 5752,
+        "matches": 10,
+        "players": 56,
+        "min_duration": 1,
+        "max_duration": 5
+      },
+      {
+        "type_id": 33,
+        "type_name": "50/50",
+        "events": 204,
+        "matches": 10,
+        "players": 49,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 34,
+        "type_name": "Half End",
+        "events": 20,
+        "matches": 10,
+        "players": 0,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 35,
+        "type_name": "Starting XI",
+        "events": 40,
+        "matches": 10,
+        "players": 0,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 36,
+        "type_name": "Tactical Shift",
+        "events": 60,
+        "matches": 10,
+        "players": 0,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 38,
+        "type_name": "Miscontrol",
+        "events": 103,
+        "matches": 10,
+        "players": 43,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 39,
+        "type_name": "Dribbled Past",
+        "events": 733,
+        "matches": 10,
+        "players": 52,
+        "min_duration": 2,
+        "max_duration": 2
+      },
+      {
+        "type_id": 42,
+        "type_name": "Ball Receipt*",
+        "events": 5421,
+        "matches": 10,
+        "players": 52,
+        "min_duration": 0,
+        "max_duration": 0
+      },
+      {
+        "type_id": 43,
+        "type_name": "Carry",
+        "events": 7046,
+        "matches": 10,
+        "players": 56,
+        "min_duration": 2,
+        "max_duration": 35
+      }
+    ],
+    "matches": [
+      {
+        "match_id": 900001,
+        "match_date": "2026-10-01T00:00:00.000Z",
+        "home_score": 1,
+        "away_score": 2,
+        "generator_version": "3.0.0",
+        "events": 2497,
+        "shots": 23,
+        "total_xg": 1.6903801272059702,
+        "shots_on_target": 10
+      },
+      {
+        "match_id": 900002,
+        "match_date": "2026-10-01T00:00:00.000Z",
+        "home_score": 0,
+        "away_score": 1,
+        "generator_version": "3.0.0",
+        "events": 2518,
+        "shots": 20,
+        "total_xg": 0.9939112392897358,
+        "shots_on_target": 7
+      },
+      {
+        "match_id": 900003,
+        "match_date": "2026-10-05T00:00:00.000Z",
+        "home_score": 1,
+        "away_score": 0,
+        "generator_version": "3.0.0",
+        "events": 2498,
+        "shots": 16,
+        "total_xg": 1.0045377672779898,
+        "shots_on_target": 6
+      },
+      {
+        "match_id": 900004,
+        "match_date": "2026-10-05T00:00:00.000Z",
+        "home_score": 1,
+        "away_score": 0,
+        "generator_version": "3.0.0",
+        "events": 2516,
+        "shots": 25,
+        "total_xg": 1.5564823684376183,
+        "shots_on_target": 13
+      },
+      {
+        "match_id": 900005,
+        "match_date": "2026-10-09T00:00:00.000Z",
+        "home_score": 1,
+        "away_score": 0,
+        "generator_version": "3.0.0",
+        "events": 2510,
+        "shots": 19,
+        "total_xg": 0.8615673903724272,
+        "shots_on_target": 8
+      },
+      {
+        "match_id": 900006,
+        "match_date": "2026-10-09T00:00:00.000Z",
+        "home_score": 1,
+        "away_score": 1,
+        "generator_version": "3.0.0",
+        "events": 2479,
+        "shots": 22,
+        "total_xg": 1.3344499372381675,
+        "shots_on_target": 11
+      },
+      {
+        "match_id": 900007,
+        "match_date": "2026-10-13T00:00:00.000Z",
+        "home_score": 0,
+        "away_score": 0,
+        "generator_version": "3.0.0",
+        "events": 2554,
+        "shots": 11,
+        "total_xg": 0.6444419759732078,
+        "shots_on_target": 3
+      },
+      {
+        "match_id": 900008,
+        "match_date": "2026-10-13T00:00:00.000Z",
+        "home_score": 1,
+        "away_score": 1,
+        "generator_version": "3.0.0",
+        "events": 2472,
+        "shots": 24,
+        "total_xg": 1.5976649441687591,
+        "shots_on_target": 10
+      },
+      {
+        "match_id": 900009,
+        "match_date": "2026-10-17T00:00:00.000Z",
+        "home_score": 3,
+        "away_score": 1,
+        "generator_version": "3.0.0",
+        "events": 2454,
+        "shots": 20,
+        "total_xg": 1.3858130865272271,
+        "shots_on_target": 8
+      },
+      {
+        "match_id": 900010,
+        "match_date": "2026-10-17T00:00:00.000Z",
+        "home_score": 0,
+        "away_score": 1,
+        "generator_version": "3.0.0",
+        "events": 2514,
+        "shots": 29,
+        "total_xg": 2.080104138468211,
+        "shots_on_target": 12
+      }
+    ],
+    "shotOutcomes": [
+      {
+        "outcome_id": "96",
+        "outcome_name": "Blocked",
+        "n": 68,
+        "min_xg": 0.015484220832629082,
+        "max_xg": 0.22628955117004626
+      },
+      {
+        "outcome_id": "97",
+        "outcome_name": "Goal",
+        "n": 16,
+        "min_xg": 0.024241584225741276,
+        "max_xg": 0.2905164329832123
+      },
+      {
+        "outcome_id": "98",
+        "outcome_name": "Off T",
+        "n": 53,
+        "min_xg": 0.017964738407388624,
+        "max_xg": 0.21489087238631277
+      },
+      {
+        "outcome_id": "100",
+        "outcome_name": "Saved",
+        "n": 72,
+        "min_xg": 0.015259690795843715,
+        "max_xg": 0.2673958262578553
+      }
+    ],
+    "shotCoverage": [
+      {
+        "shots": 209,
+        "xg_present": 209,
+        "assisted_shots": 209,
+        "first_time_true": 61,
+        "first_time_present": 209,
+        "open_goal_true": 0,
+        "open_goal_present": 209,
+        "follows_dribble_present": 209,
+        "aerial_won_present": 209,
+        "deflected_present": 209,
+        "shot_types": 1,
+        "body_parts": 3
+      }
+    ],
+    "passOutcomes": [
+      {
+        "outcome_id": "9",
+        "outcome_name": "Incomplete",
+        "n": 331,
+        "known_recipient": 0
+      },
+      {
+        "outcome_id": "complete",
+        "outcome_name": null,
+        "n": 5421,
+        "known_recipient": 5421
+      }
+    ],
+    "passTypes": [
+      {
+        "pass_type": "Regular",
+        "height": "Ground Pass",
+        "body_part": "Left Foot",
+        "n": 961
+      },
+      {
+        "pass_type": "Regular",
+        "height": "Ground Pass",
+        "body_part": "Right Foot",
+        "n": 3082
+      },
+      {
+        "pass_type": "Regular",
+        "height": "High Pass",
+        "body_part": "Left Foot",
+        "n": 186
+      },
+      {
+        "pass_type": "Regular",
+        "height": "High Pass",
+        "body_part": "Right Foot",
+        "n": 609
+      },
+      {
+        "pass_type": "Regular",
+        "height": "Low Pass",
+        "body_part": "Left Foot",
+        "n": 150
+      },
+      {
+        "pass_type": "Regular",
+        "height": "Low Pass",
+        "body_part": "Right Foot",
+        "n": 432
+      },
+      {
+        "pass_type": "Corner",
+        "height": "High Pass",
+        "body_part": "Left Foot",
+        "n": 1
+      },
+      {
+        "pass_type": "Corner",
+        "height": "High Pass",
+        "body_part": "Right Foot",
+        "n": 16
+      },
+      {
+        "pass_type": "Free Kick",
+        "height": "Ground Pass",
+        "body_part": "Left Foot",
+        "n": 41
+      },
+      {
+        "pass_type": "Free Kick",
+        "height": "Ground Pass",
+        "body_part": "Right Foot",
+        "n": 151
+      },
+      {
+        "pass_type": "Free Kick",
+        "height": "High Pass",
+        "body_part": "Right Foot",
+        "n": 3
+      },
+      {
+        "pass_type": "Goal Kick",
+        "height": "Ground Pass",
+        "body_part": "Left Foot",
+        "n": 12
+      },
+      {
+        "pass_type": "Goal Kick",
+        "height": "Ground Pass",
+        "body_part": "Right Foot",
+        "n": 40
+      },
+      {
+        "pass_type": "Kick Off",
+        "height": "Ground Pass",
+        "body_part": "Left Foot",
+        "n": 7
+      },
+      {
+        "pass_type": "Kick Off",
+        "height": "Ground Pass",
+        "body_part": "Right Foot",
+        "n": 29
+      },
+      {
+        "pass_type": "Throw-in",
+        "height": "Low Pass",
+        "body_part": "Other",
+        "n": 32
+      }
+    ],
+    "passCoverage": [
+      {
+        "passes": 5752,
+        "length_present": 5752,
+        "angle_present": 5752,
+        "endpoint_present": 5752,
+        "shot_assists": 209,
+        "goal_assists": 16,
+        "crosses": 171,
+        "cross_present": 5752,
+        "cut_back_present": 5752,
+        "switch_present": 5752,
+        "through_ball_present": 0,
+        "aerial_won_present": 5752,
+        "backheel_present": 5752,
+        "deflected_present": 5752,
+        "technique_present": 0
+      }
+    ],
+    "flags": [
+      {
+        "type_id": 2,
+        "n": 639,
+        "duration_present": 639,
+        "under_pressure_present": 639,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 3,
+        "n": 119,
+        "duration_present": 119,
+        "under_pressure_present": 119,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 4,
+        "n": 471,
+        "duration_present": 471,
+        "under_pressure_present": 471,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 6,
+        "n": 68,
+        "duration_present": 68,
+        "under_pressure_present": 68,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 9,
+        "n": 125,
+        "duration_present": 125,
+        "under_pressure_present": 125,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 10,
+        "n": 104,
+        "duration_present": 104,
+        "under_pressure_present": 104,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 14,
+        "n": 852,
+        "duration_present": 852,
+        "under_pressure_present": 852,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 16,
+        "n": 209,
+        "duration_present": 209,
+        "under_pressure_present": 209,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 17,
+        "n": 2504,
+        "duration_present": 2504,
+        "under_pressure_present": 2504,
+        "under_pressure_true": 0,
+        "counterpress_true": 181,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 18,
+        "n": 20,
+        "duration_present": 20,
+        "under_pressure_present": 20,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 19,
+        "n": 60,
+        "duration_present": 60,
+        "under_pressure_present": 60,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 21,
+        "n": 195,
+        "duration_present": 195,
+        "under_pressure_present": 195,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 22,
+        "n": 195,
+        "duration_present": 195,
+        "under_pressure_present": 195,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 23,
+        "n": 72,
+        "duration_present": 72,
+        "under_pressure_present": 72,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 30,
+        "n": 5752,
+        "duration_present": 5752,
+        "under_pressure_present": 5752,
+        "under_pressure_true": 2504,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 33,
+        "n": 204,
+        "duration_present": 204,
+        "under_pressure_present": 204,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 34,
+        "n": 20,
+        "duration_present": 20,
+        "under_pressure_present": 20,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 35,
+        "n": 40,
+        "duration_present": 40,
+        "under_pressure_present": 40,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 36,
+        "n": 60,
+        "duration_present": 60,
+        "under_pressure_present": 60,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 38,
+        "n": 103,
+        "duration_present": 103,
+        "under_pressure_present": 103,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 39,
+        "n": 733,
+        "duration_present": 733,
+        "under_pressure_present": 733,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 42,
+        "n": 5421,
+        "duration_present": 5421,
+        "under_pressure_present": 5421,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      },
+      {
+        "type_id": 43,
+        "n": 7046,
+        "duration_present": 7046,
+        "under_pressure_present": 7046,
+        "under_pressure_true": 0,
+        "counterpress_true": 0,
+        "off_camera_present": 0,
+        "out_present": 0
+      }
+    ],
+    "detailKeys": [
+      {
+        "type_id": 2,
+        "detail_key": "ball_recovery",
+        "n": 639
+      },
+      {
+        "type_id": 4,
+        "detail_key": "duel",
+        "n": 471
+      },
+      {
+        "type_id": 6,
+        "detail_key": "block",
+        "n": 68
+      },
+      {
+        "type_id": 9,
+        "detail_key": "clearance",
+        "n": 125
+      },
+      {
+        "type_id": 10,
+        "detail_key": "interception",
+        "n": 104
+      },
+      {
+        "type_id": 14,
+        "detail_key": "dribble",
+        "n": 852
+      },
+      {
+        "type_id": 19,
+        "detail_key": "substitution",
+        "n": 60
+      },
+      {
+        "type_id": 21,
+        "detail_key": "foul_won",
+        "n": 195
+      },
+      {
+        "type_id": 22,
+        "detail_key": "foul_committed",
+        "n": 195
+      },
+      {
+        "type_id": 23,
+        "detail_key": "goalkeeper",
+        "n": 72
+      },
+      {
+        "type_id": 33,
+        "detail_key": "50_50",
+        "n": 204
+      },
+      {
+        "type_id": 38,
+        "detail_key": "miscontrol",
+        "n": 103
+      },
+      {
+        "type_id": 42,
+        "detail_key": "ball_receipt",
+        "n": 5421
+      },
+      {
+        "type_id": 43,
+        "detail_key": "carry",
+        "n": 7046
+      }
+    ],
+    "defensiveOutcomes": [
+      {
+        "type_id": 4,
+        "outcome": null,
+        "n": 125
+      },
+      {
+        "type_id": 33,
+        "outcome": "Lost",
+        "n": 102
+      },
+      {
+        "type_id": 4,
+        "outcome": "Lost In Play",
+        "n": 227
+      },
+      {
+        "type_id": 10,
+        "outcome": "Success In Play",
+        "n": 104
+      },
+      {
+        "type_id": 33,
+        "outcome": "Success To Team",
+        "n": 102
+      },
+      {
+        "type_id": 4,
+        "outcome": "Won",
+        "n": 119
+      }
+    ],
+    "possessions": [
+      {
+        "match_id": 900007,
+        "possessions": 78,
+        "min_id": 1,
+        "max_id": 78,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900001,
+        "possessions": 74,
+        "min_id": 1,
+        "max_id": 74,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900010,
+        "possessions": 80,
+        "min_id": 1,
+        "max_id": 80,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900004,
+        "possessions": 80,
+        "min_id": 1,
+        "max_id": 80,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900005,
+        "possessions": 76,
+        "min_id": 1,
+        "max_id": 76,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900002,
+        "possessions": 83,
+        "min_id": 1,
+        "max_id": 83,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900008,
+        "possessions": 80,
+        "min_id": 1,
+        "max_id": 80,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900009,
+        "possessions": 77,
+        "min_id": 1,
+        "max_id": 77,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900003,
+        "possessions": 75,
+        "min_id": 1,
+        "max_id": 75,
+        "without_possession": 20
+      },
+      {
+        "match_id": 900006,
+        "possessions": 79,
+        "min_id": 1,
+        "max_id": 79,
+        "without_possession": 20
+      }
+    ],
+    "sameTimePossessions": [
+      {
+        "ambiguous_same_time": 206
+      }
+    ],
+    "tracking": [
+      {
+        "match_id": 900001,
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900001,
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900002,
+        "run_id": "D8BB0C06-3F13-85C3-8E97-DC4A4A560BF1",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900002,
+        "run_id": "D8BB0C06-3F13-85C3-8E97-DC4A4A560BF1",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900003,
+        "run_id": "259DD648-2CB4-8F26-8056-2BF550C97F61",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900003,
+        "run_id": "259DD648-2CB4-8F26-8056-2BF550C97F61",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900004,
+        "run_id": "419594DE-30E8-8449-8682-A4F1951446BC",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900004,
+        "run_id": "419594DE-30E8-8449-8682-A4F1951446BC",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900005,
+        "run_id": "A89C0F81-0BFF-8E00-885D-95AA1701E399",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900005,
+        "run_id": "A89C0F81-0BFF-8E00-885D-95AA1701E399",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900006,
+        "run_id": "B88CC996-8587-8698-856B-471315F24479",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900006,
+        "run_id": "B88CC996-8587-8698-856B-471315F24479",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900007,
+        "run_id": "0652D2AE-6AB7-8879-8785-3255D8905A0F",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900007,
+        "run_id": "0652D2AE-6AB7-8879-8785-3255D8905A0F",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900008,
+        "run_id": "3D37F8CE-04B4-8117-8134-E21838E7FBA8",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900008,
+        "run_id": "3D37F8CE-04B4-8117-8134-E21838E7FBA8",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900009,
+        "run_id": "BE488DB0-6530-88B6-8035-C6D16BA58191",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900009,
+        "run_id": "BE488DB0-6530-88B6-8035-C6D16BA58191",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      },
+      {
+        "match_id": 900010,
+        "run_id": "DB56E470-4F60-8D4D-8DD3-24C3D8BAE2B4",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 1,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": true
+      },
+      {
+        "match_id": 900010,
+        "run_id": "DB56E470-4F60-8D4D-8DD3-24C3D8BAE2B4",
+        "sample_rate_hz": 1,
+        "pitch_length_m": 105,
+        "pitch_width_m": 68,
+        "generator_version": "3.0.0",
+        "max_event_offset_ms": 0,
+        "period": 2,
+        "duration_ms": "2700000",
+        "home_attacks_positive_x": false
+      }
+    ],
+    "trackingCoverage": [
+      {
+        "position_status": "available",
+        "sample_method": "generated",
+        "is_on_pitch": true,
+        "rows": "1188440",
+        "min_confidence": 1,
+        "max_confidence": 1,
+        "min_x": 0.2,
+        "max_x": 104.8,
+        "min_y": 0.2,
+        "max_y": 67.8
+      }
+    ],
+    "rosterCoverage": [
+      {
+        "team_id": 1,
+        "registered_players": 14,
+        "players_with_tracking": 14
+      },
+      {
+        "team_id": 2,
+        "registered_players": 14,
+        "players_with_tracking": 14
+      },
+      {
+        "team_id": 3,
+        "registered_players": 14,
+        "players_with_tracking": 14
+      },
+      {
+        "team_id": 4,
+        "registered_players": 14,
+        "players_with_tracking": 14
+      }
+    ],
+    "gameTime": [
+      {
+        "live_seconds": 49436,
+        "dead_seconds": 4564,
+        "sampled_seconds": 54000
+      }
+    ],
+    "frames360": [
+      {
+        "frames": 209,
+        "min_players": 22,
+        "max_players": 22,
+        "event_types": 1
+      }
+    ],
+    "tactics": [
+      {
+        "type_id": 35,
+        "formation": 433,
+        "n": 40
+      },
+      {
+        "type_id": 36,
+        "formation": 433,
+        "n": 60
+      }
+    ],
+    "discipline": [
+      {
+        "card_type": "Yellow Card",
+        "n": 39
+      }
+    ],
+    "spatialProof": [
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 101,
+        "x_m": 4.656442546927796,
+        "y_m": 35.051439592286776,
+        "on_pitch_slot": 1,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 102,
+        "x_m": 26.443482179716728,
+        "y_m": 9.48232913273864,
+        "on_pitch_slot": 2,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 103,
+        "x_m": 30.774615839499546,
+        "y_m": 21.861958413062904,
+        "on_pitch_slot": 3,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 104,
+        "x_m": 29.699121141420548,
+        "y_m": 35.241404905668645,
+        "on_pitch_slot": 4,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 105,
+        "x_m": 28.274422713529034,
+        "y_m": 51.618868366274654,
+        "on_pitch_slot": 5,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 106,
+        "x_m": 53.66692840690213,
+        "y_m": 15.487044619283902,
+        "on_pitch_slot": 6,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 107,
+        "x_m": 44.51608097610419,
+        "y_m": 36.30142100905701,
+        "on_pitch_slot": 7,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 108,
+        "x_m": 43.647662585180996,
+        "y_m": 56.00357528846099,
+        "on_pitch_slot": 8,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 109,
+        "x_m": 72.23639804410625,
+        "y_m": 18.804344227758065,
+        "on_pitch_slot": 9,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 110,
+        "x_m": 75.9952552968895,
+        "y_m": 37.632007209773796,
+        "on_pitch_slot": 10,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 1,
+        "position_player": 111,
+        "x_m": 77.29926353661189,
+        "y_m": 55.74295060905464,
+        "on_pitch_slot": 11,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 201,
+        "x_m": 98.84626355380753,
+        "y_m": 32.94177869473099,
+        "on_pitch_slot": 1,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 202,
+        "x_m": 72.07358059953017,
+        "y_m": 65.17371107320243,
+        "on_pitch_slot": 2,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 203,
+        "x_m": 69.81350765685256,
+        "y_m": 48.72856323019795,
+        "on_pitch_slot": 3,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 204,
+        "x_m": 71.89667406821246,
+        "y_m": 30.0316605947449,
+        "on_pitch_slot": 4,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 205,
+        "x_m": 77.57593158786624,
+        "y_m": 8.386352153777565,
+        "on_pitch_slot": 5,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 206,
+        "x_m": 59.82179427928176,
+        "y_m": 45.037605141537526,
+        "on_pitch_slot": 6,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 207,
+        "x_m": 67.29276004899367,
+        "y_m": 27.087065697683926,
+        "on_pitch_slot": 7,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 208,
+        "x_m": 63.458148249386994,
+        "y_m": 12.477383206255368,
+        "on_pitch_slot": 8,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 209,
+        "x_m": 29.331208301144954,
+        "y_m": 54.53665023815434,
+        "on_pitch_slot": 9,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 210,
+        "x_m": 21.458505146457995,
+        "y_m": 37.303119452497555,
+        "on_pitch_slot": 10,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      },
+      {
+        "event_id": "79D9ABAC-0825-8B99-8274-48B3797510E1",
+        "match_id": 900001,
+        "team_id": 2,
+        "player_id": 209,
+        "period": 1,
+        "period_time_ms": "100000",
+        "run_id": "BCFD4A43-5F9E-872B-82CF-9DBDD7FDC0B0",
+        "frame_index": 100,
+        "position_team": 2,
+        "position_player": 211,
+        "x_m": 20.17090163780827,
+        "y_m": 18.473269491079236,
+        "on_pitch_slot": 11,
+        "ball_x_m": 29.331208301144954,
+        "ball_y_m": 54.53665023815434,
+        "ball_z_m": 0,
+        "home_attacks_positive_x": true
+      }
+    ],
+    "graphProof": [
+      {
+        "team_id": 1,
+        "source_player": 101,
+        "target_player": 103,
+        "passes": 1,
+        "mean_start_x": 2.5134461658494613,
+        "mean_start_y": 38.09053353159423
+      },
+      {
+        "team_id": 1,
+        "source_player": 101,
+        "target_player": 107,
+        "passes": 1,
+        "mean_start_x": 6.329210186296223,
+        "mean_start_y": 37.95887029985048
+      },
+      {
+        "team_id": 1,
+        "source_player": 101,
+        "target_player": 108,
+        "passes": 1,
+        "mean_start_x": 2.967092714517595,
+        "mean_start_y": 41.61261982672393
+      },
+      {
+        "team_id": 1,
+        "source_player": 101,
+        "target_player": 110,
+        "passes": 1,
+        "mean_start_x": 7.465604227373092,
+        "mean_start_y": 39.35167113404902
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 103,
+        "passes": 6,
+        "mean_start_x": 31.572147634966623,
+        "mean_start_y": 9.86131077753655
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 104,
+        "passes": 3,
+        "mean_start_x": 34.16890379374478,
+        "mean_start_y": 13.285791518088004
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 105,
+        "passes": 2,
+        "mean_start_x": 38.58966098353983,
+        "mean_start_y": 47.87023879728605
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 107,
+        "passes": 2,
+        "mean_start_x": 30.004468161796517,
+        "mean_start_y": 7.385004363426399
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 108,
+        "passes": 5,
+        "mean_start_x": 34.74151919676696,
+        "mean_start_y": 17.792538485725053
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 109,
+        "passes": 3,
+        "mean_start_x": 33.36761941436802,
+        "mean_start_y": 7.569146845282787
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 110,
+        "passes": 3,
+        "mean_start_x": 27.42579579048829,
+        "mean_start_y": 8.820722800587335
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 111,
+        "passes": 4,
+        "mean_start_x": 30.811724836924306,
+        "mean_start_y": 9.91777853103358
+      },
+      {
+        "team_id": 1,
+        "source_player": 102,
+        "target_player": 114,
+        "passes": 1,
+        "mean_start_x": 28.209940305936712,
+        "mean_start_y": 5.813803841082892
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 102,
+        "passes": 3,
+        "mean_start_x": 38.47149499052478,
+        "mean_start_y": 29.798489257659515
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 104,
+        "passes": 6,
+        "mean_start_x": 34.110906072780296,
+        "mean_start_y": 30.0655899388013
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 105,
+        "passes": 1,
+        "mean_start_x": 31.960671727651295,
+        "mean_start_y": 29.541235341839155
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 107,
+        "passes": 3,
+        "mean_start_x": 35.68009060531608,
+        "mean_start_y": 31.73434983977492
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 108,
+        "passes": 4,
+        "mean_start_x": 31.526491223705996,
+        "mean_start_y": 27.287611853404794
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 109,
+        "passes": 1,
+        "mean_start_x": 25.562217528188903,
+        "mean_start_y": 27.26873143570279
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 110,
+        "passes": 2,
+        "mean_start_x": 36.2926093292306,
+        "mean_start_y": 23.432452348285914
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 111,
+        "passes": 3,
+        "mean_start_x": 28.115286190511352,
+        "mean_start_y": 38.302818571989285
+      },
+      {
+        "team_id": 1,
+        "source_player": 103,
+        "target_player": 113,
+        "passes": 1,
+        "mean_start_x": 42.03763996649621,
+        "mean_start_y": 31.48524270192658
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 102,
+        "passes": 3,
+        "mean_start_x": 29.350592626478093,
+        "mean_start_y": 48.88521635851718
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 103,
+        "passes": 2,
+        "mean_start_x": 28.753026378316488,
+        "mean_start_y": 52.99500498937847
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 105,
+        "passes": 5,
+        "mean_start_x": 32.1991730220737,
+        "mean_start_y": 50.38288454808141
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 106,
+        "passes": 2,
+        "mean_start_x": 34.531656997160304,
+        "mean_start_y": 49.023644718619906
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 107,
+        "passes": 1,
+        "mean_start_x": 42.03258847374079,
+        "mean_start_y": 49.01485888061316
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 108,
+        "passes": 1,
+        "mean_start_x": 37.70514638767403,
+        "mean_start_y": 45.69154978890731
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 109,
+        "passes": 1,
+        "mean_start_x": 37.62641960510742,
+        "mean_start_y": 45.71756170670848
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 110,
+        "passes": 3,
+        "mean_start_x": 25.472532280170608,
+        "mean_start_y": 44.08186588040897
+      },
+      {
+        "team_id": 1,
+        "source_player": 104,
+        "target_player": 111,
+        "passes": 3,
+        "mean_start_x": 36.835055767648704,
+        "mean_start_y": 48.33206008551401
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 102,
+        "passes": 2,
+        "mean_start_x": 37.43137059428622,
+        "mean_start_y": 68.13296843902063
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 103,
+        "passes": 3,
+        "mean_start_x": 27.82147989030139,
+        "mean_start_y": 69.51500624894344
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 104,
+        "passes": 1,
+        "mean_start_x": 23.46413141265772,
+        "mean_start_y": 70.99404586348862
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 106,
+        "passes": 6,
+        "mean_start_x": 34.83103392921486,
+        "mean_start_y": 71.17887294433558
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 108,
+        "passes": 2,
+        "mean_start_x": 25.101895711826913,
+        "mean_start_y": 70.55313336283311
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 109,
+        "passes": 1,
+        "mean_start_x": 39.74987223530374,
+        "mean_start_y": 76.95318080101048
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 110,
+        "passes": 4,
+        "mean_start_x": 30.242869902630783,
+        "mean_start_y": 67.15121238352592
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 111,
+        "passes": 2,
+        "mean_start_x": 38.95897262803004,
+        "mean_start_y": 69.26316127748366
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 112,
+        "passes": 6,
+        "mean_start_x": 32.265890811413264,
+        "mean_start_y": 70.00078850206559
+      },
+      {
+        "team_id": 1,
+        "source_player": 105,
+        "target_player": 113,
+        "passes": 1,
+        "mean_start_x": 28.514840971602194,
+        "mean_start_y": 72.41431397191221
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 102,
+        "passes": 2,
+        "mean_start_x": 58.217035765085676,
+        "mean_start_y": 24.765990242562022
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 104,
+        "passes": 1,
+        "mean_start_x": 54.936153362235586,
+        "mean_start_y": 26.98363694997885
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 105,
+        "passes": 1,
+        "mean_start_x": 59.10914621676085,
+        "mean_start_y": 18.91780980955084
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 107,
+        "passes": 3,
+        "mean_start_x": 58.42691214905586,
+        "mean_start_y": 21.749355416480814
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 108,
+        "passes": 2,
+        "mean_start_x": 62.46370457547863,
+        "mean_start_y": 21.355130504897673
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 109,
+        "passes": 4,
+        "mean_start_x": 62.165561430594124,
+        "mean_start_y": 21.283851825276876
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 110,
+        "passes": 1,
+        "mean_start_x": 57.43489603427368,
+        "mean_start_y": 22.39261800321779
+      },
+      {
+        "team_id": 1,
+        "source_player": 106,
+        "target_player": 111,
+        "passes": 5,
+        "mean_start_x": 59.993626844151684,
+        "mean_start_y": 19.759387600609962
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 102,
+        "passes": 5,
+        "mean_start_x": 60.110020462351066,
+        "mean_start_y": 37.70556043050302
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 103,
+        "passes": 1,
+        "mean_start_x": 48.110659646897815,
+        "mean_start_y": 37.35824325936756
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 104,
+        "passes": 3,
+        "mean_start_x": 51.82382832145081,
+        "mean_start_y": 40.3889010653512
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 105,
+        "passes": 1,
+        "mean_start_x": 61.35082512209927,
+        "mean_start_y": 35.32106240732975
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 106,
+        "passes": 1,
+        "mean_start_x": 43.55037582250591,
+        "mean_start_y": 43.37433676554596
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 108,
+        "passes": 5,
+        "mean_start_x": 57.74544280890052,
+        "mean_start_y": 38.45160688681744
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 109,
+        "passes": 1,
+        "mean_start_x": 48.96385224762248,
+        "mean_start_y": 43.183647538493666
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 110,
+        "passes": 5,
+        "mean_start_x": 51.02212573580679,
+        "mean_start_y": 41.30341890319353
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 112,
+        "passes": 1,
+        "mean_start_x": 48.74868835035937,
+        "mean_start_y": 43.73748580506546
+      },
+      {
+        "team_id": 1,
+        "source_player": 107,
+        "target_player": 113,
+        "passes": 1,
+        "mean_start_x": 51.63055874581156,
+        "mean_start_y": 32.951182905599936
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 102,
+        "passes": 5,
+        "mean_start_x": 60.51813562486966,
+        "mean_start_y": 55.14706370883533
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 103,
+        "passes": 2,
+        "mean_start_x": 50.164724721820264,
+        "mean_start_y": 58.96102473747852
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 104,
+        "passes": 3,
+        "mean_start_x": 58.40726230189885,
+        "mean_start_y": 54.80419692067709
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 105,
+        "passes": 3,
+        "mean_start_x": 60.67229081282776,
+        "mean_start_y": 61.36922587581024
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 106,
+        "passes": 1,
+        "mean_start_x": 68.61081031552347,
+        "mean_start_y": 60.56637572633675
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 107,
+        "passes": 3,
+        "mean_start_x": 53.02792163194954,
+        "mean_start_y": 63.20258444931418
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 109,
+        "passes": 10,
+        "mean_start_x": 57.773133707287045,
+        "mean_start_y": 58.19325639323589
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 110,
+        "passes": 4,
+        "mean_start_x": 61.5249431070998,
+        "mean_start_y": 61.332199071459996
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 111,
+        "passes": 2,
+        "mean_start_x": 64.15799556034698,
+        "mean_start_y": 56.80583186458681
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 112,
+        "passes": 1,
+        "mean_start_x": 59.681301099979905,
+        "mean_start_y": 62.623709898406425
+      },
+      {
+        "team_id": 1,
+        "source_player": 108,
+        "target_player": 113,
+        "passes": 3,
+        "mean_start_x": 61.174663920320135,
+        "mean_start_y": 61.652449528733904
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 102,
+        "passes": 3,
+        "mean_start_x": 92.95389797978083,
+        "mean_start_y": 18.007087346725175
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 103,
+        "passes": 2,
+        "mean_start_x": 90.33863656992436,
+        "mean_start_y": 9.510569221127906
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 104,
+        "passes": 3,
+        "mean_start_x": 90.9780360123588,
+        "mean_start_y": 9.992168301391166
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 105,
+        "passes": 1,
+        "mean_start_x": 98.56085702329969,
+        "mean_start_y": 17.639620002884286
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 106,
+        "passes": 3,
+        "mean_start_x": 93.64900253594851,
+        "mean_start_y": 8.496557448182163
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 107,
+        "passes": 2,
+        "mean_start_x": 103.2884347502663,
+        "mean_start_y": 14.836421130138982
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 108,
+        "passes": 2,
+        "mean_start_x": 103.00331672269829,
+        "mean_start_y": 18.66760936983144
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 110,
+        "passes": 4,
+        "mean_start_x": 94.92053655561486,
+        "mean_start_y": 14.069666598106009
+      },
+      {
+        "team_id": 1,
+        "source_player": 109,
+        "target_player": 111,
+        "passes": 5,
+        "mean_start_x": 94.88394460305392,
+        "mean_start_y": 12.426471938610396
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 102,
+        "passes": 2,
+        "mean_start_x": 73.58143872753186,
+        "mean_start_y": 38.908186801874564
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 103,
+        "passes": 3,
+        "mean_start_x": 86.40745045268632,
+        "mean_start_y": 43.46136846266061
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 104,
+        "passes": 1,
+        "mean_start_x": 107.48208697670486,
+        "mean_start_y": 43.66575753905943
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 105,
+        "passes": 4,
+        "mean_start_x": 95.269458084992,
+        "mean_start_y": 40.61432026957789
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 106,
+        "passes": 3,
+        "mean_start_x": 104.22824396703554,
+        "mean_start_y": 34.48949580033058
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 107,
+        "passes": 7,
+        "mean_start_x": 96.37716300502498,
+        "mean_start_y": 38.30326493914304
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 108,
+        "passes": 3,
+        "mean_start_x": 81.64353024194286,
+        "mean_start_y": 42.16252838288671
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 109,
+        "passes": 4,
+        "mean_start_x": 93.81465727392603,
+        "mean_start_y": 38.54834768798796
+      },
+      {
+        "team_id": 1,
+        "source_player": 110,
+        "target_player": 111,
+        "passes": 3,
+        "mean_start_x": 92.83381989998323,
+        "mean_start_y": 43.90596022423318
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 102,
+        "passes": 2,
+        "mean_start_x": 94.95438036420988,
+        "mean_start_y": 63.17796734803247
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 103,
+        "passes": 1,
+        "mean_start_x": 101.85042129973822,
+        "mean_start_y": 69.79721872877909
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 104,
+        "passes": 4,
+        "mean_start_x": 95.64831969784692,
+        "mean_start_y": 66.13138307554586
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 107,
+        "passes": 3,
+        "mean_start_x": 93.31358438453874,
+        "mean_start_y": 67.12983131640154
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 108,
+        "passes": 5,
+        "mean_start_x": 92.6009930298969,
+        "mean_start_y": 67.61123843786794
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 109,
+        "passes": 3,
+        "mean_start_x": 84.51614990689231,
+        "mean_start_y": 63.71608812884398
+      },
+      {
+        "team_id": 1,
+        "source_player": 111,
+        "target_player": 112,
+        "passes": 1,
+        "mean_start_x": 97.26846911637983,
+        "mean_start_y": 62.74078283044572
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 102,
+        "passes": 2,
+        "mean_start_x": 55.903032037185326,
+        "mean_start_y": 19.766891290008058
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 103,
+        "passes": 1,
+        "mean_start_x": 66.958714963395,
+        "mean_start_y": 23.752405800337982
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 105,
+        "passes": 2,
+        "mean_start_x": 58.25985737030375,
+        "mean_start_y": 19.037847860314347
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 107,
+        "passes": 1,
+        "mean_start_x": 64.04512878925632,
+        "mean_start_y": 19.881259255857202
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 108,
+        "passes": 1,
+        "mean_start_x": 65.81419592400384,
+        "mean_start_y": 27.55024986309693
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 110,
+        "passes": 2,
+        "mean_start_x": 52.45891396503863,
+        "mean_start_y": 23.93628810030968
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 111,
+        "passes": 1,
+        "mean_start_x": 52.08791785819255,
+        "mean_start_y": 22.22254589073667
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 113,
+        "passes": 1,
+        "mean_start_x": 67.06595668859849,
+        "mean_start_y": 26.711645904583328
+      },
+      {
+        "team_id": 1,
+        "source_player": 112,
+        "target_player": 114,
+        "passes": 1,
+        "mean_start_x": 67.83199285644417,
+        "mean_start_y": 20.21979947913331
+      },
+      {
+        "team_id": 1,
+        "source_player": 113,
+        "target_player": 105,
+        "passes": 3,
+        "mean_start_x": 89.26002737470588,
+        "mean_start_y": 7.9534635415149095
+      },
+      {
+        "team_id": 1,
+        "source_player": 113,
+        "target_player": 107,
+        "passes": 1,
+        "mean_start_x": 97.68874470391711,
+        "mean_start_y": 14.198686146754502
+      },
+      {
+        "team_id": 1,
+        "source_player": 113,
+        "target_player": 108,
+        "passes": 1,
+        "mean_start_x": 91.62132941800465,
+        "mean_start_y": 17.591725540166326
+      },
+      {
+        "team_id": 1,
+        "source_player": 113,
+        "target_player": 110,
+        "passes": 1,
+        "mean_start_x": 86.14014872703075,
+        "mean_start_y": 14.559427251143957
+      },
+      {
+        "team_id": 1,
+        "source_player": 113,
+        "target_player": 112,
+        "passes": 1,
+        "mean_start_x": 94.67190716582812,
+        "mean_start_y": 12.033782933218667
+      },
+      {
+        "team_id": 1,
+        "source_player": 114,
+        "target_player": 108,
+        "passes": 1,
+        "mean_start_x": 93.91949552118025,
+        "mean_start_y": 67.49304090636063
+      },
+      {
+        "team_id": 1,
+        "source_player": 114,
+        "target_player": 112,
+        "passes": 1,
+        "mean_start_x": 95.04166089860875,
+        "mean_start_y": 65.47344015643108
+      },
+      {
+        "team_id": 2,
+        "source_player": 201,
+        "target_player": 202,
+        "passes": 1,
+        "mean_start_x": 7.443495601922533,
+        "mean_start_y": 37.90688060398078
+      },
+      {
+        "team_id": 2,
+        "source_player": 201,
+        "target_player": 205,
+        "passes": 2,
+        "mean_start_x": 4.602964986913944,
+        "mean_start_y": 40.22578519525368
+      },
+      {
+        "team_id": 2,
+        "source_player": 201,
+        "target_player": 207,
+        "passes": 2,
+        "mean_start_x": 2.8193692766408605,
+        "mean_start_y": 41.354052109778706
+      },
+      {
+        "team_id": 2,
+        "source_player": 201,
+        "target_player": 209,
+        "passes": 1,
+        "mean_start_x": 2.25220101550201,
+        "mean_start_y": 42.27081515515305
+      },
+      {
+        "team_id": 2,
+        "source_player": 201,
+        "target_player": 210,
+        "passes": 1,
+        "mean_start_x": 2.471092282390373,
+        "mean_start_y": 40.31283602203035
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 203,
+        "passes": 4,
+        "mean_start_x": 39.211837240392136,
+        "mean_start_y": 11.589194313649637
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 204,
+        "passes": 2,
+        "mean_start_x": 32.45969308228075,
+        "mean_start_y": 8.54599412169172
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 205,
+        "passes": 4,
+        "mean_start_x": 29.51043087958353,
+        "mean_start_y": 10.686800980397276
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 206,
+        "passes": 1,
+        "mean_start_x": 38.798658896003836,
+        "mean_start_y": 5.849814043385969
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 207,
+        "passes": 1,
+        "mean_start_x": 36.824506698882175,
+        "mean_start_y": 13.729044024253199
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 208,
+        "passes": 3,
+        "mean_start_x": 28.349553148660352,
+        "mean_start_y": 8.055503377140818
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 209,
+        "passes": 1,
+        "mean_start_x": 35.066889725700776,
+        "mean_start_y": 12.43917626189495
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 210,
+        "passes": 6,
+        "mean_start_x": 24.140471876636497,
+        "mean_start_y": 9.920986696616772
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 211,
+        "passes": 1,
+        "mean_start_x": 23.613830013333388,
+        "mean_start_y": 15.155083316165019
+      },
+      {
+        "team_id": 2,
+        "source_player": 202,
+        "target_player": 212,
+        "passes": 1,
+        "mean_start_x": 25.21739032664868,
+        "mean_start_y": 2.640615199016542
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 202,
+        "passes": 1,
+        "mean_start_x": 24.863214934550488,
+        "mean_start_y": 34.93542129785355
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 204,
+        "passes": 4,
+        "mean_start_x": 34.96840543073379,
+        "mean_start_y": 27.21035837083477
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 206,
+        "passes": 3,
+        "mean_start_x": 30.426361425272745,
+        "mean_start_y": 27.74311845740218
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 207,
+        "passes": 1,
+        "mean_start_x": 29.94520623797835,
+        "mean_start_y": 34.37002303044794
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 208,
+        "passes": 3,
+        "mean_start_x": 34.049121318490535,
+        "mean_start_y": 34.606459476698916
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 209,
+        "passes": 3,
+        "mean_start_x": 34.78946381456554,
+        "mean_start_y": 27.654461698058896
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 210,
+        "passes": 5,
+        "mean_start_x": 35.86814987267274,
+        "mean_start_y": 27.64629255165617
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 211,
+        "passes": 1,
+        "mean_start_x": 31.626015520735027,
+        "mean_start_y": 37.79702891491748
+      },
+      {
+        "team_id": 2,
+        "source_player": 203,
+        "target_player": 212,
+        "passes": 1,
+        "mean_start_x": 36.38156655366484,
+        "mean_start_y": 42.89326319002471
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 202,
+        "passes": 1,
+        "mean_start_x": 28.68087687578072,
+        "mean_start_y": 50.71132814504221
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 203,
+        "passes": 2,
+        "mean_start_x": 38.031348821874005,
+        "mean_start_y": 51.76137205205504
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 205,
+        "passes": 6,
+        "mean_start_x": 33.033592570544734,
+        "mean_start_y": 54.18682285133107
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 206,
+        "passes": 1,
+        "mean_start_x": 16.85351790747456,
+        "mean_start_y": 37.73896788044272
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 207,
+        "passes": 1,
+        "mean_start_x": 25.843268291795457,
+        "mean_start_y": 55.001066027531685
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 208,
+        "passes": 3,
+        "mean_start_x": 27.83813685092637,
+        "mean_start_y": 50.09529149061806
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 209,
+        "passes": 4,
+        "mean_start_x": 29.518920876457646,
+        "mean_start_y": 47.179557916364274
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 210,
+        "passes": 2,
+        "mean_start_x": 30.430836667915308,
+        "mean_start_y": 49.8240838275951
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 211,
+        "passes": 2,
+        "mean_start_x": 35.592700721820435,
+        "mean_start_y": 47.520332300857945
+      },
+      {
+        "team_id": 2,
+        "source_player": 204,
+        "target_player": 212,
+        "passes": 1,
+        "mean_start_x": 35.02278286813349,
+        "mean_start_y": 44.75413966531681
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 202,
+        "passes": 2,
+        "mean_start_x": 29.055361888950074,
+        "mean_start_y": 72.55506128151201
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 203,
+        "passes": 1,
+        "mean_start_x": 33.40660179670847,
+        "mean_start_y": 65.63954348100435
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 204,
+        "passes": 2,
+        "mean_start_x": 26.96174966902332,
+        "mean_start_y": 69.32820402387746
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 206,
+        "passes": 1,
+        "mean_start_x": 35.05343037935454,
+        "mean_start_y": 73.4006829322029
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 207,
+        "passes": 2,
+        "mean_start_x": 26.461394954342843,
+        "mean_start_y": 64.31706741679182
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 209,
+        "passes": 4,
+        "mean_start_x": 26.449756011212514,
+        "mean_start_y": 70.05579628342458
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 210,
+        "passes": 5,
+        "mean_start_x": 30.98296346465318,
+        "mean_start_y": 67.90530293004534
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 211,
+        "passes": 1,
+        "mean_start_x": 32.167337676742676,
+        "mean_start_y": 66.33795927859603
+      },
+      {
+        "team_id": 2,
+        "source_player": 205,
+        "target_player": 212,
+        "passes": 4,
+        "mean_start_x": 35.581920798018785,
+        "mean_start_y": 69.71555907173882
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 202,
+        "passes": 3,
+        "mean_start_x": 62.38157166585674,
+        "mean_start_y": 19.97318559023957
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 203,
+        "passes": 1,
+        "mean_start_x": 55.901643077490455,
+        "mean_start_y": 25.17046050654184
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 204,
+        "passes": 1,
+        "mean_start_x": 60.49710220119132,
+        "mean_start_y": 13.814469351172976
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 207,
+        "passes": 4,
+        "mean_start_x": 57.72438765930822,
+        "mean_start_y": 17.362574979399774
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 208,
+        "passes": 1,
+        "mean_start_x": 63.16172596323983,
+        "mean_start_y": 25.753272868176712
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 209,
+        "passes": 3,
+        "mean_start_x": 55.945645294782956,
+        "mean_start_y": 21.24556248044369
+      },
+      {
+        "team_id": 2,
+        "source_player": 206,
+        "target_player": 211,
+        "passes": 5,
+        "mean_start_x": 61.92867968545937,
+        "mean_start_y": 23.932456509958158
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 202,
+        "passes": 1,
+        "mean_start_x": 43.772811869980096,
+        "mean_start_y": 35.42209424139736
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 203,
+        "passes": 4,
+        "mean_start_x": 61.35109188279839,
+        "mean_start_y": 39.98465288480721
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 204,
+        "passes": 1,
+        "mean_start_x": 63.32706484281025,
+        "mean_start_y": 42.62155096399663
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 205,
+        "passes": 1,
+        "mean_start_x": 58.706851130462894,
+        "mean_start_y": 47.53787273279903
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 206,
+        "passes": 1,
+        "mean_start_x": 48.31790316480355,
+        "mean_start_y": 34.99612903747404
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 208,
+        "passes": 9,
+        "mean_start_x": 51.03530679030635,
+        "mean_start_y": 42.22513302105511
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 211,
+        "passes": 1,
+        "mean_start_x": 54.20158467601034,
+        "mean_start_y": 43.09294619534433
+      },
+      {
+        "team_id": 2,
+        "source_player": 207,
+        "target_player": 213,
+        "passes": 3,
+        "mean_start_x": 48.618999023805465,
+        "mean_start_y": 42.53162160548934
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 202,
+        "passes": 6,
+        "mean_start_x": 57.45337168494651,
+        "mean_start_y": 58.868134580739024
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 203,
+        "passes": 1,
+        "mean_start_x": 49.19218923001578,
+        "mean_start_y": 57.19454704387578
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 204,
+        "passes": 4,
+        "mean_start_x": 59.520904683452954,
+        "mean_start_y": 54.8171497569009
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 205,
+        "passes": 3,
+        "mean_start_x": 65.93739475396647,
+        "mean_start_y": 61.84075261164433
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 206,
+        "passes": 7,
+        "mean_start_x": 62.42007307123974,
+        "mean_start_y": 56.97865132735967
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 207,
+        "passes": 2,
+        "mean_start_x": 64.48495737416,
+        "mean_start_y": 60.16629941146488
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 209,
+        "passes": 1,
+        "mean_start_x": 53.115619097949974,
+        "mean_start_y": 54.730300687898186
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 210,
+        "passes": 3,
+        "mean_start_x": 52.88139544300895,
+        "mean_start_y": 57.317076507866425
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 211,
+        "passes": 3,
+        "mean_start_x": 58.90215529919249,
+        "mean_start_y": 56.77950703758709
+      },
+      {
+        "team_id": 2,
+        "source_player": 208,
+        "target_player": 212,
+        "passes": 2,
+        "mean_start_x": 59.31446138874941,
+        "mean_start_y": 56.14371256385675
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 202,
+        "passes": 5,
+        "mean_start_x": 91.45804074385653,
+        "mean_start_y": 15.57964736431325
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 203,
+        "passes": 2,
+        "mean_start_x": 93.70553188202521,
+        "mean_start_y": 17.276934940846832
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 204,
+        "passes": 2,
+        "mean_start_x": 91.06473003145462,
+        "mean_start_y": 7.650939164845358
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 205,
+        "passes": 1,
+        "mean_start_x": 97.07164803236381,
+        "mean_start_y": 6.550160911112825
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 206,
+        "passes": 3,
+        "mean_start_x": 87.14176579817583,
+        "mean_start_y": 13.591851781878658
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 208,
+        "passes": 2,
+        "mean_start_x": 90.82868552285586,
+        "mean_start_y": 10.595589208821686
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 210,
+        "passes": 2,
+        "mean_start_x": 85.69337196425363,
+        "mean_start_y": 16.539534135457835
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 211,
+        "passes": 2,
+        "mean_start_x": 96.718173385343,
+        "mean_start_y": 14.305121311743537
+      },
+      {
+        "team_id": 2,
+        "source_player": 209,
+        "target_player": 212,
+        "passes": 1,
+        "mean_start_x": 95.78297105843788,
+        "mean_start_y": 19.984022111346633
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 203,
+        "passes": 6,
+        "mean_start_x": 93.88382112336011,
+        "mean_start_y": 37.85822074355699
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 204,
+        "passes": 4,
+        "mean_start_x": 100.75365922112996,
+        "mean_start_y": 40.20916232616034
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 205,
+        "passes": 1,
+        "mean_start_x": 86.9453790074882,
+        "mean_start_y": 40.11467673360859
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 206,
+        "passes": 1,
+        "mean_start_x": 103.29103632916538,
+        "mean_start_y": 36.48886378971812
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 207,
+        "passes": 1,
+        "mean_start_x": 88.67842627152187,
+        "mean_start_y": 37.37794596211735
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 208,
+        "passes": 1,
+        "mean_start_x": 99.50188933190563,
+        "mean_start_y": 37.376200008600236
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 209,
+        "passes": 4,
+        "mean_start_x": 88.22106040972037,
+        "mean_start_y": 40.5002262352685
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 211,
+        "passes": 6,
+        "mean_start_x": 91.37273078894758,
+        "mean_start_y": 40.861946700544785
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 212,
+        "passes": 2,
+        "mean_start_x": 99.59839277369323,
+        "mean_start_y": 44.56546632773505
+      },
+      {
+        "team_id": 2,
+        "source_player": 210,
+        "target_player": 213,
+        "passes": 2,
+        "mean_start_x": 95.03878794464475,
+        "mean_start_y": 36.028503718305856
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 202,
+        "passes": 2,
+        "mean_start_x": 96.57777927023557,
+        "mean_start_y": 66.89131514121046
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 203,
+        "passes": 1,
+        "mean_start_x": 90.70530643335594,
+        "mean_start_y": 62.656750847226206
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 204,
+        "passes": 3,
+        "mean_start_x": 102.22084703107411,
+        "mean_start_y": 67.51568513690678
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 205,
+        "passes": 2,
+        "mean_start_x": 99.30520643247411,
+        "mean_start_y": 65.59298710609883
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 206,
+        "passes": 1,
+        "mean_start_x": 99.50709689752217,
+        "mean_start_y": 62.850068171529315
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 207,
+        "passes": 2,
+        "mean_start_x": 92.28063685882753,
+        "mean_start_y": 62.948362926787595
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 208,
+        "passes": 6,
+        "mean_start_x": 90.23776237682235,
+        "mean_start_y": 67.56578438085215
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 209,
+        "passes": 1,
+        "mean_start_x": 94.99810273813098,
+        "mean_start_y": 64.51161293855714
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 210,
+        "passes": 2,
+        "mean_start_x": 95.56306600344249,
+        "mean_start_y": 64.75693426042344
+      },
+      {
+        "team_id": 2,
+        "source_player": 211,
+        "target_player": 213,
+        "passes": 2,
+        "mean_start_x": 91.1502577118032,
+        "mean_start_y": 64.12121732115338
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 202,
+        "passes": 1,
+        "mean_start_x": 54.10070061299447,
+        "mean_start_y": 22.35013474543834
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 204,
+        "passes": 1,
+        "mean_start_x": 66.995723765861,
+        "mean_start_y": 23.121875225266898
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 205,
+        "passes": 3,
+        "mean_start_x": 55.026009633185204,
+        "mean_start_y": 21.886630503064726
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 207,
+        "passes": 3,
+        "mean_start_x": 53.76621362422568,
+        "mean_start_y": 18.63734324133256
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 208,
+        "passes": 2,
+        "mean_start_x": 51.43238149646295,
+        "mean_start_y": 30.12988630599323
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 210,
+        "passes": 4,
+        "mean_start_x": 60.91775921470854,
+        "mean_start_y": 18.071772576127433
+      },
+      {
+        "team_id": 2,
+        "source_player": 212,
+        "target_player": 211,
+        "passes": 1,
+        "mean_start_x": 53.83066969776292,
+        "mean_start_y": 20.83228364814995
+      },
+      {
+        "team_id": 2,
+        "source_player": 213,
+        "target_player": 207,
+        "passes": 1,
+        "mean_start_x": 89.94964946112516,
+        "mean_start_y": 6.902779480662739
+      },
+      {
+        "team_id": 2,
+        "source_player": 213,
+        "target_player": 208,
+        "passes": 1,
+        "mean_start_x": 104.93459485809161,
+        "mean_start_y": 17.877932459566704
+      },
+      {
+        "team_id": 2,
+        "source_player": 213,
+        "target_player": 210,
+        "passes": 1,
+        "mean_start_x": 103.12246650536,
+        "mean_start_y": 10.14266788236493
+      },
+      {
+        "team_id": 2,
+        "source_player": 213,
+        "target_player": 211,
+        "passes": 1,
+        "mean_start_x": 94.85844404840529,
+        "mean_start_y": 20.95118551212375
+      },
+      {
+        "team_id": 2,
+        "source_player": 213,
+        "target_player": 212,
+        "passes": 3,
+        "mean_start_x": 92.6945682857654,
+        "mean_start_y": 13.279978133804299
+      }
+    ]
+  }
+}

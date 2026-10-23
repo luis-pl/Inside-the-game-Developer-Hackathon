@@ -1,5 +1,11 @@
 # Inside the game: Developer Hackathon
 
+La API de analítica deportiva está implementada: **25 consultas predeterminadas y nueve análisis espaciales/topológicos**, conectados a Azure SQL mediante lectura. Inicio local en Windows: `scripts/start-api.ps1`; documentación interactiva: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+
+El servidor MCP también está implementado: expone las mismas 34 operaciones por `stdio` o HTTP local en `http://127.0.0.1:8001/mcp`, a través de la API. Inicio HTTP: `scripts/start-mcp.ps1 -Transport streamable-http`.
+
+Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json) y [MCP HTTP](docs/mcp-verification-streamable-http.json). Los agentes y el frontend siguen pendientes de implementación.
+
 > Build something that breaks the fourth wall.
 
 **Inside the game** is a developer hackathon where participants build tools, games,
@@ -60,7 +66,7 @@ Bring your own stack. Recommended defaults:
 ```
 
 The initial scaffold is documented in [docs/repository-structure.md](docs/repository-structure.md).
-The new backend modules are placeholders; their application logic is pending implementation.
+The API, analytics service, SQL tools and MCP adapter are implemented. Agent and frontend modules remain placeholders.
 
 ## 📋 Submission checklist
 

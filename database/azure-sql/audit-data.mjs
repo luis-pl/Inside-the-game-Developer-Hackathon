@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { generateMatch, MATCH_COUNT } from './scenario-v2.mjs';
+import { generateMatch, MATCH_COUNT } from './scenario-v3.mjs';
 const dist=(a,b)=>Math.hypot(a.x_m-b.x_m,a.y_m-b.y_m);
 export function auditData(tables){
  const errors={},metrics={maxPlayerSpeed:0,maxPlayerAcceleration:0,maxBallSpeed:0,minOutfieldDistance:Infinity,maxOutfieldDistance:0,shots:0,pressures:0,duels:0,passes:0,cards:(tables.lineup_cards??[]).length};
@@ -35,17 +35,17 @@ export function auditData(tables){
  for(const e of tables.events){
   if(e.position_id!==null)fail('position_code_name',canonicalPositions[e.position_id]===e.position_name,e.event_id);
   if(e.details?.foul_committed?.card)fail('card_code_name',e.details.foul_committed.card.id===7&&e.details.foul_committed.card.name==='Yellow Card',e.event_id);
-  if(e.type_id===4){const d=e.details?.duel;fail('duel_code_name',d?.type?.id===11&&d.type.name==='Tackle'&&({4:'Won',13:'Lost In Play'})[d.outcome?.id]===d.outcome?.name,e.event_id);}
+  if(e.type_id===4){const d=e.details?.duel;fail('duel_code_name',(d?.type?.id===10&&d.type.name==='Aerial Lost'&&!d.outcome)||(d?.type?.id===11&&d.type.name==='Tackle'&&({4:'Won',13:'Lost In Play'})[d.outcome?.id]===d.outcome?.name),e.event_id);}
   if(e.type_id===33){const d=e.details?.['50_50']?.outcome;fail('fifty_code_name',({1:'Lost',3:'Success To Team'})[d?.id]===d?.name,e.event_id);}
   if(e.type_id===23){const d=e.details?.goalkeeper?.type;fail('keeper_code_name',d?.id===33&&d.name==='Shot Saved',e.event_id);}
   if(e.possession!==null&&e.possession!==undefined){const old=poss.get(e.possession);fail('possession_team',old===undefined||old===e.possession_team_id,e.event_id);poss.set(e.possession,e.possession_team_id);}
   if(e.player_id!==null){const p=actor(e);fail('active_actor',!!p&&p.is_on_pitch,e.event_id);if(p)fail('event_location',dist(p,fixed(e,e.location_x,e.location_y))<.001,e.event_id);}
-  if([17,4,33,21,22].includes(e.type_id)){
+  if([17,4,33,21,22,14,39,3,10,6,9,38].includes(e.type_id)){
    const p=actor(e),b=ballAt(e.period,sec(e));fail('contact_distance',p&&b&&dist(p,b)<3,e.event_id);
-   const near=at(e).some(o=>o.team_id!==e.team_id&&dist(o,p)<3.2);fail('opponent_distance',near,e.event_id);
+   if(![6,10].includes(e.type_id)){const near=at(e).some(o=>o.team_id!==e.team_id&&dist(o,p)<3.2);fail('opponent_distance',near,e.event_id);}
    if(e.type_id===17)metrics.pressures++;else if([4,33].includes(e.type_id))metrics.duels++;
   }
-  if([30,16,17,4,33].includes(e.type_id))fail('live_action',frames.get(`${e.period}/${sec(e)}`)?.ball_in_play===true,e.event_id);
+  if([30,16,17,4,33,14,39,3,10,6,9,38,42,43].includes(e.type_id))fail('live_action',frames.get(`${e.period}/${sec(e)}`)?.ball_in_play===true,e.event_id);
  }
  for(const pass of tables.event_passes){
   metrics.passes++;const e=events.get(pass.event_id),start=sec(e),end=start+e.duration,b=ballAt(e.period,start),landing=ballAt(e.period,end);
@@ -99,6 +99,69 @@ export function auditData(tables){
    fail('snapshot_identity_flags',tracked&&p.teammate===(tracked.team_id===e.team_id)&&p.actor===(tracked.player_id===e.player_id)&&p.keeper===(tracked.on_pitch_slot===1),f.event_id);}
  }
  for(const card of tables.lineup_cards??[])fail('card_event',tables.events.some(e=>e.type_id===22&&e.player_id===card.player_id&&e.period===card.period&&e.details?.foul_committed?.card?.name===card.card_type),card.player_id);
+ if(match.raw_payload?.version==='3.0.0'){
+  const relations=tables.event_relations??[];
+  const linked=(a,b)=>relations.some(r=>(r.event_id===a&&r.related_event_id===b)||(r.event_id===b&&r.related_event_id===a));
+  const types=[2,3,4,6,9,10,14,16,17,19,21,22,23,30,33,35,36,38,39,42,43];
+  metrics.coverage=Object.fromEntries(types.map(id=>[id,tables.events.filter(e=>e.type_id===id).length]));
+  for(const id of types)fail('required_event_coverage',metrics.coverage[id]>0,id);
+  for(const id of [8,9])fail('dribble_outcome_coverage',tables.events.some(e=>e.details?.dribble?.outcome?.id===id),id);
+  fail('aerial_duel_coverage',tables.events.some(e=>e.details?.duel?.type?.id===10),match.match_id);
+  for(const id of [1,2,3])fail('pass_height_coverage',tables.event_passes.some(p=>p.height?.id===id),id);
+  for(const id of [37,38,40])fail('shot_body_coverage',tables.event_shots.some(p=>p.body_part?.id===id),id);
+  fail('substitution_coverage',tables.events.filter(e=>e.type_id===19).length===6,match.match_id);
+  for(const e of tables.events){
+   const t=sec(e),b=ballAt(e.period,t);
+   if(e.type_id===14){
+    const d=e.details.dribble?.outcome;
+    fail('dribble_code_name',({8:'Complete',9:'Incomplete'})[d?.id]===d?.name,e.event_id);
+    fail('dribble_counterpart',tables.events.some(o=>o.period===e.period&&sec(o)===t&&o.team_id!==e.team_id&&o.type_id===(d?.id===8?39:4)),e.event_id);
+   }
+   if(e.type_id===4&&e.details.duel?.type?.id===11&&e.details.duel?.outcome?.id===13){
+    fail('failed_tackle_actor',tables.events.some(o=>o.type_id===14&&o.period===e.period&&sec(o)===t&&o.team_id!==e.team_id&&o.details.dribble?.outcome?.id===8&&linked(e.event_id,o.event_id)),e.event_id);
+   }
+   if(e.type_id===10)fail('interception_result',e.details.interception?.outcome?.id===16,e.event_id);
+   if(e.type_id===4&&e.details.duel?.type?.id===10){
+    fail('aerial_height',b?.z_m>=1,e.event_id);
+    fail('aerial_counterpart',tables.events.some(o=>o.type_id===9&&o.team_id!==e.team_id&&o.period===e.period&&sec(o)===t&&o.details.clearance?.aerial_won===true&&linked(e.event_id,o.event_id)),e.event_id);
+   }
+   if(e.type_id===9){
+    fail('clearance_header',e.details.clearance?.body_part?.id===37&&b?.z_m>=1,e.event_id);
+    const end=e.details.clearance?.end_location,landing=ballAt(e.period,t+e.duration);
+    fail('clearance_endpoint',end&&landing&&dist(fixed(e,...end),landing)<.001,e.event_id);
+   }
+   if(e.type_id===43){
+    fail('carry_duration',e.duration>0,e.event_id);
+    const end=e.details.carry?.end_location,landing=ballAt(e.period,t+e.duration);
+    fail('carry_endpoint',end&&landing&&dist(fixed(e,...end),landing)<.001,e.event_id);
+    for(let second=t;second<=t+e.duration;second++){
+     const player=positions.get(`${e.period}/${second}`)?.find(p=>p.player_id===e.player_id);
+     fail('carry_control',player&&dist(player,ballAt(e.period,second))<.001,e.event_id);
+    }
+   }
+   if(e.type_id===42){
+    fail('receipt_contact',dist(actor(e),b)<.001,e.event_id);
+    fail('receipt_pass',tables.event_passes.some(p=>p.recipient_player_id===e.player_id&&events.get(p.event_id).period===e.period&&sec(events.get(p.event_id))+events.get(p.event_id).duration===t&&linked(e.event_id,p.event_id)),e.event_id);
+   }
+   if(e.type_id===19){
+    const replacement=e.details.substitution?.replacement?.id,after=positions.get(`${e.period}/${t+1}`)??[];
+    fail('substitution_dead_ball',frames.get(`${e.period}/${t}`)?.ball_in_play===false,e.event_id);
+    fail('substitution_roster',tables.match_lineups?.some(l=>l.player_id===replacement&&l.team_id===e.team_id)&&replacement!==e.player_id,e.event_id);
+    fail('substitution_handoff',after.some(p=>p.player_id===replacement)&&!after.some(p=>p.player_id===e.player_id),e.event_id);
+    const outgoing=tables.lineup_positions?.find(p=>p.player_id===e.player_id),incoming=tables.lineup_positions?.find(p=>p.player_id===replacement);
+    fail('substitution_intervals',outgoing?.end_reason==='Substitution'&&incoming?.start_reason==='Substitution'&&outgoing?.to_time===incoming?.from_time,e.event_id);
+   }
+  }
+  const intervals=new Map((tables.lineup_positions??[]).map(l=>{const parse=v=>{const [m,s]=v.split(':').map(Number);return m*60+s;};return [l.player_id,[parse(l.from_time),parse(l.to_time)]];}));
+  for(const [key,ps] of positions){const [period,frame]=key.split('/').map(Number),clock=(period-1)*2700+frame;
+   for(const p of ps){const span=intervals.get(p.player_id);fail('active_interval',span&&clock>=span[0]&&(clock<span[1]||frame===2700&&clock===span[1]&&span[1]===5400),p.player_id);}
+  }
+  const activeSeconds=new Map();for(const ps of positions.values())for(const p of ps)if(p.frame_index<2700)activeSeconds.set(p.player_id,(activeSeconds.get(p.player_id)??0)+1);
+  for(const l of tables.lineup_positions??[]){
+   const seconds=value=>{const [m,s]=value.split(':').map(Number);return m*60+s;};
+   fail('lineup_minutes_tracking',activeSeconds.get(l.player_id)===seconds(l.to_time)-seconds(l.from_time),l.player_id);
+  }
+ }
  return {match:match.match_id,status:Object.keys(errors).length?'failed':'passed',metrics,errors};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){

@@ -22,8 +22,14 @@ Inside-the-game-Developer-Hackathon/
 │       │   ├── __init__.py
 │       │   └── models.py
 │       ├── contracts.py
+│       ├── analytics.py           # Definiciones deterministas de métricas
+│       ├── service.py             # Registro de operaciones y consultas
+│       ├── settings.py
+│       ├── errors.py
+│       ├── sql/                   # Plantillas SELECT parametrizadas
 │       ├── orchestrator.py
 │       ├── api.py
+│       ├── mcp_server.py          # Tools MCP sobre las rutas fijas de la API
 │       └── cli.py
 ├── frontend/
 │   └── src/
@@ -41,10 +47,11 @@ Inside-the-game-Developer-Hackathon/
 └── .gitignore
 ```
 
-Los nuevos módulos Python sólo describen su responsabilidad futura. Las carpetas
-sin contenido usan `.gitkeep` para poder conservarlas en Git. `pyproject.toml`
-define el paquete sin dependencias de ejecución ni comandos publicados.
+La API, los contratos, el servicio de consultas, el acceso SQL y los cálculos
+espaciales están implementados. `pyproject.toml` define dependencias y el comando
+`inside-game-api`. Instalación y uso: [api.md](api.md).
 
-Los agentes, contratos, prompts, herramientas, proveedores, API, CLI, frontend e
-integraciones MCP/A2A se implementarán en las siguientes etapas. La infraestructura
-y los datos de Azure SQL existentes se mantienen en `database/azure-sql/`.
+El servidor MCP está implementado con SDK oficial y transportes stdio y Streamable HTTP
+local. Uso y conexión: [mcp.md](mcp.md). Los agentes, prompts, proveedores de modelos,
+orquestación, frontend e integraciones A2A mantienen sus módulos reservados. La infraestructura y los datos de Azure SQL
+se conservan en `database/azure-sql/`. La API no despliega alojamiento nuevo en Azure.
