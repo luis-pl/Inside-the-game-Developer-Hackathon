@@ -11,7 +11,7 @@ El esquema de 30 tablas está adaptado a SQL Server/Azure SQL, con 43 claves for
 - Red: una regla de firewall para la IP pública del equipo que realizó la carga. Si cambia tu IP, debes actualizar esa regla; no abras el acceso a todas las direcciones.
 - Cifrado: TLS, con validación del certificado.
 
-Puedes conectarte desde una herramienta compatible con SQL Server y autenticación Entra. Para las consultas de aplicaciones, usa las vistas del esquema `analytics`. El rol `football_reader` tiene permiso de lectura sobre esas vistas; todavía no se asignó a una identidad de aplicación.
+Puedes conectarte desde una herramienta compatible con SQL Server y autenticación Entra. Para las consultas de aplicaciones, usa las vistas del esquema `analytics`. El rol `football_reader` tiene permiso de lectura sobre esas vistas. El contenedor de API/MCP usa su identidad administrada mediante `inside_game_cloud_reader`, miembro de ese rol, sin permisos administrativos ni de escritura.
 
 ## Coste configurado
 
@@ -90,7 +90,7 @@ Los usuarios de consultas necesitan sólo el rol lector. Las credenciales de adm
 
 ## API y MCP
 
-Sí: una API o un servidor MCP puede consultar esta base en Azure, autenticarse mediante Entra y ejecutar consultas parametrizadas con permisos de lectura. El modelo relacional no requiere cambios por usar REST, GraphQL o MCP. El alojamiento y la identidad de esos componentes se configurarían aparte; **no se implementaron ni desplegaron en este trabajo**.
+La API y el MCP ya consultan esta base desde Azure Container Apps mediante una identidad administrada de lectura. El acceso de compañeros y agentes se protege con credenciales Bearer individuales, distintas de la identidad SQL. [Acceso y despliegue de la demo](../../docs/azure-demo.md); [estado del contenedor](../../deployment/cloud.json). El modelo relacional no requiere cambios por usar REST o MCP.
 
 [Data API builder](https://learn.microsoft.com/en-us/azure/data-api-builder/overview) es una opción compatible con Azure SQL; también puede utilizarse un backend propio.
 

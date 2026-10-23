@@ -139,7 +139,7 @@ class SqlRepository:
         if os.getenv("INSIDE_GAME_SQL_AUTH") == "managed_identity":
             from azure.identity import ManagedIdentityCredential
 
-            self.provider = ManagedIdentityCredential()
+            self.provider = ManagedIdentityCredential(client_id=os.getenv("AZURE_CLIENT_ID"))
 
     def _connect(self):
         import mssql_python

@@ -12,7 +12,10 @@ def main():
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
     if args.host not in ("127.0.0.1", "localhost", "::1") and (
-        len(os.getenv("INSIDE_GAME_API_KEY", "")) < 32
+        (
+            len(os.getenv("INSIDE_GAME_API_KEY", "")) < 32
+            and not os.getenv("INSIDE_GAME_CREDENTIALS_JSON")
+        )
         or os.getenv("INSIDE_GAME_LOCAL_ACCESS", "true").lower() != "false"
     ):
         parser.error(

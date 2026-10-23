@@ -1,4 +1,4 @@
-"""Closed, typed request contracts shared by HTTP and a future MCP adapter."""
+"""Closed, typed request contracts shared by HTTP and the MCP adapter."""
 
 from datetime import date
 from typing import Annotated, Literal

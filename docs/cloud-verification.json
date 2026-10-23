@@ -1,0 +1,370 @@
+{
+  "tested_at_utc": "2026-10-23T19:49:02.651062+00:00",
+  "source": "Public HTTPS Azure Container Apps -> managed identity -> Azure SQL",
+  "url": "https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io",
+  "status": "passed",
+  "http_operations": [
+    {
+      "name": "describe_dataset",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "find_entities",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "list_matches",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_match_context",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_team_summary",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_player_summary",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_shots",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_passes",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_defensive_actions",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_ball_actions",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_discipline",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_substitutions",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_possessions",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_tracking_frame",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_tracking_window",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_event_context",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_heatmap",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_movement_summary",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_metric_series",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "compare_entities",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_set_piece_sequences",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_events",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_sequences",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_zone_summary",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_rankings",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_team_shape",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_proximity_connectivity",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_space_coverage",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_passing_network",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_pass_corridor",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_line_breaks",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_persistent_structure",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_node_removal_robustness",
+      "status_code": 200,
+      "passed": true
+    },
+    {
+      "name": "get_defensive_profile",
+      "status_code": 200,
+      "passed": true
+    }
+  ],
+  "mcp_operations": [
+    {
+      "name": "describe_dataset",
+      "passed": true
+    },
+    {
+      "name": "find_entities",
+      "passed": true
+    },
+    {
+      "name": "list_matches",
+      "passed": true
+    },
+    {
+      "name": "get_match_context",
+      "passed": true
+    },
+    {
+      "name": "get_team_summary",
+      "passed": true
+    },
+    {
+      "name": "get_player_summary",
+      "passed": true
+    },
+    {
+      "name": "get_shots",
+      "passed": true
+    },
+    {
+      "name": "get_passes",
+      "passed": true
+    },
+    {
+      "name": "get_defensive_actions",
+      "passed": true
+    },
+    {
+      "name": "get_ball_actions",
+      "passed": true
+    },
+    {
+      "name": "get_discipline",
+      "passed": true
+    },
+    {
+      "name": "get_substitutions",
+      "passed": true
+    },
+    {
+      "name": "get_possessions",
+      "passed": true
+    },
+    {
+      "name": "get_tracking_frame",
+      "passed": true
+    },
+    {
+      "name": "get_tracking_window",
+      "passed": true
+    },
+    {
+      "name": "get_event_context",
+      "passed": true
+    },
+    {
+      "name": "get_heatmap",
+      "passed": true
+    },
+    {
+      "name": "get_movement_summary",
+      "passed": true
+    },
+    {
+      "name": "get_metric_series",
+      "passed": true
+    },
+    {
+      "name": "compare_entities",
+      "passed": true
+    },
+    {
+      "name": "get_set_piece_sequences",
+      "passed": true
+    },
+    {
+      "name": "get_events",
+      "passed": true
+    },
+    {
+      "name": "get_sequences",
+      "passed": true
+    },
+    {
+      "name": "get_zone_summary",
+      "passed": true
+    },
+    {
+      "name": "get_rankings",
+      "passed": true
+    },
+    {
+      "name": "get_team_shape",
+      "passed": true
+    },
+    {
+      "name": "get_proximity_connectivity",
+      "passed": true
+    },
+    {
+      "name": "get_space_coverage",
+      "passed": true
+    },
+    {
+      "name": "get_passing_network",
+      "passed": true
+    },
+    {
+      "name": "get_pass_corridor",
+      "passed": true
+    },
+    {
+      "name": "get_line_breaks",
+      "passed": true
+    },
+    {
+      "name": "get_persistent_structure",
+      "passed": true
+    },
+    {
+      "name": "get_node_removal_robustness",
+      "passed": true
+    },
+    {
+      "name": "get_defensive_profile",
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "Anonymous API access rejected",
+      "passed": true
+    },
+    {
+      "name": "Anonymous MCP access rejected",
+      "passed": true
+    },
+    {
+      "name": "Forged bearer rejected",
+      "passed": true
+    },
+    {
+      "name": "Identity team-owner",
+      "passed": true
+    },
+    {
+      "name": "Read query by team-owner",
+      "passed": true
+    },
+    {
+      "name": "Identity team-collaborator-01",
+      "passed": true
+    },
+    {
+      "name": "Read query by team-collaborator-01",
+      "passed": true
+    },
+    {
+      "name": "Identity agent-data",
+      "passed": true
+    },
+    {
+      "name": "Read query by agent-data",
+      "passed": true
+    },
+    {
+      "name": "Known six on-target shots",
+      "passed": true
+    },
+    {
+      "name": "SQL fields rejected",
+      "passed": true
+    },
+    {
+      "name": "Agent discovers 34 MCP tools",
+      "passed": true
+    },
+    {
+      "name": "Agent MCP result equals team HTTP result",
+      "passed": true
+    }
+  ]
+}

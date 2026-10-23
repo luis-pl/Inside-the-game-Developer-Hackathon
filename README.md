@@ -1,5 +1,7 @@
 # Inside the game: Developer Hackathon
 
+Demo de datos publicada en Azure: [API y Swagger](https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io/docs). MCP remoto: `https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io/mcp`. Las consultas requieren una credencial individual de equipo o agente. [Acceso y operación en Azure](docs/azure-demo.md).
+
 La API de analítica deportiva está implementada: **25 consultas predeterminadas y nueve análisis espaciales/topológicos**, conectados a Azure SQL mediante lectura. Inicio local en Windows: `scripts/start-api.ps1`; documentación interactiva: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
 El servidor MCP también está implementado: expone las mismas 34 operaciones por `stdio` o HTTP local en `http://127.0.0.1:8001/mcp`, a través de la API. Inicio HTTP: `scripts/start-mcp.ps1 -Transport streamable-http`.

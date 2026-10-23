@@ -1,5 +1,7 @@
 # API de analítica deportiva
 
+Acceso remoto desplegado: [Swagger de Azure](https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io/docs). Requiere una credencial individual en las consultas. La configuración cloud usa identidad administrada SQL; [azure-demo.md](azure-demo.md) describe permisos, entrega de claves, auditoría y revocación. El arranque local descrito abajo sigue disponible.
+
 API implementada en FastAPI para las **25 operaciones de datos y nueve análisis espaciales/topológicos** del catálogo revisado. Consulta Azure SQL con la sesión Entra existente y un contexto limitado de lectura. No crea recursos de alojamiento en Azure ni modifica los partidos. El [servidor MCP](mcp.md) consume estas rutas; los agentes mantienen sus módulos reservados.
 
 ## Abrir y arrancar

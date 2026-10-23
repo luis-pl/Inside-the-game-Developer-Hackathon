@@ -1,0 +1,11 @@
+# Contexto permitido por lista cerrada: ninguna credencial o dato local se sube.
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!src/
+!src/inside_game/
+!src/inside_game/**
+**/__pycache__/
+**/*.pyc
+**/*.egg-info/

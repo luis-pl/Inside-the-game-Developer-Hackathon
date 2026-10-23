@@ -1,0 +1,1165 @@
+{
+  "tested_at_utc": "2026-10-23T03:57:16.494812+00:00",
+  "source": "Live TCP API and both MCP transports against synthetic Azure SQL data",
+  "status": "passed",
+  "queries": [
+    {
+      "operation": "list_matches",
+      "arguments": {},
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900001
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900002,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900002,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900002
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900003,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900003,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900003
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900004,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900004,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900004
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900005,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900005,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900005
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900006,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900006,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900006
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900007,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900007,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900007
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900008,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900008,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900008
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900009,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900009,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900009
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900010,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900010,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_substitutions",
+      "arguments": {
+        "match_id": 900010
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 2
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "scope": {
+          "kind": "period",
+          "period": 1
+        }
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "scope": {
+          "kind": "period",
+          "period": 2
+        }
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1,
+        "outcome": "on_target"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5,
+        "cursor": "eyJvZmZzZXQiOiA1LCAic2lnbmF0dXJlIjogImFiNmY2NjA3MzlhMTEzYmU4N2M0ZGUwOTBmYmY0ZmZjYWJhOGFkMDUxNDQ0ZWQ1M2IyN2JmMDM1ZTkyY2YwYmMiLCAiZXhwaXJlcyI6IDE3OTI3MjkwNjZ9.3904cb9ecc34819d9a73e90cf93445f2a2ab73f710a0d957112b3201e6a07d1b"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5,
+        "cursor": "eyJvZmZzZXQiOiAxMCwgInNpZ25hdHVyZSI6ICJhYjZmNjYwNzM5YTExM2JlODdjNGRlMDkwZmJmNGZmY2FiYThhZDA1MTQ0NGVkNTNiMjdiZjAzNWU5MmNmMGJjIiwgImV4cGlyZXMiOiAxNzkyNzI5MDY2fQ.75c614705af79cbae3ee4ec25ab98e9cb9acfb41dba34da719b35aa3c9267ea4"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5,
+        "cursor": "eyJvZmZzZXQiOiAxNSwgInNpZ25hdHVyZSI6ICJhYjZmNjYwNzM5YTExM2JlODdjNGRlMDkwZmJmNGZmY2FiYThhZDA1MTQ0NGVkNTNiMjdiZjAzNWU5MmNmMGJjIiwgImV4cGlyZXMiOiAxNzkyNzI5MDY3fQ.7501477a9e0ea36c6723e90ddb4dbad7e9e5ef54f200acd1d0c180295ac3fdf0"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5,
+        "cursor": "eyJvZmZzZXQiOiAyMCwgInNpZ25hdHVyZSI6ICJhYjZmNjYwNzM5YTExM2JlODdjNGRlMDkwZmJmNGZmY2FiYThhZDA1MTQ0NGVkNTNiMjdiZjAzNWU5MmNmMGJjIiwgImV4cGlyZXMiOiAxNzkyNzI5MDY4fQ.a2ca5a45b86a15e3e7f9965045ded1f70302949b3736f4afc3bb4aa29acf45bc"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "view": "timeline"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_heatmap",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1,
+        "mode": "event_count",
+        "event_type": "shot"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 200
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 200,
+        "cursor": "eyJvZmZzZXQiOiAyMDAsICJzaWduYXR1cmUiOiAiMzllNDE5NDcxY2ZjNDBlMDZkZTg2YzE1MDA1MWFlMzllMjJmYTlhMDA3NTFkMjUzYzkxYzE4YmVkZWRmNzY5ZSIsICJleHBpcmVzIjogMTc5MjcyOTA3MX0.63a8464bd51878890b4356a3ad159516b1f949ba28c94ed5b613e8723fb9ff10"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 200,
+        "cursor": "eyJvZmZzZXQiOiA0MDAsICJzaWduYXR1cmUiOiAiMzllNDE5NDcxY2ZjNDBlMDZkZTg2YzE1MDA1MWFlMzllMjJmYTlhMDA3NTFkMjUzYzkxYzE4YmVkZWRmNzY5ZSIsICJleHBpcmVzIjogMTc5MjcyOTA3Mn0.5e143b4b4483f40d9e8561bf6929183464334ed5c131dbc0d37eb80142846379"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "outcome": "complete",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "outcome": "incomplete",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "height": "ground",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "height": "low",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "height": "high",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "pressure",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "aerial_duel"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "tackle",
+        "outcome": "all",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "tackle",
+        "outcome": "won",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "tackle",
+        "outcome": "lost",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_ball_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "dribble",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_ball_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "carry",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_tracking_window",
+      "arguments": {
+        "match_id": 900001,
+        "scope": {
+          "kind": "window",
+          "period": 1,
+          "start_ms": 600000,
+          "end_ms": 603000
+        }
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_heatmap",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1,
+        "mode": "occupancy_seconds"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_match_context",
+      "arguments": {
+        "match_id": 900001
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_tracking_frame",
+      "arguments": {
+        "match_id": 900001,
+        "period": 2,
+        "time_ms": 791000
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_tracking_frame",
+      "arguments": {
+        "match_id": 900001,
+        "period": 2,
+        "time_ms": 792000
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_space_coverage",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1,
+        "period": 1,
+        "time_ms": 600000
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "sql": "SELECT 1"
+      },
+      "status_code": 422,
+      "expected_status": 422
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 201
+      },
+      "status_code": 422,
+      "expected_status": 422
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 99999
+      },
+      "status_code": 422,
+      "expected_status": 422
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900099
+      },
+      "status_code": 404,
+      "expected_status": 404
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "scope": {
+          "kind": "window",
+          "period": 1,
+          "start_ms": 2000,
+          "end_ms": 1000
+        }
+      },
+      "status_code": 422,
+      "expected_status": 422
+    },
+    {
+      "operation": "get_tracking_frame",
+      "arguments": {
+        "match_id": 900001,
+        "period": 1,
+        "time_ms": 500
+      },
+      "status_code": 422,
+      "expected_status": 422
+    },
+    {
+      "operation": "execute_query",
+      "arguments": {
+        "sql": "SELECT 1"
+      },
+      "status_code": 404,
+      "expected_status": 404
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "limit": 5,
+        "team_id": 1,
+        "cursor": "eyJvZmZzZXQiOiA1LCAic2lnbmF0dXJlIjogImFiNmY2NjA3MzlhMTEzYmU4N2M0ZGUwOTBmYmY0ZmZjYWJhOGFkMDUxNDQ0ZWQ1M2IyN2JmMDM1ZTkyY2YwYmMiLCAiZXhwaXJlcyI6IDE3OTI3MjkwOTV9.9ac30366b8c4bfa1094137cbc4d1855bba656c9b00a4d055bedf330a6613bca9"
+      },
+      "status_code": 422,
+      "expected_status": 422
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1,
+        "outcome": "on_target",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "aerial_duel",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_tracking_frame",
+      "arguments": {
+        "match_id": 900001,
+        "period": 1,
+        "time_ms": 600000
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "match_id": 900001,
+        "team_id": 1,
+        "outcome": "on_target",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_passes",
+      "arguments": {
+        "match_id": 900001,
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_defensive_actions",
+      "arguments": {
+        "match_id": 900001,
+        "kind": "aerial_duel",
+        "view": "summary"
+      },
+      "status_code": 200,
+      "expected_status": 200
+    },
+    {
+      "operation": "get_tracking_frame",
+      "arguments": {
+        "match_id": 900001,
+        "period": 1,
+        "time_ms": 600000
+      },
+      "status_code": 200,
+      "expected_status": 200
+    }
+  ],
+  "checks": [
+    {
+      "label": "Están disponibles los diez partidos auditados",
+      "passed": true
+    },
+    {
+      "label": "900001: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 23
+    },
+    {
+      "label": "900001: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 1.6903801272059698
+    },
+    {
+      "label": "900001: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900001: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900001: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900002: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 20
+    },
+    {
+      "label": "900002: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 0.9939112392897358
+    },
+    {
+      "label": "900002: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900002: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900002: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900003: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 16
+    },
+    {
+      "label": "900003: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 1.0045377672779896
+    },
+    {
+      "label": "900003: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900003: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900003: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900004: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 25
+    },
+    {
+      "label": "900004: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 1.5564823684376186
+    },
+    {
+      "label": "900004: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900004: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900004: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900005: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 19
+    },
+    {
+      "label": "900005: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 0.8615673903724272
+    },
+    {
+      "label": "900005: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900005: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900005: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900006: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 22
+    },
+    {
+      "label": "900006: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 1.3344499372381675
+    },
+    {
+      "label": "900006: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900006: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900006: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900007: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 11
+    },
+    {
+      "label": "900007: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 0.6444419759732078
+    },
+    {
+      "label": "900007: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900007: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900007: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900008: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 24
+    },
+    {
+      "label": "900008: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 1.5976649441687594
+    },
+    {
+      "label": "900008: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900008: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900008: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900009: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 20
+    },
+    {
+      "label": "900009: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 1.3858130865272276
+    },
+    {
+      "label": "900009: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900009: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900009: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "900010: tiros únicos y total completo",
+      "passed": true,
+      "evidence": 29
+    },
+    {
+      "label": "900010: xG agregado coincide con tiros detallados",
+      "passed": true,
+      "evidence": 2.080104138468211
+    },
+    {
+      "label": "900010: marcador coincide con goles por equipo",
+      "passed": true
+    },
+    {
+      "label": "900010: ubicaciones, períodos y xG válidos",
+      "passed": true
+    },
+    {
+      "label": "900010: seis cambios sin autorreemplazos",
+      "passed": true
+    },
+    {
+      "label": "Totales auditados de los diez partidos",
+      "passed": true,
+      "evidence": {
+        "shots": 209,
+        "passes": 5752,
+        "substitutions": 60
+      }
+    },
+    {
+      "label": "Filtro de tiros del equipo 1",
+      "passed": true
+    },
+    {
+      "label": "Filtro de tiros del equipo 2",
+      "passed": true
+    },
+    {
+      "label": "Filtro de tiros del período 1",
+      "passed": true
+    },
+    {
+      "label": "Filtro de tiros del período 2",
+      "passed": true
+    },
+    {
+      "label": "Cuántos, cuándo y dónde: seis tiros a puerta del equipo 1",
+      "passed": true
+    },
+    {
+      "label": "Paginación de tiros conserva todos los eventos sin duplicarlos",
+      "passed": true
+    },
+    {
+      "label": "La cronología conserva tiros y xG",
+      "passed": true
+    },
+    {
+      "label": "Mapa de tiros del equipo conserva el número de eventos",
+      "passed": true
+    },
+    {
+      "label": "Paginación de pases conserva los 576 IDs únicos",
+      "passed": true
+    },
+    {
+      "label": "Filtro de pases complete",
+      "passed": true,
+      "evidence": 542
+    },
+    {
+      "label": "Filtro de pases incomplete",
+      "passed": true,
+      "evidence": 34
+    },
+    {
+      "label": "Filtro de altura ground",
+      "passed": true
+    },
+    {
+      "label": "Filtro de altura low",
+      "passed": true
+    },
+    {
+      "label": "Filtro de altura high",
+      "passed": true
+    },
+    {
+      "label": "249 presiones consultables",
+      "passed": true
+    },
+    {
+      "label": "Nueve duelos aéreos sin duplicar enfrentamientos",
+      "passed": true
+    },
+    {
+      "label": "Entradas ganadas y perdidas particionan los intentos",
+      "passed": true,
+      "evidence": [
+        29,
+        7,
+        22
+      ]
+    },
+    {
+      "label": "Hay datos consultables de dribble",
+      "passed": true,
+      "evidence": 77
+    },
+    {
+      "label": "Hay datos consultables de carry",
+      "passed": true,
+      "evidence": 714
+    },
+    {
+      "label": "Ventana temporal semiabierta: tres segundos, sin incluir el extremo final",
+      "passed": true
+    },
+    {
+      "label": "Tracking: 22 jugadores únicos dentro del campo por frame",
+      "passed": true
+    },
+    {
+      "label": "Mapa de ocupación: once jugadores por 90 minutos",
+      "passed": true,
+      "evidence": 59400.0
+    },
+    {
+      "label": "Intervalos del cambio: continuidad y entrada efectiva al segundo siguiente",
+      "passed": true,
+      "evidence": {
+        "event_time_ms": 791000,
+        "effective_time_ms": 792000
+      }
+    },
+    {
+      "label": "Sustitución: tracking respeta los intervalos efectivos de participación",
+      "passed": true
+    },
+    {
+      "label": "Voronoi cubre los 7140 m² del campo",
+      "passed": true
+    },
+    {
+      "label": "Se rechazan SQL, filtros inválidos, tiempos imposibles y operaciones no registradas",
+      "passed": true,
+      "evidence": 7
+    },
+    {
+      "label": "Un cursor no permite cambiar los filtros de la consulta",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP stdio: get_shots",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP stdio: get_passes",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP stdio: get_defensive_actions",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP stdio: get_tracking_frame",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP streamable-http: get_shots",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP streamable-http: get_passes",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP streamable-http: get_defensive_actions",
+      "passed": true
+    },
+    {
+      "label": "Paridad API/MCP streamable-http: get_tracking_frame",
+      "passed": true
+    }
+  ]
+}

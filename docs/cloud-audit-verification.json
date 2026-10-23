@@ -1,0 +1,48 @@
+{
+  "checked_at_utc": "2026-10-23T19:47:37.799391+00:00",
+  "source": "Azure Log Analytics, ContainerAppConsoleLogs_CL",
+  "status": "passed",
+  "rows": [
+    {
+      "TableName": "PrimaryResult",
+      "credential": "unauthenticated",
+      "event": "analytics_request",
+      "requests": "43",
+      "role": ""
+    },
+    {
+      "TableName": "PrimaryResult",
+      "credential": "agent-data",
+      "event": "analytics_request",
+      "requests": "36",
+      "role": "agent"
+    },
+    {
+      "TableName": "PrimaryResult",
+      "credential": "team-owner",
+      "event": "analytics_request",
+      "requests": "39",
+      "role": "developer"
+    },
+    {
+      "TableName": "PrimaryResult",
+      "credential": "team-collaborator-01",
+      "event": "analytics_request",
+      "requests": "1",
+      "role": "developer"
+    },
+    {
+      "TableName": "PrimaryResult",
+      "credential": "agent-data",
+      "event": "mcp_tool",
+      "requests": "35",
+      "role": "agent"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Team and agent identities persisted in Azure audit",
+      "passed": true
+    }
+  ]
+}

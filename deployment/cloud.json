@@ -1,0 +1,28 @@
+{
+  "resource_group": "rg-inside-game-demo",
+  "app_name": "api-inside-game",
+  "location": "canadacentral",
+  "environment_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.App/managedEnvironments/env-inside-game-demo",
+  "registry": "acrinsidegame01a160e1",
+  "registry_server": "acrinsidegame01a160e1.azurecr.io",
+  "identity_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourcegroups/rg-inside-game-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id-inside-game-api",
+  "identity_client_id": "2861762f-5ab3-48c6-96d1-b961989c198a",
+  "identity_principal_id": "fcdb7239-90e6-4762-8965-f10657cd3d18",
+  "workspace_id": "84c986cc-7c78-4b51-8b39-c984c3173219",
+  "public_host": "api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io",
+  "min_replicas": 0,
+  "max_replicas": 1,
+  "cpu": 1,
+  "memory": "2Gi",
+  "status": "deployed-and-verified",
+  "authentication": "individual-expiring-bearer-credentials",
+  "url": "https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io",
+  "app_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.App/containerapps/api-inside-game",
+  "image_tag": "demo-20261023-audit",
+  "revision": "api-inside-game--0000001",
+  "outbound_ips": [
+    "4.172.10.70"
+  ],
+  "verified_at_utc": "2026-10-23T19:49:02.651062+00:00",
+  "image_digest": "sha256:26915645b389a01400a831c9838c55467f61c3544569a51dea4fa41b357bebec"
+}

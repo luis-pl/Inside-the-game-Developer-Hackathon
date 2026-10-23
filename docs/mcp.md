@@ -1,5 +1,7 @@
 # MCP de analítica deportiva
 
+También está publicado en Azure con claves individuales: `https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io/mcp`. El cliente remoto debe enviar Authorization Bearer; configuración y límites cloud en [azure-demo.md](azure-demo.md). Las instrucciones siguientes describen además los transportes locales originales.
+
 Servidor implementado con el [SDK oficial de MCP para Python](https://py.sdk.modelcontextprotocol.io/advanced/low-level-server/). Expone **34 herramientas de sólo lectura**: las mismas 25 consultas de datos y nueve análisis espaciales/topológicos de la [API](api.md). El registro y los modelos Pydantic son compartidos, sin mantener otra implementación de las consultas.
 
 Flujo: **cliente o agente → herramienta MCP → API HTTP → vistas de lectura de Azure SQL**. El MCP no necesita credenciales SQL, no abre conexiones a la base y no ejecuta SQL enviado por el cliente. La API debe estar activa. Todos los resultados identifican su procedencia sintética.
@@ -24,7 +26,7 @@ Para conectar desde un cliente MCP por HTTP, inicia en otra terminal:
 .\scripts\start-mcp.ps1 -Transport streamable-http
 ```
 
-La dirección del servidor es **http://127.0.0.1:8001/mcp**. Se introduce como URL de un servidor MCP en el cliente; no es una página de Swagger. Sólo acepta conexiones desde el equipo local y valida Host y Origin. Uvicorn ignora cabeceras de proxy; no se debe publicar con un túnel o proxy que convierta visitantes externos en clientes locales. No se ha desplegado este servidor en Azure. Los procesos deben permanecer activos.
+La dirección de esta variante local es **http://127.0.0.1:8001/mcp**. Se introduce como URL de un servidor MCP en el cliente; no es una página de Swagger. Sólo acepta conexiones desde el equipo local y valida Host y Origin. Uvicorn ignora cabeceras de proxy; no se debe publicar esta variante con un túnel o proxy que convierta visitantes externos en clientes locales. El despliegue Azure usa `inside_game.cloud` y credenciales individuales. Los procesos locales deben permanecer activos mientras se usan sus enlaces localhost.
 
 Para `stdio`, el cliente inicia el proceso y se comunica por su entrada/salida estándar. Comando desde el repositorio:
 

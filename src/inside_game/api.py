@@ -19,6 +19,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import Field
 
 from inside_game import contracts as c
+from inside_game.access import KeyRegistry
 from inside_game.errors import DomainError
 from inside_game.service import OPERATIONS, SPATIAL_OPERATIONS, AnalyticsService
 from inside_game.settings import Settings
@@ -57,7 +58,8 @@ def create_app(settings=None, repository=None):
     settings = settings or Settings.from_env()
     if settings.api_key and len(settings.api_key) < 32:
         raise ValueError("INSIDE_GAME_API_KEY must contain at least 32 characters")
-    if not settings.local_access and not settings.api_key:
+    registry = KeyRegistry(settings.credentials)
+    if not settings.local_access and not settings.api_key and not registry.entries:
         raise ValueError("Remote API access requires INSIDE_GAME_API_KEY")
     service = AnalyticsService(repository or SqlRepository(settings))
     app = FastAPI(
@@ -66,6 +68,7 @@ def create_app(settings=None, repository=None):
         description="25 consultas predeterminadas y 9 análisis espaciales sobre datos sintéticos de Azure SQL. Los POST de consulta son de sólo lectura.",
     )
     app.state.service, app.state.settings = service, settings
+    app.state.registry = registry
     rates, lock = defaultdict(deque), threading.Lock()
     slots = threading.BoundedSemaphore(settings.max_concurrent)
 
@@ -81,15 +84,35 @@ def create_app(settings=None, repository=None):
             and credential
             and secrets.compare_digest(credential.credentials, settings.api_key)
         )
-        if not local and not valid_key:
+        principal = registry.verify(credential.credentials) if credential else None
+        if not local and not valid_key and principal is None:
             raise DomainError(
                 "UNAUTHORIZED", "A valid bearer API key is required.", 401
             )
         identity = (
-            hashlib.sha256(credential.credentials.encode()).hexdigest()
-            if valid_key
-            else "local"
+            principal.id
+            if principal
+            else (
+                hashlib.sha256(credential.credentials.encode()).hexdigest()
+                if valid_key
+                else "local"
+            )
         )
+        request.state.principal = principal
+        request.state.credential_id = identity
+        request.state.credential_role = (
+            principal.role if principal else "local" if local else "legacy"
+        )
+        operation = request.url.path.removeprefix("/api/operations/")
+        if (
+            principal
+            and request.url.path.startswith("/api/operations/")
+            and operation in OPERATIONS
+            and operation not in principal.operations
+        ):
+            raise DomainError(
+                "FORBIDDEN", "This credential cannot use the requested operation.", 403
+            )
         with lock:
             now = time.monotonic()
             entries = rates[identity]
@@ -114,6 +137,15 @@ def create_app(settings=None, repository=None):
             slots.release()
 
     async def call(operation, body, request):
+        principal = getattr(request.state, "principal", None)
+        if principal and operation not in principal.operations:
+            raise DomainError(
+                "FORBIDDEN", "This credential cannot use the requested operation.", 403
+            )
+        request.state.operation = operation
+        request.state.match_ids = getattr(
+            body, "match_ids", [body.match_id] if hasattr(body, "match_id") else []
+        )
         try:
             result = await asyncio.wait_for(
                 asyncio.to_thread(
@@ -139,6 +171,7 @@ def create_app(settings=None, repository=None):
 
     @app.middleware("http")
     async def request_context(request, call_next):
+        started = time.monotonic()
         request.state.request_id = str(uuid4())
         if len(list(request.query_params.multi_items())) != len(request.query_params):
             return JSONResponse(
@@ -199,6 +232,24 @@ def create_app(settings=None, repository=None):
         response.headers["X-Request-ID"] = request.state.request_id
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Cache-Control"] = "no-store"
+        # Lista cerrada de campos: nunca registrar Authorization, claves o cuerpos.
+        if settings.credentials:
+            log.warning(
+                json.dumps(
+                    {
+                        "event": "analytics_request",
+                        "request_id": request.state.request_id,
+                        "credential_id": getattr(
+                            request.state, "credential_id", "unauthenticated"
+                        ),
+                        "role": getattr(request.state, "credential_role", None),
+                        "operation": getattr(request.state, "operation", None),
+                        "match_ids": getattr(request.state, "match_ids", []),
+                        "status_code": response.status_code,
+                        "duration_ms": round((time.monotonic() - started) * 1000),
+                    }
+                )
+            )
         return response
 
     @app.exception_handler(DomainError)
@@ -259,6 +310,17 @@ def create_app(settings=None, repository=None):
     @app.get("/health", tags=["Service"])
     async def health():
         return {"status": "ok", "service": "inside-game-api", "database_checked": False}
+
+    @app.get("/api/whoami", tags=["Service"], dependencies=[Depends(authenticated)])
+    async def whoami(request: Request):
+        """Comprueba qué identidad y permisos tiene la credencial presentada."""
+        principal = getattr(request.state, "principal", None)
+        return {
+            "credential_id": request.state.credential_id,
+            "role": request.state.credential_role,
+            "expires_at": principal.expires_at if principal else None,
+            "operations": sorted(principal.operations if principal else OPERATIONS),
+        }
 
     @app.get("/api/operations", tags=["Catalog"], dependencies=[Depends(authenticated)])
     async def operations():

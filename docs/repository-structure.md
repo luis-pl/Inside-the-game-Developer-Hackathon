@@ -30,6 +30,8 @@ Inside-the-game-Developer-Hackathon/
 │       ├── orchestrator.py
 │       ├── api.py
 │       ├── mcp_server.py          # Tools MCP sobre las rutas fijas de la API
+│       ├── access.py              # Credenciales individuales, caducidad y permisos
+│       ├── cloud.py               # API + MCP con identidad preservada en Azure
 │       └── cli.py
 ├── frontend/
 │   └── src/
@@ -51,7 +53,8 @@ La API, los contratos, el servicio de consultas, el acceso SQL y los cálculos
 espaciales están implementados. `pyproject.toml` define dependencias y el comando
 `inside-game-api`. Instalación y uso: [api.md](api.md).
 
-El servidor MCP está implementado con SDK oficial y transportes stdio y Streamable HTTP
-local. Uso y conexión: [mcp.md](mcp.md). Los agentes, prompts, proveedores de modelos,
+El servidor MCP está implementado con SDK oficial y transportes stdio y Streamable HTTP.
+El contenedor público de Azure usa credenciales individuales y lectura SQL con identidad
+administrada. Uso: [mcp.md](mcp.md) y [azure-demo.md](azure-demo.md). Los agentes, prompts, proveedores de modelos,
 orquestación, frontend e integraciones A2A mantienen sus módulos reservados. La infraestructura y los datos de Azure SQL
-se conservan en `database/azure-sql/`. La API no despliega alojamiento nuevo en Azure.
+se conservan en `database/azure-sql/`. Los scripts de despliegue están en `scripts/` y los identificadores públicos del alojamiento en `deployment/cloud.json`.

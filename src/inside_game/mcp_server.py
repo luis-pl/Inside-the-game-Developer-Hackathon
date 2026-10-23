@@ -187,9 +187,10 @@ class ApiBridge:
     Los contadores de concurrencia y frecuencia se comparten por esta instancia.
     """
 
-    def __init__(self, settings=None, transport=None):
+    def __init__(self, settings=None, transport=None, token_provider=None):
         self.settings = settings or McpSettings.from_env()
         self.transport = transport
+        self.token_provider = token_provider
         self.active = 0
         self.requests = deque()
 
@@ -254,8 +255,9 @@ class ApiBridge:
         cliente no puede elegir rutas, URLs, cabeceras ni sentencias SQL.
         """
         headers = {}
-        if self.settings.api_key:
-            headers["Authorization"] = "Bearer " + self.settings.api_key
+        key = self.token_provider() if self.token_provider else self.settings.api_key
+        if key:
+            headers["Authorization"] = "Bearer " + key
         async with httpx.AsyncClient(  # noqa: SIM117 -- keep client and streamed response lifetimes visible
             base_url=self.settings.api_url.rstrip("/"),
             headers=headers,
@@ -340,21 +342,45 @@ class ApiBridge:
         )
 
 
-def create_server(settings=None, transport=None):
+def create_server(
+    settings=None,
+    transport=None,
+    token_provider=None,
+    operation_provider=None,
+    audit_callback=None,
+):
     """Conecta descubrimiento y ejecución MCP con una misma instancia del puente.
 
     Crear el servidor no consulta Azure. tools/list describe las herramientas;
     tools/call invoca la API únicamente cuando el cliente pide una operación.
     """
-    bridge = ApiBridge(settings, transport)
+    bridge = ApiBridge(settings, transport, token_provider)
 
     async def list_tools(ctx, params):
-        return ListToolsResult(tools=tool_catalog())
+        allowed = operation_provider() if operation_provider else OPERATIONS
+        return ListToolsResult(
+            tools=[tool for tool in tool_catalog() if tool.name in allowed]
+        )
 
     async def call_tool(ctx, params):
-        return await bridge.call(
-            params.name, params.arguments if params.arguments is not None else {}
-        )
+        if (
+            operation_provider
+            and params.name in OPERATIONS
+            and params.name not in operation_provider()
+        ):
+            result = failure(
+                "FORBIDDEN", "This credential cannot use the requested operation."
+            )
+        else:
+            result = await bridge.call(
+                params.name, params.arguments if params.arguments is not None else {}
+            )
+        if audit_callback:
+            audit_callback(
+                params.name if params.name in OPERATIONS else "unregistered",
+                result.is_error,
+            )
+        return result
 
     return Server(
         "inside-game-analytics",
@@ -428,6 +454,7 @@ class LoopbackOnly:
     Consulta scope.client, no X-Forwarded-For. Deja pasar los eventos lifespan
     para que el SDK pueda iniciar y cerrar sus recursos normalmente.
     """
+
     def __init__(self, app):
         self.app = app
 
