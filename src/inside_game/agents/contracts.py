@@ -61,7 +61,8 @@ class DataResult(Message):
     evidence: list[Evidence] = Field(default_factory=list)
     issues: list[AgentIssue] = Field(default_factory=list)
     model: str
-    prompt_version: str = "data-agent-1"
+    prompt_version: str = "data-agent-2"
+    prompt_sha256: str = ""
     tool_calls: int = 0
     model_turns: int = 0
     total_tokens: int = 0

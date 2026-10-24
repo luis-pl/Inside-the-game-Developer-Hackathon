@@ -6,6 +6,7 @@ este ejecutor controla herramientas, paginación, presupuestos y finalización.
 """
 
 import asyncio
+import hashlib
 import json
 import logging
 import sysconfig
@@ -39,7 +40,7 @@ class AgentLimits:
     max_evidence_bytes: int = 8 * 1024 * 1024
     max_input_bytes: int = 300 * 1024
     max_tokens: int = (
-        100000  # Consumo observado; una respuesta en curso puede excederlo.
+        160000  # Consumo observado; una respuesta en curso puede excederlo.
     )
     timeout_seconds: float = 240
 
@@ -58,19 +59,24 @@ def load_prompt():
     return path.read_text(encoding="utf-8")
 
 
-def preview(value, depth=0):
+def preview(value, depth=0, *, list_limit=8):
     """Acota el contexto LLM; nunca modifica la evidencia entregada al consumidor."""
     if depth > 7:
         return {"preview_omitted": True}
     if isinstance(value, list):
-        items = [preview(v, depth + 1) for v in value[:8]]
+        items = [
+            preview(v, depth + 1, list_limit=list_limit) for v in value[:list_limit]
+        ]
         return (
             {"items": items, "total_items": len(value), "preview_only": True}
-            if len(value) > 8
+            if len(value) > list_limit
             else items
         )
     if isinstance(value, dict):
-        return {k: preview(v, depth + 1) for k, v in list(value.items())[:50]}
+        return {
+            k: preview(v, depth + 1, list_limit=list_limit)
+            for k, v in list(value.items())[:50]
+        }
     if isinstance(value, str) and len(value) > 800:
         return value[:800] + " [preview truncated]"
     return value
@@ -129,6 +135,7 @@ class _Run:
             tool_calls=self.calls,
             model_turns=self.turns,
             total_tokens=self.tokens,
+            prompt_sha256=hashlib.sha256(self.agent.prompt.encode()).hexdigest(),
         )
 
     def failed(self, code):
@@ -200,6 +207,20 @@ class _Run:
                 continue
             if len(calls) > 8:
                 raise StopRun("MODEL_EXPECTED_TOOL_CALL")
+            # Finalizar en medio de un lote descartaría las consultas restantes.
+            # Devuelve una respuesta por call_id para mantener válido el protocolo.
+            if len(calls) > 1 and any(c.get("name") == FINISH for c in calls):
+                for call in calls:
+                    messages.append(
+                        {
+                            "type": "function_call_output",
+                            "call_id": call["call_id"],
+                            "output": json.dumps(
+                                {"error": {"code": "FINISH_MUST_BE_SEPARATE"}}
+                            ),
+                        }
+                    )
+                continue
             for call in calls:
                 try:
                     if len(call.get("arguments", "")) > 65536:
@@ -247,6 +268,26 @@ class _Run:
             # Un resultado parcial jamás se convierte en completo al omitir la
             # última página: se incluyen todas las páginas de cada query elegida.
             selected_queries = {e.query_id for e in selected}
+            # No basta con incluir todas las páginas de UNA consulta: el modelo
+            # tampoco puede ocultar otra consulta analítica entera y decir complete.
+            omitted_queries = {
+                e.query_id
+                for e in self.evidence
+                if e.operation
+                not in {"describe_dataset", "find_entities", "list_matches"}
+                and e.query_id not in selected_queries
+            }
+            if omitted_queries:
+                return None, {
+                    "error": {
+                        "code": "OMITTED_QUERY_EVIDENCE",
+                        "evidence_ids": [
+                            e.evidence_id
+                            for e in self.evidence
+                            if e.query_id in omitted_queries
+                        ],
+                    }
+                }
             all_pages = {
                 e.evidence_id for e in self.evidence if e.query_id in selected_queries
             }
@@ -291,7 +332,11 @@ class _Run:
                 self.issues.append(AgentIssue(code=error, operation=name))
                 if error in {"UNAUTHORIZED", "FORBIDDEN"}:
                     raise StopRun(error)
-                self.incomplete_queries.add(query_id)
+                # Igual que la validación local: un argumento rechazado ANTES
+                # de recuperar páginas puede corregirse con otra consulta.
+                # Fallar tras una página sí deja evidencia incompleta.
+                if error != "INVALID_ARGUMENT" or pages:
+                    self.incomplete_queries.add(query_id)
                 records.append({"error": {"code": error}})
                 break
             # Valida identidad y procedencia; no confiar en texto de herramientas.
@@ -320,7 +365,14 @@ class _Run:
             records.append(
                 {
                     "evidence_id": evidence.evidence_id,
-                    "response_preview": preview(response.model_dump(mode="json")),
+                    # Catálogos pequeños completos: mostrar sólo las ocho primeras
+                    # filas ocultaba todos los partidos reales tras los sintéticos.
+                    "response_preview": preview(
+                        response.model_dump(mode="json"),
+                        list_limit=200
+                        if name in {"list_matches", "find_entities"}
+                        else 8,
+                    ),
                 }
             )
             pages += 1
@@ -347,7 +399,8 @@ class _Run:
         result = {
             "query_id": query_id,
             "pages": records,
-            "complete": query_id not in self.incomplete_queries,
+            "complete": query_id not in self.incomplete_queries
+            and not any("error" in record for record in records),
         }
         self.cache[key] = result
         return result

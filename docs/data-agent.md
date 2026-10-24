@@ -10,7 +10,8 @@ de la salida son evidencia original del MCP conservada por código.
 - `src/inside_game/agents/data_agent.py`: ejecutor y límites.
 - `src/inside_game/agents/contracts.py`: mensajes de entrada/salida.
 - `prompts/data_agent.md`: instrucciones editables, incluidas en el wheel.
-- `src/inside_game/providers/models.py`: Responses (Luna), Chat Completions (GPT-OSS) y auth.
+- `src/inside_game/providers/models.py`: contratos de proveedor y adaptadores Responses/Chat Completions.
+- `src/inside_game/providers/opencode.py`: Beam Free por Go, sesión CLI y comprobación de precio cero.
 - `src/inside_game/tools/mcp_client.py`: conexión MCP autenticada.
 - `tests/fixtures/data_agent_cases.json`: corpus de solicitudes deportivas.
 
@@ -124,7 +125,10 @@ finalización con esquema estricto. El adaptador GPT-OSS expande referencias y
 describe los enums numéricos como texto porque el renderizador Azure rechaza su
 representación original; sus valores siguen validados con los contratos originales.
 Este adaptador omite `strict` y usa `tool_choice=auto`, requerido por el servicio.
-La finalización sólo permite seleccionar evidencia existente. Si el modelo devuelve
+La finalización sólo permite seleccionar evidencia existente. No acepta
+finalización y consultas en el mismo lote, ni permite declarar completo
+omitiendo una consulta analítica entera. Cada resultado identifica el prompt
+usado con `prompt_version` y `prompt_sha256`. Si el modelo devuelve
 texto libre, se le pide corregir el protocolo hasta dos veces; ese texto nunca se
 interpreta como datos ni como una llamada ejecutable.
 
@@ -136,7 +140,7 @@ parcial, aunque el modelo solicite marcar completo.
 
 Límites predeterminados por solicitud: 16 turnos, 60 llamadas MCP incluyendo
 reintentos, 20 páginas por consulta, 8 MiB de evidencia y 240 segundos. El consumo
-observado se limita a 100.000 tokens; una respuesta ya en curso puede superar ese
+observado se limita a 160.000 tokens; una respuesta ya en curso puede superar ese
 umbral. Cada turno permite hasta 4.096 tokens de salida incluyendo razonamiento.
 El proveedor hace un reintento transitorio y el ejecutor hace un reintento por
 fallo transitorio MCP. La autenticación fallida detiene la solicitud. Estos límites
@@ -149,9 +153,12 @@ Se usa razonamiento `medium`, sin `temperature`. En Responses se conserva la
 salida de razonamiento cifrado entre turnos y `store=false`. En Chat Completions
 se preservan los mensajes de llamada y sus IDs para asociarlos a sus resultados.
 
-El tracking es sintético a 1 Hz, el xG ilustrativo, los eventos usan referencia
-120x80 del equipo actuante y el tracking metros fijos. El agente no interpola ni
-convierte métricas geométricas en un score táctico calibrado.
+El catálogo combina historial sintético (1 Hz, xG ilustrativo) y diez partidos
+reales Metrica/SkillCorner (muestras de 5 Hz). El agente conserva la procedencia
+por partido y los campos ausentes. Tracking devuelve por defecto 1 Hz: solicitar
+`sample_step_ms=200` para las muestras reales a 5 Hz. Los eventos usan referencia
+120x80 del equipo actuante y tracking metros fijos. No interpola ni transforma
+geometría en una puntuación táctica calibrada.
 
 ## Pruebas
 

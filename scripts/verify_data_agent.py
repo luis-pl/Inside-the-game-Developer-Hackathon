@@ -1,12 +1,13 @@
-"""Evalúa texto -> modelo Azure real -> MCP real con el corpus del repositorio.
+"""Evalúa texto -> modelo configurado real -> MCP real con el corpus elegido.
 
 Lee sólo la credencial individual agent-data fuera de Git. El informe conserva
-operaciones, argumentos y verificaciones, nunca claves ni respuestas de Azure
-OpenAI. No usa un modelo simulado ni modifica registros SQL.
+operaciones, argumentos y verificaciones, nunca claves ni razonamiento privado.
+No usa un modelo simulado ni modifica registros SQL.
 """
 
 import argparse
 import asyncio
+import hashlib
 import json
 import os
 from datetime import UTC, datetime
@@ -14,12 +15,55 @@ from pathlib import Path
 
 from azure_runtime import ROOT
 
-from inside_game.agents.data_agent import DataAgent
+from inside_game.agents.data_agent import DataAgent, load_prompt
 from inside_game.providers.models import create_model, model_settings_from_env
 from inside_game.tools.mcp_client import DataMcpSettings, connect_data_mcp
 
 
+class ObservedMcp:
+    """Records tool use, including discovery not selected as final evidence."""
+
+    def __init__(self, client):
+        self.client, self.calls = client, []
+
+    async def list_tools(self):
+        return await self.client.list_tools()
+
+    async def call_tool(self, name, arguments):
+        result = await self.client.call_tool(name, arguments)
+        self.calls.append(
+            {"operation": name, "arguments": arguments, "is_error": result.is_error}
+        )
+        return result
+
+
+def comparable_response(payload):
+    """Cursor signatures expire; compare page structure, not a newly minted token."""
+    fields = (
+        "data",
+        "scope",
+        "provenance",
+        "coverage",
+        "coordinates",
+        "warnings",
+        "method_id",
+    )
+    value = {field: payload.get(field) for field in fields}
+    pagination = dict(payload.get("pagination") or {})
+    pagination["next_cursor"] = bool(pagination.get("next_cursor"))
+    value["pagination"] = pagination
+    return value
+
+
 async def verify(args):
+    env_file = getattr(args, "env_file", None)
+    if env_file:
+        for line in env_file.read_text(encoding="utf-8-sig").splitlines():
+            name, sep, value = line.partition("=")
+            if sep and name.strip().startswith(("INSIDE_GAME_", "AZURE_")):
+                os.environ.setdefault(name.strip(), value.strip().strip("\"'"))
+    if args.private_file is None:
+        args.private_file = Path(os.environ["INSIDE_GAME_DATA_MCP_CREDENTIAL_FILE"])
     credential = json.loads(args.private_file.read_text(encoding="utf-8"))
     if credential.get("credential_id") != "agent-data":
         raise ValueError("Use only the individual agent-data handoff file")
@@ -56,19 +100,29 @@ async def verify(args):
         )
     mcp_settings = DataMcpSettings(state["url"] + "/mcp", credential["key"])
     cases = json.loads(
-        (ROOT / "tests/fixtures/data_agent_cases.json").read_text(encoding="utf-8")
+        (
+            getattr(args, "cases_file", None)
+            or ROOT / "tests/fixtures/data_agent_cases.json"
+        ).read_text(encoding="utf-8")
     )
     if args.case:
         cases = [case for case in cases if case["id"] in args.case]
         if not cases:
             raise ValueError("Unknown case")
     model_settings = model_settings_from_env()
+    prompt_file = getattr(args, "prompt_file", None)
+    prompt = prompt_file.read_text(encoding="utf-8") if prompt_file else load_prompt()
+    results_dir = getattr(args, "results_dir", None)
+    if results_dir:
+        results_dir.mkdir(parents=True, exist_ok=True)
     report = {
         "tested_at_utc": datetime.now(UTC).isoformat(),
-        "source": "Configured model -> authenticated MCP -> Azure SQL (synthetic)",
+        "source": "Configured model -> authenticated MCP -> Azure SQL; provenance checked per case",
         "provider": provider,
         "model": model_settings.deployment,
         "model_api": model_settings.api,
+        "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+        "free_only": getattr(model_settings, "free_only", False),
         "llm_used": True,
         "natural_language_evaluated": True,
         "status": "running",
@@ -78,16 +132,24 @@ async def verify(args):
         create_model(model_settings) as model,
         connect_data_mcp(mcp_settings) as mcp,
     ):
-        agent = DataAgent(model)
+        agent = DataAgent(model, prompt=prompt)
         for case in cases:
-            result = await agent.run(case["request"], mcp)
+            observed = ObservedMcp(mcp)
+            print(json.dumps({"id": case["id"], "status": "running"}), flush=True)
+            result = await agent.run(case["request"], observed)
             evidence = result.evidence
             operations = {e.operation for e in evidence}
             checks = {
                 "expected_status": result.status in case["expected_status"],
                 "required_operations": set(case["required_operations"]) <= operations,
-                "synthetic_provenance": all(
-                    e.response.provenance.get("is_synthetic") is True for e in evidence
+                "discovery_operations": set(case.get("discovery_operations", []))
+                <= {c["operation"] for c in observed.calls},
+                "expected_provenance": all(
+                    e.response.provenance.get("is_synthetic")
+                    is case.get("is_synthetic", True)
+                    for e in evidence
+                    if e.operation
+                    not in {"describe_dataset", "list_matches", "find_entities"}
                 ),
                 "required_arguments": all(
                     any(
@@ -126,16 +188,20 @@ async def verify(args):
                 ),
                 "clarification": result.status != "needs_clarification"
                 or bool(result.clarification),
+                "forbidden_note_terms": not any(
+                    term.casefold()
+                    in " ".join([result.clarification or "", *result.notes]).casefold()
+                    for term in case.get("forbidden_note_terms", [])
+                ),
             }
             # Cotejo directo: comprueba que los datos entregados mantienen los
             # valores reales del MCP, incluso si el LLM los vio como preview.
             checks["original_data_preserved"] = True
             for e in evidence:
                 original = await mcp.call_tool(e.operation, e.arguments)
-                if (
-                    original.is_error
-                    or original.structured_content["data"] != e.response.data
-                ):
+                if original.is_error or comparable_response(
+                    original.structured_content
+                ) != comparable_response(e.response.model_dump(mode="json")):
                     checks["original_data_preserved"] = False
                     break
             item = {
@@ -147,6 +213,9 @@ async def verify(args):
                 "model_turns": result.model_turns,
                 "total_tokens": result.total_tokens,
                 "issues": [i.model_dump() for i in result.issues],
+                "notes": result.notes,
+                "clarification": result.clarification,
+                "executed_calls": observed.calls,
                 "queries": [
                     {
                         "operation": e.operation,
@@ -156,6 +225,10 @@ async def verify(args):
                     for e in evidence
                 ],
             }
+            if results_dir:
+                (results_dir / (case["id"] + ".json")).write_text(
+                    result.model_dump_json(indent=2) + "\n", encoding="utf-8"
+                )
             report["cases"].append(item)
             args.report.write_text(
                 json.dumps(report, indent=2) + "\n", encoding="utf-8"
@@ -173,7 +246,11 @@ async def verify(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--private-file", type=Path, required=True)
+    parser.add_argument("--private-file", type=Path)
+    parser.add_argument("--env-file", type=Path)
+    parser.add_argument("--cases-file", type=Path)
+    parser.add_argument("--prompt-file", type=Path)
+    parser.add_argument("--results-dir", type=Path)
     parser.add_argument("--case", action="append")
     parser.add_argument(
         "--report", type=Path, default=ROOT / "docs/data-agent-verification.json"

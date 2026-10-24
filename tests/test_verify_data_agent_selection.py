@@ -47,3 +47,25 @@ def test_verification_does_not_reactivate_unselected_model(monkeypatch, tmp_path
     assert report["reason"] == "MODEL_NOT_SELECTED"
     assert report["llm_used"] is False
     assert "test-secret-not-real" not in report_path.read_text(encoding="utf-8")
+
+
+def test_evidence_comparison_ignores_only_opaque_cursor_refresh(monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "scripts"))
+    from verify_data_agent import comparable_response
+
+    original = {
+        "data": {"items": [{"x": 1.25}]},
+        "pagination": {"next_cursor": "old"},
+        "warnings": ["missing xG"],
+    }
+    refreshed = {**original, "pagination": {"next_cursor": "new"}}
+    assert comparable_response(original) == comparable_response(refreshed)
+    assert comparable_response(original) != comparable_response(
+        {**refreshed, "pagination": {"next_cursor": None}}
+    )
+    assert comparable_response(original) != comparable_response(
+        {**refreshed, "data": {"items": [{"x": 1.26}]}}
+    )
+    assert comparable_response(original) != comparable_response(
+        {**refreshed, "warnings": []}
+    )

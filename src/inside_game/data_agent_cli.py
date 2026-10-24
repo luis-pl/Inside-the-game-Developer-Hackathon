@@ -55,6 +55,7 @@ def main():
         )
     payload = result.model_dump_json(indent=2)
     if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(payload + "\n", encoding="utf-8")
     else:
         print(payload)

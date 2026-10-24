@@ -222,6 +222,39 @@ def test_duplicate_queries_are_reused():
     assert result.status == "complete" and len(mcp.calls) == 1
 
 
+def test_complete_cannot_omit_an_entire_analytical_query():
+    model = ScriptedModel(
+        tool("get_shots", {"match_id": 900001, "player_id": 106}),
+        tool("get_shots", {"match_id": 900001, "player_id": 110}),
+        finish(["e1"]),
+        finish(["e1", "e2"]),
+    )
+    result = run(model, FakeMcp(success(payload()), success(payload())))
+    assert result.status == "complete" and len(result.evidence) == 2
+    assert "OMITTED_QUERY_EVIDENCE" in model.seen[3][-1]["output"]
+    assert len(result.prompt_sha256) == 64
+
+
+def test_catalog_preview_does_not_hide_real_matches_after_synthetic_ones():
+    items = [{"match_id": 900001 + i, "is_synthetic": i < 10} for i in range(20)]
+    model = ScriptedModel(tool("list_matches", {}), finish(["e1"]))
+    result = run(
+        model, FakeMcp(success(payload("list_matches", data={"items": items})))
+    )
+    visible = json.loads(model.seen[1][-1]["output"])
+    assert visible["pages"][0]["response_preview"]["data"]["items"] == items
+    assert result.evidence[0].response.data["items"] == items
+
+
+def test_finish_mixed_with_queries_does_not_drop_later_calls():
+    query = tool("get_shots", {"match_id": 900001})
+    model = ScriptedModel([finish([], "unsupported"), query], query, finish(["e1"]))
+    mcp = FakeMcp(success(payload()))
+    result = run(model, mcp)
+    assert result.status == "complete" and len(mcp.calls) == 1
+    assert all("FINISH_MUST_BE_SEPARATE" in m["output"] for m in model.seen[1][-2:])
+
+
 def test_mcp_auth_failure_stops_without_model_retry():
     model = ScriptedModel(tool("get_shots", {"match_id": 900001}))
     result = run(model, FakeMcp(failure("UNAUTHORIZED")))
@@ -257,6 +290,36 @@ def test_failed_later_query_cannot_be_silently_omitted_as_complete():
         finish(["e1"]),
     )
     result = run(model, mcp)
+    assert result.status == "partial"
+
+
+def test_rejected_arguments_can_be_corrected_without_permanent_partial_status():
+    model = ScriptedModel(
+        tool(
+            "get_defensive_actions",
+            {"match_id": 900001, "kind": "all", "outcome": "won"},
+        ),
+        tool(
+            "get_defensive_actions",
+            {"match_id": 900001, "kind": "aerial_duel", "outcome": "won"},
+        ),
+        finish(["e1"]),
+    )
+    result = run(
+        model,
+        FakeMcp(failure("INVALID_ARGUMENT"), success(payload("get_defensive_actions"))),
+    )
+    assert result.status == "complete" and len(result.evidence) == 1
+    assert result.issues[0].code == "INVALID_ARGUMENT"
+    assert json.loads(model.seen[1][-1]["output"])["complete"] is False
+
+
+def test_rejected_later_page_still_means_incomplete_evidence():
+    model = ScriptedModel(tool("get_shots", {"match_id": 900001}), finish(["e1"]))
+    result = run(
+        model,
+        FakeMcp(success(payload(next_cursor="next")), failure("INVALID_ARGUMENT")),
+    )
     assert result.status == "partial"
 
 

@@ -1,7 +1,8 @@
 param(
     [string]$Text,
     [string]$RequestFile,
-    [string]$OutputFile
+    [string]$OutputFile,
+    [switch]$ShowTools
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -23,5 +24,6 @@ $agentArgs = @('-m', 'inside_game.data_agent_cli')
 if ($Text) { $agentArgs += @('--text', $Text) }
 if ($RequestFile) { $agentArgs += @('--request-file', $RequestFile) }
 if ($OutputFile) { $agentArgs += @('--output', $OutputFile) }
+if ($ShowTools) { $agentArgs += '--verbose' }
 & (Join-Path $repoRoot '.venv/Scripts/python.exe') @agentArgs
 exit $LASTEXITCODE

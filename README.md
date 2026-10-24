@@ -15,6 +15,8 @@ El servidor MCP también está implementado: expone las mismas 34 operaciones po
 
 El [agente de datos](docs/data-agent.md) recibe texto y contexto opcional, selecciona consultas MCP y devuelve evidencia original. Incluye prompt editable, proveedores Responses/Chat Completions y CLI `inside-game-data-agent`. El modelo local seleccionado es **Beam Free mediante OpenCode Go**, autenticado con la sesión autorizada del CLI. Estado en [agent-model.json](deployment/agent-model.json).
 
+[Ejecutar el visor y probar el agente paso a paso](docs/run-and-review-data-agent.md).
+
 DeepSeek V4 Flash está desplegado como candidato: pasó una consulta real de tiros con un catálogo reducido, pero las dos pruebas con las 34 herramientas terminaron parciales por cuota de 20.000 TPM. No se activó como modelo predeterminado. [Resultados y límites](docs/deepseek-v4.md).
 
 La conexión [OpenCode Go con Beam Free](docs/opencode.md) verificó catálogo, precios publicados cero y una consulta real modelo → MCP → SQL. Se mantiene `INSIDE_GAME_OPENCODE_FREE_ONLY=1`: si no se confirma precio cero, se detiene antes de inferencia. No se compraron créditos ni se activó fallback a Console/Zen. La [demostración trazada](docs/examples/agent-live-demo-20261024/README.md) conserva entrada, llamadas y evidencia; una prueba acotada no equivale al QA de todo el corpus. Los ensayos con Luna/GPT-OSS/DeepSeek quedan como historial. El [presupuesto Azure](deployment/demo-budget.json) sólo registra un objetivo y no corta consumo.
