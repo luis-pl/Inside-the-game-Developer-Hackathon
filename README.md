@@ -6,7 +6,7 @@ La API de analítica deportiva está implementada: **25 consultas predeterminada
 
 El servidor MCP también está implementado: expone las mismas 34 operaciones por `stdio` o HTTP local en `http://127.0.0.1:8001/mcp`, a través de la API. Inicio HTTP: `scripts/start-mcp.ps1 -Transport streamable-http`.
 
-Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json) y [MCP HTTP](docs/mcp-verification-streamable-http.json). Los agentes y el frontend siguen pendientes de implementación.
+Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json) y [MCP HTTP](docs/mcp-verification-streamable-http.json). Los agentes siguen pendientes. El frontend Topology Lab está implementado con cancha interactiva, persistencia y análisis de conectividad; consulta docs/topology-lab.md.
 
 > Build something that breaks the fourth wall.
 
@@ -57,7 +57,7 @@ Bring your own stack. Recommended defaults:
 ├── README.md        # You are here
 ├── .gitignore       # Keep build artifacts out
 ├── src/inside_game/ # Python backend scaffold
-├── frontend/        # Frontend scaffold
+├── frontend/        # React/TypeScript topology dashboard
 ├── prompts/         # Agent prompts, pending implementation
 ├── tests/           # Tests, pending implementation
 ├── docs/            # Repository documentation
@@ -68,7 +68,7 @@ Bring your own stack. Recommended defaults:
 ```
 
 The initial scaffold is documented in [docs/repository-structure.md](docs/repository-structure.md).
-The API, analytics service, SQL tools and MCP adapter are implemented. Agent and frontend modules remain placeholders.
+The API, analytics service, SQL tools and MCP adapter are implemented. Agent modules remain placeholders. The Topology Lab frontend is implemented.
 
 ## 📋 Submission checklist
 
@@ -97,3 +97,7 @@ The API, analytics service, SQL tools and MCP adapter are implemented. Agent and
 ---
 
 *Built with curiosity. Enter the game.*
+
+## Topology Lab
+
+Dashboard de cancha con tracking, conectividad H0/H1, espacio libre y retirada de nodos. Inicio local: .\scripts\start-dashboard.ps1. Consulta docs/topology-lab.md para credenciales, arquitectura y definiciones matemáticas.

@@ -1,0 +1,559 @@
+main .workspace {
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 24px;
+}
+main {
+  max-width: 1600px;
+}
+.intro {
+  padding: 26px 0 22px;
+}
+.quick-guide {
+  display: flex;
+  gap: 28px;
+  padding: 15px 20px;
+  margin-bottom: 22px;
+  border: 1px solid #d9e4d0;
+  background: #edf2e5;
+  border-radius: 9px;
+  font-size: 12px;
+  color: #5d7354;
+  flex-wrap: wrap;
+}
+.quick-guide span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.quick-guide b {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  color: #43683d;
+  font-size: 11px;
+}
+.view-switch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.view-switch button {
+  border: 1px solid #dde4d7;
+  background: #fffefa;
+  border-radius: 9px;
+  padding: 15px 18px;
+  display: flex;
+  gap: 14px;
+  text-align: left;
+  align-items: center;
+  color: #6d7c65;
+}
+.view-switch button > span {
+  font-size: 29px;
+  font-weight: 400;
+}
+.view-switch button strong {
+  display: block;
+  color: #324d34;
+  font-size: 15px;
+  font-weight: 600;
+}
+.view-switch button small {
+  display: block;
+  margin-top: 4px;
+  color: #8a9581;
+  font-size: 11px;
+}
+.view-switch button[aria-pressed="true"] {
+  border-color: #699d7f;
+  background: #e8f2e5;
+  box-shadow: inset 0 0 0 1px #699d7f;
+}
+.reading-guide {
+  display: flex;
+  gap: 14px;
+  padding: 17px 20px;
+  margin: 0 0 14px;
+  border-radius: 9px;
+  background: #edf3e7;
+  border: 1px solid #d9e5cf;
+}
+.reading-icon {
+  font-size: 28px;
+  color: #63885d;
+}
+.reading-guide strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #355338;
+}
+.reading-guide p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #71816a;
+  margin: 6px 0 0;
+}
+.reading-guide small {
+  display: block;
+  font-size: 11px;
+  margin-top: 7px;
+  color: #91682c;
+}
+.field-experience .pitch-toolbar {
+  font-size: 12px;
+  padding: 18px 23px 5px;
+}
+.field-experience .pitch-toolbar > span {
+  font-size: 10px;
+}
+.field-experience .source-tag {
+  font-size: 8px;
+  padding: 5px 7px;
+}
+.pitch-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 13px 23px;
+  background: #17372d;
+  padding: 16px 22px;
+  color: #c0d3c2;
+  border-top: 1px solid #2c4a3a;
+  font-size: 11px;
+}
+.pitch-legend > span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.pitch-legend i {
+  display: inline-block;
+  flex-shrink: 0;
+}
+.legend-player {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid #0e2e25;
+}
+.legend-player.defender {
+  background: #91dcc4;
+}
+.legend-player.attacker {
+  background: #e6b779;
+}
+.legend-ball {
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  border: 2px solid #75937e;
+}
+.legend-opening {
+  width: 18px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #b4fce7;
+  background: #54e5cd44;
+}
+.legend-route {
+  width: 21px;
+  border-top: 2px dashed #e6f5a2;
+}
+.legend-group {
+  width: 15px;
+  height: 15px;
+  background: #91dcc4;
+  border: 3px solid #b5b0fc;
+  border-radius: 50%;
+}
+.legend-link {
+  width: 20px;
+  border-top: 2px solid #9adbc4;
+}
+.legend-arrow:after {
+  content: "→";
+  font-size: 20px;
+  color: #d6f5df;
+}
+.field-options {
+  background: #123126;
+  color: #8eaf98;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 12px 21px;
+  font-size: 10px;
+}
+.field-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.field-options > span {
+  margin-left: auto;
+  font-size: 10px;
+}
+.field-options select {
+  min-height: 30px;
+  width: 150px;
+  margin: 0;
+  background: #eaf2e2;
+  font-size: 11px;
+}
+.opening-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 16px;
+}
+.opening-cards button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 15px 14px;
+  border: 1px solid #dce5d3;
+  border-radius: 8px;
+  background: #fffefa;
+  text-align: left;
+  color: #53754c;
+}
+.opening-cards button.active {
+  background: #e7f2e5;
+  border-color: #72a181;
+}
+.opening-number {
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 7px;
+  background: #d5e8d0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.opening-cards strong {
+  font-size: 13px;
+  display: block;
+  font-weight: 600;
+}
+.opening-cards small {
+  font-size: 10px;
+  display: block;
+  margin-top: 6px;
+  color: #8a9882;
+}
+.opening-status {
+  margin-left: auto;
+  font-size: 20px;
+}
+.opening-help {
+  grid-column: 1/-1;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #8a9580;
+  margin: 0 2px;
+}
+.opening-cards > p.small {
+  grid-column: 1/-1;
+}
+.timeline-explorer {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+.timeline-explorer strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b6943;
+}
+.timeline-explorer p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #929c87;
+  margin: 6px 0;
+}
+.timeline-explorer .button {
+  width: auto;
+  white-space: nowrap;
+  font-size: 11px;
+}
+.timeline-modes {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.timeline-modes button {
+  border: 1px solid #dce3d2;
+  background: transparent;
+  padding: 7px 12px;
+  border-radius: 5px;
+  font-size: 10px;
+  color: #7f9173;
+}
+.timeline-modes button[aria-pressed="true"] {
+  background: #eaf0e0;
+  border-color: #9eb68b;
+  color: #4b713e;
+}
+.technical-details {
+  margin-top: 18px;
+  padding: 20px;
+}
+.technical-details > summary {
+  cursor: pointer;
+  font-size: 14px;
+  color: #44643e;
+  font-weight: 600;
+}
+.technical-details > summary > span {
+  font-size: 10px;
+  color: #99a38e;
+  display: block;
+  margin: 6px 0 0 17px;
+  font-weight: 400;
+}
+main .workspace .technical-details .insights-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
+  gap: 16px;
+}
+main .workspace .technical-details .insights-column .editorial-note {
+  display: none;
+}
+.main-column .metric-row {
+  margin: 14px 0;
+}
+.main-column .metric > span {
+  font-size: 9px;
+}
+.main-column .metric > small {
+  font-size: 10px;
+}
+.main-column .metric > strong {
+  font-size: 31px;
+}
+.main-column .metric > strong.compact {
+  font-size: 21px;
+}
+.main-column .metric {
+  min-height: 115px;
+  padding: 19px 17px;
+}
+.main-column .timeline {
+  padding: 22px;
+}
+.timeline .play-button {
+  width: 39px;
+  height: 39px;
+  font-size: 12px;
+}
+.timeline .playback {
+  font-size: 16px;
+}
+.timeline .playback > span {
+  font-size: 12px;
+}
+.timeline .sparkline {
+  height: 57px;
+  gap: 4px;
+}
+.timeline .timeline-caption {
+  font-size: 9px;
+  letter-spacing: 0.7px;
+}
+.controls p.small,
+.controls .small {
+  font-size: 11px;
+}
+.controls .scenario .button {
+  font-size: 12px;
+}
+.controls label:not(.check) {
+  font-size: 12px;
+}
+.controls select,
+.controls input[type="number"] {
+  font-size: 12px;
+  min-height: 40px;
+}
+.controls .range-label span,
+.controls .range-label strong {
+  font-size: 11px;
+}
+.controls .section-label {
+  font-size: 10px;
+}
+.controls .check {
+  font-size: 11px;
+}
+.controls .primary {
+  font-size: 12px;
+  min-height: 44px;
+}
+.controls .text-button {
+  font-size: 11px;
+}
+.hodge-panel .small,
+.hodge-panel .hodge-method {
+  font-size: 11px;
+}
+.hodge-panel .hodge-parts article > span {
+  font-size: 12px;
+}
+.hodge-panel .hodge-parts p {
+  font-size: 11px;
+}
+@media (max-width: 1050px) {
+  main .workspace {
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 17px;
+  }
+  .view-switch button {
+    padding: 13px 11px;
+    gap: 8px;
+  }
+  .view-switch button strong {
+    font-size: 13px;
+  }
+  .view-switch button small {
+    font-size: 9px;
+  }
+  .opening-cards {
+    grid-template-columns: 1fr;
+  }
+  .opening-cards button {
+    padding: 12px 15px;
+  }
+  .opening-cards small {
+    display: inline;
+    font-size: 11px;
+  }
+  .opening-cards strong {
+    display: inline;
+    margin-right: 12px;
+  }
+  .main-column .metric-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .main-column .metric {
+    min-height: 100px;
+  }
+  .field-options > span {
+    margin-left: 0;
+  }
+  .quick-guide {
+    gap: 14px;
+    font-size: 11px;
+  }
+}
+@media (max-width: 700px) {
+  main .workspace {
+    display: flex;
+    flex-direction: column;
+  }
+  .quick-guide {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+  }
+  .intro {
+    padding: 24px 0 18px;
+  }
+  .controls {
+    width: 100%;
+  }
+  .view-switch {
+    gap: 6px;
+  }
+  .view-switch button {
+    padding: 13px 8px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: start;
+  }
+  .view-switch button > span {
+    font-size: 23px;
+  }
+  .view-switch button strong {
+    font-size: 12px;
+  }
+  .view-switch button small {
+    font-size: 9px;
+  }
+  .reading-guide {
+    padding: 14px;
+    gap: 10px;
+  }
+  .reading-guide strong {
+    font-size: 14px;
+  }
+  .reading-guide p {
+    font-size: 11px;
+  }
+  .field-experience .pitch-toolbar {
+    padding: 14px 12px 4px;
+    font-size: 10px;
+  }
+  .field-experience .pitch-toolbar > span {
+    font-size: 8px;
+  }
+  .pitch-legend {
+    padding: 13px 14px;
+    gap: 12px;
+    font-size: 10px;
+  }
+  .field-options {
+    padding: 12px 13px;
+    font-size: 10px;
+  }
+  .field-options > span {
+    font-size: 9px;
+  }
+  .timeline-explorer {
+    align-items: start;
+    flex-direction: column;
+  }
+  .main-column .timeline {
+    padding: 16px;
+  }
+  .timeline .timeline-caption {
+    font-size: 7px;
+  }
+  .technical-details {
+    padding: 16px;
+  }
+  main .workspace .technical-details .insights-column {
+    display: flex;
+    flex-direction: column;
+  }
+  .opening-cards strong {
+    display: block;
+    font-size: 13px;
+  }
+  .opening-cards small {
+    display: block;
+    margin-top: 5px;
+  }
+  .main-column .metric > span {
+    font-size: 8px;
+  }
+  .main-column .metric > small {
+    font-size: 9px;
+  }
+  .main-column .metric > strong {
+    font-size: 28px;
+  }
+  .main-column .metric > strong.compact {
+    font-size: 18px;
+  }
+}

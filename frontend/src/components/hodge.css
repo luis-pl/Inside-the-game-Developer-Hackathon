@@ -1,0 +1,131 @@
+.hodge-panel {
+  margin-top: 16px;
+  padding: 22px;
+}
+.hodge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 18px;
+}
+.hodge-header h2 {
+  font-family: Manrope, "Segoe UI", sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+  margin: 10px 0 8px;
+}
+.hodge-header label {
+  font-size: 10px;
+  color: #71826b;
+  min-width: 160px;
+}
+.hodge-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  padding: 12px 0;
+  font-size: 10px;
+  color: #87937d;
+  border-block: 1px solid var(--line);
+}
+.hodge-facts strong {
+  color: #3c5c44;
+  font-size: 15px;
+  margin-right: 3px;
+  font-weight: 500;
+}
+.hodge-parts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+.hodge-parts article {
+  border-top: 3px solid;
+  padding: 12px 10px 2px;
+  background: #f7f8f1;
+  border-radius: 3px;
+}
+.hodge-parts article > span {
+  font-size: 10px;
+  color: #6b7e62;
+}
+.hodge-parts article > strong {
+  display: block;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  margin: 8px 0;
+  color: #2f5038;
+}
+.hodge-parts p {
+  font-size: 9px;
+  color: #85907c;
+  line-height: 1.7;
+}
+.hodge-layer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 18px 0;
+}
+.hodge-layer-buttons > span {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #8c987f;
+  margin-right: 4px;
+}
+.hodge-layer-buttons button {
+  border: 1px solid #dce5d4;
+  border-radius: 5px;
+  padding: 8px 10px;
+  background: transparent;
+  font-size: 10px;
+  color: #637c59;
+}
+.hodge-layer-buttons button[aria-pressed="true"] {
+  background: #31513c;
+  color: #fff;
+  border-color: #31513c;
+}
+.hodge-method {
+  font-size: 10px;
+  line-height: 1.8;
+  color: #7c8973;
+  border-top: 1px solid var(--line);
+  padding-top: 13px;
+}
+.hodge-method summary {
+  cursor: pointer;
+  color: #506b47;
+}
+.hodge-pitch-caption {
+  padding: 8px 16px;
+  color: #b6c9b6;
+  font-size: 9px;
+  line-height: 1.6;
+  background: #203f33;
+}
+@media (max-width: 700px) {
+  .hodge-panel {
+    padding: 16px;
+  }
+  .hodge-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hodge-header label {
+    width: 100%;
+  }
+  .hodge-parts {
+    gap: 6px;
+  }
+  .hodge-parts article {
+    padding: 10px 7px;
+  }
+  .hodge-parts article > strong {
+    font-size: 23px;
+  }
+}
