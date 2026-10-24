@@ -116,14 +116,94 @@ class AnalyticsService:
             datasets = [data]
         else:
             data = None
+        if datasets and all(not d["meta"]["is_synthetic"] for d in datasets):
+            if any(d["meta"].get("provider") == "SkillCorner" for d in datasets) and (
+                getattr(request, "score_state", "all") != "all"
+                or operation == "get_shots"
+                and getattr(request, "outcome", "all") != "all"
+            ):
+                raise DomainError(
+                    "SOURCE_FIELD_UNAVAILABLE",
+                    "SkillCorner provides the final match score but not annotated shot outcomes or a goal-by-goal score timeline.",
+                )
+            if (
+                operation == "get_rankings" and request.metric == "xg"
+            ) or operation == "get_line_breaks":
+                raise DomainError(
+                    "SOURCE_FIELD_UNAVAILABLE",
+                    "The source/import does not provide the required xG model or mapped tactical role annotations for this operation.",
+                )
+            if (
+                getattr(request, "pressure", "all") != "all"
+                or getattr(request, "height", "all") != "all"
+            ):
+                raise DomainError(
+                    "SOURCE_FIELD_UNAVAILABLE",
+                    "The real source does not annotate pressure or pass height.",
+                )
         if operation in SPATIAL_OPERATIONS:
             result = self.spatial(operation, request, datasets[0])
         else:
             result = self.dispatch(operation, request, datasets)
-        warnings = [
-            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
-        ]
-        if any(d["meta"]["generator_version"] != "3.0.0" for d in datasets):
+        if datasets and all(not d["meta"]["is_synthetic"] for d in datasets):
+            metrica = any(
+                d["meta"].get("provider", "Metrica Sports") == "Metrica Sports"
+                for d in datasets
+            )
+            skillcorner = any(
+                d["meta"].get("provider") == "SkillCorner" for d in datasets
+            )
+            unavailable = (
+                {"attempted_passes", "completion_rate"} if metrica else set()
+            ) | (
+                {
+                    "goals",
+                    "shots_on_target",
+                    "on_target_rate",
+                    "conversion_rate",
+                    "goals_conceded",
+                    "save_rate",
+                }
+                if skillcorner
+                else set()
+            )
+
+            # The Metrica sample has no xG model. Zero would falsely imply a
+            # measured value, including in nested summaries and rankings.
+            def missing_xg(value):
+                if isinstance(value, dict):
+                    return {
+                        k: None
+                        if "xg" in str(k).lower() or k in unavailable
+                        else missing_xg(v)
+                        for k, v in value.items()
+                    }
+                if isinstance(value, list):
+                    return [missing_xg(v) for v in value]
+                return value
+
+            result = missing_xg(result)
+        warnings = []
+        if not datasets or any(d["meta"]["is_synthetic"] for d in datasets):
+            warnings.append(
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+            )
+        if any(
+            not d["meta"]["is_synthetic"]
+            and d["meta"].get("provider", "Metrica Sports") == "Metrica Sports"
+            for d in datasets
+        ):
+            warnings.append(
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+            )
+        if any(d["meta"].get("provider") == "SkillCorner" for d in datasets):
+            warnings.append(
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+            )
+        if any(
+            d["meta"]["is_synthetic"] and d["meta"]["generator_version"] != "3.0.0"
+            for d in datasets
+        ):
             warnings.append(
                 "Dataset generation differs from the audited 3.0.0 scenario."
             )
@@ -148,13 +228,37 @@ class AnalyticsService:
             scope=request.model_dump(mode="json", exclude={"cursor"}),
             data=result,
             provenance={
-                "is_synthetic": all(d["meta"]["is_synthetic"] for d in datasets)
+                "is_synthetic": any(d["meta"]["is_synthetic"] for d in datasets)
                 if datasets
-                else True,
+                else any(m["is_synthetic"] for m in self.repo.catalog()["matches"]),
+                "data_kinds": sorted(
+                    {
+                        "synthetic"
+                        if d["meta"]["is_synthetic"]
+                        else d["meta"].get("data_kind") or "real_anonymized"
+                        for d in datasets
+                    }
+                )
+                if datasets
+                else sorted(
+                    {
+                        "synthetic"
+                        if m["is_synthetic"]
+                        else m.get("data_kind") or "real_anonymized"
+                        for m in self.repo.catalog()["matches"]
+                    }
+                ),
                 "datasets": [
                     {
                         "match_id": d["meta"]["match_id"],
                         "generator_version": d["meta"]["generator_version"],
+                        "provider": d["meta"].get("provider"),
+                        "data_kind": d["meta"].get("data_kind")
+                        or (
+                            "synthetic"
+                            if d["meta"]["is_synthetic"]
+                            else "real_anonymized"
+                        ),
                         "dataset_revision": d["revision"],
                         "run_ids": [r["run_id"] for r in d["tracking_runs"]],
                     }
@@ -242,7 +346,7 @@ class AnalyticsService:
                 if period is None or p == period
             )
         parse = lambda value: sum(
-            int(n) * factor for n, factor in zip(value.split(":"), (60, 1))
+            float(n) * factor for n, factor in zip(value.split(":"), (60, 1))
         )
         total, offset = 0, 0
         intervals = [l for l in data["lineup_positions"] if l["player_id"] == player]
@@ -355,8 +459,23 @@ class AnalyticsService:
                 "spatial_operations": list(SPATIAL_OPERATIONS),
                 "profiles": PROFILES,
                 "zones_attacking_metres": ZONES,
-                "sampling_hz": 1,
-                "unobserved_scenarios": [
+                "sampling_hz": None,
+                "sampling_hz_by_kind": {
+                    "synthetic": 1,
+                    "real_anonymized": 5,
+                    "real_pseudonymized": 5,
+                },
+                "tracking_default_step_ms": 1000,
+                "tracking_optional_step_ms": 200,
+                "data_kinds": sorted(
+                    {
+                        "synthetic"
+                        if m["is_synthetic"]
+                        else m.get("data_kind") or "real_anonymized"
+                        for m in cat["matches"]
+                    }
+                ),
+                "synthetic_unobserved_scenarios": [
                     "penalty",
                     "red_card",
                     "offside",
@@ -742,7 +861,7 @@ class AnalyticsService:
                 )
 
             def clock(text):
-                m, s = map(int, text.split(":"))
+                m, s = map(float, text.split(":"))
                 return m * 60 + s
 
             opponent_shots = []
@@ -953,8 +1072,19 @@ class AnalyticsService:
             )
             start = max(0, event["period_time_ms"] - req.before_s * 1000)
             end = min(duration + 1, event["period_time_ms"] + req.after_s * 1000 + 1)
+            native_step = round(1000 / run["sample_rate_hz"])
+            start = start // native_step * native_step
+            end = min(
+                duration + 1,
+                ((end - 1 + native_step - 1) // native_step) * native_step + 1,
+            )
             frames = self.repo.tracking(
-                data["meta"]["match_id"], run["run_id"], event["period"], start, end
+                data["meta"]["match_id"],
+                run["run_id"],
+                event["period"],
+                start,
+                end,
+                native_step / 1000,
             )
             relations = [
                 r
@@ -990,7 +1120,7 @@ class AnalyticsService:
                     if p["event_id"] == str(req.event_id)
                 ],
                 "_coverage": self.tracking_coverage(
-                    frames, run, expected=max(0, (end - 1 - start) // 1000 + 1)
+                    frames, run, expected=max(0, (end - 1 - start) // native_step + 1)
                 ),
             }
         run = self.run(data, req.run_id)
@@ -1001,7 +1131,9 @@ class AnalyticsService:
                 req.scope.period,
                 req.scope.start_ms,
                 req.scope.end_ms,
-                req.stride_s,
+                req.sample_step_ms / 1000
+                if req.sample_step_ms is not None
+                else req.stride_s,
             )
             if end - start > 120000:
                 raise DomainError(
@@ -1012,14 +1144,19 @@ class AnalyticsService:
             for p in data["tracking_periods"]
             if p["period"] == period
         )
+        native_step = round(1000 / run["sample_rate_hz"])
         if (
-            start % 1000
-            or (op == "get_tracking_window" and end % 1000)
+            start % native_step
+            or (
+                op == "get_tracking_window"
+                and (end % native_step or round(stride * 1000) % native_step)
+            )
             or start > duration
             or end > duration + (1 if op == "get_tracking_frame" else 0)
         ):
             raise DomainError(
-                "INVALID_ARGUMENT", "Tracking requires sampled seconds within a period."
+                "INVALID_ARGUMENT",
+                "Tracking requires sampled instants within a period.",
             )
         frames = self.repo.tracking(
             req.match_id,
@@ -1031,11 +1168,15 @@ class AnalyticsService:
             getattr(req, "team_id", None),
             getattr(req, "player_id", None),
         )
-        expected = (end - start + stride * 1000 - 1) // (stride * 1000)
+        step_ms = round(stride * 1000)
+        expected = (end - start + step_ms - 1) // step_ms
         return {
             "run_id": run["run_id"],
             "frames": frames,
-            "_coverage": self.tracking_coverage(frames, run, expected),
+            "_coverage": {
+                **self.tracking_coverage(frames, run, expected),
+                "returned_step_ms": step_ms,
+            },
         }
 
     def tracking_coverage(self, frames, run, expected):
@@ -1302,7 +1443,7 @@ class AnalyticsService:
         )
 
         def seconds(text):
-            m, s = map(int, text.split(":"))
+            m, s = map(float, text.split(":"))
             return m * 60 + s
 
         expected = {
@@ -1392,10 +1533,16 @@ class AnalyticsService:
         frames = self.repo.anchor_tracking(
             run["run_id"], [e["event_id"] for e in anchors]
         )
-        lookup = {(f["period"], f["period_time_ms"]): f for f in frames}
+        lookup = {(f["period"], f["frame_index"]): f for f in frames}
+        aligned = {
+            l["event_id"]: l
+            for l in data["event_tracking_links"]
+            if l["run_id"] == run["run_id"]
+        }
         samples = []
         for event in anchors:
-            frame = lookup.get((event["period"], event["period_time_ms"]))
+            link = aligned.get(event["event_id"])
+            frame = lookup.get((link["period"], link["frame_index"])) if link else None
             if not frame:
                 raise DomainError(
                     "INSUFFICIENT_COVERAGE", "Missing tracking for an action anchor."

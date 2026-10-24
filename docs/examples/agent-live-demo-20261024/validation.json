@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "evidence_id": "e1",
+      "operation": "find_entities",
+      "original_data_matches": true
+    },
+    {
+      "evidence_id": "e2",
+      "operation": "find_entities",
+      "original_data_matches": true
+    },
+    {
+      "evidence_id": "e3",
+      "operation": "list_matches",
+      "original_data_matches": true
+    },
+    {
+      "evidence_id": "e4",
+      "operation": "get_match_context",
+      "original_data_matches": true
+    },
+    {
+      "evidence_id": "e5",
+      "operation": "get_shots",
+      "original_data_matches": true
+    },
+    {
+      "evidence_id": "e6",
+      "operation": "get_shots",
+      "original_data_matches": true
+    },
+    {
+      "evidence_id": "e7",
+      "operation": "get_shots",
+      "original_data_matches": true
+    }
+  ],
+  "prompt_snapshot_sha256": "7b6b9c567c5fb71b8b9dba8be242b47c6dd6bc4fd319feba5d67a08ddb5f4b33",
+  "recorded_prompt_sha256": "7b6b9c567c5fb71b8b9dba8be242b47c6dd6bc4fd319feba5d67a08ddb5f4b33",
+  "input_has_no_ids": true,
+  "prompt_matches_recorded_request": true
+}

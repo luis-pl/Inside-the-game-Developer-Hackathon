@@ -18,7 +18,7 @@ export function useReplayClock(
       if (!episode) return;
       const next = Math.max(
         episode.frames[0].timeMs,
-        Math.min(episode.frames.at(-1)!.timeMs, value),
+        Math.min(episode.window?.endMs ?? episode.frames.at(-1)!.timeMs, value),
       );
       current.current = next;
       setTimeMs(next);
@@ -33,7 +33,7 @@ export function useReplayClock(
   useEffect(() => {
     if (!playing || !episode) return;
     const start = current.current,
-      end = episode.frames.at(-1)!.timeMs;
+      end = episode.window?.endMs ?? episode.frames.at(-1)!.timeMs;
     const origin = performance.now();
     let request = 0,
       lastPaint = -Infinity;
@@ -53,7 +53,10 @@ export function useReplayClock(
   const playheadMs = episode
     ? Math.max(
         episode.frames[0].timeMs,
-        Math.min(episode.frames.at(-1)!.timeMs, timeMs),
+        Math.min(
+          episode.window?.endMs ?? episode.frames.at(-1)!.timeMs,
+          timeMs,
+        ),
       )
     : 0;
   const index = episode ? sampleIndexAt(episode.frames, playheadMs) : 0;

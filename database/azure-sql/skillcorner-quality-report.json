@@ -1,0 +1,557 @@
+{
+  "provider": "SkillCorner",
+  "data_kind": "real_pseudonymized",
+  "reports": [
+    {
+      "match_id": 900101,
+      "source_match_id": 2017461,
+      "game": 1,
+      "run_id": "c5c8a5a7-0455-5c0d-9363-194d11540ca7",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4146,
+        "event_passes": 654,
+        "event_shots": 32,
+        "event_tracking_links": 4146,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29227,
+        "tracking_player_positions": 642994,
+        "tracking_ball_positions": 29227
+      },
+      "quality": {
+        "player_extrapolated": 216960,
+        "player_observed": 227389,
+        "ball_observed": 15938,
+        "ball_extrapolated": 4205,
+        "player_missing": 198645,
+        "ball_missing": 9084,
+        "out_of_bounds": 126,
+        "source_jump": 5
+      },
+      "score": [
+        0,
+        1
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 2510,
+          "end_frame": 30210,
+          "duration_frames": 27700,
+          "duration_minutes": 46.17,
+          "duration_ms": 2770000,
+          "home_positive": true,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 39670,
+          "end_frame": 70420,
+          "duration_frames": 30750,
+          "duration_minutes": 51.25,
+          "duration_ms": 3075000,
+          "home_positive": false,
+          "offset_ms": 2770000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900102,
+      "source_match_id": 2016236,
+      "game": 2,
+      "run_id": "0002e9cc-fc61-54fe-ab99-de3f75dbf3a6",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4722,
+        "event_passes": 823,
+        "event_shots": 26,
+        "event_tracking_links": 4722,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 30022,
+        "tracking_player_positions": 660484,
+        "tracking_ball_positions": 30022
+      },
+      "quality": {
+        "player_observed": 237110,
+        "player_extrapolated": 245602,
+        "ball_observed": 17770,
+        "ball_extrapolated": 4162,
+        "player_missing": 177772,
+        "ball_missing": 8090,
+        "out_of_bounds": 22,
+        "source_jump": 23
+      },
+      "score": [
+        3,
+        2
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 1170,
+          "end_frame": 31720,
+          "duration_frames": 30550,
+          "duration_minutes": 50.92,
+          "duration_ms": 3055000,
+          "home_positive": true,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 41060,
+          "end_frame": 70550,
+          "duration_frames": 29490,
+          "duration_minutes": 49.15,
+          "duration_ms": 2949000,
+          "home_positive": false,
+          "offset_ms": 3055000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900103,
+      "source_match_id": 2015213,
+      "game": 3,
+      "run_id": "62c51d57-19b4-587e-bcc5-81970483f456",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 50,
+        "events": 4617,
+        "event_passes": 736,
+        "event_shots": 22,
+        "event_tracking_links": 4617,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29952,
+        "tracking_player_positions": 658944,
+        "tracking_ball_positions": 29952
+      },
+      "quality": {
+        "player_extrapolated": 253675,
+        "ball_extrapolated": 5918,
+        "player_observed": 280258,
+        "ball_observed": 18297,
+        "player_missing": 125011,
+        "ball_missing": 5737,
+        "source_jump": 6,
+        "out_of_bounds": 194
+      },
+      "score": [
+        4,
+        2
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 2210,
+          "end_frame": 31040,
+          "duration_frames": 28830,
+          "duration_minutes": 48.05,
+          "duration_ms": 2883000,
+          "home_positive": true,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 40280,
+          "end_frame": 71350,
+          "duration_frames": 31070,
+          "duration_minutes": 51.78,
+          "duration_ms": 3107000,
+          "home_positive": false,
+          "offset_ms": 2883000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900104,
+      "source_match_id": 2013725,
+      "game": 4,
+      "run_id": "5cd64558-6c12-57ec-90e8-8f0bbfc16895",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 52,
+        "events": 4710,
+        "event_passes": 766,
+        "event_shots": 25,
+        "event_tracking_links": 4710,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 28397,
+        "tracking_player_positions": 624734,
+        "tracking_ball_positions": 28397
+      },
+      "quality": {
+        "player_extrapolated": 227808,
+        "ball_extrapolated": 4712,
+        "player_observed": 267092,
+        "ball_observed": 17780,
+        "player_missing": 129834,
+        "ball_missing": 5905,
+        "source_jump": 12,
+        "out_of_bounds": 4
+      },
+      "score": [
+        1,
+        0
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 4040,
+          "end_frame": 31930,
+          "duration_frames": 27890,
+          "duration_minutes": 46.48,
+          "duration_ms": 2789000,
+          "home_positive": true,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 40960,
+          "end_frame": 69860,
+          "duration_frames": 28900,
+          "duration_minutes": 48.17,
+          "duration_ms": 2890000,
+          "home_positive": false,
+          "offset_ms": 2789000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900105,
+      "source_match_id": 2011166,
+      "game": 5,
+      "run_id": "42c16bd5-c790-5c5e-a79b-db2620127188",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4038,
+        "event_passes": 630,
+        "event_shots": 32,
+        "event_tracking_links": 4038,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29647,
+        "tracking_player_positions": 652234,
+        "tracking_ball_positions": 29647
+      },
+      "quality": {
+        "player_extrapolated": 204401,
+        "ball_extrapolated": 3865,
+        "player_observed": 224845,
+        "ball_observed": 15633,
+        "player_missing": 222988,
+        "ball_missing": 10149,
+        "out_of_bounds": 73,
+        "source_jump": 51
+      },
+      "score": [
+        2,
+        3
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 2300,
+          "end_frame": 31290,
+          "duration_frames": 28990,
+          "duration_minutes": 48.32,
+          "duration_ms": 2899000,
+          "home_positive": false,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 41090,
+          "end_frame": 71390,
+          "duration_frames": 30300,
+          "duration_minutes": 50.5,
+          "duration_ms": 3030000,
+          "home_positive": true,
+          "offset_ms": 2899000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900106,
+      "source_match_id": 2010085,
+      "game": 6,
+      "run_id": "b15f63b6-b187-5707-b3f2-f6d7714a90b5",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4637,
+        "event_passes": 836,
+        "event_shots": 15,
+        "event_tracking_links": 4637,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29487,
+        "tracking_player_positions": 648714,
+        "tracking_ball_positions": 29487
+      },
+      "quality": {
+        "player_extrapolated": 223471,
+        "ball_extrapolated": 3760,
+        "player_observed": 277215,
+        "ball_observed": 18999,
+        "source_jump": 6,
+        "player_missing": 148028,
+        "ball_missing": 6728,
+        "out_of_bounds": 6
+      },
+      "score": [
+        1,
+        0
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 10,
+          "end_frame": 29440,
+          "duration_frames": 29430,
+          "duration_minutes": 49.05,
+          "duration_ms": 2943000,
+          "home_positive": false,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 29450,
+          "end_frame": 58990,
+          "duration_frames": 29540,
+          "duration_minutes": 49.23,
+          "duration_ms": 2954000,
+          "home_positive": true,
+          "offset_ms": 2943000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900107,
+      "source_match_id": 2007721,
+      "game": 7,
+      "run_id": "c9dcb67e-7c37-531d-af28-7b2966b5f768",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4835,
+        "event_passes": 847,
+        "event_shots": 23,
+        "event_tracking_links": 4835,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 28772,
+        "tracking_player_positions": 632984,
+        "tracking_ball_positions": 28772
+      },
+      "quality": {
+        "player_extrapolated": 205720,
+        "ball_extrapolated": 4551,
+        "player_observed": 303490,
+        "ball_observed": 18568,
+        "player_missing": 123774,
+        "ball_missing": 5653,
+        "out_of_bounds": 98
+      },
+      "score": [
+        2,
+        2
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 10,
+          "end_frame": 27710,
+          "duration_frames": 27700,
+          "duration_minutes": 46.17,
+          "duration_ms": 2770000,
+          "home_positive": false,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 27720,
+          "end_frame": 57560,
+          "duration_frames": 29840,
+          "duration_minutes": 49.73,
+          "duration_ms": 2984000,
+          "home_positive": true,
+          "offset_ms": 2770000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    },
+    {
+      "match_id": 900108,
+      "source_match_id": 2007448,
+      "game": 8,
+      "run_id": "c39ce1d5-406c-59d2-b59a-82cd5f6ba22c",
+      "version": "skillcorner-pseudonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 51,
+        "events": 4314,
+        "event_passes": 752,
+        "event_shots": 26,
+        "event_tracking_links": 4314,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29032,
+        "tracking_player_positions": 638704,
+        "tracking_ball_positions": 29032
+      },
+      "quality": {
+        "player_extrapolated": 223881,
+        "ball_extrapolated": 4786,
+        "player_observed": 263054,
+        "ball_observed": 17309,
+        "player_missing": 151769,
+        "ball_missing": 6937,
+        "out_of_bounds": 84,
+        "source_jump": 14
+      },
+      "score": [
+        1,
+        3
+      ],
+      "periods": {
+        "1": {
+          "period": 1,
+          "name": "period_1",
+          "start_frame": 10,
+          "end_frame": 28530,
+          "duration_frames": 28520,
+          "duration_minutes": 47.53,
+          "duration_ms": 2852000,
+          "home_positive": false,
+          "offset_ms": 0
+        },
+        "2": {
+          "period": 2,
+          "name": "period_2",
+          "start_frame": 28540,
+          "end_frame": 58080,
+          "duration_frames": 29540,
+          "duration_minutes": 49.23,
+          "duration_ms": 2954000,
+          "home_positive": true,
+          "offset_ms": 2852000
+        }
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "samples": 1500,
+        "sample_step_ms": 200
+      }
+    }
+  ]
+}

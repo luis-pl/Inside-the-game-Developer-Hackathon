@@ -1,1 +1,390 @@
-"""Pendiente: obtener y preparar los datos solicitados mediante herramientas."""
+"""Texto natural -> function calls validadas -> MCP -> evidencia original.
+
+run() usa estado local por solicitud, por lo que una instancia puede atender
+varios consumidores sin mezclar conversaciones o evidencias. El modelo propone;
+este ejecutor controla herramientas, paginación, presupuestos y finalización.
+"""
+
+import asyncio
+import json
+import logging
+import sysconfig
+import time
+from dataclasses import dataclass
+from pathlib import Path
+
+from pydantic import ValidationError
+
+from inside_game.agents.contracts import (
+    AgentIssue,
+    DataRequest,
+    DataResult,
+    Evidence,
+    FinishRequest,
+)
+from inside_game.contracts import ApiResponse
+from inside_game.providers.models import ModelFailure, ModelProvider
+from inside_game.service import OPERATIONS
+
+log = logging.getLogger("inside_game.data_agent")
+FINISH = "finish_data_request"
+TRANSIENT = {"RATE_LIMITED", "BUSY", "API_UNAVAILABLE"}
+
+
+@dataclass(frozen=True)
+class AgentLimits:
+    max_turns: int = 16
+    max_tool_calls: int = 60  # Incluye páginas y reintentos, no sólo decisiones LLM.
+    max_pages_per_query: int = 20
+    max_evidence_bytes: int = 8 * 1024 * 1024
+    max_input_bytes: int = 300 * 1024
+    max_tokens: int = (
+        100000  # Consumo observado; una respuesta en curso puede excederlo.
+    )
+    timeout_seconds: float = 240
+
+    def __post_init__(self):
+        if any(value <= 0 for value in self.__dict__.values()):
+            raise ValueError("Agent limits must be positive")
+
+
+def load_prompt():
+    # Una sola fuente editable en prompts/. El wheel la instala como data-file.
+    source = Path(__file__).resolve().parents[3] / "prompts/data_agent.md"
+    installed = (
+        Path(sysconfig.get_path("data")) / "share/inside-game/prompts/data_agent.md"
+    )
+    path = source if source.is_file() else installed
+    return path.read_text(encoding="utf-8")
+
+
+def preview(value, depth=0):
+    """Acota el contexto LLM; nunca modifica la evidencia entregada al consumidor."""
+    if depth > 7:
+        return {"preview_omitted": True}
+    if isinstance(value, list):
+        items = [preview(v, depth + 1) for v in value[:8]]
+        return (
+            {"items": items, "total_items": len(value), "preview_only": True}
+            if len(value) > 8
+            else items
+        )
+    if isinstance(value, dict):
+        return {k: preview(v, depth + 1) for k, v in list(value.items())[:50]}
+    if isinstance(value, str) and len(value) > 800:
+        return value[:800] + " [preview truncated]"
+    return value
+
+
+class StopRun(Exception):
+    def __init__(self, code):
+        self.code = code
+
+
+class DataAgent:
+    def __init__(self, model: ModelProvider, *, limits=None, prompt=None):
+        self.model = model
+        self.limits = limits or AgentLimits()
+        self.prompt = prompt if prompt is not None else load_prompt()
+
+    async def run(self, request: DataRequest | dict | str, mcp) -> DataResult:
+        if isinstance(request, str):
+            request = {"request_text": request}
+        request = DataRequest.model_validate(request)
+        run = _Run(self, request, mcp)
+        try:
+            async with asyncio.timeout(self.limits.timeout_seconds):
+                return await run.execute()
+        except TimeoutError:
+            return run.failed("DEADLINE_EXCEEDED")
+        except StopRun as exc:
+            return run.failed(exc.code)
+        except ModelFailure as exc:
+            return run.failed(exc.code)
+        except Exception:  # noqa: BLE001 - frontera pública; errores SDK pueden incluir secretos.
+            # Los errores del transporte/SDK pueden contener cuerpos y headers.
+            # El detalle no se registra ni se devuelve al solicitante o al modelo.
+            return run.failed("AGENT_EXECUTION_FAILED")
+
+
+class _Run:
+    def __init__(self, agent, request, mcp):
+        self.agent, self.request, self.mcp = agent, request, mcp
+        self.evidence, self.issues = [], []
+        self.calls = self.turns = self.tokens = self.byte_count = 0
+        self.cache = {}
+        self.incomplete_queries = set()
+        self.tools = {}
+        self.text_only_replies = 0
+
+    def result(self, status, *, clarification=None, notes=None, evidence=None):
+        return DataResult(
+            request_id=self.request.request_id,
+            status=status,
+            clarification=clarification,
+            notes=notes or [],
+            evidence=self.evidence if evidence is None else evidence,
+            issues=self.issues,
+            model=self.agent.model.name,
+            tool_calls=self.calls,
+            model_turns=self.turns,
+            total_tokens=self.tokens,
+        )
+
+    def failed(self, code):
+        self.issues.append(AgentIssue(code=code))
+        return self.result("partial" if self.evidence else "error")
+
+    async def execute(self):
+        # Cruce de listas: descubrimiento remoto + registro local cerrado. No se
+        # aceptan herramientas nuevas ni schemas alterados por otro servidor.
+        discovered = (await self.mcp.list_tools()).tools
+        for tool in discovered:
+            if (
+                tool.name in OPERATIONS
+                and tool.input_schema == OPERATIONS[tool.name].model_json_schema()
+            ):
+                self.tools[tool.name] = tool
+        if not self.tools:
+            raise StopRun("NO_COMPATIBLE_TOOLS")
+        functions = [
+            {
+                "type": "function",
+                "name": t.name,
+                "description": t.description or t.name,
+                "parameters": t.input_schema,
+                "strict": False,
+            }
+            for t in self.tools.values()
+        ]
+        functions.append(
+            {
+                "type": "function",
+                "name": FINISH,
+                "description": "Finaliza la recuperación seleccionando evidencia original existente.",
+                "parameters": FinishRequest.model_json_schema(),
+                "strict": True,
+            }
+        )
+        messages = [{"role": "user", "content": self.request.model_dump_json()}]
+        while self.turns < self.agent.limits.max_turns:
+            if self.tokens >= self.agent.limits.max_tokens:
+                raise StopRun("TOKEN_BUDGET_EXCEEDED")
+            if (
+                len(json.dumps([self.agent.prompt, messages, functions]).encode())
+                > self.agent.limits.max_input_bytes
+            ):
+                raise StopRun("CONTEXT_BUDGET_EXCEEDED")
+            turn = await self.agent.model.respond(
+                self.agent.prompt, messages, functions
+            )
+            self.turns += 1
+            self.tokens += turn.total_tokens
+            messages.extend(turn.output)
+            calls = [
+                item for item in turn.output if item.get("type") == "function_call"
+            ]
+            if not calls:
+                if self.text_only_replies >= 2:
+                    raise StopRun("MODEL_EXPECTED_TOOL_CALL")
+                self.text_only_replies += 1
+                # Algunos modelos de Foundry sólo admiten tool_choice=auto.
+                # Pedir corrección del protocolo, sin interpretar texto libre
+                # como datos ni ejecutar llamadas extraídas de ese texto.
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": "El ejecutor no entrega texto libre. Si ya recuperaste la evidencia o necesitas aclaración, llama AHORA a finish_data_request con los evidence_ids recibidos. Si falta información, llama a la herramienta necesaria. No escribas la llamada como texto.",
+                    }
+                )
+                continue
+            if len(calls) > 8:
+                raise StopRun("MODEL_EXPECTED_TOOL_CALL")
+            for call in calls:
+                try:
+                    if len(call.get("arguments", "")) > 65536:
+                        raise TypeError
+                    args = json.loads(call["arguments"])
+                    if not isinstance(args, dict):
+                        raise TypeError
+                except (ValueError, TypeError, KeyError):
+                    output = {"error": {"code": "INVALID_ARGUMENT"}}
+                else:
+                    if call.get("name") == FINISH:
+                        finished, output = self.finish(args)
+                        if finished is not None:
+                            return finished
+                    else:
+                        output = await self.query(call.get("name"), args)
+                messages.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": call["call_id"],
+                        "output": json.dumps(output, ensure_ascii=False),
+                    }
+                )
+        raise StopRun("TURN_BUDGET_EXCEEDED")
+
+    def finish(self, arguments):
+        try:
+            final = FinishRequest.model_validate(arguments)
+        except ValidationError:
+            return None, {"error": {"code": "INVALID_FINISH_ARGUMENT"}}
+        ids = set(final.evidence_ids)
+        available = {e.evidence_id for e in self.evidence}
+        if not ids <= available:
+            return None, {"error": {"code": "UNKNOWN_EVIDENCE_ID"}}
+        if (
+            final.status == "needs_clarification"
+            and not (final.clarification or "").strip()
+        ):
+            return None, {"error": {"code": "CLARIFICATION_REQUIRED"}}
+        selected = [e for e in self.evidence if e.evidence_id in ids]
+        status = final.status
+        if status == "complete":
+            if not selected:
+                return None, {"error": {"code": "EVIDENCE_REQUIRED"}}
+            # Un resultado parcial jamás se convierte en completo al omitir la
+            # última página: se incluyen todas las páginas de cada query elegida.
+            selected_queries = {e.query_id for e in selected}
+            all_pages = {
+                e.evidence_id for e in self.evidence if e.query_id in selected_queries
+            }
+            if ids != all_pages or self.incomplete_queries:
+                status = "partial"
+                self.issues.append(AgentIssue(code="INCOMPLETE_EVIDENCE_SELECTION"))
+        return self.result(
+            status,
+            clarification=final.clarification,
+            notes=final.notes,
+            evidence=selected,
+        ), None
+
+    async def query(self, name, arguments):
+        if name not in self.tools:
+            return {"error": {"code": "UNREGISTERED_OPERATION"}}
+        if arguments.get("cursor") is not None:
+            return {"error": {"code": "CURSOR_MANAGED_BY_AGENT"}}
+        try:
+            request = OPERATIONS[name].model_validate(arguments)
+        except ValidationError as exc:
+            return {
+                "error": {
+                    "code": "INVALID_ARGUMENT",
+                    "fields": [
+                        {"location": list(e["loc"]), "type": e["type"]}
+                        for e in exc.errors()
+                    ],
+                }
+            }
+        args = request.model_dump(mode="json")
+        key = json.dumps([name, args], sort_keys=True)
+        if key in self.cache:
+            return self.cache[key]
+        query_id = f"q{len(self.cache) + 1}"
+        records = []
+        seen_cursors = set()
+        pages = 0
+        while True:
+            payload, error = await self.invoke(name, args)
+            if error:
+                self.issues.append(AgentIssue(code=error, operation=name))
+                if error in {"UNAUTHORIZED", "FORBIDDEN"}:
+                    raise StopRun(error)
+                self.incomplete_queries.add(query_id)
+                records.append({"error": {"code": error}})
+                break
+            # Valida identidad y procedencia; no confiar en texto de herramientas.
+            try:
+                response = ApiResponse.model_validate(payload)
+                if (
+                    response.operation_id != name
+                    or type(response.provenance.get("is_synthetic")) is not bool
+                ):
+                    raise ValueError
+            except (ValidationError, ValueError):
+                raise StopRun("INVALID_MCP_RESPONSE") from None
+            size = len(response.model_dump_json().encode())
+            if self.byte_count + size > self.agent.limits.max_evidence_bytes:
+                self.incomplete_queries.add(query_id)
+                raise StopRun("EVIDENCE_BUDGET_EXCEEDED")
+            self.byte_count += size
+            evidence = Evidence(
+                evidence_id=f"e{len(self.evidence) + 1}",
+                query_id=query_id,
+                operation=name,
+                arguments=dict(args),
+                response=response,
+            )
+            self.evidence.append(evidence)
+            records.append(
+                {
+                    "evidence_id": evidence.evidence_id,
+                    "response_preview": preview(response.model_dump(mode="json")),
+                }
+            )
+            pages += 1
+            cursor = response.pagination.get("next_cursor")
+            if not cursor:
+                break
+            if (
+                not isinstance(cursor, str)
+                or "cursor" not in OPERATIONS[name].model_fields
+                or cursor in seen_cursors
+            ):
+                raise StopRun("INVALID_PAGINATION")
+            if pages >= self.agent.limits.max_pages_per_query:
+                self.incomplete_queries.add(query_id)
+                self.issues.append(
+                    AgentIssue(code="PAGE_BUDGET_EXCEEDED", operation=name)
+                )
+                records.append({"error": {"code": "PAGE_BUDGET_EXCEEDED"}})
+                break
+            seen_cursors.add(cursor)
+            args = {**args, "cursor": cursor}
+            # Cursor opaco: sólo se sustituye ese campo; los demás filtros quedan iguales.
+            OPERATIONS[name].model_validate(args)
+        result = {
+            "query_id": query_id,
+            "pages": records,
+            "complete": query_id not in self.incomplete_queries,
+        }
+        self.cache[key] = result
+        return result
+
+    async def invoke(self, name, args):
+        for attempt in range(2):
+            if self.calls >= self.agent.limits.max_tool_calls:
+                raise StopRun("TOOL_BUDGET_EXCEEDED")
+            self.calls += 1
+            started = time.monotonic()
+            result = await self.mcp.call_tool(name, args)
+            log.info(
+                "data_tool request=%s operation=%s call=%s duration_ms=%s error=%s",
+                self.request.request_id,
+                name,
+                self.calls,
+                int((time.monotonic() - started) * 1000),
+                result.is_error,
+            )
+            if not result.is_error:
+                return result.structured_content, None
+            try:
+                code = json.loads(result.content[0].text)["error"]["code"]
+            except (ValueError, KeyError, IndexError, AttributeError, TypeError):
+                return None, "INVALID_MCP_RESPONSE"
+            if code in TRANSIENT and attempt == 0:
+                await asyncio.sleep(1)
+                continue
+            # Sólo códigos conocidos, nunca mensajes externos que pudieran contener secretos.
+            known = TRANSIENT | {
+                "UNAUTHORIZED",
+                "FORBIDDEN",
+                "NOT_FOUND",
+                "INVALID_ARGUMENT",
+                "RESPONSE_TOO_LARGE",
+                "ENTITY_NOT_IN_MATCH",
+                "INVALID_API_RESPONSE",
+            }
+            return None, code if code in known else "MCP_TOOL_FAILED"
+        return None, "MCP_TOOL_FAILED"

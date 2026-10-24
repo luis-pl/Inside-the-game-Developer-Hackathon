@@ -1,5 +1,64 @@
 # Base de fútbol en Azure SQL
 
+## Datos actuales: partidos reales anonimizados
+
+El visor usa por defecto **diez partidos reales distintos**, sin contar el historial sintético:
+
+| Fuente | Partidos e IDs | Muestreo conservado |
+|---|---|---|
+| Metrica Sports | 2: `900011`, `900012` | 5 Hz de una fuente a 25 Hz |
+| SkillCorner | 8: `900101`–`900108` | 5 Hz de una fuente a 10 Hz |
+
+Son **291.770 frames y 6.418.940 filas de posición de jugadores**, incluidas las
+ausencias explícitas. Cada partido corresponde a un partido fuente diferente;
+no se repiten recorridos con nombres distintos para completar el catálogo.
+
+Cinco minutos equivalen a **300.000 ms y 1.500 observaciones**, reproducidos en
+300 segundos a 1×. Ventanas del visor de más de cinco minutos seleccionan 1 Hz
+para limitar transferencia y cálculo; las coordenadas siguen siendo observadas.
+Se conservan el tiempo añadido, las identidades durante sustituciones y los
+huecos de seguimiento. No se impone una formación 433.
+
+Metrica no aporta xG, formación, altura del balón, presión ni altura de pase.
+No se fabrican esos campos. Las fechas y competición originales son desconocidas;
+`1900-01-01` y la temporada `1900` son marcadores de importación, señalados en
+metadatos. Los pases `PASS` son los completados que identifica la fuente; otros
+`BALL LOST` conservan su tipo original y no equivalen automáticamente a pases
+fallidos. Por ello en Metrica no se presenta una tasa total de acierto como si fuera conocida.
+
+SkillCorner aporta tracking de retransmisión y eventos dinámicos derivados.
+Sus muestras se identifican como observadas o extrapoladas por el proveedor y
+conservan los huecos. Sus 6.044 pases incluyen éxitos y fallos anotados. Sus 201
+tiros no tienen resultados de tiro ni xG disponibles en esta importación: el
+marcador final procede de los metadatos. No se usa `lead_to_goal` como si fuera
+un gol individual. Los nombres/IDs de equipos y jugadores se sustituyen por
+alias por partido; no se importan nombres, apellidos ni fechas de nacimiento.
+La trazabilidad al partido público se conserva: es **seudonimización**.
+Los campos originales de 104–106 × 68 m se normalizan explícitamente a 105 × 68 m.
+
+Fuente y atribución: [Metrica Sports Sample Data](https://github.com/metrica-sports/sample-data).
+Fuente adicional: [SkillCorner Open Data](https://github.com/SkillCorner/opendata),
+licencia MIT conservada en `SKILLCORNER-LICENSE.txt`. Fuente fijada y hashes en
+`skillcorner-source.json`; auditoría conjunta en `real-data-cloud-report.json`.
+Revisión y SHA-256: `metrica-source.json`. Datos crudos/preparados: `.cache/metrica/`,
+ignorados por Git. Los diez partidos sintéticos siguientes se conservan como
+**historial separado**, con sus etiquetas sintéticas; no se han disfrazado de reales.
+
+```powershell
+python scripts/download_metrica.py
+python scripts/prepare_metrica.py
+node database/azure-sql/load-metrica.mjs
+python scripts/download_skillcorner.py
+python scripts/prepare_skillcorner.py
+node database/azure-sql/load-skillcorner.mjs
+node database/azure-sql/audit-metrica.mjs --all-real
+python scripts/verify_real_data.py
+```
+
+El cargador añade IDs nuevos y publica en una transacción por partido. Rechaza
+colisiones con otro origen. `real-data-migration.sql` admite observaciones reales
+con procedencia explícita. No desactiva triggers ni reemplaza los datos existentes.
+
 El esquema de 30 tablas está adaptado a SQL Server/Azure SQL, con 43 claves foráneas. `schema.sql` contiene todos los campos, claves, índices y reglas. `model.json` conserva el modelo revisado original; `build_schema.py` genera su adaptación ejecutable.
 
 ## Conexión
@@ -27,7 +86,7 @@ La oferta incluye 100.000 segundos de vCore, 32 GB de datos y 32 GB de backup al
 
 Esta configuración corresponde a esta base; no representa el saldo de crédito ni los cargos de toda la suscripción. Oferta: [Microsoft Learn](https://learn.microsoft.com/en-us/azure/azure-sql/database/free-tier?view=azuresql).
 
-## Datos de demostración
+## Historial: datos sintéticos de demostración
 
 Todo el contenido se genera con la semilla `20261021`. No son partidos, personas ni estadísticas reales del repositorio Hudl.
 

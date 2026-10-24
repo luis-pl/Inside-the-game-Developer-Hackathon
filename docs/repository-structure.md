@@ -12,6 +12,7 @@ Inside-the-game-Developer-Hackathon/
 │       │   ├── __init__.py
 │       │   ├── interpreter.py
 │       │   ├── data_agent.py
+│       │   ├── contracts.py       # Mensajes del agente de datos
 │       │   ├── sports_analyst.py
 │       │   └── dashboard_builder.py
 │       ├── tools/
@@ -20,7 +21,8 @@ Inside-the-game-Developer-Hackathon/
 │       │   └── topology.py
 │       ├── providers/
 │       │   ├── __init__.py
-│       │   └── models.py
+│       │   ├── models.py
+│       │   └── opencode.py         # Console/Zen o Go; planes y credenciales separados
 │       ├── contracts.py
 │       ├── analytics.py           # Definiciones deterministas de métricas
 │       ├── service.py             # Registro de operaciones y consultas
@@ -32,7 +34,8 @@ Inside-the-game-Developer-Hackathon/
 │       ├── mcp_server.py          # Tools MCP sobre las rutas fijas de la API
 │       ├── access.py              # Credenciales individuales, caducidad y permisos
 │       ├── cloud.py               # API + MCP con identidad preservada en Azure
-│       └── cli.py
+│       ├── cli.py
+│       └── data_agent_cli.py      # Texto/JSON -> evidencia JSON
 ├── frontend/
 │   └── src/
 │       └── components/
@@ -55,6 +58,9 @@ espaciales están implementados. `pyproject.toml` define dependencias y el coman
 
 El servidor MCP está implementado con SDK oficial y transportes stdio y Streamable HTTP.
 El contenedor público de Azure usa credenciales individuales y lectura SQL con identidad
-administrada. Uso: [mcp.md](mcp.md) y [azure-demo.md](azure-demo.md). Los agentes, prompts, proveedores de modelos,
-orquestación, frontend e integraciones A2A mantienen sus módulos reservados. La infraestructura y los datos de Azure SQL
+administrada. Uso: [mcp.md](mcp.md) y [azure-demo.md](azure-demo.md). El agente de datos,
+su prompt en `prompts/data_agent.md`, proveedor Azure OpenAI y cliente MCP están
+implementados; uso y límites en [data-agent.md](data-agent.md). El intérprete,
+analista, dashboard builder, orquestación, frontend e integraciones A2A mantienen
+sus módulos reservados. La infraestructura y los datos de Azure SQL
 se conservan en `database/azure-sql/`. Los scripts de despliegue están en `scripts/` y los identificadores públicos del alojamiento en `deployment/cloud.json`.

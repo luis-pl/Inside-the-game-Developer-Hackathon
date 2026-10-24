@@ -1,0 +1,51 @@
+{
+  "tested_at_utc": "2026-10-24T00:19:39.469116+00:00",
+  "source": "Existing API/MCP bearer credentials; public Azure services; synthetic dataset",
+  "github_actions_workflow_executed": false,
+  "checks": [
+    {
+      "name": "Developer API get_shots",
+      "passed": true,
+      "total": 6
+    },
+    {
+      "name": "Agent MCP tools/list",
+      "passed": true,
+      "tools": 34
+    },
+    {
+      "name": "Agent MCP get_shots",
+      "passed": true,
+      "total": 6
+    }
+  ],
+  "status": "passed",
+  "local_env_verified_at_utc": "2026-10-24T00:52:16.510806+00:00",
+  "local_env_checks": [
+    {
+      "credential_id": "team-collaborator-01",
+      "api_query": "passed",
+      "mcp_list_tools": 34,
+      "mcp_query": "passed",
+      "expected_total": 6,
+      "is_synthetic": true
+    },
+    {
+      "credential_id": "agent-data",
+      "api_query": "passed",
+      "mcp_list_tools": 34,
+      "mcp_query": "passed",
+      "expected_total": 6,
+      "is_synthetic": true
+    }
+  ],
+  "github_secrets_verified": [
+    "INSIDE_GAME_API_KEY",
+    "INSIDE_GAME_DATA_MCP_KEY"
+  ],
+  "github_variables_verified": [
+    "INSIDE_GAME_API_URL",
+    "INSIDE_GAME_MCP_API_URL",
+    "INSIDE_GAME_DATA_MCP_URL"
+  ]
+}

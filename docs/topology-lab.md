@@ -2,6 +2,24 @@
 
 Dashboard local del hackathon. Consume las operaciones de lectura de la API existente; no accede directamente a SQL ni requiere un modelo de IA.
 
+El catálogo del visor contiene **diez partidos reales distintos**: dos de Metrica
+Sports (`900011`, `900012`) y ocho de SkillCorner (`900101`–`900108`), con identidades
+enmascaradas. El historial sintético se mantiene separado y no cuenta para ese mínimo. Carga por defecto
+cinco minutos a 5 Hz; 1× equivale a tiempo real. Para ventanas más largas selecciona
+observaciones a 1 Hz y lo indica. No impone una formación ni rellena posiciones
+ausentes. Fuente y límites: [DATA-QUALITY.md](../database/azure-sql/DATA-QUALITY.md).
+
+SkillCorner es tracking de retransmisiones: incluye muestras detectadas y muestras
+extrapoladas por el proveedor. Se conservan esas etiquetas y los huecos, incluso
+cuando faltan todos los jugadores durante una repetición televisiva. Se normaliza
+el campo original de 104–106 × 68 m a 105 × 68 m con transformación afín explícita.
+Los nombres/IDs de jugadores y equipos se sustituyen por alias por partido;
+la trazabilidad pública al partido fuente permanece. No se afirma anonimización irreversible.
+
+También puede reutilizar `INSIDE_GAME_API_CREDENTIAL_FILE` o
+`INSIDE_GAME_DATA_MCP_CREDENTIAL_FILE`: lee la clave en el servidor y no la copia
+al frontend ni requiere guardarla en otro archivo.
+
 ## Arranque (Windows)
 
 Requisitos: Node.js 26.12.1 o 24.22.1 y Python 3.12+. Desde la raíz:
@@ -39,7 +57,7 @@ Se aplica inversión de dependencias mediante `EpisodeRepository` y `Operations`
 
 ## Definiciones y límites
 
-- Tracking: hasta 5 min dentro de un período, 22 jugadores activos válidos, una muestra original cada 1 s sin interpolación. Se unen consultas de hasta 120 s. Reloj local al período. El run y la dirección proceden del contexto.
+- Tracking real: hasta 5 min a 5 Hz (1500 muestras); ventanas más largas a 1 Hz. Se unen consultas de 20 s para el detalle de 200 ms. Las posiciones ausentes permanecen ausentes; no se exige que los 22 jugadores sean visibles. Reloj local al período. El run y la dirección proceden del contexto.
 - H0/H1: complejo de Vietoris–Rips hasta dimensión 2, coeficientes F2, filtración por longitud de arista y corte a 40 m. Reducción exacta de fronteras; las barras no muertas al corte se muestran censuradas. Se omiten barras de persistencia cero. H1 no equivale a ciclos del grafo sin triángulos. No se calculan cociclos representativos; las dimensiones son las de (co)homología sobre F2.
 - Espacio libre: complemento de discos de radio r, discretización de 1 m y cuatro vecinos, sin conexión fuera del rectángulo. Sus regiones son componentes H0 de esa aproximación; no son el H1 de Rips. La malla puede omitir corredores submétricos.
 - Ruta: BFS desde el nodo más próximo al balón a x≤5 o x≥100, 24≤y≤44. Si el inicio está cubierto no hay ruta. Se dibuja un camino geométrico; no predice una conducción o un pase ejecutable.
@@ -109,7 +127,7 @@ Las pruebas de aperturas cubren círculo central en un cuadrado, cobertura que c
 La vista inicial es la cancha, reloj, dos señales numéricas y reproducción. No
 incluye tarjetas explicativas ni ajustes de distancia. Configuración, evolución,
 método, persistencia y Hodge están en desplegables debajo. El indicador dice
-«reproduciendo», no «en directo»: son ventanas sintéticas de hasta 5 min, con una muestra original cada 1 s.
+«reproduciendo», no «en directo»: se reproducen partidos reales previamente registrados, con proveedor y frecuencia visibles.
 
 ### Conectividad sin escala elegida por el usuario
 
@@ -184,7 +202,7 @@ Por defecto se estima el equipo atacante mediante el jugador más cercano al bal
 Pruebas nuevas: redes separadas visibles, balón y jugador coincidentes, conservación de IDs durante animación, cambio de equipo, empates, detenciones y ausencia de balón. Validación sobre las 300 muestras Azure de la ventana.
 
 
-## Tiempo completo y ritmo de resumen (actualización vigente)
+## Historial: tiempo completo y ritmo de resumen (sustituido)
 
 El acceso principal carga un período completo de Azure desde 00:00: hasta 45 minutos y 2700 muestras originales a 1 Hz. La configuración permite 15, 30 o 45 minutos y conserva la elección de período e inicio. El ejemplo geométrico local de una sola jugada queda en la configuración, identificado explícitamente; no es el acceso principal al partido.
 
@@ -197,5 +215,7 @@ Las cifras de muestras, acciones, pases y tiros son visibles en la pantalla. Los
 
 ## Escala temporal vigente: tiempo real
 
-Por indicación posterior del usuario, se elimina la base acelerada de resumen. La velocidad inicial 1× significa exactamente 1 segundo de partido por segundo de pantalla; 0.5×, 2×, 4× y 8× son múltiplos literales del tiempo real. El reloj aplica sólo elapsedMs × speed, sin factores ocultos. Se conservan la carga del tiempo completo de 45 minutos, las 2700 muestras originales, todas las acciones y la navegación Próxima acción. La indicación anterior 1× = 8 s/s queda sustituida por esta definición.
+La velocidad inicial 1× significa exactamente 1 segundo de partido por segundo de pantalla; 0.5×, 2×, 4× y 8× son múltiplos literales del tiempo real. El reloj aplica sólo elapsedMs × speed, sin factores ocultos. La carga inicial es de cinco minutos reales con 1500 muestras a 5 Hz; el control permite ventanas de hasta 45 minutos a 1 Hz. Próxima acción salta a un evento registrado. La indicación histórica 1× = 8 s/s queda sustituida por esta definición.
+
+La medición de reproducción está en `docs/metrica-playback-verification.json`; la comparación completa de las filas cargadas contra las fuentes de los diez partidos está en `database/azure-sql/real-data-cloud-report.json`. La verificación HTTPS/MCP está en `docs/metrica-service-verification.json`.
 

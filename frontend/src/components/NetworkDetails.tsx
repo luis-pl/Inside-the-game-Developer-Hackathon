@@ -91,10 +91,13 @@ export function NetworkDetails({ lab }: { lab: Lab }) {
         control, velocidad ni tiempo de reacción. «Libre» significa vacío en
         esta instantánea, no seguro frente a una intercepción. El grafo de
         Gabriel es conservador: que no exista conexión en él no demuestra que no
-        exista un pase o un camino en el campo. Los datos son sintéticos, con
-        datos originales a 1 Hz, seleccionados cada{" "}
+        exista un pase o un camino en el campo.{" "}
+        {lab.episode?.dataKind?.startsWith("real_")
+          ? `Datos reales con identidades enmascaradas de ${lab.episode.provider ?? "la fuente indicada"},`
+          : "Datos sintéticos de demostración,"}{" "}
+        con observaciones seleccionadas cada{" "}
         {episodeTiming(lab.episode).sampleStepMs / 1000} segundos. La animación
-        interpola linealmente posiciones entre muestras contiguas de un segundo.
+        interpola linealmente posiciones entre muestras contiguas para dibujar.
         Los cálculos topológicos utilizan exclusivamente muestras originales. No
         se interpolan huecos ni identidades ausentes. El reloj reproduce una
         ventana, no una transmisión en directo.

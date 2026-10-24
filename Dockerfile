@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 COPY pyproject.toml ./
 COPY src ./src
+COPY prompts/data_agent.md ./prompts/data_agent.md
 RUN python -m pip install --no-cache-dir . \
     && useradd --uid 10001 --create-home app
 USER 10001

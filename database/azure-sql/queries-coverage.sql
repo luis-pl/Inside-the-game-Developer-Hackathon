@@ -3,6 +3,7 @@ DECLARE @match_id int=900001;
 
 -- Presence is tested per match, rather than relying on a type catalog.
 SELECT match_id,type_id,type_name,COUNT(*) n FROM analytics.events
+WHERE match_id BETWEEN 900001 AND 900010
 GROUP BY match_id,type_id,type_name ORDER BY match_id,type_id;
 
 -- Interceptions: who, when and where. Quit(es)/tackles are separate below.

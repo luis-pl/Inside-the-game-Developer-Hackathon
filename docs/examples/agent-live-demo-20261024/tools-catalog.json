@@ -1,0 +1,6142 @@
+[
+  {
+    "name": "describe_dataset",
+    "description": "Descubre cobertura, procedencias reales/sintéticas, convenciones y limitaciones. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "title": "Empty"
+    }
+  },
+  {
+    "name": "find_entities",
+    "description": "Resuelve nombres a identificadores de equipos o jugadores; no adivines IDs. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "kind": {
+          "enum": [
+            "team",
+            "player"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "match_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Match Id"
+        }
+      },
+      "required": [
+        "kind",
+        "name"
+      ],
+      "title": "EntitySearch"
+    }
+  },
+  {
+    "name": "list_matches",
+    "description": "Lista partidos disponibles con filtros y paginación. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "opponent_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Opponent Id"
+        },
+        "from_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "From Date"
+        },
+        "to_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To Date"
+        },
+        "side": {
+          "default": "all",
+          "enum": [
+            "all",
+            "home",
+            "away"
+          ],
+          "title": "Side",
+          "type": "string"
+        }
+      },
+      "title": "MatchList"
+    }
+  },
+  {
+    "name": "get_match_context",
+    "description": "Obtiene contexto, equipos, alineaciones e intervalos de participación del partido. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "MatchRequest"
+    }
+  },
+  {
+    "name": "get_team_summary",
+    "description": "Resume métricas de un equipo en partidos, con un profile_id autorizado. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_ids": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Match Ids",
+          "type": "array"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "profile_id": {
+          "default": "finishing",
+          "enum": [
+            "finishing",
+            "chance_creation",
+            "passing",
+            "defending",
+            "ball_progression",
+            "movement",
+            "set_pieces",
+            "possession_sequences",
+            "goalkeeping",
+            "pressure_effectiveness",
+            "ppda_demo"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_ids",
+        "team_id"
+      ],
+      "title": "TeamSummary"
+    }
+  },
+  {
+    "name": "get_player_summary",
+    "description": "Resume métricas de un jugador y sus minutos con un profile_id autorizado. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_ids": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Match Ids",
+          "type": "array"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "profile_id": {
+          "default": "finishing",
+          "enum": [
+            "finishing",
+            "chance_creation",
+            "passing",
+            "defending",
+            "ball_progression",
+            "movement",
+            "set_pieces",
+            "possession_sequences",
+            "goalkeeping",
+            "pressure_effectiveness",
+            "ppda_demo"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "player_id": {
+          "exclusiveMinimum": 0,
+          "title": "Player Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_ids",
+        "player_id"
+      ],
+      "title": "PlayerSummary"
+    }
+  },
+  {
+    "name": "get_shots",
+    "description": "Consulta tiros, ubicación, tiempo, resultado y xG ilustrativo; on_target incluye goles y paradas. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "outcome": {
+          "default": "all",
+          "enum": [
+            "all",
+            "on_target",
+            "goal",
+            "saved",
+            "blocked",
+            "off_target"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "body_part": {
+          "default": "all",
+          "enum": [
+            "all",
+            "head",
+            "left_foot",
+            "right_foot"
+          ],
+          "title": "Body Part",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "ShotsRequest"
+    }
+  },
+  {
+    "name": "get_passes",
+    "description": "Consulta pases, origen, destino, altura, resultados y resumen de completados. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "outcome": {
+          "default": "all",
+          "enum": [
+            "all",
+            "complete",
+            "incomplete"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "height": {
+          "default": "all",
+          "enum": [
+            "all",
+            "ground",
+            "low",
+            "high"
+          ],
+          "title": "Height",
+          "type": "string"
+        },
+        "restart": {
+          "default": "all",
+          "enum": [
+            "all",
+            "regular",
+            "corner",
+            "throw_in",
+            "free_kick",
+            "goal_kick",
+            "kick_off"
+          ],
+          "title": "Restart",
+          "type": "string"
+        },
+        "tagged": {
+          "default": "all",
+          "enum": [
+            "all",
+            "cross",
+            "cut_back",
+            "switch",
+            "shot_assist",
+            "goal_assist"
+          ],
+          "title": "Tagged",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "PassesRequest"
+    }
+  },
+  {
+    "name": "get_defensive_actions",
+    "description": "Consulta entradas, intercepciones, recuperaciones, presiones y duelos aéreos sin duplicar el enfrentamiento. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "kind": {
+          "default": "all",
+          "enum": [
+            "all",
+            "pressure",
+            "tackle",
+            "interception",
+            "aerial_duel",
+            "clearance",
+            "block",
+            "recovery",
+            "fifty_fifty",
+            "goalkeeper"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "outcome": {
+          "default": "all",
+          "enum": [
+            "all",
+            "won",
+            "lost"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "DefensiveRequest"
+    }
+  },
+  {
+    "name": "get_ball_actions",
+    "description": "Consulta regates y conducciones; la distancia de conducción es desplazamiento entre extremos. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "kind": {
+          "default": "all",
+          "enum": [
+            "all",
+            "dribble",
+            "carry",
+            "receipt",
+            "miscontrol",
+            "dispossessed"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "outcome": {
+          "default": "all",
+          "enum": [
+            "all",
+            "complete",
+            "incomplete"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "BallRequest"
+    }
+  },
+  {
+    "name": "get_discipline",
+    "description": "Consulta faltas y disciplina anotadas; un resultado vacío no prueba ausencia de infracciones reales. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "Filtered"
+    }
+  },
+  {
+    "name": "get_substitutions",
+    "description": "Consulta cambios y participantes reemplazados del partido. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "Filtered"
+    }
+  },
+  {
+    "name": "get_possessions",
+    "description": "Consulta secuencias de posesión anotadas; su tramo de eventos no equivale a posesión temporal exacta. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "Filtered"
+    }
+  },
+  {
+    "name": "get_tracking_frame",
+    "description": "Obtiene coordenadas en un instante muestreado del período: 1 Hz sintético o 5 Hz real según el run. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "period": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Period",
+          "type": "integer"
+        },
+        "time_ms": {
+          "minimum": 0,
+          "title": "Time Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "match_id",
+        "period",
+        "time_ms"
+      ],
+      "title": "TrackingFrame"
+    }
+  },
+  {
+    "name": "get_tracking_window",
+    "description": "Obtiene tracking de una ventana de hasta 120 segundos, con paginación. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "scope": {
+          "$ref": "#/$defs/WindowScope"
+        },
+        "stride_s": {
+          "default": 1,
+          "enum": [
+            1,
+            2,
+            5
+          ],
+          "title": "Stride S",
+          "type": "integer"
+        },
+        "sample_step_ms": {
+          "anyOf": [
+            {
+              "enum": [
+                200,
+                1000
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sample Step Ms"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        }
+      },
+      "required": [
+        "match_id",
+        "scope"
+      ],
+      "title": "TrackingWindow"
+    }
+  },
+  {
+    "name": "get_event_context",
+    "description": "Obtiene contexto de un evento por UUID, capturas disponibles y tracking cercano. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "before_s": {
+          "default": 5,
+          "enum": [
+            0,
+            5,
+            10,
+            15
+          ],
+          "title": "Before S",
+          "type": "integer"
+        },
+        "after_s": {
+          "default": 5,
+          "enum": [
+            0,
+            5,
+            10,
+            15
+          ],
+          "title": "After S",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "event_id"
+      ],
+      "title": "EventContext"
+    }
+  },
+  {
+    "name": "get_heatmap",
+    "description": "Genera celdas de mapa de calor por eventos o segundos de ocupación; conserva unidades y coordenadas. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "mode": {
+          "default": "occupancy_seconds",
+          "enum": [
+            "event_count",
+            "occupancy_seconds"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "grid_id": {
+          "default": "5m",
+          "enum": [
+            "5m",
+            "10m"
+          ],
+          "title": "Grid Id",
+          "type": "string"
+        },
+        "event_type": {
+          "default": "all",
+          "enum": [
+            "all",
+            "shot",
+            "pass",
+            "pressure",
+            "dribble",
+            "carry",
+            "interception"
+          ],
+          "title": "Event Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "HeatmapRequest"
+    }
+  },
+  {
+    "name": "get_movement_summary",
+    "description": "Resume distancia y movimiento a partir de tracking de 1 Hz e intervalos activos. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "MovementRequest"
+    }
+  },
+  {
+    "name": "get_metric_series",
+    "description": "Genera series temporales de perfiles de eventos autorizados; no acepta fórmulas libres. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "profile_id": {
+          "default": "finishing",
+          "enum": [
+            "finishing",
+            "chance_creation",
+            "passing",
+            "defending",
+            "ball_progression",
+            "movement",
+            "set_pieces",
+            "possession_sequences",
+            "goalkeeping",
+            "pressure_effectiveness",
+            "ppda_demo"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "MetricSeries"
+    }
+  },
+  {
+    "name": "compare_entities",
+    "description": "Compara equipos, jugadores o ventanas con métricas y normalizaciones autorizadas. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_ids": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Match Ids",
+          "type": "array"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "profile_id": {
+          "default": "finishing",
+          "enum": [
+            "finishing",
+            "chance_creation",
+            "passing",
+            "defending",
+            "ball_progression",
+            "movement",
+            "set_pieces",
+            "possession_sequences",
+            "goalkeeping",
+            "pressure_effectiveness",
+            "ppda_demo"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "mode": {
+          "default": "entities",
+          "enum": [
+            "entities",
+            "windows"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "entity_kind": {
+          "enum": [
+            "team",
+            "player"
+          ],
+          "title": "Entity Kind",
+          "type": "string"
+        },
+        "entity_ids": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "title": "Entity Ids",
+          "type": "array"
+        },
+        "windows": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "match": "#/$defs/MatchScope",
+                "period": "#/$defs/PeriodScope",
+                "window": "#/$defs/WindowScope"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/MatchScope"
+              },
+              {
+                "$ref": "#/$defs/PeriodScope"
+              },
+              {
+                "$ref": "#/$defs/WindowScope"
+              }
+            ]
+          },
+          "maxItems": 2,
+          "title": "Windows",
+          "type": "array"
+        }
+      },
+      "required": [
+        "match_ids",
+        "entity_kind",
+        "entity_ids"
+      ],
+      "title": "CompareRequest"
+    }
+  },
+  {
+    "name": "get_set_piece_sequences",
+    "description": "Consulta secuencias que comienzan en un reinicio como córner o saque de banda. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "restart": {
+          "default": "all",
+          "enum": [
+            "all",
+            "corner",
+            "throw_in",
+            "free_kick",
+            "goal_kick",
+            "kick_off"
+          ],
+          "title": "Restart",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "SetPiecesRequest"
+    }
+  },
+  {
+    "name": "get_events",
+    "description": "Consulta eventos por tipos y filtros enumerados, sin SQL ni expresiones libres. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "event_types": {
+          "items": {
+            "enum": [
+              2,
+              3,
+              4,
+              6,
+              9,
+              10,
+              14,
+              16,
+              17,
+              18,
+              19,
+              21,
+              22,
+              23,
+              30,
+              33,
+              34,
+              35,
+              36,
+              38,
+              39,
+              42,
+              43
+            ],
+            "type": "integer"
+          },
+          "maxItems": 23,
+          "title": "Event Types",
+          "type": "array"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "EventsRequest"
+    }
+  },
+  {
+    "name": "get_sequences",
+    "description": "Busca patrones predeterminados: pase A-B-A, tras regate, recuperación a tiro o presión a recuperación. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "view": {
+          "default": "events",
+          "enum": [
+            "events",
+            "summary",
+            "map",
+            "timeline"
+          ],
+          "title": "View",
+          "type": "string"
+        },
+        "bin_s": {
+          "default": 300,
+          "enum": [
+            60,
+            300,
+            900
+          ],
+          "title": "Bin S",
+          "type": "integer"
+        },
+        "pattern_id": {
+          "enum": [
+            "pass_aba",
+            "after_dribble",
+            "turnover_to_shot",
+            "pressure_to_recovery"
+          ],
+          "title": "Pattern Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "pattern_id"
+      ],
+      "title": "SequenceRequest"
+    }
+  },
+  {
+    "name": "get_zone_summary",
+    "description": "Resume actividad y ocupación en zonas predefinidas del campo. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "team_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Team Id"
+        },
+        "player_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Player Id"
+        },
+        "zone_id": {
+          "default": "final_third",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id"
+      ],
+      "title": "ZoneRequest"
+    }
+  },
+  {
+    "name": "get_rankings",
+    "description": "Ordena equipos o jugadores por métricas autorizadas, totales o por 90 minutos. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "default": 100,
+          "maximum": 200,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 1024,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "match_ids": {
+          "items": {
+            "exclusiveMinimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Match Ids",
+          "type": "array"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "profile_id": {
+          "default": "finishing",
+          "enum": [
+            "finishing",
+            "chance_creation",
+            "passing",
+            "defending",
+            "ball_progression",
+            "movement",
+            "set_pieces",
+            "possession_sequences",
+            "goalkeeping",
+            "pressure_effectiveness",
+            "ppda_demo"
+          ],
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "zone_id": {
+          "default": "all",
+          "enum": [
+            "all",
+            "defensive_third",
+            "middle_third",
+            "final_third",
+            "penalty_area",
+            "central_channel"
+          ],
+          "title": "Zone Id",
+          "type": "string"
+        },
+        "score_state": {
+          "default": "all",
+          "enum": [
+            "all",
+            "leading",
+            "tied",
+            "trailing"
+          ],
+          "title": "Score State",
+          "type": "string"
+        },
+        "pressure": {
+          "default": "all",
+          "enum": [
+            "all",
+            "under_pressure",
+            "unpressured"
+          ],
+          "title": "Pressure",
+          "type": "string"
+        },
+        "entity_kind": {
+          "default": "player",
+          "enum": [
+            "team",
+            "player"
+          ],
+          "title": "Entity Kind",
+          "type": "string"
+        },
+        "metric": {
+          "default": "xg",
+          "enum": [
+            "shots",
+            "goals",
+            "xg",
+            "assists",
+            "completed_passes",
+            "tackles_won",
+            "interceptions",
+            "dribbles_complete",
+            "distance_m",
+            "saves"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "min_minutes": {
+          "default": 0,
+          "maximum": 900,
+          "minimum": 0,
+          "title": "Min Minutes",
+          "type": "integer"
+        },
+        "normalization": {
+          "default": "total",
+          "enum": [
+            "total",
+            "per90"
+          ],
+          "title": "Normalization",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_ids"
+      ],
+      "title": "RankingsRequest"
+    }
+  },
+  {
+    "name": "get_team_shape",
+    "description": "Calcula centroide, anchura, profundidad, distancias y envolvente del equipo; requiere instante o ventana válida. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_proximity_connectivity",
+    "description": "Calcula grafo de proximidad y conectividad según epsilon_m discreto. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_space_coverage",
+    "description": "Calcula áreas Voronoi recortadas al campo; geometría, no pitch control probabilístico. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_passing_network",
+    "description": "Construye red dirigida de pases completados con pesos y jugadores participantes. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_pass_corridor",
+    "description": "Evalúa un corredor estático 2D de un pase raso anotado; requiere event_id, no predice intercepciones. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_line_breaks",
+    "description": "Evalúa rupturas de líneas según la definición geométrica publicada y eventos disponibles. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_persistent_structure",
+    "description": "Calcula persistencia de Vietoris-Rips y Betti en escalas definidas; no es un score táctico calibrado. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_node_removal_robustness",
+    "description": "Mide cambios de conectividad al retirar nodos del grafo de proximidad. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  },
+  {
+    "name": "get_defensive_profile",
+    "description": "Combina forma y conectividad defensiva con contexto de acciones rivales; no produce un score de impenetrabilidad. Sólo lectura; datos sintéticos.",
+    "input_schema": {
+      "type": "object",
+      "$defs": {
+        "MatchScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "match",
+              "default": "match",
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "title": "MatchScope",
+          "type": "object"
+        },
+        "PeriodScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "period",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period"
+          ],
+          "title": "PeriodScope",
+          "type": "object"
+        },
+        "WindowScope": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "window",
+              "title": "Kind",
+              "type": "string"
+            },
+            "period": {
+              "enum": [
+                1,
+                2
+              ],
+              "title": "Period",
+              "type": "integer"
+            },
+            "start_ms": {
+              "minimum": 0,
+              "title": "Start Ms",
+              "type": "integer"
+            },
+            "end_ms": {
+              "exclusiveMinimum": 0,
+              "title": "End Ms",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "period",
+            "start_ms",
+            "end_ms"
+          ],
+          "title": "WindowScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "match_id": {
+          "exclusiveMinimum": 0,
+          "title": "Match Id",
+          "type": "integer"
+        },
+        "team_id": {
+          "exclusiveMinimum": 0,
+          "title": "Team Id",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "time_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Ms"
+        },
+        "scope": {
+          "discriminator": {
+            "mapping": {
+              "match": "#/$defs/MatchScope",
+              "period": "#/$defs/PeriodScope",
+              "window": "#/$defs/WindowScope"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/MatchScope"
+            },
+            {
+              "$ref": "#/$defs/PeriodScope"
+            },
+            {
+              "$ref": "#/$defs/WindowScope"
+            }
+          ],
+          "title": "Scope"
+        },
+        "epsilon_m": {
+          "default": 15,
+          "enum": [
+            5,
+            10,
+            15,
+            20
+          ],
+          "title": "Epsilon M",
+          "type": "integer"
+        },
+        "view": {
+          "default": "summary",
+          "enum": [
+            "summary",
+            "geometry",
+            "matrix",
+            "triangulation"
+          ],
+          "title": "View",
+          "type": "string"
+        }
+      },
+      "required": [
+        "match_id",
+        "team_id"
+      ],
+      "title": "SpatialRequest"
+    }
+  }
+]

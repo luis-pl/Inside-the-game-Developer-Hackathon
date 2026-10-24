@@ -1,0 +1,494 @@
+{
+  "tested_at_utc": "2026-10-24T04:06:40.269582+00:00",
+  "source": "Live public HTTPS API and MCP -> managed identity -> Azure SQL",
+  "status": "passed",
+  "operations": [
+    {
+      "operation": "describe_dataset",
+      "passed": true,
+      "arguments": {}
+    },
+    {
+      "operation": "find_entities",
+      "passed": true,
+      "arguments": {
+        "kind": "player",
+        "name": "M1 Jugador",
+        "match_id": 900011,
+        "limit": 5
+      }
+    },
+    {
+      "operation": "list_matches",
+      "passed": true,
+      "arguments": {}
+    },
+    {
+      "operation": "get_match_context",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011
+      }
+    },
+    {
+      "operation": "get_team_summary",
+      "passed": true,
+      "arguments": {
+        "match_ids": [
+          900011
+        ],
+        "team_id": 102,
+        "profile_id": "finishing"
+      }
+    },
+    {
+      "operation": "get_player_summary",
+      "passed": true,
+      "arguments": {
+        "match_ids": [
+          900011
+        ],
+        "player_id": 1019,
+        "profile_id": "passing"
+      }
+    },
+    {
+      "operation": "get_shots",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "outcome": "on_target",
+        "view": "summary"
+      }
+    },
+    {
+      "operation": "get_passes",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_defensive_actions",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "kind": "aerial_duel",
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_ball_actions",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "kind": "dribble",
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_discipline",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_substitutions",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011
+      }
+    },
+    {
+      "operation": "get_possessions",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_tracking_frame",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "period": 1,
+        "time_ms": 600000
+      }
+    },
+    {
+      "operation": "get_tracking_window",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "scope": {
+          "kind": "window",
+          "period": 1,
+          "start_ms": 600000,
+          "end_ms": 610000
+        }
+      }
+    },
+    {
+      "operation": "get_event_context",
+      "passed": true,
+      "arguments": {
+        "event_id": "32b9fbb8-88a0-5f93-a3ab-92f0563e99e5"
+      }
+    },
+    {
+      "operation": "get_heatmap",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "player_id": 1019,
+        "mode": "occupancy_seconds"
+      }
+    },
+    {
+      "operation": "get_movement_summary",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102
+      }
+    },
+    {
+      "operation": "get_metric_series",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "profile_id": "finishing"
+      }
+    },
+    {
+      "operation": "compare_entities",
+      "passed": true,
+      "arguments": {
+        "match_ids": [
+          900011
+        ],
+        "entity_kind": "team",
+        "entity_ids": [
+          102,
+          103
+        ],
+        "profile_id": "finishing"
+      }
+    },
+    {
+      "operation": "get_set_piece_sequences",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_events",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "event_types": [
+          10,
+          14
+        ],
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_sequences",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "pattern_id": "pressure_to_recovery",
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_zone_summary",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "zone_id": "final_third"
+      }
+    },
+    {
+      "operation": "get_rankings",
+      "passed": true,
+      "arguments": {
+        "match_ids": [
+          900011
+        ],
+        "metric": "completed_passes",
+        "profile_id": "passing",
+        "limit": 5
+      }
+    },
+    {
+      "operation": "get_team_shape",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "period": 1,
+        "time_ms": 600000
+      }
+    },
+    {
+      "operation": "get_proximity_connectivity",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "period": 1,
+        "time_ms": 600000,
+        "view": "matrix"
+      }
+    },
+    {
+      "operation": "get_space_coverage",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "period": 1,
+        "time_ms": 600000,
+        "view": "triangulation"
+      }
+    },
+    {
+      "operation": "get_passing_network",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102
+      }
+    },
+    {
+      "operation": "get_pass_corridor",
+      "passed": true,
+      "status": 422,
+      "expected_limitation": "Unavailable source fields or incomplete real tracking; no invented result",
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 103,
+        "event_id": "05d71015-20a7-5fca-a330-20b29253dc22"
+      }
+    },
+    {
+      "operation": "get_line_breaks",
+      "passed": true,
+      "status": 422,
+      "expected_limitation": "Unavailable source fields or incomplete real tracking; no invented result",
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102
+      }
+    },
+    {
+      "operation": "get_persistent_structure",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "period": 1,
+        "time_ms": 600000
+      }
+    },
+    {
+      "operation": "get_node_removal_robustness",
+      "passed": true,
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 102,
+        "period": 1,
+        "time_ms": 600000
+      }
+    },
+    {
+      "operation": "get_defensive_profile",
+      "passed": true,
+      "status": 422,
+      "expected_limitation": "Unavailable source fields or incomplete real tracking; no invented result",
+      "arguments": {
+        "match_id": 900011,
+        "team_id": 103
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "Default dashboard catalogue contains ten distinct real games",
+      "passed": true,
+      "evidence": {
+        "match_ids": [
+          900011,
+          900012,
+          900101,
+          900102,
+          900103,
+          900104,
+          900105,
+          900106,
+          900107,
+          900108
+        ]
+      }
+    },
+    {
+      "name": "Real xG is null, never a fabricated zero",
+      "passed": true
+    },
+    {
+      "name": "Game 900011 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900011: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900011 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900012 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900012: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900012 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900101 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900101: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900101 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900102 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900102: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900102 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900103 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900103: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900103 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900104 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900104: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900104 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900105 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900105: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900105 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900106 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900106: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900106 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900107 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900107: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900107 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Game 900108 preserves source pass row count",
+      "passed": true
+    },
+    {
+      "name": "Game 900108: 10 seconds contains 50 original observations",
+      "passed": true
+    },
+    {
+      "name": "Game 900108 has explicit real provenance",
+      "passed": true
+    },
+    {
+      "name": "Five-minute viewer window keeps all 1500 real samples",
+      "passed": true
+    },
+    {
+      "name": "Viewer identifies the real provider",
+      "passed": true
+    },
+    {
+      "name": "Ball gaps remain missing",
+      "passed": true
+    },
+    {
+      "name": "SkillCorner viewer keeps 1500 samples and pseudonymized provenance",
+      "passed": true
+    },
+    {
+      "name": "MCP accepts real provenance and subsecond tracking",
+      "passed": true
+    },
+    {
+      "name": "MCP serves the tenth real game without synthetic provenance",
+      "passed": true
+    }
+  ]
+}

@@ -2,7 +2,7 @@ DECLARE @match int=?, @run uniqueidentifier=?, @period int=?, @start bigint=?, @
  @orient bit=?, @xmin float=?, @xmax float=?, @ymin float=?, @ymax float=?;
 WITH ticks AS (
  SELECT f.*,LEAD(period_time_ms) OVER(PARTITION BY run_id,period ORDER BY frame_index) next_ms
- FROM analytics.tracking_frames f WHERE match_id=@match AND run_id=@run
+ FROM analytics.tracking_frames f WHERE match_id=@match AND run_id=@run AND period_time_ms%1000=0
 ), points AS (
  SELECT p.player_id,p.team_id,p.period,f.period_time_ms,f.next_ms,
  CASE WHEN @orient=0 OR (pd.home_attacks_positive_x=1 AND mt.side='home') OR (pd.home_attacks_positive_x=0 AND mt.side='away') THEN p.x_m ELSE r.pitch_length_m-p.x_m END x,

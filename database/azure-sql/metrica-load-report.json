@@ -1,0 +1,53 @@
+{
+  "source": "https://github.com/metrica-sports/sample-data",
+  "source_revision": "e706dd506b360d69d9d123d5b8026e7294b13996",
+  "is_synthetic": false,
+  "testedAt": "2026-10-24T03:09:53.782Z",
+  "status": "passed",
+  "matches": [
+    {
+      "match": 900011,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "players": 28,
+        "match_lineups": 28,
+        "lineup_positions": 28,
+        "match_teams": 2,
+        "events": 1755,
+        "event_passes": 799,
+        "event_shots": 24,
+        "lineup_cards": 4,
+        "event_tracking_links": 1755,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29002,
+        "tracking_player_positions": 638044,
+        "tracking_ball_positions": 29002
+      }
+    },
+    {
+      "match": 900012,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "players": 26,
+        "match_lineups": 26,
+        "lineup_positions": 26,
+        "match_teams": 2,
+        "events": 1943,
+        "event_passes": 964,
+        "event_shots": 24,
+        "lineup_cards": 6,
+        "event_tracking_links": 1943,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 28232,
+        "tracking_player_positions": 621104,
+        "tracking_ball_positions": 28232
+      }
+    }
+  ]
+}

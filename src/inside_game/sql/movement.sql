@@ -1,7 +1,7 @@
 DECLARE @match int=?, @run uniqueidentifier=?, @period int=?, @start bigint=?, @end bigint=?, @team int=?, @player int=?;
 WITH ticks AS (
  SELECT f.*,LEAD(period_time_ms) OVER(PARTITION BY run_id,period ORDER BY frame_index) next_ms
- FROM analytics.tracking_frames f WHERE match_id=@match AND run_id=@run
+ FROM analytics.tracking_frames f WHERE match_id=@match AND run_id=@run AND period_time_ms%1000=0
 ), points AS (
  SELECT p.*,f.period_time_ms,f.next_ms,
  LAG(p.x_m) OVER(PARTITION BY p.run_id,p.period,p.player_id ORDER BY p.frame_index) px,

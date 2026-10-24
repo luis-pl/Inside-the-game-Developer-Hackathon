@@ -65,7 +65,9 @@ export function App({ repository }: { repository: EpisodeRepository }) {
         </div>
         <footer>
           <span>INSIDE THE GAME / DEVELOPER HACKATHON</span>
-          <span>Geometría de posiciones · datos sintéticos</span>
+          <span>
+            Geometría de posiciones · procedencia visible en la cancha
+          </span>
         </footer>
       </main>
     </>

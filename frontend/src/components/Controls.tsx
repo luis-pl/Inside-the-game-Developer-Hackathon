@@ -20,6 +20,15 @@ export function Controls({ lab }: { lab: Lab }) {
           ))}
         </select>
       </label>
+      {lab.matches.length > 0 && (
+        <p className="small muted">
+          {lab.matches.length} partidos{" "}
+          {lab.matches.every((m) => m.dataKind?.startsWith("real_"))
+            ? "reales "
+            : ""}
+          disponibles
+        </p>
+      )}
       <div className="two-cols">
         <label>
           Período
@@ -50,6 +59,8 @@ export function Controls({ lab }: { lab: Lab }) {
           disabled={lab.loading}
           onChange={(e) => lab.setDurationSeconds(Number(e.target.value))}
         >
+          <option value="60">1 minuto · máximo detalle</option>
+          <option value="300">5 minutos · máximo detalle</option>
           <option value="900">15 minutos</option>
           <option value="1800">30 minutos</option>
           <option value="2700">Tiempo completo · hasta 45 minutos</option>

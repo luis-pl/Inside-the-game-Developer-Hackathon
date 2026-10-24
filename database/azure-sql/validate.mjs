@@ -60,11 +60,17 @@ try {
   const counts=await pool.request().query(model.tables.map(t=>`SELECT '${t.name}' name,COUNT_BIG(*) n FROM statsbomb.[${t.name}]`).join(' UNION ALL '));
   report.counts=Object.fromEntries(counts.recordset.map(r=>[r.name,Number(r.n)]));
   assert.equal(Object.keys(report.counts).length,30);
-  assert.equal(report.counts.matches,10);
-  assert.equal(report.counts.tracking_frames,54020);
-  assert.equal(report.counts.tracking_player_positions,1188440);
+  assert(report.counts.matches>=10);
+  assert(report.counts.tracking_frames>=54020);
+  assert(report.counts.tracking_player_positions>=1188440);
   const expected=JSON.parse(readFileSync(new URL('./seed-report.json',import.meta.url),'utf8'));
-  for(const [name,n] of Object.entries(expected.counts))assert.equal(report.counts[name],n,`Actual count for ${name} must equal the load report`);
+  const scopedTables=model.tables.filter(t=>t.fields.some(f=>f.name==='match_id'));
+  const legacy=await pool.request().query(scopedTables.map(t=>`SELECT '${t.name}' name,COUNT_BIG(*) n FROM statsbomb.[${t.name}] WHERE match_id BETWEEN 900001 AND 900010`).join(' UNION ALL '));
+  report.syntheticCounts=Object.fromEntries(legacy.recordset.map(r=>[r.name,Number(r.n)]));
+  for(const [name,n] of Object.entries(expected.counts)){
+   if(name in report.syntheticCounts)assert.equal(report.syntheticCounts[name],n,`Synthetic count for ${name} must equal its load report`);
+   else assert(report.counts[name]>=n,`The historical ${name} rows must remain present`);
+  }
   const fk=await pool.request().query("SELECT COUNT(*) n FROM sys.foreign_keys WHERE schema_id=SCHEMA_ID('statsbomb') AND is_disabled=0 AND is_not_trusted=0");
   assert.equal(fk.recordset[0].n,43);
   for(const [name,expected,statement,before=''] of tests) {
@@ -89,15 +95,19 @@ try {
     SELECT SUM(CASE WHEN n<>22 THEN 1 ELSE 0 END) incomplete_frames FROM
       (SELECT run_id,period,frame_index,COUNT(*) n FROM statsbomb.tracking_player_positions GROUP BY run_id,period,frame_index) f;
     SELECT COUNT(*) bad_links FROM statsbomb.event_tracking_links l JOIN statsbomb.events e ON e.event_id=l.event_id
-      JOIN statsbomb.tracking_frames f ON f.run_id=l.run_id AND f.period=l.period AND f.frame_index=l.frame_index WHERE f.period_time_ms<>e.period_time_ms;
-    SELECT COUNT(*) incomplete_periods FROM (SELECT p.run_id,p.period,p.duration_ms,COUNT(f.frame_index) n,MIN(f.period_time_ms) first_ms,MAX(f.period_time_ms) last_ms
-      FROM statsbomb.tracking_periods p JOIN statsbomb.tracking_frames f ON f.run_id=p.run_id AND f.period=p.period GROUP BY p.run_id,p.period,p.duration_ms) x
-      WHERE first_ms<>0 OR last_ms<>duration_ms OR n<>duration_ms/1000+1;
+      JOIN statsbomb.tracking_frames f ON f.run_id=l.run_id AND f.period=l.period AND f.frame_index=l.frame_index
+      JOIN statsbomb.tracking_runs r ON r.run_id=l.run_id
+      WHERE ABS(f.period_time_ms-e.period_time_ms)>r.max_event_offset_ms OR (l.alignment_method='exact' AND f.period_time_ms<>e.period_time_ms);
+    SELECT COUNT(*) incomplete_periods FROM (SELECT p.run_id,p.period,p.duration_ms,CONVERT(bigint,1000/r.sample_rate_hz) step_ms,COUNT(f.frame_index) n,MIN(f.period_time_ms) first_ms,MAX(f.period_time_ms) last_ms
+      FROM statsbomb.tracking_periods p JOIN statsbomb.tracking_runs r ON r.run_id=p.run_id
+      JOIN statsbomb.tracking_frames f ON f.run_id=p.run_id AND f.period=p.period GROUP BY p.run_id,p.period,p.duration_ms,r.sample_rate_hz) x
+      WHERE first_ms<>0 OR last_ms<>duration_ms/step_ms*step_ms OR n<>duration_ms/step_ms+1;
     SELECT MAX(SQRT(POWER((CASE WHEN (p.home_attacks_positive_x=1 AND mt.side='home') OR (p.home_attacks_positive_x=0 AND mt.side='away') THEN e.location_x*105/120 ELSE 105-e.location_x*105/120 END)-pos.x_m,2)
       +POWER((CASE WHEN (p.home_attacks_positive_x=1 AND mt.side='home') OR (p.home_attacks_positive_x=0 AND mt.side='away') THEN e.location_y*68/80 ELSE 68-e.location_y*68/80 END)-pos.y_m,2))) max_error_m
       FROM statsbomb.events e JOIN statsbomb.event_tracking_links l ON l.event_id=e.event_id
       JOIN statsbomb.tracking_player_positions pos ON pos.run_id=l.run_id AND pos.period=l.period AND pos.frame_index=l.frame_index AND pos.player_id=e.player_id
-      JOIN statsbomb.tracking_periods p ON p.run_id=l.run_id AND p.period=l.period JOIN statsbomb.match_teams mt ON mt.match_id=e.match_id AND mt.team_id=e.team_id;
+      JOIN statsbomb.tracking_periods p ON p.run_id=l.run_id AND p.period=l.period JOIN statsbomb.match_teams mt ON mt.match_id=e.match_id AND mt.team_id=e.team_id
+      JOIN statsbomb.tracking_runs r ON r.run_id=l.run_id AND r.is_synthetic=1;
   `);
   report.integrity=integrity.recordsets.map(s=>s[0]);
   assert.equal(report.integrity[0].incomplete_frames,0);assert.equal(report.integrity[1].bad_links,0);assert.equal(report.integrity[2].incomplete_periods,0);

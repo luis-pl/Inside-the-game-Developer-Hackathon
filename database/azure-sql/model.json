@@ -2386,7 +2386,7 @@
       "\"pitch_width_m\" > 0 AND \"pitch_width_m\" < 'Infinity'::float8",
       "\"max_event_offset_ms\" >= 0",
       "jsonb_typeof(\"config\")='object'",
-      "\"is_synthetic\"=true"
+      "\"is_synthetic\" IN (true,false)"
     ],
     "tracking_periods": [
       "\"period\" BETWEEN 1 AND 5",
@@ -2402,7 +2402,7 @@
     "tracking_player_positions": [
       "\"position_status\" IN ('available','missing')",
       "(\"position_status\"='available' AND \"x_m\" IS NOT NULL AND \"y_m\" IS NOT NULL) OR (\"position_status\"='missing' AND \"x_m\" IS NULL AND \"y_m\" IS NULL)",
-      "\"sample_method\" IN ('generated','interpolated','extrapolated','missing')",
+      "\"sample_method\" IN ('observed','generated','interpolated','extrapolated','missing')",
       "(\"position_status\"='missing') = (\"sample_method\"='missing')",
       "\"confidence\" BETWEEN 0 AND 1",
       "\"x_m\" > '-Infinity'::float8 AND \"x_m\" < 'Infinity'::float8",
@@ -2412,7 +2412,7 @@
     "tracking_ball_positions": [
       "\"position_status\" IN ('available','missing')",
       "(\"position_status\"='available' AND \"x_m\" IS NOT NULL AND \"y_m\" IS NOT NULL) OR (\"position_status\"='missing' AND \"x_m\" IS NULL AND \"y_m\" IS NULL)",
-      "\"sample_method\" IN ('generated','interpolated','extrapolated','missing')",
+      "\"sample_method\" IN ('observed','generated','interpolated','extrapolated','missing')",
       "(\"position_status\"='missing') = (\"sample_method\"='missing')",
       "\"confidence\" BETWEEN 0 AND 1",
       "\"x_m\" > '-Infinity'::float8 AND \"x_m\" < 'Infinity'::float8",

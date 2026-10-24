@@ -1,0 +1,57 @@
+{
+  "tested_at_utc": "2026-10-24T17:18:30.272699+00:00",
+  "source": "Configured model -> authenticated MCP -> Azure SQL (synthetic)",
+  "provider": "opencode-go",
+  "model": "beam-free",
+  "model_api": "chat_completions",
+  "llm_used": true,
+  "natural_language_evaluated": true,
+  "status": "passed",
+  "cases": [
+    {
+      "id": "shots_count_time_location",
+      "passed": true,
+      "status": "complete",
+      "checks": {
+        "expected_status": true,
+        "required_operations": true,
+        "synthetic_provenance": true,
+        "required_arguments": true,
+        "required_players": true,
+        "player_operation_matrix": true,
+        "minimum_pages": true,
+        "forbidden_calls": true,
+        "safe_rejection": true,
+        "clarification": true,
+        "original_data_preserved": true
+      },
+      "tool_calls": 1,
+      "model_turns": 3,
+      "total_tokens": 39354,
+      "issues": [],
+      "queries": [
+        {
+          "operation": "get_shots",
+          "arguments": {
+            "limit": 100,
+            "cursor": null,
+            "match_id": 900001,
+            "team_id": 1,
+            "player_id": null,
+            "scope": {
+              "kind": "match"
+            },
+            "zone_id": "all",
+            "score_state": "all",
+            "pressure": "all",
+            "view": "events",
+            "bin_s": 300,
+            "outcome": "on_target",
+            "body_part": "all"
+          },
+          "method_id": "get_shots_v1"
+        }
+      ]
+    }
+  ]
+}

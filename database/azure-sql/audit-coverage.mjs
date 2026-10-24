@@ -24,8 +24,13 @@ const queries={
  failedTackleAttribution:`SELECT COUNT(*) bad_attributions FROM analytics.events a WHERE a.type_id=4 AND JSON_VALUE(a.details,'$.duel.type.id')='11' AND JSON_VALUE(a.details,'$.duel.outcome.id')='13' AND NOT EXISTS(SELECT 1 FROM analytics.event_relations r JOIN analytics.events b ON b.event_id=r.related_event_id WHERE r.event_id=a.event_id AND b.type_id=14 AND JSON_VALUE(b.details,'$.dribble.outcome.id')='8' AND b.team_id<>a.team_id AND b.period=a.period AND b.period_time_ms=a.period_time_ms)`,
  };
 const check=(name,ok)=>{assert(ok,name);report.checks.push({name,passed:true});};
+// This report is historical synthetic coverage, never a mixture of providers.
+const syntheticQuery=query=>{
+ const names=[...new Set([...query.matchAll(/analytics\.(\w+)/g)].map(m=>m[1]))];
+ return 'WITH '+names.map(n=>`syn_${n} AS (SELECT * FROM analytics.[${n}] WHERE match_id BETWEEN 900001 AND 900010)`).join(',')+'\n'+query.replace(/analytics\.(\w+)/g,'syn_$1');
+};
 try{
- for(const [name,query] of Object.entries(queries))report.sections[name]=(await pool.request().query(query)).recordset;
+ for(const [name,query] of Object.entries(queries))report.sections[name]=(await pool.request().query(syntheticQuery(query))).recordset;
  const s=report.sections;
  check('Exactly ten published matches at 3.0.0',s.versions.length===1&&s.versions[0].version==='3.0.0'&&s.versions[0].n===10);
  for(const type of [2,3,4,6,9,10,14,16,17,19,21,22,23,30,33,35,36,38,39,42,43])check(`Type ${type} exists in every match`,s.types.filter(r=>r.type_id===type).length===10);

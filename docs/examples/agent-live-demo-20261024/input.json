@@ -1,0 +1,11 @@
+{
+  "request_id": "e827b254-5c01-4549-beee-729ddc498327",
+  "request_text": "En el partido Synthetic FC 1 contra Synthetic FC 2 del 2026-10-01, obtén el contexto del partido y todos los tiros a puerta del equipo local, con su resumen, momento y coordenadas. Resuelve el partido por sus nombres y fecha; entrega la evidencia original sin realizar análisis deportivo.",
+  "context": {
+    "match_ids": [],
+    "team_ids": [],
+    "player_ids": [],
+    "event_ids": [],
+    "scope": null
+  }
+}

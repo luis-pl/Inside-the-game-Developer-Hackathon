@@ -23,12 +23,15 @@ export interface Match {
   id: number;
   label: string;
   teams: Team[];
+  dataKind?: "synthetic" | "real_anonymized" | "real_pseudonymized";
 }
 export interface Episode {
   window?: { startMs: number; endMs: number; sampleStepMs: number };
   frames: Frame[];
   teams: Team[];
   source: "azure" | "local";
+  dataKind?: "synthetic" | "real_anonymized" | "real_pseudonymized";
+  provider?: string;
   warnings: string[];
   matchLabel: string;
   period: number;

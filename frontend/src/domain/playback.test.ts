@@ -69,6 +69,20 @@ test("five-minute replay retains every one-second observation at each speed", ()
   assert.equal(frameDelayMs(irregular, 0, 1), 12000);
 });
 
+test("real tracking at 5 Hz keeps five minutes equal to 300 screen seconds at 1x", () => {
+  const episode = localScenario();
+  const first = episode.frames[0];
+  episode.frames = Array.from({ length: 1500 }, (_, i) => ({
+    ...first,
+    timeMs: i * 200,
+  }));
+  episode.window = { startMs: 0, endMs: 300000, sampleStepMs: 200 };
+  assert.equal(episodeTiming(episode).durationMs, 300000);
+  assert.equal(frameDelayMs(episode.frames, 0, 1), 200);
+  assert.equal(advanceReplayTime(0, 5000, 1, 300000), 5000);
+  assert.equal(advanceReplayTime(0, 300000, 1, 300000), 300000);
+});
+
 test("cached windows replay without further requests and use LRU eviction", async () => {
   const calls: number[] = [],
     episode = localScenario();

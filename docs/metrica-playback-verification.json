@@ -1,0 +1,12 @@
+{
+  "source": "Observed browser replay at http://127.0.0.1:8090/",
+  "match_id": 900011,
+  "sample_rate_hz": 5,
+  "window_duration_ms": 300000,
+  "observations": 1500,
+  "playback_speed": 1,
+  "measured_screen_elapsed_ms": 78574,
+  "measured_match_elapsed_ms": 78585.70000009536,
+  "match_time_to_screen_time_ratio": 1.0001489042188938,
+  "status": "passed"
+}

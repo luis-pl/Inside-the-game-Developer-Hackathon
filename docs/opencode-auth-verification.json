@@ -1,0 +1,19 @@
+{
+  "tested_at_utc": "2026-10-24T17:19:36.100753+00:00",
+  "provider": "opencode-go",
+  "authentication_source": "Active official CLI session; credentials read only and never copied",
+  "catalog_status": 200,
+  "model_count": 37,
+  "selected_model": "beam-free",
+  "selected_model_available": true,
+  "longcat_preview_available": false,
+  "selected_model_published_cost": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+  },
+  "legacy_api_key_status": 401,
+  "status": "passed",
+  "inference_requests_in_this_check": 0,
+  "provider_fallback": false
+}
