@@ -11,7 +11,14 @@
     "audit:local": "node audit-data.mjs",
     "audit:tests": "node audit-tests.mjs",
     "audit:coverage": "node audit-coverage.mjs",
-    "profile": "node profile-capabilities.mjs"
+    "profile": "node profile-capabilities.mjs",
+    "real:download": "python ../../scripts/download_metrica.py",
+    "real:prepare": "python ../../scripts/prepare_metrica.py",
+    "real:load": "node load-metrica.mjs",
+    "real:audit": "node audit-metrica.mjs --all-real",
+    "skillcorner:download": "python ../../scripts/download_skillcorner.py",
+    "skillcorner:prepare": "python ../../scripts/prepare_skillcorner.py",
+    "skillcorner:load": "node load-skillcorner.mjs"
   },
   "dependencies": {
     "mssql": "12.7.10"

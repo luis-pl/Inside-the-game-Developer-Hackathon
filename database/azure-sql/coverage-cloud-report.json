@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-23T01:21:13.636Z",
+  "testedAt": "2026-10-24T03:31:39.255Z",
   "status": "passed",
   "source": "Rows read from Azure SQL; synthetic 3.0.0",
   "checks": [

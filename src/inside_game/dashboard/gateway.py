@@ -61,6 +61,7 @@ class HttpOperations:
             messages = {
                 401: "Falta una clave válida: configura INSIDE_GAME_API_KEY en el .env del servidor.",
                 403: "La credencial no tiene permiso para esta consulta.",
+                422: "La fuente no contiene los campos o la cobertura necesarios para esta consulta.",
                 429: "Límite de consultas alcanzado. Espera un minuto.",
                 503: "Azure está iniciando o temporalmente no disponible. Reintenta.",
             }
@@ -86,6 +87,9 @@ def match_view(row):
         "id": row["match_id"],
         "label": f"{teams[0]['name']} vs {teams[1]['name']}",
         "teams": teams,
+        "dataKind": "synthetic"
+        if row.get("is_synthetic", True)
+        else row.get("data_kind") or "real_anonymized",
     }
 
 
@@ -95,9 +99,15 @@ class EpisodeService:
 
     def matches(self):
         response = self.operations.execute("list_matches", {"limit": 100})
-        return [match_view(row) for row in response["data"]["items"]]
+        rows = response["data"]["items"]
+        # Real samples are the default catalogue; the old synthetic dataset
+        # remains accessible through API/MCP for historical demonstrations.
+        real = [row for row in rows if row.get("is_synthetic") is False]
+        return [match_view(row) for row in (real or rows)]
 
-    def episode(self, match_id, period, start_seconds, duration_seconds=2700, stride_s=1):
+    def episode(
+        self, match_id, period, start_seconds, duration_seconds=2700, stride_s=1
+    ):
         if (
             type(match_id) is not int
             or match_id <= 0
@@ -120,6 +130,30 @@ class EpisodeService:
                 "Se requiere un único run de tracking para el período.", 422
             )
         selected = periods[0]
+        run = (
+            next(
+                r
+                for r in context.get("runs", [])
+                if str(r["run_id"]) == str(selected["run_id"])
+            )
+            if context.get("runs")
+            else {}
+        )
+        real_data = meta.get("is_synthetic") is False
+        provider = meta.get("provider") or (
+            "Metrica Sports" if real_data else "inside-game-demo"
+        )
+        data_kind = meta.get("data_kind") or (
+            "real_anonymized" if real_data else "synthetic"
+        )
+        step_ms = (
+            200
+            if real_data
+            and run.get("sample_rate_hz", 1) >= 5
+            and duration_seconds <= 300
+            and stride_s == 1
+            else stride_s * 1000
+        )
         run_id = str(selected["run_id"])
         start = start_seconds * 1000
         end = min(
@@ -132,8 +166,9 @@ class EpisodeService:
         frames, warnings = [], []
         # Each upstream call is capped at 120 s. Disjoint half-open windows
         # preserve sampling phase because 120 is divisible by every stride.
-        for chunk_start in range(start, end, 120000):
-            chunk_end = min(chunk_start + 120000, end)
+        chunk_ms = 20000 if step_ms == 200 else 120000
+        for chunk_start in range(start, end, chunk_ms):
+            chunk_end = min(chunk_start + chunk_ms, end)
             response = self.operations.execute(
                 "get_tracking_window",
                 {
@@ -145,20 +180,47 @@ class EpisodeService:
                         "start_ms": chunk_start,
                         "end_ms": chunk_end,
                     },
-                    "stride_s": stride_s,
+                    **(
+                        {"sample_step_ms": 200}
+                        if step_ms == 200
+                        else {"stride_s": stride_s}
+                    ),
                 },
             )
-            frames.extend(self._frame(f, lineups) for f in response["data"]["frames"])
+            frames.extend(
+                self._frame(f, lineups, require_complete=False)
+                if real_data
+                else self._frame(f, lineups)
+                for f in response["data"]["frames"]
+            )
             warnings.extend(response.get("warnings", []))
         if not frames:
             raise DataError("La ventana no contiene muestras válidas.", 422)
-        if [f["timeMs"] for f in frames] != list(range(start, end, stride_s * 1000)):
+        if [f["timeMs"] for f in frames] != list(range(start, end, step_ms)):
             raise DataError(
                 "El tracking contiene huecos o instantes duplicados; no se interpolan.",
                 422,
             )
         # A failed event query must not silently imply no actions occurred.
         warnings = list(dict.fromkeys(warnings))
+        if real_data:
+            warnings.append(
+                f"Fuente: {provider}, partido real con identidades enmascaradas. No se ha impuesto una formación ni generado trayectorias."
+            )
+            if provider == "SkillCorner":
+                warnings.append(
+                    "Tracking de retransmisión: incluye posiciones detectadas y extrapoladas por SkillCorner. La fuente puede tener errores de identidad y huecos; no equivale a seguimiento óptico completo."
+                )
+            incomplete = sum(len(f["players"]) < 22 for f in frames)
+            missing_ball = sum(f["ball"] is None for f in frames)
+            if incomplete or missing_ball:
+                warnings.append(
+                    f"Tracking real: {incomplete} muestras con jugadores ausentes y {missing_ball} sin balón. Los huecos permanecen visibles; no se inventan posiciones."
+                )
+            if step_ms >= 1000:
+                warnings.append(
+                    "Ventana larga: se selecciona una observación por segundo. Para ver el balón a 5 Hz, carga hasta cinco minutos."
+                )
         events = []
         try:
             events = self._events(match_id, period, start, end)
@@ -178,10 +240,12 @@ class EpisodeService:
                 "Hodge no disponible: no se pudo obtener la red completa de pases de la ventana."
             )
         return {
-            "window": {"startMs": start, "endMs": end, "sampleStepMs": stride_s * 1000},
+            "window": {"startMs": start, "endMs": end, "sampleStepMs": step_ms},
             "frames": frames,
             "teams": view["teams"],
             "source": "azure",
+            "dataKind": data_kind,
+            "provider": provider,
             "matchLabel": view["label"],
             "period": period,
             "homeAttacksRight": bool(selected["home_attacks_positive_x"]),
@@ -194,8 +258,10 @@ class EpisodeService:
         arguments = {
             "match_id": match_id,
             "scope": {
-                "kind": "window", "period": period,
-                "start_ms": start, "end_ms": end,
+                "kind": "window",
+                "period": period,
+                "start_ms": start,
+                "end_ms": end,
             },
             "limit": 200,
         }
@@ -216,7 +282,9 @@ class EpisodeService:
                 raise DataError("La paginación de acciones no avanza.")
             cursors.add(cursor)
             arguments = {**arguments, "cursor": cursor}
-        raise DataError("La ventana supera 4000 acciones; no se usa una lista truncada.")
+        raise DataError(
+            "La ventana supera 4000 acciones; no se usa una lista truncada."
+        )
 
     def _completed_passes(self, match_id, period, start, end, lineups):
         arguments = {
@@ -280,7 +348,7 @@ class EpisodeService:
         )
 
     @staticmethod
-    def _frame(frame, lineups):
+    def _frame(frame, lineups, require_complete=True):
         valid = [
             p
             for p in frame["players"]
@@ -292,9 +360,20 @@ class EpisodeService:
             )
         ]
         if (
-            len(valid) != 22
-            or len({p["player_id"] for p in valid}) != 22
-            or any(not (0 <= p["x_m"] <= 105 and 0 <= p["y_m"] <= 68) for p in valid)
+            (require_complete and len(valid) != 22)
+            or len(valid) > 22
+            or len({p["player_id"] for p in valid}) != len(valid)
+            or any(
+                not (
+                    (0 if require_complete else -5)
+                    <= p["x_m"]
+                    <= (105 if require_complete else 110)
+                    and (0 if require_complete else -5)
+                    <= p["y_m"]
+                    <= (68 if require_complete else 73)
+                )
+                for p in valid
+            )
         ):
             raise DataError(
                 "Se requieren 22 posiciones activas válidas dentro del campo.", 422

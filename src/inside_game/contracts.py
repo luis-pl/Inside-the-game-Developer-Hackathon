@@ -205,8 +205,15 @@ class TrackingWindow(MatchRequest):
     run_id: UUID | None = None
     scope: WindowScope
     stride_s: Literal[1, 2, 5] = 1
+    sample_step_ms: Literal[200, 1000] | None = None
     team_id: Id | None = None
     player_id: Id | None = None
+
+    @model_validator(mode="after")
+    def sampling_not_ambiguous(self):
+        if self.sample_step_ms is not None and self.stride_s != 1:
+            raise ValueError("Use sample_step_ms or stride_s, not both")
+        return self
 
 
 class EventContext(ClosedModel):

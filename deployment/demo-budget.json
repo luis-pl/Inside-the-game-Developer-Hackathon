@@ -1,0 +1,13 @@
+{
+  "budget_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.Consumption/budgets/inside-game-demo-100-usd",
+  "amount": 100,
+  "currency": "USD",
+  "scope": "rg-inside-game-demo (all demo resources)",
+  "time_grain": "Annually",
+  "start": "2026-10-01T00:00:00Z",
+  "end": "2027-10-01T00:00:00Z",
+  "automatic_consumption_cutoff": false,
+  "notification_recipients": [],
+  "spending_limit": "On",
+  "billing_changed": false
+}

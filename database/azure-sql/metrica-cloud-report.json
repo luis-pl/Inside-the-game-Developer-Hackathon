@@ -1,0 +1,93 @@
+{
+  "testedAt": "2026-10-24T03:18:26.484Z",
+  "source": "Actual complete Azure SQL rows compared with normalized official source samples",
+  "status": "passed",
+  "matches": [
+    {
+      "match": 900011,
+      "status": "passed",
+      "fingerprints": {
+        "tracking_frames": {
+          "count": 29002,
+          "sha256_sum": "e98f2f594fc5beed903dbbefa9ebb880c36f1356f2a960821739364e0e6ff9c0"
+        },
+        "tracking_player_positions": {
+          "count": 638044,
+          "sha256_sum": "860bab58c87d7ff20e0d2e924ef8ba1ed243e3402afadb4302498463ca5bb9b6"
+        },
+        "tracking_ball_positions": {
+          "count": 29002,
+          "sha256_sum": "c280b9b3e719fd20bfb6e05bfd6748ee7376da2eb8096fa0f2537ffe1af7dc4d"
+        },
+        "event_passes": {
+          "count": 799,
+          "sha256_sum": "8918d9e62e6f99a5a85ad7ea81acee007b33aafdd20c91cec6790ba7fbbc88e3"
+        }
+      },
+      "periods": [
+        {
+          "period": 1,
+          "samples": 14254,
+          "first_ms": "0",
+          "last_ms": "2850600",
+          "first_five_minutes_samples": 1500
+        },
+        {
+          "period": 2,
+          "samples": 14748,
+          "first_ms": "0",
+          "last_ms": "2949400",
+          "first_five_minutes_samples": 1500
+        }
+      ],
+      "provenance": {
+        "is_synthetic": false,
+        "sample_rate_hz": 5,
+        "provider": "Metrica Sports"
+      }
+    },
+    {
+      "match": 900012,
+      "status": "passed",
+      "fingerprints": {
+        "tracking_frames": {
+          "count": 28232,
+          "sha256_sum": "a39166e3780b2a03b8e7b165ff878ecba6045aaede8f1eb4adc8ea3fd6a8b88e"
+        },
+        "tracking_player_positions": {
+          "count": 621104,
+          "sha256_sum": "c773efd3033338056b17b30be620eb7d13d368ead58c5a1c91cc7f0e25129604"
+        },
+        "tracking_ball_positions": {
+          "count": 28232,
+          "sha256_sum": "1eb2a7c5f8da114c9a7185c31abd752a441ad5389b1ecea1585f257ab2e93273"
+        },
+        "event_passes": {
+          "count": 964,
+          "sha256_sum": "1a3b251ae19f0239d7da38f7763a0e2c53fddf4245e42964fc4ae4009bbc5e15"
+        }
+      },
+      "periods": [
+        {
+          "period": 1,
+          "samples": 13589,
+          "first_ms": "0",
+          "last_ms": "2717600",
+          "first_five_minutes_samples": 1500
+        },
+        {
+          "period": 2,
+          "samples": 14643,
+          "first_ms": "0",
+          "last_ms": "2928400",
+          "first_five_minutes_samples": 1500
+        }
+      ],
+      "provenance": {
+        "is_synthetic": false,
+        "sample_rate_hz": 5,
+        "provider": "Metrica Sports"
+      }
+    }
+  ]
+}

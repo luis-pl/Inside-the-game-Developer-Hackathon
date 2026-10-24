@@ -1,0 +1,178 @@
+{
+  "provider": "SkillCorner",
+  "source": "https://github.com/SkillCorner/opendata",
+  "source_revision": "4340d274572876239c154c90bc507a9b3250a656",
+  "is_synthetic": false,
+  "testedAt": "2026-10-24T03:49:40.614Z",
+  "status": "passed",
+  "matches": [
+    {
+      "match": 900101,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4146,
+        "event_passes": 654,
+        "event_shots": 32,
+        "event_tracking_links": 4146,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29227,
+        "tracking_player_positions": 642994,
+        "tracking_ball_positions": 29227
+      }
+    },
+    {
+      "match": 900102,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4722,
+        "event_passes": 823,
+        "event_shots": 26,
+        "event_tracking_links": 4722,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 30022,
+        "tracking_player_positions": 660484,
+        "tracking_ball_positions": 30022
+      }
+    },
+    {
+      "match": 900103,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 50,
+        "events": 4617,
+        "event_passes": 736,
+        "event_shots": 22,
+        "event_tracking_links": 4617,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29952,
+        "tracking_player_positions": 658944,
+        "tracking_ball_positions": 29952
+      }
+    },
+    {
+      "match": 900104,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 52,
+        "events": 4710,
+        "event_passes": 766,
+        "event_shots": 25,
+        "event_tracking_links": 4710,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 28397,
+        "tracking_player_positions": 624734,
+        "tracking_ball_positions": 28397
+      }
+    },
+    {
+      "match": 900105,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4038,
+        "event_passes": 630,
+        "event_shots": 32,
+        "event_tracking_links": 4038,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29647,
+        "tracking_player_positions": 652234,
+        "tracking_ball_positions": 29647
+      }
+    },
+    {
+      "match": 900106,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4637,
+        "event_passes": 836,
+        "event_shots": 15,
+        "event_tracking_links": 4637,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29487,
+        "tracking_player_positions": 648714,
+        "tracking_ball_positions": 29487
+      }
+    },
+    {
+      "match": 900107,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 54,
+        "events": 4835,
+        "event_passes": 847,
+        "event_shots": 23,
+        "event_tracking_links": 4835,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 28772,
+        "tracking_player_positions": 632984,
+        "tracking_ball_positions": 28772
+      }
+    },
+    {
+      "match": 900108,
+      "status": "published",
+      "counts": {
+        "teams": 2,
+        "match_teams": 2,
+        "players": 36,
+        "match_lineups": 36,
+        "lineup_positions": 51,
+        "events": 4314,
+        "event_passes": 752,
+        "event_shots": 26,
+        "event_tracking_links": 4314,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29032,
+        "tracking_player_positions": 638704,
+        "tracking_ball_positions": 29032
+      }
+    }
+  ]
+}

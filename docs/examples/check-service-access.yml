@@ -1,0 +1,28 @@
+# Copy to .github/workflows/check-service-access.yml to enable manually.
+# Execute only with a free runner/minutes allowance; never enable paid overage.
+name: Check API and MCP access
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install client dependencies
+        run: python -m pip install 'mcp>=2.3,<2.4' 'httpx>=0.28,<1' 'httpx2>=2.16,<3'
+      - name: Check authenticated read access
+        env:
+          INSIDE_GAME_API_URL: ${{ vars.INSIDE_GAME_API_URL }}
+          INSIDE_GAME_API_KEY: ${{ secrets.INSIDE_GAME_API_KEY }}
+          INSIDE_GAME_DATA_MCP_URL: ${{ vars.INSIDE_GAME_DATA_MCP_URL }}
+          INSIDE_GAME_DATA_MCP_KEY: ${{ secrets.INSIDE_GAME_DATA_MCP_KEY }}
+        run: python scripts/check_service_access.py

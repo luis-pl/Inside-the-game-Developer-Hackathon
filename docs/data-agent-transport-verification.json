@@ -1,0 +1,97 @@
+{
+  "tested_at_utc": "2026-10-23T23:38:32.736320+00:00",
+  "llm_used": false,
+  "source": "Controlled plan -> DataAgent -> public authenticated MCP -> Azure SQL",
+  "natural_language_evaluated": false,
+  "status": "passed",
+  "cases": [
+    {
+      "name": "on_target_shots",
+      "passed": true,
+      "checks": {
+        "complete": true,
+        "all_queries": true,
+        "synthetic": true,
+        "original_data_preserved": true,
+        "known_six_shots": true
+      },
+      "status": "complete",
+      "tool_calls": 1,
+      "evidence_pages": 1,
+      "issues": []
+    },
+    {
+      "name": "three_players_positioning",
+      "passed": true,
+      "checks": {
+        "complete": true,
+        "all_queries": true,
+        "synthetic": true,
+        "original_data_preserved": true,
+        "six_player_outputs": true
+      },
+      "status": "complete",
+      "tool_calls": 6,
+      "evidence_pages": 6,
+      "issues": []
+    },
+    {
+      "name": "multiple_matches",
+      "passed": true,
+      "checks": {
+        "complete": true,
+        "all_queries": true,
+        "synthetic": true,
+        "original_data_preserved": true
+      },
+      "status": "complete",
+      "tool_calls": 1,
+      "evidence_pages": 1,
+      "issues": []
+    },
+    {
+      "name": "all_passes_paginated",
+      "passed": true,
+      "checks": {
+        "complete": true,
+        "all_queries": true,
+        "synthetic": true,
+        "original_data_preserved": true,
+        "multiple_pages": true,
+        "last_page": true
+      },
+      "status": "complete",
+      "tool_calls": 6,
+      "evidence_pages": 6,
+      "issues": []
+    },
+    {
+      "name": "defensive_geometry",
+      "passed": true,
+      "checks": {
+        "complete": true,
+        "all_queries": true,
+        "synthetic": true,
+        "original_data_preserved": true
+      },
+      "status": "complete",
+      "tool_calls": 3,
+      "evidence_pages": 3,
+      "issues": []
+    },
+    {
+      "name": "pressure_sequence",
+      "passed": true,
+      "checks": {
+        "complete": true,
+        "all_queries": true,
+        "synthetic": true,
+        "original_data_preserved": true
+      },
+      "status": "complete",
+      "tool_calls": 1,
+      "evidence_pages": 1,
+      "issues": []
+    }
+  ]
+}

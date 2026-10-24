@@ -59,8 +59,10 @@ def in_scope(e, scope):
 
 
 def in_zone(x, y, zone):
+    if zone == "all":
+        return True
     if x is None or y is None:
-        return zone == "all"
+        return False
     if zone == "defensive_third":
         return 0 <= x < 35 and 0 <= y <= 68
     if zone == "middle_third":
@@ -90,7 +92,9 @@ def events_for(data, request, team=_AUTO, player=_AUTO):
             e["location_y"] * 68 / 80 if e["location_y"] is not None else None
         )
         state = "tied"
-        if e["team_id"] in scores:
+        if data.get("meta", {}).get("provider") == "SkillCorner":
+            state = "unknown"
+        elif e["team_id"] in scores:
             own = scores[e["team_id"]]
             other = next(v for k, v in scores.items() if k != e["team_id"])
             state = "leading" if own > other else "trailing" if own < other else "tied"
@@ -362,7 +366,11 @@ def summary(data, rows, profile, minutes=None, team=None, scope=None):
             "conversion_rate": ratio(goals, len(shots)),
             "on_target_rate": ratio(on_target, len(shots)),
             "outcomes": dict(Counter(e["shot"]["outcome"]["name"] for e in shots)),
-            "body_parts": dict(Counter(e["shot"]["body_part"]["name"] for e in shots)),
+            "body_parts": dict(
+                Counter(
+                    (e["shot"]["body_part"] or {}).get("name", "Unknown") for e in shots
+                )
+            ),
         }
     if profile == "chance_creation":
         shot_index = defaultdict(list)
@@ -383,6 +391,16 @@ def summary(data, rows, profile, minutes=None, team=None, scope=None):
         lengths, progressive, entries = [], 0, 0
         for e in passes:
             p = e["pass"]
+            if any(
+                v is None
+                for v in (
+                    e["attacking_x_m"],
+                    e["attacking_y_m"],
+                    p["end_x"],
+                    p["end_y"],
+                )
+            ):
+                continue
             x, y, ex, ey = (
                 e["attacking_x_m"],
                 e["attacking_y_m"],
@@ -399,9 +417,12 @@ def summary(data, rows, profile, minutes=None, team=None, scope=None):
             "attempted_passes": len(passes),
             "completed_passes": len(complete),
             "completion_rate": ratio(len(complete), len(passes)),
-            "total_pass_length_m": sum(lengths),
-            "progressive_passes": progressive,
-            "final_third_entries": entries,
+            "passes_with_geometry": len(lengths),
+            "total_pass_length_m": sum(lengths)
+            if len(lengths) == len(passes)
+            else None,
+            "progressive_passes": progressive if len(lengths) == len(passes) else None,
+            "final_third_entries": entries if len(lengths) == len(passes) else None,
             **{
                 k: sum(bool(e["pass"][k]) for e in passes)
                 for k in ("cross", "cut_back", "switch")

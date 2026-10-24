@@ -48,19 +48,19 @@ MAX_RESPONSE = 1024 * 1024
 # El cliente recibe estas instrucciones al descubrir el servidor. Orientan la
 # interpretación de datos; la validación efectiva ocurre en call() y en la API.
 INSTRUCTIONS = (
-    "Analítica de fútbol con datos sintéticos. Usa describe_dataset para conocer "
+    "Analítica de fútbol con datos reales anonimizados y sintéticos separados por procedencia. Usa describe_dataset para conocer "
     "cobertura y limitaciones, list_matches/find_entities para resolver identificadores, "
     "y get_match_context para alineaciones. Sólo se permiten las herramientas listadas; "
     "no se acepta SQL. Conserva provenance, warnings, coverage y coordinates al interpretar "
     "resultados. El xG es ilustrativo; Voronoi no es probabilidad de control. El tracking "
-    "es de 1 Hz; las ventanas son [start_ms,end_ms) y el tiempo corresponde al período. "
+    "puede ser de 1 o 5 Hz según el run; las ventanas son [start_ms,end_ms) y el tiempo corresponde al período. "
     "Usa pagination.next_cursor con los mismos argumentos para continuar. Si no hay "
     "cobertura, explica la ausencia sin inventar datos."
 )
 # Descripciones que ve el agente en tools/list para elegir la herramienta.
 # Los campos, enums y límites se obtienen de OPERATIONS, no de este texto.
 DESCRIPTIONS = {
-    "describe_dataset": "Descubre cobertura, convenciones y limitaciones del conjunto sintético.",
+    "describe_dataset": "Descubre cobertura, procedencias reales/sintéticas, convenciones y limitaciones.",
     "find_entities": "Resuelve nombres a identificadores de equipos o jugadores; no adivines IDs.",
     "list_matches": "Lista partidos disponibles con filtros y paginación.",
     "get_match_context": "Obtiene contexto, equipos, alineaciones e intervalos de participación del partido.",
@@ -73,7 +73,7 @@ DESCRIPTIONS = {
     "get_discipline": "Consulta faltas y disciplina anotadas; un resultado vacío no prueba ausencia de infracciones reales.",
     "get_substitutions": "Consulta cambios y participantes reemplazados del partido.",
     "get_possessions": "Consulta secuencias de posesión anotadas; su tramo de eventos no equivale a posesión temporal exacta.",
-    "get_tracking_frame": "Obtiene coordenadas de jugadores y balón en un instante muestreado de un período, a 1 Hz.",
+    "get_tracking_frame": "Obtiene coordenadas en un instante muestreado del período: 1 Hz sintético o 5 Hz real según el run.",
     "get_tracking_window": "Obtiene tracking de una ventana de hasta 120 segundos, con paginación.",
     "get_event_context": "Obtiene contexto de un evento por UUID, capturas disponibles y tracking cercano.",
     "get_heatmap": "Genera celdas de mapa de calor por eventos o segundos de ocupación; conserva unidades y coordenadas.",
@@ -314,12 +314,12 @@ class ApiBridge:
                         )
                     chunks.append(chunk)
         # Exige el contrato de la API, la operación solicitada y la identificación
-        # sintética antes de ofrecer el resultado al agente.
+        # explícita antes de ofrecer el resultado al agente.
         try:
             result = ApiResponse.model_validate_json(b"".join(chunks))
             if (
                 result.operation_id != name
-                or result.provenance.get("is_synthetic") is not True
+                or type(result.provenance.get("is_synthetic")) is not bool
             ):
                 raise ValueError("Unexpected operation or provenance")
         except ValueError:

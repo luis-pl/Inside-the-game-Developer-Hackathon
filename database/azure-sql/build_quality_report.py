@@ -1,4 +1,4 @@
-"""Close quality only after actual Azure coverage and coherence pass."""
+"""Build the historical synthetic report without replacing real-data findings."""
 import collections
 import json
 import pathlib
@@ -13,7 +13,11 @@ assert cloud['status'] == 'passed' and len(cloud['reports']) == 10
 assert structure['status'] == 'passed' and len(structure['tests']) == 31
 assert negative['status'] == 'passed' and len(negative['tests']) == 30
 assert coverage['status'] == 'passed' and all(c['passed'] for c in coverage['checks'])
-assert structure['counts'] == seed['counts']
+for name, count in seed['counts'].items():
+    if name in structure.get('syntheticCounts', {}):
+        assert structure['syntheticCounts'][name] == count
+    else:
+        assert structure['counts'][name] >= count
 assert all(r['status'] == 'passed' and not r['errors'] for r in cloud['reports'])
 metrics = [r['metrics'] for r in cloud['reports']]
 fmt = lambda n: format(n, ',').replace(',', '.')
@@ -90,7 +94,7 @@ El tracking es sintético a 1 Hz, las capturas 360 son coordenadas de campo comp
 
 Comandos: npm run validate, npm run audit, npm run audit:coverage, npm run audit:local y npm run audit:tests.
 '''
-(root / 'DATA-QUALITY.md').write_text(doc, encoding='utf-8')
+(root / 'DATA-QUALITY-SYNTHETIC.md').write_text(doc, encoding='utf-8')
 deployment = read('deployment.json')
 deployment.update({'syntheticVersion': '3.0.0', 'qualityStatus': 'passed-coverage-and-coherence',
                    'auditedMatches': 10, 'integrityTests': 31, 'auditorNegativeTests': 30,

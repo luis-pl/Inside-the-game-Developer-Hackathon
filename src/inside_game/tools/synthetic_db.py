@@ -139,7 +139,9 @@ class SqlRepository:
         if os.getenv("INSIDE_GAME_SQL_AUTH") == "managed_identity":
             from azure.identity import ManagedIdentityCredential
 
-            self.provider = ManagedIdentityCredential(client_id=os.getenv("AZURE_CLIENT_ID"))
+            self.provider = ManagedIdentityCredential(
+                client_id=os.getenv("AZURE_CLIENT_ID")
+            )
 
     def _connect(self):
         import mssql_python
@@ -281,7 +283,8 @@ class SqlRepository:
         self, match_id, run_id, period, start, end, stride=1, team=None, player=None
     ):
         frames, players, balls = self.execute(
-            "tracking", [match_id, run_id, period, start, end, stride, team, player]
+            "tracking",
+            [match_id, run_id, period, start, end, round(stride * 1000), team, player],
         )
         by_frame = {
             f["frame_index"]: {**f, "players": [], "ball": None} for f in frames

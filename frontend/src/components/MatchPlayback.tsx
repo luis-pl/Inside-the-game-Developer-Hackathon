@@ -1,6 +1,6 @@
 import type { Lab } from "../hooks/use-lab.ts";
 import { useMemo } from "react";
-import { episodeActions } from "../domain/playback.ts";
+import { episodeActions, episodeTiming } from "../domain/playback.ts";
 export const matchClock = (ms: number) =>
   `${String(Math.floor(ms / 60000)).padStart(2, "0")}:${String(Math.floor(ms / 1000) % 60).padStart(2, "0")}`;
 
@@ -33,7 +33,7 @@ export function MatchPlayback({ lab }: { lab: Lab }) {
           type="range"
           aria-label="Momento del partido"
           min={lab.episode?.frames[0].timeMs ?? 0}
-          max={lab.episode?.frames.at(-1)!.timeMs ?? 1}
+          max={lab.episode ? episodeTiming(lab.episode).endMs : 1}
           step="any"
           value={lab.playheadMs}
           disabled={!lab.episode}
@@ -43,9 +43,7 @@ export function MatchPlayback({ lab }: { lab: Lab }) {
           }}
         />
         <span>
-          {lab.episode
-            ? matchClock(lab.episode.frames.at(-1)!.timeMs)
-            : "00:00"}
+          {lab.episode ? matchClock(episodeTiming(lab.episode).endMs) : "00:00"}
         </span>
         <select
           aria-label="Velocidad del partido"

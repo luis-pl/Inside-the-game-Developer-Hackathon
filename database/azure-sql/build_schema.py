@@ -12,6 +12,8 @@ types = {'int': 'int', 'bigint': 'bigint', 'uuid': 'uniqueidentifier',
          'text': 'nvarchar(256)', 'timestamp': 'datetime2(6)', 'date': 'date', 'time': 'time(6)'}
 
 def check(expr):
+    if expr == '"is_synthetic" IN (true,false)':
+        return "[is_synthetic]=1 OR ([is_synthetic]=0 AND COALESCE(JSON_VALUE([config],'$.is_synthetic'),'')='false' AND COALESCE(JSON_VALUE([config],'$.data_kind'),'') IN ('real_anonymized','real_pseudonymized') AND COALESCE(JSON_VALUE([config],'$.provider'),'') IN ('Metrica Sports','SkillCorner'))"
     # SQL Server's float type does not accept PostgreSQL NaN/Infinity values.
     expr = re.sub(r'"\w+"\s*[<>]\s*\'-?Infinity\'::float8', '1=1', expr)
     expr = re.sub(r'jsonb_typeof\("(\w+)"\)\s*=\s*\'object\'', r'ISJSON([\1], OBJECT)=1', expr)

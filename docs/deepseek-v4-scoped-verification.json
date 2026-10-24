@@ -1,0 +1,42 @@
+{
+  "tested_at_utc": "2026-10-24T01:17:38.784798+00:00",
+  "model": "deepseek-v4-flash",
+  "llm_used": true,
+  "real_authenticated_mcp_and_sql": true,
+  "catalog_scope": [
+    "describe_dataset",
+    "get_shots"
+  ],
+  "full_catalog_evaluated_here": false,
+  "status": "complete",
+  "passed": true,
+  "correct_shot_parameters": true,
+  "original_data_preserved": true,
+  "synthetic_provenance": true,
+  "model_turns": 2,
+  "total_tokens": 10525,
+  "tool_calls": 1,
+  "issues": [],
+  "queries": [
+    {
+      "operation": "get_shots",
+      "arguments": {
+        "limit": 200,
+        "cursor": null,
+        "match_id": 900001,
+        "team_id": 1,
+        "player_id": null,
+        "scope": {
+          "kind": "match"
+        },
+        "zone_id": "all",
+        "score_state": "all",
+        "pressure": "all",
+        "view": "events",
+        "bin_s": 300,
+        "outcome": "on_target",
+        "body_part": "all"
+      }
+    }
+  ]
+}

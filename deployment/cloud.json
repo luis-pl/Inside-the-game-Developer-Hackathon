@@ -18,11 +18,11 @@
   "authentication": "individual-expiring-bearer-credentials",
   "url": "https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io",
   "app_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.App/containerapps/api-inside-game",
-  "image_tag": "demo-20261023-audit",
-  "revision": "api-inside-game--0000001",
+  "image_tag": "open-data-10-real-v2-20261023",
+  "revision": "api-inside-game--0000005",
   "outbound_ips": [
     "4.172.10.70"
   ],
-  "verified_at_utc": "2026-10-23T19:49:02.651062+00:00",
-  "image_digest": "sha256:26915645b389a01400a831c9838c55467f61c3544569a51dea4fa41b357bebec"
+  "verified_at_utc": "2026-10-24T04:08:31.698973+00:00",
+  "image_digest": "sha256:6381409896305548df423e47ca9733d2219a5cfcc3d3837c76308767e64e6f84"
 }

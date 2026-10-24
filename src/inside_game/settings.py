@@ -15,7 +15,9 @@ class Settings:
     max_concurrent: int = 4
     cache_seconds: int = 300
     credentials: tuple[dict, ...] = ()
-    allowed_matches: tuple[int, ...] = tuple(range(900001, 900011))
+    allowed_matches: tuple[int, ...] = tuple(range(900001, 900013)) + tuple(
+        range(900101, 900109)
+    )
 
     @classmethod
     def from_env(cls):

@@ -1,0 +1,63 @@
+{
+  "status": "no_selected_model",
+  "resource_group": "rg-inside-game-demo",
+  "resource": "ai-inside-game-01a160e1-ca",
+  "resource_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.CognitiveServices/accounts/ai-inside-game-01a160e1-ca",
+  "project": "inside-game",
+  "endpoint": "https://ai-inside-game-01a160e1-ca.services.ai.azure.com/",
+  "deployment": "gpt-oss-120b",
+  "deployment_created": true,
+  "model": "gpt-oss-120b",
+  "model_version": "1",
+  "api": "chat_completions",
+  "sku": "GlobalStandard",
+  "capacity": 5000,
+  "location": "canadacentral",
+  "budget_target_usd": 100,
+  "subscription_offer": "FreeTrial_2014-09-01",
+  "spending_limit": "On",
+  "billing_changed": false,
+  "billing_path": "Azure-native model meters; no Marketplace purchase",
+  "natural_language_evaluation": "passed",
+  "luna": {
+    "status": "blocked_by_model_quota",
+    "resource_group": "rg-inside-game-demo",
+    "resource": "aoai-inside-game-01a160e1-ca",
+    "resource_state": "Succeeded",
+    "endpoint": "https://aoai-inside-game-01a160e1-ca.openai.azure.com/",
+    "deployment": "gpt-6-luna",
+    "deployment_created": false,
+    "model": "gpt-6-luna",
+    "model_version": "2026-09-22",
+    "sku": "GlobalStandard",
+    "location": "canadacentral",
+    "subscription_offer": "FreeTrial_2014-09-01",
+    "spending_limit": "On",
+    "foundry_quota_tier": "Free Tier",
+    "quota_checked_regions": [
+      "canadacentral",
+      "eastus2",
+      "swedencentral",
+      "westus3"
+    ],
+    "quota_limit_units_each": 0,
+    "quota_used_units_each": 0,
+    "attempted_capacity_units": 1,
+    "deployment_error": "InsufficientQuota",
+    "natural_language_evaluation": "not_run_no_deployment",
+    "billing_changed": false
+  },
+  "retail_price_usd_per_million_tokens": {
+    "input": 0.15,
+    "output": 0.6
+  },
+  "verification_report": "docs/data-agent-verification.json",
+  "verified_at_utc": "2026-10-24T00:22:19.809173+00:00",
+  "selected_for_agent": false,
+  "selection_status": "rejected_by_user",
+  "desired_model": "gpt-6-luna",
+  "selection_note": "Owner rejected GPT-OSS. Luna request rejected. DeepSeek V4 Flash tested, but not selected: full-catalog runs rate-limited. Owner upgraded subscription to PAYG; test did not change billing.",
+  "tested_candidates": [
+    "deployment/deepseek-v4.json"
+  ]
+}

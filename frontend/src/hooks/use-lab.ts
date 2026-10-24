@@ -22,7 +22,7 @@ export function useLab(repository: EpisodeRepository) {
     [matchId, setMatchId] = useState(0);
   const [period, setPeriod] = useState(1),
     [startSeconds, setStartSeconds] = useState(0);
-  const [durationSeconds, setDurationSeconds] = useState(2700);
+  const [durationSeconds, setDurationSeconds] = useState(300);
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [manualTeamId, setManualTeamId] = useState(2);
   const [automaticTeam, setAutomaticTeam] = useState(true);

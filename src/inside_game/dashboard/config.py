@@ -1,5 +1,6 @@
 """Server-side configuration; never exposes environment values to the browser."""
 
+import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -47,6 +48,17 @@ class DashboardConfig:
             "::1",
         ):
             raise ValueError("La API remota debe usar HTTPS.")
-        return cls(
-            f"{parsed.scheme}://{parsed.netloc}", values.get("INSIDE_GAME_API_KEY", "")
+        key = values.get("INSIDE_GAME_API_KEY") or values.get(
+            "INSIDE_GAME_DATA_MCP_KEY", ""
         )
+        private_file = values.get("INSIDE_GAME_API_CREDENTIAL_FILE") or values.get(
+            "INSIDE_GAME_DATA_MCP_CREDENTIAL_FILE"
+        )
+        if not key and private_file:
+            credential = json.loads(Path(private_file).read_text(encoding="utf-8"))
+            key = credential.get("key", "")
+            if not isinstance(key, str) or len(key) < 32:
+                raise ValueError(
+                    "El archivo privado no contiene una credencial válida."
+                )
+        return cls(f"{parsed.scheme}://{parsed.netloc}", key)

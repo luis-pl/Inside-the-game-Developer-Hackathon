@@ -1,0 +1,20 @@
+{
+  "checked_at_utc": "2026-10-24T00:23:29.173034+00:00",
+  "model": "gpt-oss-120b",
+  "offer": "FreeTrial_2014-09-01",
+  "spending_limit": "On",
+  "budget_amount_usd": 100.0,
+  "budget_is_consumption_cutoff": false,
+  "window": "last 24 hours, metrics available at check time",
+  "tokens": {
+    "InputTokens": 827938.0,
+    "OutputTokens": 18294.0
+  },
+  "retail_price_usd_per_million_tokens": {
+    "input": 0.15,
+    "output": 0.6
+  },
+  "estimated_inference_usd": 0.135167,
+  "is_invoice_or_remaining_credit": false,
+  "note": "Estimate for this model only; metrics can lag and exclude other Azure services. Billing meter records are authoritative."
+}

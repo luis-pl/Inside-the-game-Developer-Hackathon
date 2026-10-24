@@ -6,6 +6,8 @@
 !src/
 !src/inside_game/
 !src/inside_game/**
+!prompts/
+!prompts/data_agent.md
 **/__pycache__/
 **/*.pyc
 **/*.egg-info/

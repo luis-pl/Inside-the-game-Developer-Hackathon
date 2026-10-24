@@ -1,0 +1,46 @@
+{
+  "checked_at_utc": "2026-10-24T17:49:07.695720+00:00",
+  "integration_base_commit": "841e809",
+  "conflict_origin": "Reapplication of stashed local changes after fast-forward pull; Updated upstream / Stashed changes markers",
+  "conflicted_files_resolved": 14,
+  "resolution": "Merged real tracking/provenance and agent configuration with upstream topology/Hodge; no whole-tree ours/theirs replacement",
+  "python_tests": {
+    "command": "python -m pytest -q",
+    "passed": 149
+  },
+  "frontend_tests": {
+    "command": "npm test",
+    "passed": 42
+  },
+  "frontend_build": {
+    "command": "npm run build",
+    "status": "passed",
+    "node": "24.22.1"
+  },
+  "ruff_targeted": "passed",
+  "python_compile_src_and_scripts": "passed",
+  "secrets_scan": {
+    "files_scanned_before_final_docs": 112,
+    "findings": 0,
+    "private_credentials_not_committed": true
+  },
+  "beam_preflight": {
+    "checked_at_utc": "2026-10-24T17:47:57.333216+00:00",
+    "provider": "opencode-go",
+    "model": "beam-free",
+    "api": "chat_completions",
+    "free_only": true,
+    "authentication_mode": "cli_session",
+    "inference_used": false,
+    "catalog_http_status": 200,
+    "published_cost": {
+      "input": 0,
+      "output": 0,
+      "cache_read": 0,
+      "cache_write": null
+    },
+    "zero_price_verified": true
+  },
+  "llm_inference_used_in_this_merge_check": false,
+  "full_remote_model_corpus_qa": "not_run; scoped evidence retained separately"
+}

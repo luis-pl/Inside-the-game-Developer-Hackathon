@@ -4,9 +4,24 @@ Demo de datos publicada en Azure: [API y Swagger](https://api-inside-game.redhil
 
 La API de analítica deportiva está implementada: **25 consultas predeterminadas y nueve análisis espaciales/topológicos**, conectados a Azure SQL mediante lectura. Inicio local en Windows: `scripts/start-api.ps1`; documentación interactiva: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
+El [visor de partidos](docs/topology-lab.md) usa por defecto **diez partidos reales**:
+dos anonimizados de [Metrica Sports](https://github.com/metrica-sports/sample-data)
+y ocho seudonimizados de [SkillCorner](https://github.com/SkillCorner/opendata),
+con eventos y tracking sincronizados a 5 Hz. Cinco minutos se reproducen en
+300 segundos a 1×. Arranque: `scripts/start-dashboard.ps1`. Se conservan los
+datos sintéticos como historial separado. [Procedencia, verificación y límites](database/azure-sql/DATA-QUALITY.md).
+
 El servidor MCP también está implementado: expone las mismas 34 operaciones por `stdio` o HTTP local en `http://127.0.0.1:8001/mcp`, a través de la API. Inicio HTTP: `scripts/start-mcp.ps1 -Transport streamable-http`.
 
-Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json) y [MCP HTTP](docs/mcp-verification-streamable-http.json). Los agentes siguen pendientes. El frontend Topology Lab está implementado con cancha interactiva, persistencia y análisis de conectividad; consulta docs/topology-lab.md.
+El [agente de datos](docs/data-agent.md) recibe texto y contexto opcional, selecciona consultas MCP y devuelve evidencia original. Incluye prompt editable, proveedores Responses/Chat Completions y CLI `inside-game-data-agent`. El modelo local seleccionado es **Beam Free mediante OpenCode Go**, autenticado con la sesión autorizada del CLI. Estado en [agent-model.json](deployment/agent-model.json).
+
+DeepSeek V4 Flash está desplegado como candidato: pasó una consulta real de tiros con un catálogo reducido, pero las dos pruebas con las 34 herramientas terminaron parciales por cuota de 20.000 TPM. No se activó como modelo predeterminado. [Resultados y límites](docs/deepseek-v4.md).
+
+La conexión [OpenCode Go con Beam Free](docs/opencode.md) verificó catálogo, precios publicados cero y una consulta real modelo → MCP → SQL. Se mantiene `INSIDE_GAME_OPENCODE_FREE_ONLY=1`: si no se confirma precio cero, se detiene antes de inferencia. No se compraron créditos ni se activó fallback a Console/Zen. La [demostración trazada](docs/examples/agent-live-demo-20261024/README.md) conserva entrada, llamadas y evidencia; una prueba acotada no equivale al QA de todo el corpus. Los ensayos con Luna/GPT-OSS/DeepSeek quedan como historial. El [presupuesto Azure](deployment/demo-budget.json) sólo registra un objetivo y no corta consumo.
+
+Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json), [MCP HTTP](docs/mcp-verification-streamable-http.json) y [datos reales](docs/metrica-service-verification.json). El intérprete, analista, dashboard builder y comunicación A2A siguen pendientes.
+
+El frontend [Topology Lab](docs/topology-lab.md) está implementado con reproducción a tiempo real, persistencia, conectividad y descomposición de Hodge de la red de pases. Es un visor determinista y no requiere el LLM para mostrar los partidos.
 
 > Build something that breaks the fourth wall.
 

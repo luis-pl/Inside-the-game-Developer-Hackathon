@@ -1,0 +1,156 @@
+{
+  "source": "https://github.com/metrica-sports/sample-data",
+  "data_kind": "real_anonymized",
+  "reports": [
+    {
+      "match_id": 900011,
+      "game": 1,
+      "run_id": "00e14616-fecf-5720-baa1-ead1f9a169a7",
+      "version": "metrica-anonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "e706dd506b360d69d9d123d5b8026e7294b13996",
+      "counts": {
+        "teams": 2,
+        "players": 28,
+        "match_lineups": 28,
+        "lineup_positions": 28,
+        "match_teams": 2,
+        "events": 1755,
+        "event_passes": 799,
+        "event_shots": 24,
+        "lineup_cards": 4,
+        "event_tracking_links": 1755,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 29002,
+        "tracking_player_positions": 638044,
+        "tracking_ball_positions": 29002
+      },
+      "source_event_types": {
+        "SET PIECE": 77,
+        "PASS": 799,
+        "BALL LOST": 257,
+        "RECOVERY": 278,
+        "CHALLENGE": 233,
+        "BALL OUT": 51,
+        "SHOT": 24,
+        "FAULT RECEIVED": 22,
+        "CARD": 4
+      },
+      "periods": {
+        "1": {
+          "first_frame": 1,
+          "source_start_ms": 40,
+          "source_end_ms": 2850720,
+          "duration_ms": 2850680,
+          "offset_ms": 0,
+          "home_positive": true
+        },
+        "2": {
+          "first_frame": 71269,
+          "source_start_ms": 2850760,
+          "source_end_ms": 5800240,
+          "duration_ms": 2949480,
+          "offset_ms": 2850680,
+          "home_positive": false
+        }
+      },
+      "score": [
+        3,
+        0
+      ],
+      "excluded_source_samples": {
+        "players_source_jump": 46,
+        "missing_player_samples": 46,
+        "missing_ball_samples": 11361,
+        "ball_source_jump": 9,
+        "ball_out_of_bounds": 1
+      },
+      "max_retained_adjacent_speed": {
+        "players_m_s": 12.934884933775049,
+        "ball_m_s": 53.5805651711747
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "sample_step_ms": 200,
+        "samples": 1500
+      }
+    },
+    {
+      "match_id": 900012,
+      "game": 2,
+      "run_id": "073ca70f-d2d2-5bc5-b0e8-27d406d6aab4",
+      "version": "metrica-anonymized-1.0.0",
+      "is_synthetic": false,
+      "source_revision": "e706dd506b360d69d9d123d5b8026e7294b13996",
+      "counts": {
+        "teams": 2,
+        "players": 26,
+        "match_lineups": 26,
+        "lineup_positions": 26,
+        "match_teams": 2,
+        "events": 1943,
+        "event_passes": 964,
+        "event_shots": 24,
+        "lineup_cards": 6,
+        "event_tracking_links": 1943,
+        "matches": 1,
+        "tracking_runs": 1,
+        "tracking_periods": 2,
+        "tracking_frames": 28232,
+        "tracking_player_positions": 621104,
+        "tracking_ball_positions": 28232
+      },
+      "source_event_types": {
+        "SET PIECE": 80,
+        "PASS": 964,
+        "BALL LOST": 233,
+        "CHALLENGE": 311,
+        "RECOVERY": 248,
+        "BALL OUT": 49,
+        "SHOT": 24,
+        "FAULT RECEIVED": 20,
+        "CARD": 6
+      },
+      "periods": {
+        "1": {
+          "first_frame": 1,
+          "source_start_ms": 40,
+          "source_end_ms": 2717640,
+          "duration_ms": 2717600,
+          "offset_ms": 0,
+          "home_positive": false
+        },
+        "2": {
+          "first_frame": 67942,
+          "source_start_ms": 2717680,
+          "source_end_ms": 5646240,
+          "duration_ms": 2928560,
+          "offset_ms": 2717600,
+          "home_positive": true
+        }
+      },
+      "score": [
+        3,
+        2
+      ],
+      "excluded_source_samples": {
+        "players_source_jump": 158,
+        "missing_player_samples": 173,
+        "players_out_of_bounds": 15,
+        "missing_ball_samples": 11588,
+        "ball_source_jump": 7
+      },
+      "max_retained_adjacent_speed": {
+        "players_m_s": 12.838473445468502,
+        "ball_m_s": 53.59839480105725
+      },
+      "five_minutes": {
+        "duration_ms": 300000,
+        "sample_step_ms": 200,
+        "samples": 1500
+      }
+    }
+  ]
+}

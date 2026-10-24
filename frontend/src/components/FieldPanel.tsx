@@ -164,7 +164,11 @@ export function FieldPanel({ lab }: { lab: Lab }) {
       <div className="match-source">
         <span>
           {episode?.source === "azure"
-            ? "AZURE · DATOS SINTÉTICOS"
+            ? episode.dataKind === "real_pseudonymized"
+              ? "SKILLCORNER · REAL SEUDONIMIZADO · AZURE"
+              : episode.dataKind === "real_anonymized"
+                ? "METRICA SPORTS · REAL ANONIMIZADO · AZURE"
+                : "AZURE · DATOS SINTÉTICOS"
             : episode
               ? "EJEMPLO GEOMÉTRICO LOCAL"
               : "SIN DATOS CARGADOS"}{" "}
