@@ -1,0 +1,325 @@
+{
+  "llm_used": false,
+  "network_used": true,
+  "gallery_source": "Explicit synthetic UI fixture, not a World Cup match or Azure synthetic dataset",
+  "family_count": 30,
+  "fixture_states": {
+    "shot_map": "ready",
+    "xg_story": "ready",
+    "match_timeline": "ready",
+    "pass_map": "ready",
+    "passing_network": "ready",
+    "sequence_explorer": "ready",
+    "defensive_actions": "ready",
+    "pressure_recovery": "ready",
+    "ball_progression": "ready",
+    "occupation_heatmap": "ready",
+    "movement_profile": "ready",
+    "play_replay": "ready",
+    "zone_presence": "ready",
+    "team_shape": "ready",
+    "proximity_network": "ready",
+    "space_partition": "ready",
+    "persistent_structure": "ready",
+    "node_robustness": "ready",
+    "entity_comparison": "ready",
+    "defensive_geometry": "ready",
+    "defensive_line_height": "ready",
+    "goalkeeper_connection": "ready",
+    "final_third_channels": "ready",
+    "between_lines_receptions": "ready",
+    "ball_recovery_time": "ready",
+    "pressure_turnovers": "ready",
+    "structural_pass": "ready",
+    "hodge_flow": "ready",
+    "topological_change": "ready",
+    "clearance_connectivity": "ready"
+  },
+  "benchmark": {
+    "iterations": 10,
+    "scope": "warm renderer only, not model/network/SQL",
+    "p50_ms": 17.6325,
+    "p95_ms": 20.238,
+    "bytes": 244797
+  },
+  "mcp": {
+    "passed": true,
+    "tools": 5,
+    "transport": "stdio subprocess",
+    "individual_pieces": {
+      "shot_map": true,
+      "xg_story": true,
+      "match_timeline": true,
+      "pass_map": true,
+      "passing_network": true,
+      "sequence_explorer": true,
+      "defensive_actions": true,
+      "pressure_recovery": true,
+      "ball_progression": true,
+      "occupation_heatmap": true,
+      "movement_profile": true,
+      "play_replay": true,
+      "zone_presence": true,
+      "team_shape": true,
+      "proximity_network": true,
+      "space_partition": true,
+      "persistent_structure": true,
+      "node_robustness": true,
+      "entity_comparison": true,
+      "defensive_geometry": true,
+      "defensive_line_height": true,
+      "goalkeeper_connection": true,
+      "final_third_channels": true,
+      "between_lines_receptions": true,
+      "ball_recovery_time": true,
+      "pressure_turnovers": true,
+      "structural_pass": true,
+      "hodge_flow": true,
+      "topological_change": true,
+      "clearance_connectivity": true
+    },
+    "bytes": 244797,
+    "states": {
+      "shot_map": "ready",
+      "xg_story": "ready",
+      "match_timeline": "ready",
+      "pass_map": "ready",
+      "passing_network": "ready",
+      "sequence_explorer": "ready",
+      "defensive_actions": "ready",
+      "pressure_recovery": "ready",
+      "ball_progression": "ready",
+      "occupation_heatmap": "ready",
+      "movement_profile": "ready",
+      "play_replay": "ready",
+      "zone_presence": "ready",
+      "team_shape": "ready",
+      "proximity_network": "ready",
+      "space_partition": "ready",
+      "persistent_structure": "ready",
+      "node_robustness": "ready",
+      "entity_comparison": "ready",
+      "defensive_geometry": "ready",
+      "defensive_line_height": "ready",
+      "goalkeeper_connection": "ready",
+      "final_third_channels": "ready",
+      "between_lines_receptions": "ready",
+      "ball_recovery_time": "ready",
+      "pressure_turnovers": "ready",
+      "structural_pass": "ready",
+      "hodge_flow": "ready",
+      "topological_change": "ready",
+      "clearance_connectivity": "ready"
+    }
+  },
+  "agent_data": {
+    "render_ms": 24.124,
+    "bytes": 659318,
+    "states": {
+      "shots": "ready",
+      "replay": "ready",
+      "topological_change": "ready",
+      "clearance_connectivity": "ready",
+      "defensive_line_height": "unavailable"
+    },
+    "evidence_count": 3
+  },
+  "passed": true,
+  "verified_at_utc": "2026-10-25T01:15:33.945011+00:00",
+  "python_tests": {
+    "passed": 183,
+    "insight_tests": 28
+  },
+  "polished_api_report": {
+    "match_id": 900001,
+    "api_seconds": 3.35,
+    "api_responses": 15,
+    "bytes": 1579547,
+    "render_ms": 42.292,
+    "blocks": [
+      {
+        "id": "block1",
+        "insight_id": "shot_map",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+        ]
+      },
+      {
+        "id": "block2",
+        "insight_id": "xg_story",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+        ]
+      },
+      {
+        "id": "block3",
+        "insight_id": "sequence_explorer",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Recorded event span is not exact temporal possession."
+        ]
+      },
+      {
+        "id": "block4",
+        "insight_id": "passing_network",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+        ]
+      },
+      {
+        "id": "block7",
+        "insight_id": "passing_network",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+        ]
+      },
+      {
+        "id": "block5",
+        "insight_id": "pass_map",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+        ]
+      },
+      {
+        "id": "block8",
+        "insight_id": "pass_map",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+        ]
+      },
+      {
+        "id": "block6",
+        "insight_id": "occupation_heatmap",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+        ]
+      },
+      {
+        "id": "block9",
+        "insight_id": "occupation_heatmap",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+        ]
+      },
+      {
+        "id": "block10",
+        "insight_id": "space_partition",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Voronoi area is geometric proximity, not pitch-control probability."
+        ]
+      },
+      {
+        "id": "block11",
+        "insight_id": "team_shape",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+        ]
+      },
+      {
+        "id": "block12",
+        "insight_id": "play_replay",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+        ]
+      },
+      {
+        "id": "block13",
+        "insight_id": "persistent_structure",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+        ]
+      },
+      {
+        "id": "block14",
+        "insight_id": "hodge_flow",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+        ]
+      },
+      {
+        "id": "block15",
+        "insight_id": "defensive_geometry",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo.",
+          "Ruptura geométrica de líneas según roles y tracking: no equivale a la etiqueta through_ball, que no está disponible en esta fuente."
+        ]
+      }
+    ],
+    "sha256": "02c914251086751a5ead73d96cfca62f4bc14420011e872ced967bfbee41095b",
+    "all_blocks_ready": true,
+    "credential_in_export": false,
+    "mapped_line_breaks": {
+      "observed_line_breaks": 47,
+      "mapped_line_breaks": 47
+    },
+    "network_positions": [
+      "pitch",
+      "pitch"
+    ]
+  },
+  "visual_check": {
+    "desktop_checked": true,
+    "requested_mobile_viewport_px": 390,
+    "measured_mobile_document_width_px": 375,
+    "mobile_scroll_width_px": 375,
+    "filter_verified": true,
+    "replay_started": true,
+    "players_visible": 22,
+    "screenshots": [
+      ".temp/insights/screenshots/polished-networks.png",
+      ".temp/insights/screenshots/polished-mobile.png"
+    ],
+    "mechanical_scan": "One scan. Raised small text, darkened away palette for contrast, removed decorative sidebars and uppercase kicker. SVG inset warnings and scientific caveat wording retained as intentional; no repeat scan."
+  },
+  "limits": [
+    "Gallery benchmark is local warm rendering; no model or SQL/network time included.",
+    "Live API report uses synthetic match 900001; toy xG is explicitly illustrative.",
+    "API collection: initial HTTP503, subsequent success; timing is not a cold-start guarantee.",
+    "Real Metrica report reuses saved evidence; defensive roles remain unavailable.",
+    "No model inference, cloud deployment or A2A implementation in this change."
+  ],
+  "network_scope": "15 read-only API responses for synthetic match 900001; fixture and MCP checks use local evidence only.",
+  "agent_tool_signoff": {
+    "passed": true,
+    "tools": [
+      "list_insights",
+      "describe_insight",
+      "validate_report",
+      "render_insight",
+      "render_report"
+    ],
+    "individual_recipes_verified": 30,
+    "full_page_verified": true,
+    "host_supplied_evidence_only": true,
+    "model_inference_used": false
+  },
+  "packaging": {
+    "wheel_build": "passed",
+    "catalog_json_present": true,
+    "insights_mcp_entrypoint_present": true
+  }
+}

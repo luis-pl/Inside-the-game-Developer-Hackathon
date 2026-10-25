@@ -25,6 +25,14 @@ Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Veri
 
 El frontend [Topology Lab](docs/topology-lab.md) está implementado con reproducción a tiempo real, persistencia, conectividad y descomposición de Hodge de la red de pases. Es un visor determinista y no requiere el LLM para mostrar los partidos.
 
+La [biblioteca atómica de insights](docs/insights.md) implementa **30 recetas paramétricas**, exportación HTML autocontenida y un MCP de composición local que usa IDs de evidencia. Incluye [diez extensiones investigadas en FIFA y fuentes primarias](docs/insights-research.md). Galería: `python -m inside_game.insights.demo`; genera `.temp/insights/gallery.html` con un fixture marcado sintético. El agente conversacional de insights y la conexión A2A quedan pendientes.
+
+Informe compuesto con datos de la API: `python scripts/build_insights_report.py --match-id 900001`.
+Genera `.temp/insights/match-900001.html` con quince bloques coordinados por equipo:
+redes ponderadas, tiros, xG, posesiones, ocupación, Voronoi, replay y topología.
+La [guía visual](docs/insights-visual-design.md) explica colores, filtros, layout,
+referencias y límites de interpretación. El partido de ejemplo está marcado sintético.
+
 > Build something that breaks the fourth wall.
 
 **Inside the game** is a developer hackathon where participants build tools, games,

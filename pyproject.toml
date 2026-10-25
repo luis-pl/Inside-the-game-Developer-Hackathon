@@ -23,12 +23,14 @@ dev = ["pytest>=9.1,<10", "httpx>=0.28,<1", "ruff>=0.17,<1"]
 inside-game-api = "inside_game.cli:main"
 inside-game-mcp = "inside_game.mcp_server:main"
 inside-game-data-agent = "inside_game.data_agent_cli:main"
+inside-game-insights = "inside_game.insights.__main__:main"
+inside-game-insights-mcp = "inside_game.insights.mcp_server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-inside_game = ["sql/*.sql"]
+inside_game = ["sql/*.sql", "insights/catalog.json"]
 
 [tool.setuptools.data-files]
 "share/inside-game/prompts" = ["prompts/data_agent.md"]

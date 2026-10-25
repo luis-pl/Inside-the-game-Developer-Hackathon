@@ -1,0 +1,709 @@
+{
+  "schema_version": "1",
+  "status": "approved_30_families",
+  "insights": [
+    {
+      "id": "shot_map",
+      "number": 1,
+      "title": "Mapa de tiros",
+      "question": "¿Cuántos tiros hubo, cuándo y desde dónde?",
+      "source_operations": [
+        "get_shots"
+      ],
+      "organism_family": "pitch_map",
+      "operation_specific_parameter_examples": [
+        "outcome",
+        "body_part",
+        "view"
+      ],
+      "variants": [
+        "events",
+        "map",
+        "summary"
+      ],
+      "availability_and_interpretation": "Tiros y coordenadas disponibles; resultado y xG opcionales. SkillCorner no permite clasificar a puerta por resultado individual.",
+      "data_family": "events",
+      "approval": "approved",
+      "method_id": "visual_shot_map_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "xg_story",
+      "number": 2,
+      "title": "Evolución y distribución del xG",
+      "question": "¿Dónde y cuándo se acumuló el xG disponible?",
+      "source_operations": [
+        "get_shots",
+        "get_metric_series"
+      ],
+      "organism_family": "time_series",
+      "operation_specific_parameter_examples": [
+        "profile_id",
+        "bin_s"
+      ],
+      "variants": [
+        "cumulative",
+        "by_period",
+        "shot_distribution"
+      ],
+      "availability_and_interpretation": "Sólo si existe xG. El actual es ilustrativo sintético; no generar xG para Metrica/SkillCorner.",
+      "data_family": "xg",
+      "approval": "approved",
+      "method_id": "visual_xg_story_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "match_timeline",
+      "number": 3,
+      "title": "Cronología del partido",
+      "question": "¿Cuándo se concentraron las acciones y qué cambios se registraron?",
+      "source_operations": [
+        "get_metric_series",
+        "get_substitutions",
+        "get_discipline",
+        "get_events"
+      ],
+      "organism_family": "timeline",
+      "operation_specific_parameter_examples": [
+        "profile_id",
+        "bin_s",
+        "event_types"
+      ],
+      "variants": [
+        "event_rhythm",
+        "substitutions",
+        "discipline"
+      ],
+      "availability_and_interpretation": "Anotaciones disponibles por fuente; no atribuir causalidad a un cambio ni deducir goles individuales del marcador SkillCorner.",
+      "data_family": "events",
+      "approval": "approved",
+      "method_id": "visual_match_timeline_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "pass_map",
+      "number": 4,
+      "title": "Mapa de pases",
+      "question": "¿Cómo circuló el balón y hacia dónde?",
+      "source_operations": [
+        "get_passes"
+      ],
+      "organism_family": "pitch_map",
+      "operation_specific_parameter_examples": [
+        "outcome",
+        "height",
+        "restart",
+        "tagged"
+      ],
+      "variants": [
+        "vectors",
+        "completion",
+        "direction"
+      ],
+      "availability_and_interpretation": "Metrica sólo identifica completados; no publicar tasa total de acierto sin intentos y resultados completos.",
+      "data_family": "passes",
+      "approval": "approved",
+      "method_id": "visual_pass_map_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "passing_network",
+      "number": 5,
+      "title": "Red de conexiones",
+      "question": "¿Qué parejas intercambiaron más pases completados?",
+      "source_operations": [
+        "get_passing_network"
+      ],
+      "organism_family": "network",
+      "operation_specific_parameter_examples": [
+        "scope",
+        "view"
+      ],
+      "variants": [
+        "directed_network",
+        "pair_ranking",
+        "hodge_extension"
+      ],
+      "availability_and_interpretation": "No confundir red de pases con proximidad. Hodge existe en el frontend, pero no hay tool MCP de Hodge; la variante requiere adaptador compartido.",
+      "data_family": "passes",
+      "approval": "approved",
+      "method_id": "visual_passing_network_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "sequence_explorer",
+      "number": 6,
+      "title": "Secuencias y balón parado",
+      "question": "¿Cómo fueron las cadenas de acciones registradas?",
+      "source_operations": [
+        "get_possessions",
+        "get_sequences",
+        "get_set_piece_sequences"
+      ],
+      "organism_family": "sequence",
+      "operation_specific_parameter_examples": [
+        "pattern_id",
+        "restart"
+      ],
+      "variants": [
+        "possession_chain",
+        "pass_aba",
+        "turnover_to_shot",
+        "after_dribble",
+        "set_piece"
+      ],
+      "availability_and_interpretation": "Sólo patrones existentes. Una cadena de eventos no proporciona posesión temporal exacta.",
+      "data_family": "sequences",
+      "approval": "approved",
+      "method_id": "visual_sequence_explorer_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "defensive_actions",
+      "number": 7,
+      "title": "Acciones defensivas y duelos",
+      "question": "¿Dónde y cuándo se anotaron quites, intercepciones o duelos ganados?",
+      "source_operations": [
+        "get_defensive_actions"
+      ],
+      "organism_family": "pitch_map",
+      "operation_specific_parameter_examples": [
+        "kind",
+        "outcome"
+      ],
+      "variants": [
+        "tackles",
+        "aerial_duels",
+        "interceptions",
+        "recoveries",
+        "clearances",
+        "blocks"
+      ],
+      "availability_and_interpretation": "Comprobar anotación de tipo y resultado; vacío sin cobertura no significa cero. No duplicar ambos lados de un duelo.",
+      "data_family": "defense",
+      "approval": "approved",
+      "method_id": "visual_defensive_actions_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "pressure_recovery",
+      "number": 8,
+      "title": "Presión y recuperación",
+      "question": "¿Qué presiones registradas terminaron en recuperación?",
+      "source_operations": [
+        "get_defensive_actions",
+        "get_sequences"
+      ],
+      "organism_family": "sequence",
+      "operation_specific_parameter_examples": [
+        "kind",
+        "pattern_id"
+      ],
+      "variants": [
+        "pressure_map",
+        "pressure_to_recovery"
+      ],
+      "availability_and_interpretation": "Requiere presión anotada; Metrica carece de ella. Una ventana temporal no prueba que la presión causó la recuperación.",
+      "data_family": "pressure",
+      "approval": "approved",
+      "method_id": "visual_pressure_recovery_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "ball_progression",
+      "number": 9,
+      "title": "Regates y conducciones",
+      "question": "¿Dónde hubo desequilibrio o avance mediante acciones con balón?",
+      "source_operations": [
+        "get_ball_actions"
+      ],
+      "organism_family": "pitch_map",
+      "operation_specific_parameter_examples": [
+        "kind",
+        "outcome"
+      ],
+      "variants": [
+        "dribbles",
+        "carries",
+        "receipts",
+        "losses"
+      ],
+      "availability_and_interpretation": "Distinguir tipos anotados y resultados desconocidos; una conducción mide desplazamiento entre extremos.",
+      "data_family": "ball_actions",
+      "approval": "approved",
+      "method_id": "visual_ball_progression_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "occupation_heatmap",
+      "number": 10,
+      "title": "Mapa de ocupación",
+      "question": "¿Qué zonas ocupó el jugador o el equipo?",
+      "source_operations": [
+        "get_heatmap"
+      ],
+      "organism_family": "heatmap",
+      "operation_specific_parameter_examples": [
+        "mode",
+        "grid_id"
+      ],
+      "variants": [
+        "occupancy_seconds",
+        "event_count"
+      ],
+      "availability_and_interpretation": "Separar segundos observados de conteos de eventos; no convertir huecos en tiempo de ocupación.",
+      "data_family": "tracking",
+      "approval": "approved",
+      "method_id": "visual_occupation_heatmap_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "movement_profile",
+      "number": 11,
+      "title": "Perfil de movimiento",
+      "question": "¿Qué distancia y movimiento se observaron?",
+      "source_operations": [
+        "get_movement_summary"
+      ],
+      "organism_family": "comparison",
+      "operation_specific_parameter_examples": [
+        "scope",
+        "player_id",
+        "team_id"
+      ],
+      "variants": [
+        "player",
+        "team",
+        "by_period"
+      ],
+      "availability_and_interpretation": "Respetar el método devuelto (resúmenes a 1 Hz) y excluir saltos entre muestras ausentes; no afirmar sprints no implementados.",
+      "data_family": "tracking",
+      "approval": "approved",
+      "method_id": "visual_movement_profile_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "play_replay",
+      "number": 12,
+      "title": "Reproducción y contexto de jugada",
+      "question": "¿Dónde estaban los jugadores alrededor de una acción?",
+      "source_operations": [
+        "get_tracking_frame",
+        "get_tracking_window",
+        "get_event_context"
+      ],
+      "organism_family": "replay",
+      "operation_specific_parameter_examples": [
+        "period",
+        "time_ms",
+        "sample_step_ms",
+        "before_s",
+        "after_s"
+      ],
+      "variants": [
+        "snapshot",
+        "short_replay",
+        "event_360"
+      ],
+      "availability_and_interpretation": "Frames 360 son coordenadas, no fotografías. Tracking sintético 1 Hz, real 5 Hz cuando se pide; conservar ausencias.",
+      "data_family": "tracking",
+      "approval": "approved",
+      "method_id": "visual_play_replay_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "zone_presence",
+      "number": 13,
+      "title": "Presencia y actividad por zonas",
+      "question": "¿En qué zonas se observaron jugadores y acciones?",
+      "source_operations": [
+        "get_zone_summary",
+        "get_heatmap"
+      ],
+      "organism_family": "zone_summary",
+      "operation_specific_parameter_examples": [
+        "zone_id",
+        "grid_id"
+      ],
+      "variants": [
+        "zone_occupation",
+        "sampled_entries",
+        "event_activity"
+      ],
+      "availability_and_interpretation": "Entradas por tracking son muestreadas; los resúmenes de zona y los eventos tienen referencias espaciales distintas.",
+      "data_family": "tracking",
+      "approval": "approved",
+      "method_id": "visual_zone_presence_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "team_shape",
+      "number": 14,
+      "title": "Forma del bloque",
+      "question": "¿Qué anchura, profundidad y dispersión tenía el equipo?",
+      "source_operations": [
+        "get_team_shape"
+      ],
+      "organism_family": "topology",
+      "operation_specific_parameter_examples": [
+        "period",
+        "time_ms",
+        "scope",
+        "view"
+      ],
+      "variants": [
+        "snapshot",
+        "short_series"
+      ],
+      "availability_and_interpretation": "Requiere posiciones suficientes y selección temporal válida; la forma geométrica no acredita una formación táctica.",
+      "data_family": "spatial",
+      "approval": "approved",
+      "method_id": "visual_team_shape_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "proximity_network",
+      "number": 15,
+      "title": "Conectividad por proximidad",
+      "question": "¿Cómo se conectaban los jugadores a una distancia dada?",
+      "source_operations": [
+        "get_proximity_connectivity"
+      ],
+      "organism_family": "network",
+      "operation_specific_parameter_examples": [
+        "epsilon_m",
+        "view"
+      ],
+      "variants": [
+        "graph",
+        "distance_matrix",
+        "components"
+      ],
+      "availability_and_interpretation": "epsilon_m sólo 5, 10, 15 o 20 m. Cercanía no equivale a pase disponible ni coordinación defensiva.",
+      "data_family": "spatial",
+      "approval": "approved",
+      "method_id": "visual_proximity_network_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "space_partition",
+      "number": 16,
+      "title": "Partición espacial Voronoi",
+      "question": "¿Cómo se repartía geométricamente el espacio?",
+      "source_operations": [
+        "get_space_coverage"
+      ],
+      "organism_family": "topology",
+      "operation_specific_parameter_examples": [
+        "view"
+      ],
+      "variants": [
+        "voronoi",
+        "triangulation",
+        "area_comparison"
+      ],
+      "availability_and_interpretation": "Geometría recortada al campo con cobertura visible; no es probabilidad de control ni un score de dominio.",
+      "data_family": "spatial",
+      "approval": "approved",
+      "method_id": "visual_space_partition_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "persistent_structure",
+      "number": 17,
+      "title": "Persistencia de la estructura",
+      "question": "¿Qué componentes y ciclos aparecen según la escala?",
+      "source_operations": [
+        "get_persistent_structure"
+      ],
+      "organism_family": "topology",
+      "operation_specific_parameter_examples": [
+        "view"
+      ],
+      "variants": [
+        "barcode",
+        "betti",
+        "geometry"
+      ],
+      "availability_and_interpretation": "Escalas y método fijados por la implementación; ciclos geométricos no prueban huecos explotables tácticamente.",
+      "data_family": "spatial",
+      "approval": "approved",
+      "method_id": "visual_persistent_structure_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "node_robustness",
+      "number": 18,
+      "title": "Sensibilidad al retirar jugadores",
+      "question": "¿Qué jugadores alteran más la conectividad del grafo al retirarlos?",
+      "source_operations": [
+        "get_node_removal_robustness"
+      ],
+      "organism_family": "topology",
+      "operation_specific_parameter_examples": [
+        "epsilon_m",
+        "view"
+      ],
+      "variants": [
+        "removal_ranking",
+        "before_after"
+      ],
+      "availability_and_interpretation": "Perturbación estática; no simula sustituciones, expulsiones ni reacción de otros jugadores.",
+      "data_family": "spatial",
+      "approval": "approved",
+      "method_id": "visual_node_robustness_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "entity_comparison",
+      "number": 19,
+      "title": "Comparación de jugadores y equipos",
+      "question": "¿En qué métricas comparables se diferencian?",
+      "source_operations": [
+        "compare_entities",
+        "get_player_summary",
+        "get_team_summary",
+        "get_rankings"
+      ],
+      "organism_family": "comparison",
+      "operation_specific_parameter_examples": [
+        "profile_id",
+        "mode",
+        "metric",
+        "normalization",
+        "min_minutes"
+      ],
+      "variants": [
+        "two_entities",
+        "two_windows",
+        "multi_entity",
+        "ranking"
+      ],
+      "availability_and_interpretation": "compare_entities admite dos entidades. Más participantes requieren resúmenes. per90 sólo donde el contrato lo admite y con minutos efectivos; aliases reales no identifican personas entre partidos.",
+      "data_family": "summary",
+      "approval": "approved",
+      "method_id": "visual_entity_comparison_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "id": "defensive_geometry",
+      "number": 20,
+      "title": "Corredores y rupturas defensivas",
+      "question": "¿Qué evidencia geométrica hay alrededor de pases o tiros rivales?",
+      "source_operations": [
+        "get_pass_corridor",
+        "get_line_breaks",
+        "get_defensive_profile"
+      ],
+      "organism_family": "topology",
+      "operation_specific_parameter_examples": [
+        "event_id",
+        "scope",
+        "view"
+      ],
+      "variants": [
+        "ground_pass_corridor",
+        "line_breaks",
+        "defensive_episode"
+      ],
+      "availability_and_interpretation": "Corredor requiere un pase raso anotado y ancla de tracking; rupturas pueden carecer de roles/etiquetas necesarios. No producir score de impenetrabilidad.",
+      "data_family": "spatial",
+      "approval": "approved",
+      "method_id": "visual_defensive_geometry_v1",
+      "sources": [],
+      "calculation": "existing_evidence"
+    },
+    {
+      "number": 21,
+      "id": "defensive_line_height",
+      "title": "Altura de la línea defensiva",
+      "organism_family": "topology",
+      "source_operations": [
+        "get_tracking_frame",
+        "get_match_context",
+        "get_tracking_window"
+      ],
+      "calculation": "fifa_line",
+      "availability_and_interpretation": "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas.",
+      "sources": [
+        "https://www.fifatrainingcentre.com/en/fwc2022/efi-metrics/efi-metric--defensive-line-height-and-team-length.php"
+      ],
+      "method_id": "defensive_line_height_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 22,
+      "id": "goalkeeper_connection",
+      "title": "Conexión portero-defensa",
+      "organism_family": "topology",
+      "source_operations": [
+        "get_tracking_frame",
+        "get_match_context",
+        "get_tracking_window"
+      ],
+      "calculation": "fifa_goalkeeper",
+      "availability_and_interpretation": "Distancia longitudinal y euclídea del portero a una línea declarada, no inferida por dorsal.",
+      "sources": [
+        "https://www.fifatrainingcentre.com/en/fwc2022/technical-and-tactical-analysis/goalkeeper-height-and-connection-with-the-defensive-line.php"
+      ],
+      "method_id": "goalkeeper_connection_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 23,
+      "id": "final_third_channels",
+      "title": "Entradas al último tercio por carril",
+      "organism_family": "pitch_map",
+      "source_operations": [
+        "get_passes",
+        "get_ball_actions"
+      ],
+      "calculation": "fifa_entries",
+      "availability_and_interpretation": "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local.",
+      "sources": [
+        "https://www.fifatrainingcentre.com/en/fwc2022/efi-metrics/efi-metric--final-third-entries.php"
+      ],
+      "method_id": "final_third_channels_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 24,
+      "id": "between_lines_receptions",
+      "title": "Recepciones entre líneas",
+      "organism_family": "pitch_map",
+      "source_operations": [
+        "get_passes",
+        "get_tracking_window",
+        "get_match_context"
+      ],
+      "calculation": "fifa_receptions",
+      "availability_and_interpretation": "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles.",
+      "sources": [
+        "https://www.fifatrainingcentre.com/en/fwc2022/efi-metrics/efi-metric--receptions-behind-midfield-and-defensive-lines.php"
+      ],
+      "method_id": "between_lines_receptions_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 25,
+      "id": "ball_recovery_time",
+      "title": "Tiempo de recuperación observado",
+      "organism_family": "time_series",
+      "source_operations": [
+        "get_events",
+        "get_possessions"
+      ],
+      "calculation": "fifa_recovery",
+      "availability_and_interpretation": "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA.",
+      "sources": [
+        "https://www.fifatrainingcentre.com/en/fwc2022/efi-metrics/efi-metric--ball-recovery-time.php"
+      ],
+      "method_id": "ball_recovery_time_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 26,
+      "id": "pressure_turnovers",
+      "title": "Recuperaciones precedidas por presión",
+      "organism_family": "sequence",
+      "source_operations": [
+        "get_events",
+        "get_defensive_actions"
+      ],
+      "calculation": "fifa_turnovers",
+      "availability_and_interpretation": "Presión seguida de pérdida/rival y recuperación anotadas en ventana local; asociación, no causalidad.",
+      "sources": [
+        "https://www.fifatrainingcentre.com/en/fwc2022/efi-metrics/efi-metric--forced-turnovers.php"
+      ],
+      "method_id": "pressure_turnovers_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 27,
+      "id": "structural_pass",
+      "title": "Ventaja estructural del pase",
+      "organism_family": "pitch_map",
+      "source_operations": [
+        "get_passes",
+        "get_tracking_window"
+      ],
+      "calculation": "paper_structural",
+      "availability_and_interpretation": "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper.",
+      "sources": [
+        "https://arxiv.org/abs/2603.28916v3"
+      ],
+      "method_id": "structural_pass_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 28,
+      "id": "hodge_flow",
+      "title": "Flujo de pases: gradiente, curl y armónico",
+      "organism_family": "network",
+      "source_operations": [
+        "get_passing_network"
+      ],
+      "calculation": "hodge",
+      "availability_and_interpretation": "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique.",
+      "sources": [
+        "https://arxiv.org/abs/0811.1067",
+        "https://arxiv.org/abs/2606.21814"
+      ],
+      "method_id": "hodge_flow_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 29,
+      "id": "topological_change",
+      "title": "Cambio temporal de estructura",
+      "organism_family": "time_series",
+      "source_operations": [
+        "get_tracking_window"
+      ],
+      "calculation": "bottleneck",
+      "availability_and_interpretation": "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico.",
+      "sources": [
+        "https://gudhi.inria.fr/python/latest/bottleneck_distance_user.html"
+      ],
+      "method_id": "topological_change_local_v1",
+      "approval": "research_extension"
+    },
+    {
+      "number": 30,
+      "id": "clearance_connectivity",
+      "title": "Anchura de conexión libre desde el balón",
+      "organism_family": "topology",
+      "source_operations": [
+        "get_tracking_frame",
+        "get_tracking_window"
+      ],
+      "calculation": "clearance",
+      "availability_and_interpretation": "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase.",
+      "sources": [
+        "https://gudhi.inria.fr/python/latest/",
+        "project:frontend/src/domain/clearance-network.ts"
+      ],
+      "method_id": "clearance_connectivity_local_v1",
+      "approval": "research_extension"
+    }
+  ]
+}
