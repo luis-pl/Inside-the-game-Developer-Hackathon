@@ -358,6 +358,10 @@ class Resolver:
                 suffix = " · " + player_label(players[intent.player_id])
             else:
                 suffix = f" · {names[team_id]}" if team_id else ""
+            if insight_id in SNAPSHOT:
+                # Una pieza de un instante lo dice en el título: no habla de todo el partido.
+                seconds = time_ms // 1000
+                suffix += f" · P{period} {seconds // 60:02d}:{seconds % 60:02d}"
             blocks.append(
                 BlockPlan(
                     id=f"{insight_id}-{team_id}" if team_id else insight_id,
