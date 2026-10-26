@@ -101,7 +101,10 @@ def pitch(block, network=False):
         hollow = shot and outcome not in {"Goal", "Saved", "Saved to Post"}
         tooltip = f"{identity['name']} · {block.players.get(str(key), {}).get('name', p.get('label', key or 'Acción'))}"
         if shot:
-            tooltip += f" · {outcome or 'resultado no disponible'} · xG {numeric(xg)}"
+            if outcome and not str(outcome).lower().startswith("unknown"):
+                tooltip += f" · {outcome}"
+            if isinstance(xg, (int, float)):
+                tooltip += f" · xG {numeric(xg)}"
         shapes.append(
             f'<circle cx="{x:.3f}" cy="{y:.3f}" r="{radius:.3f}" fill="{"#f4f6f2" if hollow else color}" stroke="{color if hollow else "#ffffff"}" stroke-width=".35"><title>{text(tooltip)}</title></circle>'
         )
@@ -206,6 +209,38 @@ def possession_timeline(block):
     return f'<figure><svg class="series" viewBox="0 0 690 {30 + 125 * len(periods)}" role="img" aria-label="Secuencias de posesión registradas">{"".join(shapes)}</svg>{legend(labels)}<figcaption>Cada tramo une el primer y último evento de una posesión registrada. Los huecos se conservan. No equivale a porcentaje oficial de tiempo de posesión.</figcaption></figure>'
 
 
+MARKER_NAMES = {"goal": "Gol", "substitution": "Cambio", "card": "Tarjeta"}
+MARKER_LANE_Y = (226, 242)
+
+
+def marker_marks(block, period, end):
+    """Goles, cambios y tarjetas bajo el eje del tiempo, una franja por equipo."""
+    marks = []
+    teams = sorted({m.get("team_id") for m in block.markers}, key=str)
+    for m in block.markers:
+        if m["period"] != period:
+            continue
+        lane = MARKER_LANE_Y[min(teams.index(m.get("team_id")), 1)]
+        x = 48 + 600 * m["time_ms"] / end
+        identity = team(block, m.get("team_id"))
+        color = identity["color"]
+        label = m.get("label") or MARKER_NAMES.get(m["kind"], "Evento")
+        who = block.players.get(str(m.get("player_id")), {}).get("name")
+        tip = " · ".join(
+            [f"P{period} {m['time_ms'] // 60000}′", label, identity["name"]]
+            + ([who] if who else [])
+        )
+        if m["kind"] == "goal":
+            shape = f'<circle cx="{x:.2f}" cy="{lane}" r="4.5" fill="{color}"/><circle cx="{x:.2f}" cy="{lane}" r="7.5" fill="none" stroke="{color}" stroke-width="1.5"/>'
+        elif m["kind"] == "substitution":
+            shape = f'<path d="M{x:.2f} {lane - 6}L{x + 6:.2f} {lane}L{x:.2f} {lane + 6}L{x - 6:.2f} {lane}Z" fill="{color}"/>'
+        else:
+            fill = "#c0392b" if "roja" in label.lower() else "#e0b000"
+            shape = f'<rect x="{x - 3.5:.2f}" y="{lane - 6}" width="7" height="12" rx="1" fill="{fill}" stroke="{color}" stroke-width="1.5"/>'
+        marks.append(f"<g>{shape}<title>{text(tip)}</title></g>")
+    return "".join(marks)
+
+
 def series(block):
     if not block.series:
         return ""
@@ -221,6 +256,10 @@ def series(block):
         marks, labels = [], []
         items_period = [i for i in block.series if i.get("period", 1) == period]
         end = max(i["time_ms"] for i in items_period) or 1
+        if block.markers:
+            end = max(
+                [end] + [m["time_ms"] for m in block.markers if m["period"] == period]
+            )
         for tick in range(5):
             y = 180 - tick * 35
             value = low + span * tick / 4
@@ -249,10 +288,12 @@ def series(block):
                 )
                 if block.insight_id == "xg_story":
                     path += f"H{x:.3f}V{y:.3f}"
+                elif block.insight_id == "match_timeline":
+                    path += f"L{x:.3f} {y:.3f}"
                 marks.append(
                     f'<circle cx="{x:.3f}" cy="{y:.3f}" r="3.3" fill="{color}" stroke="#fff"><title>P{period} · {item["time_ms"] / 1000:g} s · {numeric(item["value"])}</title></circle>'
                 )
-            if block.insight_id == "xg_story":
+            if block.insight_id in {"xg_story", "match_timeline"}:
                 marks.insert(
                     0,
                     f'<path d="{path}" stroke="{color}" stroke-width="2.5" fill="none"/>',
@@ -263,10 +304,17 @@ def series(block):
         caption = (
             "Acumulado de tiros incluidos; escalones en el instante de cada acción."
             if block.insight_id == "xg_story"
+            else "Eventos registrados por equipo en tramos de 5 minutos; el último tramo del período puede ser parcial."
+            if block.insight_id == "match_timeline"
             else "Muestras independientes; no se interpolan huecos ni se unen períodos."
         )
+        height = 230
+        if any(m["period"] == period for m in block.markers):
+            marks.append(marker_marks(block, period, end))
+            caption += " Bajo el eje: ● gol, ◆ cambio, ▮ tarjeta, en el color del equipo (una franja por equipo)."
+            height = 258
         figures.append(
-            f'<figure><svg class="series" viewBox="0 0 690 230" role="img" aria-label="{text(block.title)}">{"".join(marks)}</svg>{legend(labels)}<figcaption>{caption}</figcaption></figure>'
+            f'<figure><svg class="series" viewBox="0 0 690 {height}" role="img" aria-label="{text(block.title)}">{"".join(marks)}</svg>{legend(labels)}<figcaption>{caption}</figcaption></figure>'
         )
     return "".join(figures)
 

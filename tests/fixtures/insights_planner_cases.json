@@ -1,0 +1,80 @@
+[
+  {
+    "id": "overview_by_id",
+    "question": "Dame un resumen del partido 900001",
+    "expect": {"status": "intent", "intent": {"template_id": "match_overview", "match_id": 900001}}
+  },
+  {
+    "id": "overview_by_name",
+    "question": "¿Cómo fue el primer partido de Metrica?",
+    "note": "Las fechas de Metrica son desconocidas (1900 es un marcador): no hay 'primero'; lo correcto es aclarar.",
+    "expect": {"status": "clarification"}
+  },
+  {
+    "id": "player_by_name",
+    "question": "Muéstrame qué hizo SC01 Jugador 02",
+    "expect": {"status": "intent", "intent": {"template_id": "player_dossier", "match_id": 900101, "player_id": 10102}}
+  },
+  {
+    "id": "player_by_jersey",
+    "question": "Ficha del número 10 del Synthetic FC 1 en su partido del 1 de octubre",
+    "expect": {"status": "intent", "intent": {"template_id": "player_dossier", "match_id": 900001, "player_id": 110}}
+  },
+  {
+    "id": "jersey_not_name",
+    "question": "¿Qué hizo el dorsal 10 del SC 01 · Equipo A?",
+    "expect": {"status": "intent", "intent": {"template_id": "player_dossier", "match_id": 900101, "player_id": 10115}}
+  },
+  {
+    "id": "team_comparison",
+    "question": "Compara a los dos equipos del partido SC 03",
+    "expect": {"status": "intent", "intent": {"template_id": "entity_comparison", "match_id": 900103, "compare_kind": "team"}}
+  },
+  {
+    "id": "episode_period_clock",
+    "question": "¿Qué pasó en el minuto 20 del segundo tiempo del partido 900001? Céntrate en el visitante",
+    "expect": {"status": "intent", "intent": {"template_id": "tactical_episode", "match_id": 900001, "team_id": 2, "period": 2, "time_ms": 1200000}}
+  },
+  {
+    "id": "episode_match_clock",
+    "question": "Analiza la estructura defensiva en el minuto 65 del partido Metrica 2",
+    "expect": {"status": "intent", "intent": {"template_id": "tactical_episode", "match_id": 900012, "period": 2, "time_ms": 1200000}}
+  },
+  {
+    "id": "custom_shots",
+    "question": "¿Desde dónde remató el Equipo B en Metrica 2?",
+    "expect": {"status": "intent", "intent": {"template_id": "custom_report", "match_id": 900012, "team_id": 105}, "insight_ids_include": ["shot_map"]}
+  },
+  {
+    "id": "custom_network_by_date",
+    "question": "Red de pases de Synthetic FC 3 en su partido contra Synthetic FC 4 del 1 de octubre",
+    "expect": {"status": "intent", "intent": {"template_id": "custom_report", "match_id": 900002, "team_id": 3}, "insight_ids_include": ["passing_network"]}
+  },
+  {
+    "id": "follow_up_period",
+    "question": "¿Y solo el segundo tiempo?",
+    "previous_intent": {"template_id": "match_overview", "match_id": 900011},
+    "expect": {"status": "intent", "intent": {"template_id": "match_overview", "match_id": 900011, "period": 2}}
+  },
+  {
+    "id": "follow_up_other_team",
+    "question": "¿Y el otro equipo?",
+    "previous_intent": {"template_id": "custom_report", "match_id": 900002, "team_id": 3, "insight_ids": ["passing_network"]},
+    "expect": {"status": "intent", "intent": {"template_id": "custom_report", "match_id": 900002, "team_id": 4}, "insight_ids_include": ["passing_network"]}
+  },
+  {
+    "id": "ambiguous_team",
+    "question": "Muéstrame el partido del Synthetic FC 1",
+    "expect": {"status": "clarification"}
+  },
+  {
+    "id": "out_of_scope",
+    "question": "¿Quién ganará el próximo Mundial?",
+    "expect": {"status": "declined"}
+  },
+  {
+    "id": "unavailable_in_source",
+    "question": "Quiero ver el xG del partido SC 04",
+    "expect": {"status": "intent", "intent": {"template_id": "custom_report", "match_id": 900104}, "insight_ids_include": ["xg_story"]}
+  }
+]

@@ -19,7 +19,7 @@ con cinco tools y recursos HTML para conectarlo.
 | `molecules.py` | Métricas, leyendas/avisos, tablas y enlaces de evidencia |
 | `charts.py`, `organisms.py` | Campo, red ponderada, series por período, cronología, comparación, secuencias, barcode, replay y fuentes |
 | `templates.py` | CSS/JS locales y layouts responsive |
-| `pages.py` | Template + bloques + datos originales → HTML autocontenido |
+| `pages.py` | Template + bloques + datos originales → HTML autocontenido (`render_report`), piezas reutilizables (`report_parts`) y la página web del agente (`render_workspace`) |
 | `mcp_server.py` | Descubrimiento, descripción, validación, render y lectura del recurso |
 | `demo.py` | Galería con escenario SINTÉTICO ilustrativo de componentes |
 
@@ -130,6 +130,24 @@ desaparecen al terminar el proceso. No se publicó un nuevo endpoint HTTP/Azure.
 bloques están disponibles. Un plan puede ser válido pero contener un bloque
 `unavailable` por falta de xG o roles. El agente debe inspeccionar los estados,
 pedir la evidencia que falta o conservar explícitamente esa ausencia.
+
+### Ceros que no son ausencia (`zero_only_insights`)
+
+Algunas fuentes no anotan ciertas acciones (SkillCorner: quites, duelos, regates;
+Metrica: regates y conducciones). Sin más datos, el bloque saldría `ready` con
+contadores en cero, que se leen como un cero real. `ReportSpec` (y `compile_report`)
+acepta el campo opcional `zero_only_insights`: IDs de receta que la fuente no anota,
+tomados del perfil `zero_only` de `agents/insights_agent/source_profiles.json`.
+Un bloque de esas recetas sin elementos dibujables y con todas las métricas en cero
+pasa a `empty_with_coverage` («revisar cobertura»). Fuera de la lista, un cero sigue
+siendo un cero real y el bloque queda `ready`.
+
+Lo rellena el anfitrión, no el modelo: `ReportPlan` no lo incluye. El agente de
+insights lo deriva del perfil de la fuente (`ResolvedPlan.zero_only_insights`) y lo
+pasa al compilar; su guardián descarta esos bloques con el motivo. Las
+herramientas stdio del MCP construyen el `ReportSpec` sin ese campo, así que no lo
+aplican; sólo lo usa quien llame a `compile_report`/`render_report` de `pages.py`
+desde Python con un `ReportSpec` propio.
 
 Ejemplo de argumentos de `render_insight`:
 

@@ -3,7 +3,8 @@
 import json
 import re
 
-from .atoms import numeric, text
+from .atoms import numeric, tag, text
+from .labels import clean_key, column_label, metric_label
 
 
 def legend(items):
@@ -20,73 +21,39 @@ def legend(items):
     )
 
 
+def metric_value(label, value):
+    key = clean_key(label)
+    if key.endswith(("_rate", "_fraction")) and type(value) in (int, float):
+        return f"{value:.1%}"
+    return numeric(value)
+
+
 def metric_reading(label, value, teams=None):
-    label = re.sub(r"^(?:r\d+-)?q\d+\.", "", label)
-    names = {
-        "shots": "Tiros",
-        "attempted_passes": "Pases intentados",
-        "completed_passes": "Pases completados",
-        "completion_rate": "Acierto de pase",
-        "passes_with_geometry": "Pases con coordenadas",
-        "density": "Densidad de conexiones",
-        "components_weak": "Componentes conectados",
-        "grid_m": "Tamaño de celda (m)",
-        "total_player_seconds": "Ocupación (s·jugador)",
-        "pitch_area_m2": "Superficie del campo (m²)",
-        "area_sum_m2": "Suma de celdas (m²)",
-        "maximum_edge_length_m": "Escala máxima (m)",
-        "observed_line_breaks": "Pases que cruzan líneas",
-        "mapped_line_breaks": "Pases situados en el mapa",
-        "goals": "Goles",
-        "shots_on_target": "Tiros a puerta",
-        "xg": "xG",
-        "xg_per_shot": "xG por tiro",
-        "goals_minus_xg": "Goles menos xG",
-        "conversion_rate": "Proporción de conversión",
-        "on_target_rate": "Proporción a puerta",
-        "heatmap_scale_max": "Máximo de escala térmica",
-        "sample_time_ms": "Instante del período (ms)",
-        "eligible_passes": "Pases elegibles",
-        "computed_passes": "Pases calculados",
-        "supplied_frames": "Snapshots suministrados",
-        "comparable_pairs": "Pares comparables",
-        "events_in_supplied_evidence": "Eventos en la evidencia",
-        "observed_xg": "xG observado",
-        "observations": "Muestras",
-        "period": "Período",
-        "players": "Jugadores de campo",
-        "width_m": "Anchura (m)",
-        "length_m": "Longitud (m)",
-        "radius_of_gyration_m": "Radio de giro (m)",
-        "hull_area_m2": "Área de envolvente (m²)",
-        "hull_perimeter_m": "Perímetro (m)",
-        "component_count": "Componentes",
-        "largest_component_fraction": "Fracción del componente mayor",
-        "critical_connection_distance_m": "Distancia de conexión crítica (m)",
-        "defensive_line_height_m": "Altura defensiva (m)",
-        "observed_outfield_length_m": "Longitud observada (m)",
-        "goalkeeper_height_m": "Altura del portero (m)",
-        "longitudinal_gap_m": "Distancia portero-línea (m)",
-        "reachable_players": "Jugadores conectados al balón",
-        "observed_sequences": "Secuencias observadas",
-        "gradient_fraction": "Fracción de gradiente",
-        "curl_fraction": "Fracción de curl",
-        "harmonic_fraction": "Fracción armónica",
-        "net_flow_energy": "Energía del flujo neto",
-        "reconstruction_error": "Error de reconstrucción",
-        "orthogonality_error": "Error de ortogonalidad",
-    }
-    display = numeric(value)
-    if label.endswith(("_rate", "_fraction")) and type(value) in (int, float):
-        display = f"{value:.1%}"
-    if label.startswith("team_area_m2."):
-        key = label.split(".")[-1]
-        label = (
-            f"Área de {(teams or {}).get(key, {}).get('name', 'equipo ' + key)} (m²)"
+    return f'<div class="reading"><dt>{text(metric_label(label, teams))}</dt><dd>{metric_value(label, value)}</dd></div>'
+
+
+def team_breakdown(by_team, teams):
+    """Una fila por equipo, una columna por cifra: quién es quién sin mirar colores."""
+    if not by_team:
+        return ""
+    columns = list(dict.fromkeys(k for row in by_team.values() for k in row))
+    head = "".join(
+        f"<th>{text(metric_label(k, teams).removeprefix('Eventos · '))}</th>"
+        for k in columns
+    )
+    rows = []
+    for team_id, row in by_team.items():
+        info = (teams or {}).get(team_id, {})
+        name = info.get("name", f"Equipo {team_id}")
+        color = info.get("color", "#52675f")
+        cells = "".join(f"<td>{metric_value(k, row.get(k))}</td>" for k in columns)
+        rows.append(
+            f'<tr><td class="team-name"><span class="legend-key" style="background:{text(color)}"></span>{text(name)}</td>{cells}</tr>'
         )
-    else:
-        label = names.get(label, label.replace("_", " "))
-    return f'<div class="reading"><dt>{text(label)}</dt><dd>{display}</dd></div>'
+    return (
+        '<div class="table-scroll"><table class="team-breakdown"><caption>Por equipo</caption>'
+        f"<thead><tr><th>Equipo</th>{head}</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
+    )
 
 
 def metrics(values, teams=None):
@@ -94,6 +61,7 @@ def metrics(values, teams=None):
         return ""
     diagnostic = {
         "heatmap_scale_max",
+        "events_in_supplied_evidence",
         "sample_time_ms",
         "reconstruction_error",
         "orthogonality_error",
@@ -130,10 +98,18 @@ def warnings(items):
     )
 
 
+def display_evidence_id(value):
+    """ID visible sin los prefijos internos de transporte o verificación."""
+    return re.sub(r"^(?:(?:r|a)\d+-)+", "", value)
+
+
 def evidence_links(ids):
     return (
         '<p class="evidence-links">Evidencia: '
-        + ", ".join(f'<a href="#evidence-{text(e)}">{text(e)}</a>' for e in ids)
+        + ", ".join(
+            f'<a href="#evidence-{text(e)}">{text(display_evidence_id(e))}</a>'
+            for e in ids
+        )
         + "</p>"
     )
 
@@ -149,9 +125,85 @@ def data_table(rows):
             return text(json.dumps(v, ensure_ascii=False))
         return "—" if v is None else text(v)
 
-    heading = "".join(f'<th scope="col">{text(k)}</th>' for k in keys)
+    heading = "".join(f'<th scope="col">{text(column_label(k))}</th>' for k in keys)
     body = "".join(
         "<tr>" + "".join(f"<td>{cell(row.get(k))}</td>" for k in keys) + "</tr>"
         for row in rows[:100]
     )
     return f'<details class="data-table"><summary>Tabla de datos · {len(rows)} filas</summary><div class="table-scroll"><table><thead><tr>{heading}</tr></thead><tbody>{body}</tbody></table></div><p class="muted">Vista de hasta 100 filas y 8 columnas. Datos completos en el JSON incluido.</p></details>'
+
+
+# --- Espacio de trabajo: mensajes de la conversación ---
+
+
+def chat_message(role, inner):
+    """Entrada de la conversación; `inner` ya está compuesto por átomos."""
+    return f'<li class="msg {text(role)}">{inner}</li>'
+
+
+def source_tag(synthetic, provider=None):
+    if synthetic:
+        return tag("Datos sintéticos", "synthetic")
+    return tag(f"Datos reales · {provider or 'fuente real'}", "real")
+
+
+def answer_card(title, source, pieces, notes=(), missing=(), has_report=False):
+    """Respuesta de un informe: qué se muestra, qué no y por qué."""
+    count = len(pieces)
+    shown = (
+        f"<p>{'Se muestra 1 pieza' if count == 1 else f'Se muestran {count} piezas'}:</p>"
+        + '<ul class="pieces">'
+        + "".join(f"<li>{text(p)}</li>" for p in pieces)
+        + "</ul>"
+        if pieces
+        else "<p>No hay piezas que mostrar con los datos de esta fuente.</p>"
+    )
+    absent = (
+        '<details class="missing"><summary>'
+        + (
+            "1 pieza no disponible"
+            if len(missing) == 1
+            else f"{len(missing)} piezas no disponibles"
+        )
+        + "</summary><ul>"
+        + "".join(
+            f"<li><strong>{text(n)}</strong> — {text(r)}</li>" for n, r in missing
+        )
+        + "</ul></details>"
+        if missing
+        else ""
+    )
+    view = (
+        '<button type="button" class="link view-report">Ver informe</button>'
+        if has_report
+        else ""
+    )
+    return chat_message(
+        "answer",
+        f'<p class="answer-title">{text(title)}</p>{source}{shown}'
+        + "".join(f'<p class="note">{text(n)}</p>' for n in notes)
+        + absent
+        + view,
+    )
+
+
+def clarification_card(question, options=()):
+    buttons = "".join(
+        f'<button type="button" data-question="{text(o)}">{text(o)}</button>'
+        for o in options
+    )
+    return chat_message(
+        "clarification",
+        f"<p>{text(question)}</p>"
+        + (f'<div class="options">{buttons}</div>' if buttons else ""),
+    )
+
+
+def notice_card(kind, message, codes=()):
+    """Rechazo, error o aviso; los códigos quedan plegados en «Detalles»."""
+    details = (
+        f'<details><summary>Detalles</summary><p class="codes">{text(" · ".join(codes))}</p></details>'
+        if codes
+        else ""
+    )
+    return chat_message(kind, f"<p>{text(message)}</p>{details}")

@@ -1,0 +1,136 @@
+{
+  "synthetic": {
+    "measured_match_id": 900001,
+    "unavailable": {},
+    "zero_only": {},
+    "unannotated_metrics": {}
+  },
+  "Metrica Sports": {
+    "measured_match_id": 900011,
+    "unavailable": {
+      "xg_story": "xG no disponible para todos los tiros. No se sustituye por cero.",
+      "defensive_geometry": "Falta evidencia de las operaciones requeridas. get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE",
+      "defensive_line_height": "Resolvedor: La fuente no anota defensores de este equipo; no se infieren por dorsal.",
+      "goalkeeper_connection": "Resolvedor: La fuente no anota portero y defensores de este equipo.",
+      "between_lines_receptions": "Resolvedor: La fuente no anota defensores y medios del rival; no se infieren por dorsal.",
+      "pressure_turnovers": "No hay presiones anotadas; no se infieren desde proximidad."
+    },
+    "zero_only": {
+      "ball_progression": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+    },
+    "unannotated_metrics": {
+      "shot_map": [
+        "goals_minus_xg",
+        "xg",
+        "xg_per_shot"
+      ],
+      "pass_map": [
+        "attempted_passes",
+        "completion_rate",
+        "cross",
+        "cut_back",
+        "switch"
+      ],
+      "defensive_actions": [
+        "aerial_contests",
+        "aerial_lost",
+        "aerial_won",
+        "blocks",
+        "clearances",
+        "fifty_fifty_losing_records",
+        "fifty_fifty_winning_records",
+        "pressures"
+      ],
+      "ball_progression": [
+        "carries",
+        "carry_displacement_m",
+        "carry_progression_m",
+        "carry_seconds",
+        "dispossessed",
+        "dribble_attempts",
+        "dribble_success_rate",
+        "dribbles_complete",
+        "dribbles_incomplete",
+        "events_in_supplied_evidence",
+        "miscontrols",
+        "receipts"
+      ]
+    }
+  },
+  "SkillCorner": {
+    "measured_match_id": 900101,
+    "unavailable": {
+      "xg_story": "xG no disponible para todos los tiros. No se sustituye por cero.",
+      "defensive_geometry": "Falta evidencia de las operaciones requeridas. get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE",
+      "pressure_turnovers": "No hay presiones anotadas; no se infieren desde proximidad."
+    },
+    "zero_only": {
+      "defensive_actions": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia.",
+      "pressure_recovery": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia.",
+      "ball_progression": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+    },
+    "unannotated_metrics": {
+      "shot_map": [
+        "conversion_rate",
+        "goals",
+        "goals_minus_xg",
+        "on_target_rate",
+        "shots_on_target",
+        "xg",
+        "xg_per_shot"
+      ],
+      "pass_map": [
+        "cross",
+        "cut_back",
+        "final_third_entries",
+        "progressive_passes",
+        "switch",
+        "total_pass_length_m"
+      ],
+      "defensive_actions": [
+        "aerial_contests",
+        "aerial_lost",
+        "aerial_won",
+        "blocks",
+        "clearances",
+        "fifty_fifty_losing_records",
+        "fifty_fifty_winning_records",
+        "interceptions",
+        "pressures",
+        "tackle_attempts",
+        "tackles_lost",
+        "tackles_won"
+      ],
+      "pressure_recovery": [
+        "aerial_contests",
+        "aerial_lost",
+        "aerial_won",
+        "blocks",
+        "fifty_fifty_losing_records",
+        "fifty_fifty_winning_records",
+        "interceptions",
+        "pressures",
+        "tackle_attempts",
+        "tackles_lost",
+        "tackles_won"
+      ],
+      "ball_progression": [
+        "carries",
+        "carry_displacement_m",
+        "carry_progression_m",
+        "carry_seconds",
+        "dispossessed",
+        "dribble_attempts",
+        "dribble_success_rate",
+        "dribbles_complete",
+        "dribbles_incomplete",
+        "events_in_supplied_evidence",
+        "miscontrols",
+        "receipts"
+      ],
+      "zone_presence": [
+        "xg"
+      ]
+    }
+  }
+}

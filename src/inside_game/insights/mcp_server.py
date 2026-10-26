@@ -74,8 +74,35 @@ DESCRIPTIONS = {
 }
 
 
-def create_server(evidence=()):
+def referenced_evidence(evidence, blocks):
+    """La evidencia declarada por los bloques y el contexto de sus partidos.
+
+    Nunca el catálogo completo. El contexto (`get_match_context`) se conserva
+    aunque ningún bloque lo declare: de él salen nombres, dorsales y colores de
+    los equipos (`identity.py`); sin él los gráficos dirían "Equipo 105".
+    """
+    ids = {evidence_id for block in blocks for evidence_id in block.evidence_ids}
+    selected = [item for item in evidence if item.evidence_id in ids]
+    matches = set()
+    for item in selected:
+        if item.arguments.get("match_id") is not None:
+            matches.add(item.arguments["match_id"])
+        matches.update(item.arguments.get("match_ids") or [])
+    context = [
+        item
+        for item in evidence
+        if item.operation == "get_match_context"
+        and item.evidence_id not in ids
+        and item.arguments.get("match_id") in matches
+    ]
+    return selected + context
+
+
+def create_server(evidence=(), *, render_options=None):
+    """`render_options` son decisiones del anfitrión que el modelo no controla
+    (`zero_only_insights`, `unannotated_metrics`): se suman a cada ReportSpec."""
     trusted = [Evidence.model_validate(e) for e in evidence]
+    host = dict(render_options or {})
     artifacts = {}
     resource_prefix = "insight://report/" + str(uuid4()) + "/"
 
@@ -150,7 +177,14 @@ def create_server(evidence=()):
                     }
                 else:
                     plan = request.model_dump()
-                spec = ReportSpec(**plan, evidence=trusted)
+                spec = ReportSpec(
+                    **plan,
+                    evidence=referenced_evidence(
+                        trusted,
+                        [request] if name == "render_insight" else request.blocks,
+                    ),
+                    **host,
+                )
                 result = await asyncio.to_thread(render_report, spec)
                 html = result.pop("html")
                 uri = resource_prefix + hashlib.sha256(html.encode()).hexdigest()
@@ -163,7 +197,11 @@ def create_server(evidence=()):
                     artifacts.pop(next(iter(artifacts)))
                 result["resource_uri"] = uri
             else:
-                spec = ReportSpec(**request.model_dump(), evidence=trusted)
+                spec = ReportSpec(
+                    **request.model_dump(),
+                    evidence=referenced_evidence(trusted, request.blocks),
+                    **host,
+                )
                 _, blocks = await asyncio.to_thread(compile_report, spec)
                 result = {
                     "valid": all(
@@ -203,7 +241,7 @@ def create_server(evidence=()):
     return Server(
         "inside-game-insights",
         version="1.0.0",
-        instructions="Flujo: list_insights descubre recetas y evidencia; describe_insight explica la pieza; validate_report comprueba un plan. render_insight crea una pieza y render_report combina varias. Ambos devuelven resource_uri: usa resources/read para obtener HTML. Pasa parámetros y evidence_ids, no HTML ni SQL ni cifras inventadas. El anfitrión carga la evidencia original del agente de datos al iniciar esta instancia. Estados unavailable/partial y procedencia sintética deben permanecer visibles; valid no significa ready. No consulta datos nuevos ni ejecuta un modelo.",
+        instructions="Flujo: list_insights descubre recetas y evidencia; describe_insight explica la pieza; validate_report comprueba un plan. render_insight crea una pieza y render_report combina varias. Ambos devuelven resource_uri: usa resources/read para obtener HTML. Pasa parámetros y evidence_ids, no HTML ni SQL ni cifras inventadas. El anfitrión carga la evidencia original del agente de datos al iniciar esta instancia. Estados unavailable/partial y la procedencia (sintética o real) deben permanecer visibles; valid no significa ready. No consulta datos nuevos ni ejecuta un modelo.",
         on_list_tools=list_tools,
         on_call_tool=call_tool,
         on_list_resources=list_resources,

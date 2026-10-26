@@ -51,3 +51,6 @@ coverage/
 .cache/
 .temp/
 tmp/
+
+# Local
+.claude/

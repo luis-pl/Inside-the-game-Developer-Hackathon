@@ -2,7 +2,8 @@
 
 Flujo de una petición: tools/call -> ApiBridge -> POST de la API -> Azure SQL.
 La API conserva las consultas y los cálculos; este módulo adapta el protocolo,
-valida argumentos y devuelve los datos con su procedencia sintética.
+valida argumentos y devuelve los datos con su procedencia: sintética o real
+anonimizada/seudonimizada, con sus advertencias y cobertura.
 
 Uso desde el entorno virtual, con la API iniciada previamente:
     python -m inside_game.mcp_server
@@ -148,7 +149,9 @@ def tool_catalog():
     return [
         Tool(
             name=name,
-            description=DESCRIPTIONS[name] + " Sólo lectura; datos sintéticos.",
+            description=DESCRIPTIONS[name]
+            + " Sólo lectura; conserva la procedencia (sintética o real "
+            "anonimizada/seudonimizada), la cobertura y las advertencias.",
             input_schema=model.model_json_schema(),
             output_schema=ApiResponse.model_json_schema(),
             annotations=ToolAnnotations(

@@ -536,6 +536,7 @@
       "number": 21,
       "id": "defensive_line_height",
       "title": "Altura de la línea defensiva",
+      "question": "¿A qué altura estaba la línea defensiva en el instante analizado?",
       "organism_family": "topology",
       "source_operations": [
         "get_tracking_frame",
@@ -554,6 +555,7 @@
       "number": 22,
       "id": "goalkeeper_connection",
       "title": "Conexión portero-defensa",
+      "question": "¿Qué distancia había entre el portero y la línea defensiva?",
       "organism_family": "topology",
       "source_operations": [
         "get_tracking_frame",
@@ -572,6 +574,7 @@
       "number": 23,
       "id": "final_third_channels",
       "title": "Entradas al último tercio por carril",
+      "question": "¿Por qué carriles entró el equipo al último tercio?",
       "organism_family": "pitch_map",
       "source_operations": [
         "get_passes",
@@ -589,6 +592,7 @@
       "number": 24,
       "id": "between_lines_receptions",
       "title": "Recepciones entre líneas",
+      "question": "¿Qué recepciones se dieron entre las líneas del rival?",
       "organism_family": "pitch_map",
       "source_operations": [
         "get_passes",
@@ -607,6 +611,7 @@
       "number": 25,
       "id": "ball_recovery_time",
       "title": "Tiempo de recuperación observado",
+      "question": "¿Cuánto tardó el equipo en recuperar el balón tras perderlo?",
       "organism_family": "time_series",
       "source_operations": [
         "get_events",
@@ -624,6 +629,7 @@
       "number": 26,
       "id": "pressure_turnovers",
       "title": "Recuperaciones precedidas por presión",
+      "question": "¿Qué recuperaciones vinieron precedidas por presión?",
       "organism_family": "sequence",
       "source_operations": [
         "get_events",
@@ -641,6 +647,7 @@
       "number": 27,
       "id": "structural_pass",
       "title": "Ventaja estructural del pase",
+      "question": "¿Qué ventaja estructural aportó cada pase completado?",
       "organism_family": "pitch_map",
       "source_operations": [
         "get_passes",
@@ -658,6 +665,7 @@
       "number": 28,
       "id": "hodge_flow",
       "title": "Flujo de pases: gradiente, curl y armónico",
+      "question": "¿Cómo se reparte el flujo de pases entre gradiente, rotación y componente armónico?",
       "organism_family": "network",
       "source_operations": [
         "get_passing_network"
@@ -675,6 +683,7 @@
       "number": 29,
       "id": "topological_change",
       "title": "Cambio temporal de estructura",
+      "question": "¿Cuánto cambió la estructura del equipo entre instantes comparables?",
       "organism_family": "time_series",
       "source_operations": [
         "get_tracking_window"
@@ -691,6 +700,7 @@
       "number": 30,
       "id": "clearance_connectivity",
       "title": "Anchura de conexión libre desde el balón",
+      "question": "¿Con qué compañeros había una conexión libre desde el balón y de qué anchura?",
       "organism_family": "topology",
       "source_operations": [
         "get_tracking_frame",
