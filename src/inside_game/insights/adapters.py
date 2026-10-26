@@ -1,11 +1,13 @@
 """De evidencia MCP a organismos; conserva alcance, faltantes y trazabilidad."""
 
-from math import isfinite
+from collections import Counter
+from math import hypot, isfinite
 
 from inside_game.errors import DomainError
 from inside_game.insights import advanced
 from inside_game.insights.catalog import RECIPES
 from inside_game.insights.contracts import BlockData
+from inside_game.insights.labels import clean_key
 
 
 def number(value):
@@ -23,6 +25,213 @@ def flatten_metrics(value, prefix="", depth=0):
         elif isinstance(item, dict):
             result.update(flatten_metrics(item, name + ".", depth + 1))
     return result
+
+
+ACTIVITY_BIN_MS = 300000
+CARD_LABELS = {
+    "Yellow Card": "Tarjeta amarilla",
+    "Second Yellow": "Segunda amarilla",
+    "Red Card": "Tarjeta roja",
+}
+
+
+def timeline_markers(evidence, events, params):
+    """Goles, cambios y tarjetas que la fuente registra, sin repetir eventos."""
+    found = {}
+
+    def identity(item):
+        # Un registro sin event_id no debe tumbar toda la cronología.
+        return item.get("event_id") or (
+            item.get("period"),
+            item.get("period_time_ms"),
+            item.get("team_id"),
+            item.get("player_id"),
+        )
+
+    for e in events:
+        if ((e.get("shot") or {}).get("outcome") or {}).get("name") == "Goal":
+            found[("goal", identity(e))] = (("goal", None), e)
+    for ev in evidence:
+        data = ev.response.data
+        if ev.operation == "get_substitutions":
+            for item in data.get("items", []):
+                found[("substitution", identity(item))] = (
+                    ("substitution", None),
+                    item,
+                )
+        elif ev.operation == "get_discipline":
+            for item in data.get("cards", []):
+                card = ((item.get("details") or {}).get("foul_committed") or {}).get(
+                    "card"
+                )
+                card = card or (
+                    (item.get("details") or {}).get("bad_behaviour") or {}
+                ).get("card")
+                label = CARD_LABELS.get((card or {}).get("name"), "Tarjeta")
+                found[("card", identity(item))] = (("card", label), item)
+    markers = []
+    for (kind, label), item in found.values():
+        if params.team_id is not None and item.get("team_id") != params.team_id:
+            continue
+        if params.period is not None and item.get("period") != params.period:
+            continue
+        if item.get("period") is None or item.get("period_time_ms") is None:
+            continue
+        markers.append(
+            {
+                "kind": kind,
+                "label": label,
+                "period": item["period"],
+                "time_ms": item["period_time_ms"],
+                "team_id": item.get("team_id"),
+                "player_id": item.get("player_id"),
+            }
+        )
+    return sorted(markers, key=lambda m: (m["period"], m["time_ms"]))
+
+
+SHOT_ON_TARGET = {"Goal", "Saved", "Saved to Post"}
+DEFENSIVE_TYPES = (
+    "Pressure",
+    "Interception",
+    "Clearance",
+    "Block",
+    "Duel",
+    "Ball Recovery",
+    "Foul Committed",
+)
+BALL_TYPES = ("Carry", "Dribble", "Dispossessed", "Miscontrol")
+BREAKDOWN_TYPES = {"defensive_actions": DEFENSIVE_TYPES, "ball_progression": BALL_TYPES}
+
+
+def team_breakdown(key, events, params, unannotated=()):
+    """Cifras de cada equipo lado a lado; sólo columnas con algo que decir."""
+    if params.team_id is not None or params.player_id is not None:
+        return {}
+    teams = sorted({e["team_id"] for e in events if e.get("team_id") is not None})
+    if len(teams) < 2:
+        return {}
+    rows = {str(t): {} for t in teams}
+    for t in teams:
+        mine = [e for e in events if e.get("team_id") == t]
+        row = rows[str(t)]
+        if key == "shot_map":
+            shots = [e for e in mine if e.get("shot")]
+            outcomes = [((e["shot"].get("outcome") or {}).get("name")) for e in shots]
+            known = [o for o in outcomes if o and not o.lower().startswith("unknown")]
+            row["shots"] = len(shots)
+            if known:
+                row["goals"] = outcomes.count("Goal")
+                row["shots_on_target"] = sum(o in SHOT_ON_TARGET for o in known)
+            xg = [
+                e["shot"]["statsbomb_xg"]
+                for e in shots
+                if number(e["shot"].get("statsbomb_xg"))
+            ]
+            if xg:
+                row["xg"] = round(sum(xg), 2)
+        elif key == "pass_map":
+            passes = [e for e in mine if e.get("pass")]
+            done = sum(e["pass"].get("outcome") is None for e in passes)
+            row["attempted_passes"] = len(passes)
+            row["completed_passes"] = done
+            if passes:
+                row["completion_rate"] = done / len(passes)
+        else:
+            for name in BREAKDOWN_TYPES[key]:
+                row[f"event_counts.{name}"] = sum(
+                    e.get("type_name") == name for e in mine
+                )
+    columns = list(dict.fromkeys(k for row in rows.values() for k in row))
+    if key in BREAKDOWN_TYPES:
+        busiest = sorted(
+            columns, key=lambda k: -sum(row.get(k, 0) for row in rows.values())
+        )[:5]
+        columns = [k for k in columns if k in busiest]
+    columns = [
+        k
+        for k in columns
+        if any(row.get(k) not in (0, None) for row in rows.values())
+        and not (clean_key(k) in unannotated)
+    ]
+    return (
+        {t: {k: row[k] for k in columns if k in row} for t, row in rows.items()}
+        if columns
+        else {}
+    )
+
+
+def pass_geometry_metrics(events):
+    """Pases con coordenadas completas: lo medible cuando la API no da totales.
+
+    El resumen de la API sólo da longitud, progresión y entradas si TODOS los pases
+    tienen origen y destino; en las fuentes de tracking los fallidos no tienen
+    destino. Aquí se calculan con los mismos criterios, pero sólo sobre los pases
+    que sí tienen coordenadas, y la etiqueta lo dice.
+    """
+    lengths, progressive, entries = [], 0, 0
+    for e in events:
+        action = e.get("pass")
+        if not action:
+            continue
+        x, y = e.get("attacking_x_m"), e.get("attacking_y_m")
+        end_x, end_y = action.get("end_x"), action.get("end_y")
+        if not all(number(v) for v in (x, y, end_x, end_y)):
+            continue
+        ex, ey = end_x * 105 / 120, end_y * 68 / 80
+        lengths.append(hypot(ex - x, ey - y))
+        complete = action.get("outcome") is None
+        progressive += complete and (
+            hypot(105 - x, 34 - y) - hypot(105 - ex, 34 - ey) >= 10
+        )
+        entries += complete and x < 70 <= ex
+    if not lengths:
+        return {}
+    return {
+        "progressive_passes_with_geometry": progressive,
+        "final_third_entries_with_geometry": entries,
+        "total_pass_length_with_geometry_m": round(sum(lengths), 1),
+    }
+
+
+def activity_series(events):
+    """Eventos registrados por equipo en tramos de 5 minutos de cada período."""
+    counts = Counter(
+        (e["period"], e["period_time_ms"] // ACTIVITY_BIN_MS, e["team_id"])
+        for e in events
+        if e.get("team_id") is not None
+    )
+    return [
+        {
+            "period": period,
+            "time_ms": bin_ * ACTIVITY_BIN_MS,
+            "value": count,
+            "group": f"events:{team_id}",
+            "team_id": team_id,
+        }
+        for (period, bin_, team_id), count in sorted(counts.items())
+    ]
+
+
+def is_unknown_metric(name):
+    """Categoría "Unknown…" de la fuente (p. ej. `body_parts.Unknown`): no es una cifra."""
+    return any(part.lower().startswith("unknown") for part in str(name).split("."))
+
+
+def meaningful_metrics(metrics, unannotated=()):
+    """Sin valores ausentes, categorías desconocidas ni ceros de lo que no se anota.
+
+    `total` es el recuento de filas de la respuesta, no una métrica. Una clave de
+    `unannotated` (acciones que la fuente no registra) en cero no es un cero real.
+    """
+    return {
+        k: v
+        for k, v in metrics.items()
+        if v is not None
+        and not is_unknown_metric(k)
+        and clean_key(k) != "total"
+        and not (clean_key(k) in unannotated and v == 0)
+    }
 
 
 def clean_frames(evidence):
@@ -106,7 +315,7 @@ def map_events(block, events):
     )
 
 
-def prepare(spec, all_evidence):
+def prepare(spec, all_evidence, zero_only=frozenset(), unannotated=()):
     recipe = RECIPES[spec.insight_id]
     selected = [e for e in all_evidence if e.evidence_id in spec.evidence_ids]
     b = BlockData(
@@ -185,7 +394,7 @@ def prepare(spec, all_evidence):
                 "Faltan páginas de una consulta; no se presenta como conjunto completo."
             )
     try:
-        _populate(b, spec, selected)
+        _populate(b, spec, selected, unannotated)
     except ValueError as exc:
         b.state = "unavailable"
         b.warnings.append(str(exc))
@@ -205,12 +414,23 @@ def prepare(spec, all_evidence):
             "frames",
         ):
             setattr(b, field, {} if field == "metrics" else [])
+    b.metrics = meaningful_metrics(b.metrics, unannotated)
+    # Sólo contadores en cero en una receta que la fuente no anota: no es un cero real.
+    zeros_not_annotated = (
+        spec.insight_id in zero_only
+        and bool(b.metrics)
+        and all(
+            isinstance(v, (int, float)) and not isinstance(v, bool) and v == 0
+            for v in b.metrics.values()
+        )
+        and not any((b.points, b.vectors, b.series, b.rows, b.polygons, b.frames))
+    )
     if (
-        not any(
+        zeros_not_annotated
+        or not any(
             (b.metrics, b.points, b.vectors, b.series, b.rows, b.polygons, b.frames)
         )
-        and b.state == "ready"
-    ):
+    ) and b.state == "ready":
         b.state = "empty_with_coverage"
         b.warnings.append(
             "Resultado vacío; comprobar cobertura de la fuente antes de interpretarlo como cero."
@@ -219,7 +439,7 @@ def prepare(spec, all_evidence):
     return b
 
 
-def _populate(b, spec, evidence):
+def _populate(b, spec, evidence, unannotated=()):
     key, p = spec.insight_id, spec.parameters
     relevant = [e for e in evidence if e.operation in RECIPES[key]["source_operations"]]
     events = event_items(relevant)
@@ -231,6 +451,7 @@ def _populate(b, spec, evidence):
         events = [e for e in events if e.get("period") == p.period]
     if key in {"shot_map", "pass_map", "defensive_actions", "ball_progression"}:
         map_events(b, events)
+        b.by_team = team_breakdown(key, events, p, unannotated)
         # Los resúmenes se repiten por página: sólo una vez por query_id.
         seen = set()
         for e in relevant:
@@ -248,6 +469,13 @@ def _populate(b, spec, evidence):
                     }
                 )
                 seen.add(e.query_id)
+        if key == "pass_map" and any(
+            v is None
+            for k, v in b.metrics.items()
+            if k.rsplit(".", 1)[-1]
+            in {"progressive_passes", "final_third_entries", "total_pass_length_m"}
+        ):
+            b.metrics.update(pass_geometry_metrics(events))
         b.metrics["events_in_supplied_evidence"] = len(events)
         b.rows = [
             {
@@ -387,6 +615,13 @@ def _populate(b, spec, evidence):
                 b.metrics.update(flatten_metrics(data))
             if key == "entity_comparison" and "reports" in data:
                 b.rows.extend(data["reports"])
+        if key == "match_timeline":
+            # Los eventos del partido muestran cuándo se concentró la actividad de
+            # cada equipo; la serie de tiros ya la cuenta el mapa de tiros.
+            activity = activity_series(events)
+            if activity:
+                b.series = activity
+            b.markers = timeline_markers(relevant, events, p)
     elif key == "passing_network":
         for e in relevant:
             b.rows.extend(e.response.data.get("edges", []))
@@ -715,13 +950,19 @@ def _advanced(b, spec, evidence, events):
             events, frames, p, receptions=key == "between_lines_receptions"
         )
         b.points = b.rows
-        if not b.rows:
-            raise ValueError(
-                "Faltan pases, participantes/roles o snapshots sincronizados suficientes."
-            )
         candidates = sum(
             bool(e.get("pass")) and e["pass"].get("outcome") is None for e in events
         )
+        if not b.rows:
+            if not candidates:
+                raise ValueError(
+                    "No hay pases completados en este ámbito (equipo, período o ventana); "
+                    "elige un tramo donde el equipo dé pases."
+                )
+            raise ValueError(
+                "Hay pases, pero faltan participantes/roles o snapshots sincronizados "
+                "compatibles."
+            )
         b.metrics.update(eligible_passes=candidates, computed_passes=len(b.rows))
         if len(b.rows) < candidates:
             b.state = "partial"

@@ -39,3 +39,8 @@ def vector(x, y, end_x, end_y):
 
 
 MARKINGS = '<rect width="105" height="68"/><path d="M52.5 0V68 M0 13.84H16.5V54.16H0 M105 13.84H88.5V54.16H105 M0 24.84H5.5V43.16H0 M105 24.84H99.5V43.16H105"/><circle cx="52.5" cy="34" r="9.15"/><circle cx="11" cy="34" r=".35"/><circle cx="94" cy="34" r=".35"/>'
+
+
+def tag(label, tone="real"):
+    """Etiqueta corta de procedencia o estado: `real` o `synthetic`."""
+    return f'<span class="tag {text(tone)}">{text(label)}</span>'
