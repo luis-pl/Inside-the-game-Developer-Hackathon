@@ -99,7 +99,6 @@ def outputs(model, turn):
 def test_resolves_ids_with_tools_and_returns_validated_intent():
     result, model = plan(
         ScriptedModel(
-            call("list_matches", {}),
             call("get_match_roster", {"match_id": 900001}),
             call(
                 "submit_intent",
@@ -109,14 +108,52 @@ def test_resolves_ids_with_tools_and_returns_validated_intent():
         "Ficha del número 10 del Synthetic FC 1",
     )
     assert result.status == "intent"
-    assert result.intent.player_id == 110 and result.model_turns == 3
-    matches = outputs(model, 1)[0]["matches"]
+    # El catálogo de partidos ya está en la conversación: un turno menos.
+    assert result.intent.player_id == 110 and result.model_turns == 2
+    matches = outputs(model, 0)[0]["matches"]
     assert matches[0]["home"] == {"team_id": 1, "name": "Synthetic FC 1"}
-    roster = outputs(model, 2)[1]
+    roster = outputs(model, 1)[1]
     assert {"player_id": 110, "jersey_number": 10}.items() <= roster["players"][
         0
     ].items()
     assert roster["not_available"] == ["xg_story"]
+
+
+def test_match_catalog_is_preloaded_as_a_prior_tool_call():
+    _, model = plan(
+        ScriptedModel(call("decline_request", {"reason": "Fuera de alcance."}))
+    )
+    first_turn = model.seen[0]
+    assert [m.get("type") for m in first_turn[1:]] == [
+        "function_call",
+        "function_call_output",
+    ]
+    assert first_turn[1]["name"] == "list_matches"
+    assert json.loads(first_turn[2]["output"])["matches"][0]["match_id"] == 900001
+    # El historial también es válido para Chat Completions (Beam Free / Go).
+    from inside_game.providers.models import chat_messages
+
+    chat = chat_messages("prompt", first_turn)
+    assert [m["role"] for m in chat] == ["system", "user", "assistant", "tool"]
+    assert chat[2]["tool_calls"][0]["id"] == chat[3]["tool_call_id"]
+
+
+def test_planner_still_works_when_the_catalog_cannot_be_preloaded():
+    class FlakyData(FakeData):
+        async def fetch(self, operation, arguments):
+            if operation == "list_matches" and not self.calls:
+                self.calls.append(operation)
+                raise RuntimeError("catálogo caído")
+            return await super().fetch(operation, arguments)
+
+    model = ScriptedModel(
+        call("list_matches", {}),
+        call("submit_intent", {"template_id": "match_overview", "match_id": 900001}),
+    )
+    planner = Planner(model, FlakyData(), profiles={}, prompt="prompt")
+    result = asyncio.run(planner.plan("Resumen del partido"))
+    assert result.status == "intent" and result.model_turns == 2
+    assert not [m for m in model.seen[0] if m.get("type") == "function_call"]
 
 
 def test_first_message_carries_request_id_for_the_go_session():
@@ -165,7 +202,7 @@ def test_contract_errors_are_reported_by_field():
         )
     )
     assert result.status == "intent"
-    assert outputs(model, 1)[0]["error"]["code"] == "INVALID_ARGUMENT"
+    assert outputs(model, 1)[-1]["error"]["code"] == "INVALID_ARGUMENT"
 
 
 def test_clarification_and_decline_are_final_states():
@@ -203,7 +240,7 @@ def test_finish_mixed_with_other_calls_is_rejected():
         )
     )
     assert result.status == "intent"
-    assert {o["error"]["code"] for o in outputs(model, 1)} == {
+    assert {o["error"]["code"] for o in outputs(model, 1) if "error" in o} == {
         "FINISH_MUST_BE_SEPARATE"
     }
 

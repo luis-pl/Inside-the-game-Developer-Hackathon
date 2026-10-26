@@ -221,6 +221,10 @@ def test_snapshot_uses_first_instant_with_full_coverage():
     assert plan.decisions["time_ms"] == 900000
     shape = next(b for b in plan.blocks if b.insight_id == "team_shape")
     assert shape.parameters["time_ms"] == 900000
+    # La pieza de un instante lo dice en su título.
+    assert shape.title.endswith("· P1 15:00")
+    whole_match = next(b for b in plan.blocks if b.insight_id == "play_replay")
+    assert "P1 15:00" not in whole_match.title
 
 
 def test_requested_instant_is_aligned_adjusted_and_reported():

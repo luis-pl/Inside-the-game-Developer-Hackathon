@@ -107,7 +107,7 @@ WORKSPACE_JS = """
 // y organismos; aquí no se construye HTML a partir de datos.
 if(!document.body.classList.contains("workspace"))return;
 const $=id=>document.getElementById(id);
-const MAX=6,state={previous:null,busy:false};
+const MAX=6,state={previous:null,current:null,busy:false};
 const fragment=html=>{const t=document.createElement("template");t.innerHTML=html;return t.content;};
 const plain=(cls,label)=>{const li=document.createElement("li");li.className="msg "+cls;li.textContent=label;return li;};
 function add(node){$("welcome")?.remove();$("thread").append(node);const last=$("thread").lastElementChild;last.scrollIntoView({block:"end",behavior:"smooth"});return last;}
@@ -133,12 +133,12 @@ async function ask(request,label){
  const started=performance.now(),timer=setInterval(()=>{waiting.textContent="Preparando el informe · "+Math.round((performance.now()-started)/1000)+" s";},1000);
  setBusy(true);
  try{
-  const response=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...request,previous:state.previous})});
+  const response=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...request,previous:state.previous,append_to:state.current})});
   const data=await response.json().catch(()=>({}));
   waiting.remove();
   if(data.message_html)add(fragment(data.message_html));
   else add(plain("error","No se pudo preparar el informe. Inténtalo de nuevo."));
-  if(response.ok){state.previous=data.next??state.previous;if(data.canvas_html)showCanvas(data);}
+  if(response.ok){state.previous=data.next??state.previous;if(data.canvas_html){state.current=data.report_id??null;showCanvas(data);}}
  }catch{waiting.remove();add(plain("error","No hay conexión con el servidor local. Comprueba que sigue en marcha."));}
  finally{clearInterval(timer);setBusy(false);}
 }
@@ -169,7 +169,7 @@ document.addEventListener("click",e=>{
  const q=e.target.closest("[data-question]");if(q&&!q.disabled){ask({question:q.dataset.question},q.dataset.question);return;}
  if(e.target.closest(".view-report"))$("canvas").scrollIntoView({behavior:"smooth"});
 });
-$("reset").addEventListener("click",()=>{state.previous=null;$("thread").replaceChildren(plain("hint","Nueva conversación. ¿Qué quieres ver?"));});
+$("reset").addEventListener("click",()=>{state.previous=null;state.current=null;$("thread").replaceChildren(plain("hint","Nueva conversación. ¿Qué quieres ver?"));});
 async function restore(){
  const id=new URLSearchParams(location.hash.slice(1)).get("informe");
  if(!id||!/^[0-9a-f]{32}$/.test(id))return;

@@ -63,6 +63,18 @@ reales o sintéticos), piezas mostradas, piezas no disponibles con su motivo y l
 decisiones del agente. `#informe=<id>` conserva el lienzo al recargar mientras
 siga entre los 12 últimos; «Abrir en otra pestaña» abre el informe exportado.
 
+**Conversación continua.** Mientras no se pulse «Nueva conversación», el cliente
+envía `append_to` con el informe actual. Si la nueva respuesta es del mismo
+partido y los mismos equipos (según el contexto de la evidencia), sus piezas se
+suman al informe en vez de reemplazarlo, **las nuevas arriba** (lo último que se
+pidió es lo primero que se ve): la respuesta dice «ahora tiene N piezas»,
+una pieza idéntica no se repite y la misma receta con otros parámetros se añade
+con título distinto (p. ej. «· 2.ª parte»). Otro partido empieza un informe
+nuevo. Los IDs de evidencia de cada petición chocan entre sí, así que los de las
+peticiones añadidas llevan el prefijo `t2-`, `t3-`… (`agents/insights_agent/merge.py`).
+El informe anterior sigue disponible por su enlace. Los informes combinados se
+guardan con su manifiesto (hasta 12 en memoria).
+
 - Sólo loopback; comprueba `Host` y `Origin`, exige JSON y atiende una petición a
   la vez, para que otra web no pueda gastar tokens desde el navegador.
 - CSP: scripts y estilos sólo como archivos (`/assets/insights.js` y `.css`);
@@ -235,6 +247,26 @@ Límite: ninguno de los 15 casos pide una de esas diez recetas, así que esta pa
 muestra que el cambio no empeora lo anterior, no que el planificador las elija
 mejor. Para medirlo habría que añadir casos (por ejemplo, «¿por qué carril
 entraron al último tercio?»), lo que gasta más tokens.
+
+### Cuarta pasada: catálogo precargado y razonamiento bajo
+
+26 de octubre, mismo modelo, prompt `c586a0e8…`. Tres cambios: el resultado de
+`list_matches` llega ya en la conversación (un turno de modelo menos); una regla
+nueva —una pregunta sobre UNA métrica entre los dos equipos («¿quién tiró más?»)
+es `custom_report` con esa receta, no la comparación de siete piezas—, con un
+caso nuevo en el fixture (16 casos); y `INSIDE_GAME_REASONING_EFFORT=low`, que la
+web aplica por defecto al elegir `--azure-model`.
+
+| Pasada (16 casos) | Aciertos | Mediana | Tokens |
+|---|---|---|---|
+| Razonamiento `medium` (por defecto del proveedor) | 16 de 16 | 10,0 s | 114.176 |
+| Razonamiento `low` | **16 de 16** | **5,1 s** | **94.048** |
+
+Informe: [insights-planner-evaluation-4.json](insights-planner-evaluation-4.json).
+Las pasadas 2 y 3 son de 15 casos y se ejecutaron sin fijar el razonamiento, es
+decir, con el `medium` por defecto del proveedor; la primera dice «bajo» y no se
+puede comprobar aquí. Cada cifra es una sola pasada. La mediana no incluye el informe: preguntas escritas, de
+extremo a extremo, quedan en torno a 5 s del planificador más 2–5 s de datos.
 
 El modelo no queda seleccionado por defecto: el agente sólo lo usa si
 `INSIDE_GAME_MODEL_PROVIDER` y el despliegue se configuran explícitamente.
