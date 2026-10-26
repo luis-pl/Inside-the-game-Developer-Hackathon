@@ -50,6 +50,9 @@ def app_from_env(port=8085, *, model_factory=None):
             "INSIDE_GAME_DATA_AGENT_URL", f"http://127.0.0.1:{port}"
         ),
         allowed_hosts=tuple(hosts),
+        insights_base_url=os.getenv(
+            "INSIDE_GAME_INSIGHTS_AGENT_URL", f"http://127.0.0.1:{port}"
+        ),
         **({"model_factory": model_factory} if model_factory is not None else {}),
     )
 

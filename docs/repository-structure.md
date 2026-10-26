@@ -13,7 +13,11 @@ Inside-the-game-Developer-Hackathon/
 │       │   ├── interpreter.py
 │       │   ├── data_agent.py
 │       │   ├── contracts.py       # Mensajes del agente de datos
-│       │   ├── sports_analyst.py
+│       │   ├── sports_analyst.py  # Texto deportivo con hechos y referencias
+│       │   ├── analyst_contracts.py # Contrato del intérprete y resultados
+│       │   ├── analyst_facts.py  # Hechos originales y validación de cifras
+│       │   ├── analyst_http.py   # HTTP de análisis y publicación
+│       │   ├── insights_http_client.py # Revisión numérica de gráficos
 │       │   ├── dashboard_builder.py # Reexporta ambos ejecutores
 │       │   ├── page_builder.py      # MCP + revisiones + texto del analista
 │       │   ├── insight_contracts.py # Mensajes y patches HTTP
@@ -86,6 +90,8 @@ su prompt en `prompts/data_agent.md`, proveedor Azure OpenAI y cliente MCP está
 implementados; uso y límites en [data-agent.md](data-agent.md). El agente de
 insights está en `agents/insights_agent/` ([insights-agent.md](insights-agent.md)): disponibilidad por
 fuente en [insights-availability.md](insights-availability.md) y comunicación
-A2A con el agente de datos en [a2a.md](a2a.md). El intérprete, analista,
-dashboard builder y orquestación mantienen sus módulos reservados. La infraestructura y los datos de Azure SQL
+A2A con el agente de datos en [a2a.md](a2a.md). El analista deportivo ya está
+implementado ([sports-analyst.md](sports-analyst.md)); se comunica por HTTP con Data
+e Insights y devuelve texto con referencias. El compositor también está implementado.
+El intérprete conversacional y la orquestación general mantienen sus módulos reservados. La infraestructura y los datos de Azure SQL
 se conservan en `database/azure-sql/`. Los scripts de despliegue están en `scripts/` y los identificadores públicos del alojamiento en `deployment/cloud.json`.

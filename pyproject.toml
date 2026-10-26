@@ -38,7 +38,7 @@ where = ["src"]
 inside_game = ["sql/*.sql", "insights/catalog.json", "agents/insights_agent/source_profiles.json"]
 
 [tool.setuptools.data-files]
-"share/inside-game/prompts" = ["prompts/data_agent.md", "prompts/insights_planner.md", "prompts/insights_agent.md"]
+"share/inside-game/prompts" = ["prompts/data_agent.md", "prompts/insights_planner.md", "prompts/insights_agent.md", "prompts/sports_analyst.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

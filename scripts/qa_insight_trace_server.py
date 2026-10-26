@@ -17,6 +17,7 @@ import uvicorn
 
 from inside_game.agents.data_agent import load_prompt as data_prompt
 from inside_game.agents.page_builder import load_prompt as insights_prompt
+from inside_game.agents.sports_analyst import load_prompt as analyst_prompt
 from inside_game.agents_cli import app_from_env, load_local_env
 from inside_game.providers.models import create_model
 from inside_game.tools.mcp_client import DataMcpSettings
@@ -34,7 +35,11 @@ def visible_messages(messages):
 
 
 def tracing_factory(folder, forbidden_secret):
-    prompts = {"data": data_prompt(), "insights": insights_prompt()}
+    prompts = {
+        "data": data_prompt(),
+        "insights": insights_prompt(),
+        "analyst": analyst_prompt(),
+    }
     for agent, prompt in prompts.items():
         (folder / f"prompt-{agent}.md").write_bytes(prompt.encode("utf-8"))
 
@@ -54,6 +59,14 @@ def tracing_factory(folder, forbidden_secret):
                 "prompt_sha256": hashlib.sha256(instructions.encode()).hexdigest(),
                 "messages": visible_messages(messages),
             }
+            tool_sha = hashlib.sha256(
+                json.dumps(tools, sort_keys=True).encode()
+            ).hexdigest()
+            record["tools_file"] = f"tools-{agent}-{tool_sha[:12]}.json"
+            record["tools_sha256"] = tool_sha
+            (folder / record["tools_file"]).write_text(
+                json.dumps(tools, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
             (folder / f"tools-{agent}.json").write_text(
                 json.dumps(tools, ensure_ascii=False, indent=2), encoding="utf-8"
             )

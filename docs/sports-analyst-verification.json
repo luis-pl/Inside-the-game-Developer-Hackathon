@@ -1,0 +1,351 @@
+{
+  "date": "2026-10-26",
+  "provider": "opencode-go",
+  "model": "beam-free",
+  "free_only": true,
+  "mock_model": false,
+  "tests": {
+    "tests": 418,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 11.092
+  },
+  "facts_verified": 51,
+  "cases": [
+    {
+      "case": "topology-analysis",
+      "status": "complete",
+      "wall_seconds": 20.711,
+      "request_id": "8ebbb0e0-a35f-4e3a-a6b2-216db6ae155c",
+      "page": "topology-analysis.html",
+      "sha256": "a0ca7d98ab04309b822e8a5cb861f80e0cf39a2cc1fc043d66230d78e0eb9cde",
+      "fact_checks": [
+        {
+          "fact_id": "f-96b746da8669",
+          "path": "/data/samples/0/period",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-810d986b9be2",
+          "path": "/data/samples/0/time_ms",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-63278081a349",
+          "path": "/data/samples/0/result/players",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-9f590ce8d09b",
+          "path": "/data/samples/0/result/width_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-c410ea799592",
+          "path": "/data/samples/0/result/length_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-024eef750982",
+          "path": "/data/samples/0/result/radius_of_gyration_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-1379853c6b21",
+          "path": "/data/samples/0/result/hull_area_m2",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-cb462b277f49",
+          "path": "/data/samples/0/result/hull_perimeter_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-d7a6edaf0460",
+          "path": "/data/samples/0/result/epsilon_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-89266960c1f8",
+          "path": "/data/samples/0/result/component_count",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-2d3b83841178",
+          "path": "/data/samples/0/result/largest_component_fraction",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-adbe09e50b5d",
+          "path": "/data/samples/0/result/critical_connection_distance_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-c54d310075a6",
+          "path": "/data/frames#count",
+          "original_matches": true
+        }
+      ]
+    },
+    {
+      "case": "reused-topology-analysis",
+      "status": "complete",
+      "wall_seconds": 19.564,
+      "request_id": "208f5fa3-1fab-4ac6-bca2-9bee717e3cec",
+      "page": "reused-topology-analysis.html",
+      "sha256": "cf9a7ca3e39b830971a6d238437ef0bb941359b014f37ef954013d9bdff12862",
+      "fact_checks": [
+        {
+          "fact_id": "f-63278081a349",
+          "path": "/data/samples/0/result/players",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-9f590ce8d09b",
+          "path": "/data/samples/0/result/width_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-c410ea799592",
+          "path": "/data/samples/0/result/length_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-024eef750982",
+          "path": "/data/samples/0/result/radius_of_gyration_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-1379853c6b21",
+          "path": "/data/samples/0/result/hull_area_m2",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-d7a6edaf0460",
+          "path": "/data/samples/0/result/epsilon_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-89266960c1f8",
+          "path": "/data/samples/0/result/component_count",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-2d3b83841178",
+          "path": "/data/samples/0/result/largest_component_fraction",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-adbe09e50b5d",
+          "path": "/data/samples/0/result/critical_connection_distance_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-c54d310075a6",
+          "path": "/data/frames#count",
+          "original_matches": true
+        }
+      ]
+    },
+    {
+      "case": "advanced-topology",
+      "status": "complete",
+      "wall_seconds": 24.925,
+      "request_id": "b31f6e3b-8a79-45f0-a8dd-35a9ab3f316c",
+      "page": "advanced-topology.html",
+      "sha256": "ef14591e8d77abe03c2c52e048bc304d8eaa5d6114b8a7fd658d0a9f6400ad27",
+      "fact_checks": [
+        {
+          "fact_id": "f-19b9d4879548",
+          "path": "/data/samples/0/result/betti/0/h0",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-b65e7bda9a30",
+          "path": "/data/samples/0/result/betti/0/h1",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-f1c50d06cfc4",
+          "path": "/data/samples/0/result/betti/2/h0",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-3b6dde95e56f",
+          "path": "/data/samples/0/result/betti/2/h1",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-8edfd2e4a2b8",
+          "path": "/data/samples/0/result/betti/3/h0",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-e0321c388845",
+          "path": "/data/samples/0/result/betti/3/h1",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-dc121abda6ba",
+          "path": "/data/samples/0/result/betti/0/epsilon_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-1e584011e6a9",
+          "path": "/data/samples/0/result/betti/2/epsilon_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-bf7dbaa28885",
+          "path": "/data/samples/0/result/betti/3/epsilon_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-c19657c9c2d3",
+          "path": "/data/samples/0/result/intervals/0/birth_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-9d75f6f7b717",
+          "path": "/data/samples/0/result/intervals/1/birth_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-b9bcb457c9af",
+          "path": "/data/samples/0/result/intervals/0/death_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-dba1dd9e2f82",
+          "path": "/data/samples/0/result/intervals/1/death_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-c07f8b1f2c7d",
+          "path": "/data/samples/0/result/maximum_edge_length_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-5652f2ff16b8",
+          "path": "/data/samples/0/result/baseline/component_count",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-ac840e34adda",
+          "path": "/data/samples/0/result/baseline/largest_component_fraction",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-a299b0f01ff4",
+          "path": "/data/samples/0/result/baseline/critical_connection_distance_m",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-df502eb94bf7",
+          "path": "/data/samples/0/result/node_removals/2/removed_player_id",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-e1284f8d27cc",
+          "path": "/data/samples/0/result/node_removals/2/remaining_players",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-aebf86fda12f",
+          "path": "/data/samples/0/result/node_removals/2/component_count",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-0e6d985ffc02",
+          "path": "/data/samples/0/result/node_removals/2/component_count_delta",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-681acfe7cf31",
+          "path": "/data/samples/0/result/node_removals/2/largest_component_fraction",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-2d93d36e6af4",
+          "path": "/data/samples/0/result/node_removals/0/removed_player_id",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-7dcd89aa92be",
+          "path": "/data/samples/0/result/node_removals/0/component_count",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-8d0bb2214f69",
+          "path": "/data/samples/0/result/node_removals/0/component_count_delta",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-06b23be42c25",
+          "path": "/data/samples/0/result/team_area_m2/1",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-675ef9fb2005",
+          "path": "/data/samples/0/result/team_area_m2/2",
+          "original_matches": true
+        },
+        {
+          "fact_id": "f-1cbba1d9c97b",
+          "path": "/data/samples/0/result/pitch_area_m2",
+          "original_matches": true
+        }
+      ]
+    }
+  ],
+  "data_first_seconds": 11.299,
+  "first_page_end_to_end_seconds": 32.01,
+  "advanced_original_data_seconds": 14.855,
+  "prior_failures": [
+    {
+      "file": ".temp\\insights\\analyst-demo\\advanced-context-error.json",
+      "analysis": "error",
+      "issues": [
+        "CONTEXT_BUDGET_EXCEEDED"
+      ]
+    },
+    {
+      "file": ".temp\\insights\\analyst-qa\\first-attempt.json",
+      "analysis": "error",
+      "issues": [
+        "DATA_AGENT_TIMEOUT"
+      ]
+    },
+    {
+      "file": ".temp\\insights\\analyst-qa\\topology-analysis.json",
+      "analysis": "error",
+      "issues": [
+        "DEADLINE_EXCEEDED"
+      ]
+    },
+    {
+      "file": ".temp\\insights\\analyst-review\\topology-analysis.json",
+      "analysis": "error",
+      "issues": [
+        "DEADLINE_EXCEEDED"
+      ]
+    }
+  ],
+  "limits": [
+    "Las pruebas reales cubren un episodio sintético, no todos los partidos o interpretaciones.",
+    "El modelo puede formular interpretaciones débiles; origen de cifras y referencias no prueba toda la semántica.",
+    "El intérprete conversacional y el nuevo shell con chat/documento no están implementados en esta tarea.",
+    "La prueba avanzada reutiliza la recuperación original de Data; su tiempo de petición no incluye otra consulta SQL."
+  ],
+  "prompts": {
+    "data": "9fb38908d19134c09049f8f6edf2d355526c2b5c892f0874c510189d867452c1",
+    "insights": "ef61baea69b0e6ab740d2f118d4402d64f80ef5c499bfe8a37f2322006394205",
+    "analyst": "91cf1cacb1d8c941f45a626a820ffb1f65c1a5cd321501d8724314656ddb03f9"
+  },
+  "public_contract_roundtrip": "Three exported responses validated against AnalysisReportResult",
+  "wheel_verified": true,
+  "wheel_sha256": "508f8940a7161da575ca356a9d16f5e4ca86931cd570176ab5afeb348b6f2998",
+  "portable_bundle": ".temp\\insights\\analyst-demo\\analyst-demo.zip",
+  "bundle_sha256": "b403bb0352b975929f63660f10e0678b1a710cc185faca8b672231de3b1cf545"
+}
