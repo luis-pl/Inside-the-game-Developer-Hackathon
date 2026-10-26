@@ -54,6 +54,11 @@ class FakeApi:
 
     async def call(self, operation, arguments):
         self.calls.append(operation)
+        if operation == "list_matches":
+            response = copy.deepcopy(FIXTURE["get_shots"])
+            response["operation_id"] = "list_matches"
+            response["data"] = {"items": [CONTEXT["match"]]}
+            return response, None
         response = copy.deepcopy(FIXTURE[operation])
         if operation == "get_match_context":
             response["data"] = copy.deepcopy(CONTEXT)
@@ -205,7 +210,8 @@ def test_clarification_is_input_required_and_the_follow_up_resolves():
         return first, calls_after_first, second
 
     first, calls_after_first, second = chain(body, model=model)
-    assert first.answer.kind == "clarification" and calls_after_first == []
+    assert first.answer.kind == "clarification"
+    assert set(calls_after_first) <= {"list_matches"}
     assert first.answer.next.question == "El partido del Synthetic FC 1"
     assert second.answer.kind == "report" and second.answer.intent.match_id == 900001
 

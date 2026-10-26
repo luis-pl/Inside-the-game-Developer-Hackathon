@@ -165,6 +165,27 @@ class _Run:
         ]
         # La sesión Go exige un JSON con request_id en el primer mensaje del usuario.
         messages = [{"role": "user", "content": self.question.model_dump_json()}]
+        # El catálogo de partidos llega ya consultado, como si el modelo lo hubiera
+        # pedido: ahorra un turno de modelo en cada pregunta.
+        try:
+            catalog = await self.matches()
+        except Exception:  # noqa: BLE001 - sin catálogo precargado el modelo lo pide.
+            catalog = {"error": {"code": "PRELOAD_FAILED"}}
+        if "error" not in catalog:
+            call_id = "preloaded-list-matches"
+            messages += [
+                {
+                    "type": "function_call",
+                    "call_id": call_id,
+                    "name": "list_matches",
+                    "arguments": "{}",
+                },
+                {
+                    "type": "function_call_output",
+                    "call_id": call_id,
+                    "output": json.dumps(catalog, ensure_ascii=False),
+                },
+            ]
         text_only = 0
         while self.turns < self.planner.limits.max_turns:
             if self.tokens >= self.planner.limits.max_tokens:
@@ -250,7 +271,7 @@ class _Run:
                     "home": {"team_id": r["home_team_id"], "name": r["home_team_name"]},
                     "away": {"team_id": r["away_team_id"], "name": r["away_team_name"]},
                     "score": f"{r.get('home_score')}-{r.get('away_score')}",
-                    "date": r["match_date"]
+                    "date": r.get("match_date")
                     if r.get("match_date_known", True)
                     else "desconocida",
                     "competition": r.get("competition_name"),

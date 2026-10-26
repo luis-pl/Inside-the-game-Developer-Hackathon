@@ -76,5 +76,11 @@
     "id": "unavailable_in_source",
     "question": "Quiero ver el xG del partido SC 04",
     "expect": {"status": "intent", "intent": {"template_id": "custom_report", "match_id": 900104}, "insight_ids_include": ["xg_story"]}
+  },
+  {
+    "id": "single_metric_two_teams",
+    "question": "¿Quién tiró más en el partido 900001, el Synthetic FC 1 o el Synthetic FC 2?",
+    "note": "Una sola métrica entre los dos equipos: un mapa de tiros sin filtrar por equipo, no la comparación de siete piezas.",
+    "expect": {"status": "intent", "intent": {"template_id": "custom_report", "match_id": 900001, "team_id": null}, "insight_ids_include": ["shot_map"]}
   }
 ]
