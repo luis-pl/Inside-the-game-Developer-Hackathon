@@ -34,14 +34,16 @@ from inside_game.insights.molecules import (
     source_tag,
 )
 from inside_game.insights.organisms import report_canvas
-from inside_game.insights.pages import render_workspace, report_parts
+from inside_game.insights.pages import render_report, render_workspace, report_parts
 from inside_game.insights.templates import CSS, JS, WORKSPACE_CSS, WORKSPACE_JS
 
+from .merge import merge_manifests
 from .profiles import source_key
 from .runtime import load_settings, open_runtime
 
 MAX_BODY = 64 * 1024
 MAX_REPORTS = 12
+KEEP_MANIFESTS = 3
 SUGGESTIONS = (
     "¿Desde dónde remató el Equipo B en Metrica 2?",
     "Compara a los dos equipos del partido SC 03",
@@ -79,6 +81,11 @@ class Reports:
         self.items[report_id] = item
         while len(self.items) > self.limit:
             self.items.popitem(last=False)
+        # La evidencia (manifiesto) sólo sirve para ampliar el informe actual: los
+        # antiguos conservan su HTML pero no los megabytes de datos.
+        for old in list(self.items.values())[:-KEEP_MANIFESTS]:
+            if isinstance(old, dict):
+                old.pop("manifest", None)
         return report_id
 
 
@@ -104,7 +111,7 @@ def match_groups(rows):
     return groups
 
 
-def message_for(answer):
+def message_for(answer, extra=()):
     """La respuesta del agente como molécula de la conversación."""
     if answer.kind == "report":
         labels = answer.labels
@@ -112,7 +119,7 @@ def message_for(answer):
             answer.title or "Informe",
             source_tag(labels.synthetic, labels.provider) if labels else "",
             [b.title for b in answer.blocks],
-            answer.notes,
+            [*answer.notes, *extra],
             [(RECIPES[d.insight_id]["title"], d.reason) for d in answer.discarded],
             has_report=answer.has_report,
         )
@@ -213,30 +220,66 @@ def create_app(runtime_factory, *, port):
             return refused(
                 "BUSY", "Ya hay un informe en preparación. Espera a que termine.", 429
             )
+        # El informe al que se suma la petición no es parte del AskRequest del agente.
+        append_to = (
+            payload.pop("append_to", None) if isinstance(payload, dict) else None
+        )
         async with busy:
             # El agente valida el AskRequest y responde con códigos, nunca excepciones.
             result = await state["runtime"].new_agent().ask(payload)
         answer = result.answer
+        manifest, html = result.report_manifest, result.report_html
+        title, turns, extra, merged = answer.title or "Informe", 1, (), False
+        base = reports.items.get(append_to) if isinstance(append_to, str) else None
+        if manifest and base and base.get("manifest"):
+            # Misma conversación sobre el mismo partido: se acumula, no se reemplaza.
+            joined = merge_manifests(base["manifest"], manifest, base["turns"] + 1)
+            if joined:
+                manifest, added = joined
+                merged, turns, title = True, base["turns"], base["title"]
+                html = base["html"]
+                if added:
+                    turns += 1
+                    match = answer.labels.match if answer.labels else None
+                    title = (
+                        f"{match} · {len(manifest['blocks'])} piezas"
+                        if match
+                        else base["title"]
+                    )
+                    manifest["title"] = title
+                    html = render_report(manifest)["html"]
+                    count = len(manifest["blocks"])
+                    extra = (
+                        f"Se añadió al informe de la conversación: ahora tiene {count} piezas.",
+                    )
+                else:
+                    extra = ("Esa pieza ya estaba en el informe; no se repitió.",)
         response = {
             "next": json.loads(answer.next.model_dump_json()) if answer.next else None,
-            "message_html": message_for(answer),
+            "message_html": message_for(answer, extra),
         }
-        if result.report_manifest:
+        if manifest:
             # El lienzo se compone con las mismas piezas que el informe exportado.
             item = {
-                "canvas_html": report_canvas(report_parts(result.report_manifest)),
-                "title": answer.title or "Informe",
+                "canvas_html": report_canvas(report_parts(manifest)),
+                "title": title,
                 "source_html": source_tag(
                     answer.labels.synthetic, answer.labels.provider
                 )
                 if answer.labels
                 else "",
-                "html": result.report_html,
+                "html": html,
+                "manifest": manifest,
+                "turns": turns,
             }
             report_id = reports.add(item)
             response |= {
                 key: item[key] for key in ("canvas_html", "title", "source_html")
-            } | {"report_id": report_id, "report_url": f"/reports/{report_id}"}
+            } | {
+                "report_id": report_id,
+                "report_url": f"/reports/{report_id}",
+                "merged": merged,
+            }
         return JSONResponse(response)
 
     async def canvas(request):
@@ -301,6 +344,9 @@ def main():
             INSIDE_GAME_MODEL_AUTH="api_key",
             INSIDE_GAME_MODEL_API=args.model_api,
         )
+        # Interpretar una pregunta no necesita razonamiento largo: con «low» el
+        # planificador acierta lo mismo (16/16) en la mitad de tiempo y tokens.
+        os.environ.setdefault("INSIDE_GAME_REASONING_EFFORT", "low")
 
     def runtime_factory():
         return open_runtime(data_agent_url=args.data_agent_url)

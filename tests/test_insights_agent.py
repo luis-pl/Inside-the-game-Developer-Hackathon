@@ -47,6 +47,11 @@ class FakeApi:
         self.calls.append(operation)
         if operation in self.errors:
             return None, self.errors[operation]
+        if operation == "list_matches":
+            response = copy.deepcopy(FIXTURE["get_shots"])
+            response["operation_id"] = "list_matches"
+            response["data"] = {"items": [CONTEXT["match"]]}
+            return response, None
         response = copy.deepcopy(FIXTURE[operation])
         if operation == "get_match_context":
             response["data"] = copy.deepcopy(CONTEXT)
@@ -138,7 +143,8 @@ def test_clarification_round_trip_reaches_the_planner_and_resolves():
         )
     )
     first, api = ask({"question": "El partido del Synthetic FC 1"}, model=model)
-    assert first.answer.kind == "clarification" and api.calls == []
+    assert first.answer.kind == "clarification"
+    assert set(api.calls) <= {"list_matches"}  # sólo el catálogo del planificador
     assert first.answer.next.question == "El partido del Synthetic FC 1"
 
     model = ScriptedModel(call("submit_intent", SHOTS_AND_PASSES))
@@ -159,7 +165,8 @@ def test_declined_questions_do_not_touch_the_data():
         result.answer.kind == "declined"
         and result.answer.summary == "Es una predicción."
     )
-    assert api.calls == [] and result.report_html is None
+    # Sólo el catálogo de partidos que se le da al planificador; ningún dato deportivo.
+    assert set(api.calls) <= {"list_matches"} and result.report_html is None
 
 
 def test_data_agent_failure_becomes_a_coded_error_with_its_cause():
@@ -209,7 +216,8 @@ def test_model_failures_are_explained_as_model_failures():
 
     result, api = ask({"question": "Resumen del 900001"}, model=BrokenModel())
     assert result.answer.issues == ["MODEL_AUTHENTICATION_FAILED"]
-    assert "modelo" in result.answer.summary and api.calls == []
+    assert "modelo" in result.answer.summary
+    assert set(api.calls) <= {"list_matches"}
 
 
 def test_invalid_requests_are_answered_not_raised():
