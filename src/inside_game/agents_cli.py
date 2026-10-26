@@ -23,7 +23,7 @@ def load_local_env(root):
         os.environ.setdefault(key, value)
 
 
-def app_from_env(port=8085):
+def app_from_env(port=8085, *, model_factory=None):
     records = json.loads(os.getenv("INSIDE_GAME_AGENT_CREDENTIALS_JSON", "[]"))
     if not records:
         # Se permite reutilizar exclusivamente la credencial individual agent-data
@@ -50,6 +50,7 @@ def app_from_env(port=8085):
             "INSIDE_GAME_DATA_AGENT_URL", f"http://127.0.0.1:{port}"
         ),
         allowed_hosts=tuple(hosts),
+        **({"model_factory": model_factory} if model_factory is not None else {}),
     )
 
 

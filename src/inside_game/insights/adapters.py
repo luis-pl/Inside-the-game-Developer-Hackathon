@@ -91,6 +91,39 @@ def timeline_markers(evidence, events, params):
 
 
 SHOT_ON_TARGET = {"Goal", "Saved", "Saved to Post"}
+
+
+def shot_metrics(events):
+    """Resumen del mismo conjunto único que se dibuja, nunca de otro filtro.
+
+    La ausencia de xG o de resultados individuales no equivale a cero. Los
+    resúmenes de la API pueden abarcar un partido entero aunque el bloque haya
+    filtrado sus eventos por equipo/período; no se reutilizan en ese caso.
+    """
+    shots = [e for e in events if e.get("shot")]
+    result = {"shots": len(shots)}
+    outcomes = [((e["shot"].get("outcome") or {}).get("name")) for e in shots]
+    if shots and all(o and not o.lower().startswith("unknown") for o in outcomes):
+        result.update(
+            goals=outcomes.count("Goal"),
+            shots_on_target=sum(o in SHOT_ON_TARGET for o in outcomes),
+        )
+        result.update(
+            conversion_rate=result["goals"] / len(shots),
+            on_target_rate=result["shots_on_target"] / len(shots),
+        )
+        result["outcomes"] = dict(Counter(outcomes))
+    values = [e["shot"].get("statsbomb_xg") for e in shots]
+    if shots and all(number(x) and 0 <= x <= 1 for x in values):
+        result["xg"] = sum(values)
+        result["xg_per_shot"] = result["xg"] / len(shots)
+        if "goals" in result:
+            result["goals_minus_xg"] = result["goals"] - result["xg"]
+    flattened = flatten_metrics(result)
+    priority = ("shots", "goals", "shots_on_target", "xg")
+    return {**{k: flattened[k] for k in priority if k in flattened}, **flattened}
+
+
 DEFENSIVE_TYPES = (
     "Pressure",
     "Interception",
@@ -128,7 +161,7 @@ def team_breakdown(key, events, params, unannotated=()):
                 for e in shots
                 if number(e["shot"].get("statsbomb_xg"))
             ]
-            if xg:
+            if xg and len(xg) == len(shots):
                 row["xg"] = round(sum(xg), 2)
         elif key == "pass_map":
             passes = [e for e in mine if e.get("pass")]
@@ -479,7 +512,16 @@ def _populate(b, spec, evidence, unannotated=()):
                 getattr(p, field) is None or e.arguments.get(field) == getattr(p, field)
                 for field in ("team_id", "player_id")
             )
-            if e.query_id not in seen and same_filter:
+            same_period = p.period is None or (
+                e.arguments.get("scope", {}).get("kind") in {"period", "window"}
+                and e.arguments.get("scope", {}).get("period") == p.period
+            )
+            if (
+                e.query_id not in seen
+                and same_filter
+                and same_period
+                and key != "shot_map"
+            ):
                 b.metrics.update(
                     {
                         f"{e.query_id}.{k}": v
@@ -489,6 +531,27 @@ def _populate(b, spec, evidence, unannotated=()):
                     }
                 )
                 seen.add(e.query_id)
+        if key == "shot_map":
+            if any(e.response.data.get("items") is not None for e in relevant):
+                b.metrics.update(shot_metrics(events))
+                shots = [e for e in events if e.get("shot")]
+                if shots and "xg" not in b.metrics:
+                    b.warnings.append(
+                        "Falta xG válido para uno o más tiros: no se presenta un total ni se sustituye por cero."
+                    )
+            else:
+                # Una respuesta summary no contiene eventos filtrables.
+                for e in relevant:
+                    if all(
+                        getattr(p, f) is None or getattr(p, f) == e.arguments.get(f)
+                        for f in ("team_id", "player_id")
+                    ) and (
+                        p.period is None
+                        or e.arguments.get("scope", {}).get("period") == p.period
+                    ):
+                        b.metrics.update(
+                            flatten_metrics(e.response.data.get("summary", {}))
+                        )
         if key == "pass_map" and any(
             v is None
             for k, v in b.metrics.items()
@@ -507,32 +570,70 @@ def _populate(b, spec, evidence, unannotated=()):
             for e in events
         ]
     elif key == "xg_story":
+        b.unit = (
+            "xG sintético · demostración"
+            if any(e.response.provenance.get("is_synthetic") for e in relevant)
+            else "xG"
+        )
         shots = [e for e in events if e.get("shot")]
         if not shots:
-            totals = {}
+            aggregate_scopes = {
+                (e.arguments.get("team_id"), e.arguments.get("player_id"))
+                for e in relevant
+                if e.operation == "get_metric_series"
+            }
+            if len(aggregate_scopes) > 1 and (
+                any(player is not None for _, player in aggregate_scopes)
+                or any(team is None for team, _ in aggregate_scopes)
+            ):
+                raise ValueError(
+                    "No se mezclan series agregadas de participantes que puedan solaparse."
+                )
+            totals, bins, intervals = {}, {}, []
             for e in relevant:
                 if e.operation != "get_metric_series":
                     continue
                 for item in e.response.data.get("series", []):
+                    if p.period is not None and item["period"] != p.period:
+                        continue
                     xg = item.get("metrics", {}).get("xg")
-                    if not number(xg):
+                    if not number(xg) or xg < 0:
                         raise ValueError("xG no disponible en la serie de métricas.")
                     group = (e.arguments.get("team_id"), item["period"])
-                    totals[group] = totals.get(group, 0) + xg
-                    b.series.append(
-                        {
-                            "period": item["period"],
-                            "time_ms": item["end_ms"],
-                            "value": totals[group],
-                            "group": str(group),
-                            "team_id": group[0],
-                        }
-                    )
+                    identity = (*group, item["start_ms"], item["end_ms"])
+                    if identity in bins and bins[identity] != xg:
+                        raise ValueError(
+                            "Series de xG contradictorias para el mismo intervalo."
+                        )
+                    bins[identity] = xg
+            for (team_id, period, start, end), xg in sorted(
+                bins.items(), key=lambda row: (row[0][1], row[0][2], str(row[0][0]))
+            ):
+                group = (team_id, period)
+                if any(g == group and a < end and start < z for g, a, z in intervals):
+                    raise ValueError("No se suman intervalos de xG solapados.")
+                intervals.append((group, start, end))
+                totals[group] = totals.get(group, 0) + xg
+                b.series.append(
+                    {
+                        "period": period,
+                        "time_ms": end,
+                        "value": totals[group],
+                        "group": str(group),
+                        "team_id": group[0],
+                    }
+                )
             if b.series:
                 b.metrics = {"observed_xg": sum(totals.values())}
-                b.unit = "xG"
+                b.warnings.append(
+                    "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+                )
                 return
-        if not shots or any(not number(e["shot"].get("statsbomb_xg")) for e in shots):
+        if not shots or any(
+            not number(e["shot"].get("statsbomb_xg"))
+            or not 0 <= e["shot"]["statsbomb_xg"] <= 1
+            for e in shots
+        ):
             raise ValueError(
                 "xG no disponible para todos los tiros. No se sustituye por cero."
             )
@@ -550,7 +651,13 @@ def _populate(b, spec, evidence, unannotated=()):
                 }
             )
         b.metrics = {"observed_xg": sum(totals.values())}
-        b.unit = "xG"
+        b.by_team = {
+            str(t): {"xg": sum(v for (team_id, _), v in totals.items() if team_id == t)}
+            for t, _ in totals
+        }
+        b.warnings.append(
+            "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+        )
     elif key in {"occupation_heatmap", "zone_presence"}:
         scopes = {
             (

@@ -276,6 +276,8 @@ def series(block):
                     color,
                     identity["name"]
                     if items[0].get("team_id") is not None
+                    else "Total de los equipos incluidos"
+                    if block.insight_id == "xg_story"
                     else str(group),
                 )
             )
@@ -294,6 +296,8 @@ def series(block):
                     f'<circle cx="{x:.3f}" cy="{y:.3f}" r="3.3" fill="{color}" stroke="#fff"><title>P{period} · {item["time_ms"] / 1000:g} s · {numeric(item["value"])}</title></circle>'
                 )
             if block.insight_id in {"xg_story", "match_timeline"}:
+                if block.insight_id == "xg_story":
+                    path += "H648"
                 marks.insert(
                     0,
                     f'<path d="{path}" stroke="{color}" stroke-width="2.5" fill="none"/>',
@@ -302,7 +306,7 @@ def series(block):
             f'<text x="48" y="210">0′</text><text x="608" y="210">{end / 60000:.1f}′</text><text x="48" y="20">P{period} · {text(block.unit or "valor observado")}</text>'
         )
         caption = (
-            "Acumulado de tiros incluidos; escalones en el instante de cada acción."
+            "xG acumulado sólo dentro de este período; cada período comienza en cero. Escalones en cada tiro. Eje hasta la última acción incluida."
             if block.insight_id == "xg_story"
             else "Eventos registrados por equipo en tramos de 5 minutos; el último tramo del período puede ser parcial."
             if block.insight_id == "match_timeline"

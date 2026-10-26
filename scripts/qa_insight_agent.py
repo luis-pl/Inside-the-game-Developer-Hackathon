@@ -59,10 +59,12 @@ def run(args):
     ) as client:
 
         def execute(name, request):
-            started = time.perf_counter()
-            response = client.post(
-                "/a2a/v1/insights", json={"request_id": str(uuid4()), **request}
+            request = {"request_id": str(uuid4()), **request}
+            (folder / f"{name}.request.json").write_text(
+                json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8"
             )
+            started = time.perf_counter()
+            response = client.post("/a2a/v1/insights", json=request)
             payload = response.json()
             wall = round(time.perf_counter() - started, 3)
             (folder / f"{name}.json").write_text(
@@ -105,6 +107,10 @@ def run(args):
                 b["insight_id"] for b in payload["blocks"]
             ) == sorted(expected[name])
             report = client.get(f"/a2a/v1/reports/{payload['report_id']}").json()
+            (folder / f"{name}.plan.json").write_text(
+                json.dumps(report["plan"], ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
             return payload, json.loads(parser.payload), report["plan"]
 
         first, first_data, first_plan = execute(

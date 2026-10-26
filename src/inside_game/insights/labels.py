@@ -47,7 +47,7 @@ METRIC_NAMES = {
     "supplied_frames": "Snapshots suministrados",
     "comparable_pairs": "Pares comparables",
     "events_in_supplied_evidence": "Eventos en la evidencia",
-    "observed_xg": "xG observado",
+    "observed_xg": "xG total de los tiros incluidos",
     "observations": "Muestras",
     "period": "Período",
     "players": "Jugadores de campo",

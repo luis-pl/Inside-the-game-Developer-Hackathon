@@ -262,7 +262,7 @@ def test_original_summary_is_not_summed_for_each_page():
     manifest["evidence"].append(extra)
     manifest["blocks"][0]["evidence_ids"].append("extra")
     block = compile_report(manifest)[1][0]
-    assert block.state == "ready" and block.metrics[shot["query_id"] + ".shots"] == 2
+    assert block.state == "ready" and block.metrics["shots"] == 2
 
 
 def test_mcp_resolves_host_evidence_and_returns_an_html_resource():
@@ -855,3 +855,84 @@ def test_timeline_chart_draws_markers_in_team_lanes_with_tooltips():
     assert 'viewBox="0 0 690 258"' in html
     # el eje se extiende hasta el último marcador para que no se salga del gráfico
     assert "15.0′" in html
+
+
+@pytest.mark.parametrize(
+    "team_id,period,expected", [(None, 1, 0.2), (1, None, 0.2), (1, 2, 0.1)]
+)
+def test_shot_map_summary_matches_filtered_unique_shots(team_id, period, expected):
+    manifest = one_block("shot_map")
+    manifest["blocks"][0]["parameters"] = {"team_id": team_id, "period": period}
+    evidence = next(e for e in manifest["evidence"] if e["operation"] == "get_shots")
+    first = copy.deepcopy(evidence["response"]["data"]["items"][0])
+    first.update(period=1, team_id=1)
+    first["shot"]["statsbomb_xg"] = 0.2
+    second = copy.deepcopy(first)
+    second.update(event_id="second-period", period=2)
+    second["shot"]["statsbomb_xg"] = 0.1
+    evidence["response"]["data"]["items"] = [first, second]
+    evidence["response"]["data"]["summary"] = {"shots": 2, "xg": 0.3}
+    if team_id == 1 and period is None:
+        second["team_id"] = 2
+    # A second view of the same events must never count them again.
+    duplicate = copy.deepcopy(evidence)
+    duplicate.update(evidence_id="duplicate", query_id="other-view")
+    manifest["evidence"].append(duplicate)
+    manifest["blocks"][0]["evidence_ids"].append("duplicate")
+    block = compile_report(manifest)[1][0]
+    assert block.state == "ready"
+    assert block.metrics["shots"] == len(block.points) == 1
+    assert block.metrics["xg"] == pytest.approx(expected)
+
+
+def test_partial_xg_does_not_masquerade_as_team_total():
+    manifest = one_block("shot_map")
+    manifest["blocks"][0]["parameters"] = {}
+    evidence = next(e for e in manifest["evidence"] if e["operation"] == "get_shots")
+    rows = evidence["response"]["data"]["items"]
+    rows[1]["team_id"] = rows[0]["team_id"]
+    rows[1]["shot"]["statsbomb_xg"] = None
+    block = compile_report(manifest)[1][0]
+    assert "xg" not in block.metrics
+    assert not any("xg" in row for row in block.by_team.values())
+
+
+def test_xg_bins_are_ordered_deduplicated_and_period_filtered():
+    manifest = one_block("xg_story")
+    series = next(
+        e for e in manifest["evidence"] if e["operation"] == "get_metric_series"
+    )
+    manifest["blocks"][0]["evidence_ids"] = [series["evidence_id"]]
+    manifest["blocks"][0]["parameters"] = {"team_id": 1, "period": 1}
+    series["response"]["data"]["series"] = [
+        {"period": 2, "start_ms": 0, "end_ms": 1000, "metrics": {"xg": 0.8}},
+        {"period": 1, "start_ms": 1000, "end_ms": 2000, "metrics": {"xg": 0.3}},
+        {"period": 1, "start_ms": 0, "end_ms": 1000, "metrics": {"xg": 0.2}},
+    ]
+    duplicate = copy.deepcopy(series)
+    duplicate.update(evidence_id="repeated-series", query_id="another-query")
+    manifest["evidence"].append(duplicate)
+    manifest["blocks"][0]["evidence_ids"].append("repeated-series")
+    block = compile_report(manifest)[1][0]
+    assert block.state == "ready"
+    assert [row["value"] for row in block.series] == pytest.approx([0.2, 0.5])
+    assert block.metrics["observed_xg"] == pytest.approx(0.5)
+    series["response"]["data"]["series"][1]["start_ms"] = 500
+    manifest["blocks"][0]["evidence_ids"] = [series["evidence_id"]]
+    assert compile_report(manifest)[1][0].state == "unavailable"
+
+
+def test_xg_probability_range_and_period_reset_are_explicit():
+    manifest = one_block("xg_story")
+    manifest["blocks"][0]["parameters"] = {}
+    evidence = next(e for e in manifest["evidence"] if e["operation"] == "get_shots")
+    rows = evidence["response"]["data"]["items"]
+    rows[0]["shot"]["statsbomb_xg"] = 0.2
+    rows[1]["shot"]["statsbomb_xg"] = 0.3
+    rows[1].update(period=2, team_id=rows[0]["team_id"])
+    block = compile_report(manifest)[1][0]
+    assert [row["value"] for row in block.series] == pytest.approx([0.2, 0.3])
+    assert block.metrics["observed_xg"] == pytest.approx(0.5)
+    assert "cada período comienza en cero" in render_report(manifest)["html"]
+    rows[1]["shot"]["statsbomb_xg"] = 1.01
+    assert compile_report(manifest)[1][0].state == "unavailable"

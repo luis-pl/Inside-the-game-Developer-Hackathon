@@ -1,0 +1,646 @@
+{
+  "date": "2026-10-26",
+  "scope": "Read-only audit of current API; no SQL writes; model QA restricted to synthetic match 900001",
+  "audit": {
+    "read_only": true,
+    "matches": [
+      {
+        "match_id": 900001,
+        "shots": 23,
+        "shots_with_xg": 23,
+        "xg": 1.6903801272059698,
+        "api_xg": 1.6903801272059698,
+        "team_xg": {
+          "2": 0.6287962406666504,
+          "1": 1.0615838865393195
+        },
+        "goals": 3,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900002,
+        "shots": 20,
+        "shots_with_xg": 20,
+        "xg": 0.9939112392897358,
+        "api_xg": 0.9939112392897358,
+        "team_xg": {
+          "4": 0.6299849156230516,
+          "3": 0.36392632366668415
+        },
+        "goals": 1,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900003,
+        "shots": 16,
+        "shots_with_xg": 16,
+        "xg": 1.0045377672779896,
+        "api_xg": 1.0045377672779896,
+        "team_xg": {
+          "3": 0.3166573006719175,
+          "1": 0.6878804666060722
+        },
+        "goals": 1,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900004,
+        "shots": 25,
+        "shots_with_xg": 25,
+        "xg": 1.5564823684376186,
+        "api_xg": 1.5564823684376186,
+        "team_xg": {
+          "4": 0.6362504993506186,
+          "2": 0.9202318690869999
+        },
+        "goals": 1,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900005,
+        "shots": 19,
+        "shots_with_xg": 19,
+        "xg": 0.8615673903724272,
+        "api_xg": 0.8615673903724272,
+        "team_xg": {
+          "1": 0.7259341984343514,
+          "4": 0.1356331919380759
+        },
+        "goals": 1,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900006,
+        "shots": 22,
+        "shots_with_xg": 22,
+        "xg": 1.3344499372381675,
+        "api_xg": 1.3344499372381675,
+        "team_xg": {
+          "2": 0.8858365324140391,
+          "3": 0.44861340482412837
+        },
+        "goals": 2,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900007,
+        "shots": 11,
+        "shots_with_xg": 11,
+        "xg": 0.6444419759732078,
+        "api_xg": 0.6444419759732078,
+        "team_xg": {
+          "2": 0.23525358295740784,
+          "1": 0.40918839301579996
+        },
+        "goals": 0,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900008,
+        "shots": 24,
+        "shots_with_xg": 24,
+        "xg": 1.5976649441687594,
+        "api_xg": 1.5976649441687594,
+        "team_xg": {
+          "4": 0.5386340252705482,
+          "3": 1.0590309188982112
+        },
+        "goals": 2,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900009,
+        "shots": 20,
+        "shots_with_xg": 20,
+        "xg": 1.3858130865272276,
+        "api_xg": 1.3858130865272276,
+        "team_xg": {
+          "3": 0.9868042832103351,
+          "1": 0.3990088033168925
+        },
+        "goals": 4,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900010,
+        "shots": 29,
+        "shots_with_xg": 29,
+        "xg": 2.080104138468211,
+        "api_xg": 2.080104138468211,
+        "team_xg": {
+          "4": 0.7956586259048885,
+          "2": 1.2844455125633227
+        },
+        "goals": 1,
+        "is_synthetic": true,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900011,
+        "shots": 24,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": 3,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900012,
+        "shots": 24,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": 5,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900101,
+        "shots": 32,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900102,
+        "shots": 26,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900103,
+        "shots": 22,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900104,
+        "shots": 25,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900105,
+        "shots": 32,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900106,
+        "shots": 15,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900107,
+        "shots": 23,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      },
+      {
+        "match_id": 900108,
+        "shots": 26,
+        "shots_with_xg": 0,
+        "xg": null,
+        "api_xg": null,
+        "team_xg": {},
+        "goals": null,
+        "is_synthetic": false,
+        "errors": [],
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "synthetic_xg_model": "toy-distance-angle-v2; not calibrated"
+  },
+  "tests": {
+    "tests": 391,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 10.48
+  },
+  "model": "beam-free",
+  "free_only": true,
+  "model_calls": 31,
+  "cases": [
+    {
+      "case": "agent-match",
+      "request_id": "5e5a67af-a95b-428a-b3a8-91e85ece0b65",
+      "data_request_ids": [
+        "eec7898c-5aed-4dd5-86a0-846e0d9d7490"
+      ],
+      "reused_data_request_ids": [],
+      "wall_seconds": 20.176,
+      "status": "complete",
+      "revision": 1,
+      "page_sha256": "50a6f895caf7d0eb9f538c9297b6189da00a53bc8e4df783fc78361b9efe9084",
+      "xg_checks": [
+        {
+          "block_id": "shot_map",
+          "shots": 23,
+          "sum_shot_xg": 1.6903801272059698,
+          "displayed_xg": 1.6903801272059698,
+          "independent_api_xg": 1.6903801272059698,
+          "passed": true
+        },
+        {
+          "block_id": "xg_story",
+          "period_team_totals": {
+            "(2, 1)": 0.44956569487417664,
+            "(1, 1)": 0.47447015833843803,
+            "(2, 2)": 0.1792305457924738,
+            "(1, 2)": 0.5871137282008814
+          },
+          "displayed_total": 1.6903801272059698,
+          "independent_api_xg": 1.6903801272059698,
+          "passed": true
+        }
+      ],
+      "tool_trace": [
+        {
+          "tool": "request_data",
+          "status": "ok",
+          "elapsed_ms": 9632.234
+        },
+        {
+          "tool": "describe_insight",
+          "status": "ok",
+          "elapsed_ms": 20.369
+        },
+        {
+          "tool": "describe_insight",
+          "status": "ok",
+          "elapsed_ms": 16.591
+        },
+        {
+          "tool": "render_report",
+          "status": "error",
+          "fields": [
+            {
+              "path": [
+                "teams",
+                0,
+                "team_id"
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "teams",
+                1,
+                "team_id"
+              ],
+              "type": "int_type"
+            }
+          ],
+          "elapsed_ms": 0.18
+        },
+        {
+          "tool": "render_report",
+          "status": "ok",
+          "elapsed_ms": 17.41
+        }
+      ]
+    },
+    {
+      "case": "agent-added-network",
+      "request_id": "d343ea4b-88e4-4615-950f-e2a9f0641c65",
+      "data_request_ids": [
+        "53c7014a-3a6b-4c98-9033-373e42f00bf6"
+      ],
+      "reused_data_request_ids": [],
+      "wall_seconds": 31.725,
+      "status": "complete",
+      "revision": 2,
+      "page_sha256": "11f5188f8d829ba0c1afe4f28700471cdca3c71cd5254b0c14682d5292328dbf",
+      "xg_checks": [
+        {
+          "block_id": "shot_map",
+          "shots": 23,
+          "sum_shot_xg": 1.6903801272059698,
+          "displayed_xg": 1.6903801272059698,
+          "independent_api_xg": 1.6903801272059698,
+          "passed": true
+        },
+        {
+          "block_id": "xg_story",
+          "period_team_totals": {
+            "(2, 1)": 0.44956569487417664,
+            "(1, 1)": 0.47447015833843803,
+            "(2, 2)": 0.1792305457924738,
+            "(1, 2)": 0.5871137282008814
+          },
+          "displayed_total": 1.6903801272059698,
+          "independent_api_xg": 1.6903801272059698,
+          "passed": true
+        }
+      ],
+      "tool_trace": [
+        {
+          "tool": "request_data",
+          "status": "error",
+          "fields": [
+            {
+              "path": [
+                "context",
+                "match_ids",
+                0
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "context",
+                "team_ids",
+                0
+              ],
+              "type": "int_type"
+            }
+          ],
+          "elapsed_ms": 0.074
+        },
+        {
+          "tool": "request_data",
+          "status": "ok",
+          "elapsed_ms": 21094.379
+        },
+        {
+          "tool": "update_report",
+          "status": "error",
+          "fields": [
+            {
+              "path": [
+                "add_blocks",
+                0,
+                "parameters",
+                "team_id"
+              ],
+              "type": "int_type"
+            }
+          ],
+          "elapsed_ms": 0.096
+        },
+        {
+          "tool": "update_report",
+          "status": "error",
+          "fields": [
+            {
+              "path": [
+                "add_blocks",
+                0,
+                "parameters",
+                "team_id"
+              ],
+              "type": "int_type"
+            }
+          ],
+          "elapsed_ms": 0.064
+        },
+        {
+          "tool": "update_report",
+          "status": "ok",
+          "elapsed_ms": 20.322
+        }
+      ]
+    },
+    {
+      "case": "agent-configured",
+      "request_id": "bcd12a21-46bf-4281-9ce7-68f91e03cbf4",
+      "data_request_ids": [],
+      "reused_data_request_ids": [],
+      "wall_seconds": 3.232,
+      "status": "complete",
+      "revision": 3,
+      "page_sha256": "2171c8f6e918ff7d1dea813395e7a10359b19f92ee9b6bdc12c07352b8fedc67",
+      "xg_checks": [
+        {
+          "block_id": "shot_map",
+          "shots": 23,
+          "sum_shot_xg": 1.6903801272059698,
+          "displayed_xg": 1.6903801272059698,
+          "independent_api_xg": 1.6903801272059698,
+          "passed": true
+        },
+        {
+          "block_id": "xg_story",
+          "period_team_totals": {
+            "(2, 1)": 0.44956569487417664,
+            "(1, 1)": 0.47447015833843803,
+            "(2, 2)": 0.1792305457924738,
+            "(1, 2)": 0.5871137282008814
+          },
+          "displayed_total": 1.6903801272059698,
+          "independent_api_xg": 1.6903801272059698,
+          "passed": true
+        }
+      ],
+      "tool_trace": [
+        {
+          "tool": "update_report",
+          "status": "ok",
+          "elapsed_ms": 15.006
+        }
+      ]
+    },
+    {
+      "case": "agent-comparison",
+      "request_id": "515290a5-4798-4038-ac79-5e7b57360736",
+      "data_request_ids": [
+        "eec7898c-5aed-4dd5-86a0-846e0d9d7490"
+      ],
+      "reused_data_request_ids": [
+        "eec7898c-5aed-4dd5-86a0-846e0d9d7490"
+      ],
+      "wall_seconds": 2.549,
+      "status": "complete",
+      "revision": 1,
+      "page_sha256": "26a58746b42ef2417b2af1d3920aa0041a180c1a2128107d5686610663703eee",
+      "xg_checks": [
+        {
+          "block_id": "tiros-equipo-1",
+          "shots": 14,
+          "sum_shot_xg": 1.0615838865393195,
+          "displayed_xg": 1.0615838865393195,
+          "independent_api_xg": 1.0615838865393195,
+          "passed": true
+        },
+        {
+          "block_id": "tiros-equipo-2",
+          "shots": 9,
+          "sum_shot_xg": 0.6287962406666504,
+          "displayed_xg": 0.6287962406666504,
+          "independent_api_xg": 0.6287962406666504,
+          "passed": true
+        }
+      ],
+      "tool_trace": [
+        {
+          "tool": "render_report",
+          "status": "ok",
+          "elapsed_ms": 16.479
+        }
+      ]
+    },
+    {
+      "case": "agent-space",
+      "request_id": "6b653c11-dd61-4655-a1e5-f76dcf11ed1a",
+      "data_request_ids": [
+        "f428a02b-8cfe-4794-97fa-65e4c2d6ad8c"
+      ],
+      "reused_data_request_ids": [],
+      "wall_seconds": 34.354,
+      "status": "complete",
+      "revision": 1,
+      "page_sha256": "831b143113bdcf3529fb6b55fb42b0c5b903c53034c19788939d7b8b21c25138",
+      "xg_checks": [],
+      "tool_trace": [
+        {
+          "tool": "request_data",
+          "status": "ok",
+          "elapsed_ms": 20563.411
+        },
+        {
+          "tool": "describe_insight",
+          "status": "ok",
+          "elapsed_ms": 12.759
+        },
+        {
+          "tool": "describe_insight",
+          "status": "ok",
+          "elapsed_ms": 13.994
+        },
+        {
+          "tool": "render_report",
+          "status": "error",
+          "fields": [
+            {
+              "path": [
+                "blocks",
+                0,
+                "parameters",
+                "time_ms"
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "blocks",
+                1,
+                "parameters",
+                "time_ms"
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "teams",
+                0,
+                "team_id"
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "teams",
+                1,
+                "team_id"
+              ],
+              "type": "int_type"
+            }
+          ],
+          "elapsed_ms": 0.125
+        },
+        {
+          "tool": "render_report",
+          "status": "ok",
+          "elapsed_ms": 16.213
+        }
+      ]
+    }
+  ],
+  "prompts": {
+    "data": {
+      "file": "prompt-data.md",
+      "sha256": "9fb38908d19134c09049f8f6edf2d355526c2b5c892f0874c510189d867452c1"
+    },
+    "insights": {
+      "file": "prompt-insights.md",
+      "sha256": "ef61baea69b0e6ab740d2f118d4402d64f80ef5c499bfe8a37f2322006394205"
+    }
+  },
+  "local_bundle": ".temp/insights/xg-review/insight-review.zip",
+  "bundle_sha256": "8273c588a3774e7916f0cd7018dac136f5d430714e0a8c855c571f7cbf901d14",
+  "limits": [
+    "Synthetic xG is an uncalibrated demonstration formula; exact formula agreement is not sporting validation.",
+    "Actual model runs completed in 2.549–34.354s; not a latency guarantee.",
+    "The analyst paragraph was a fixed test input, not generated by a third agent.",
+    "Full trace is from the new run; no fabricated reconstruction of previous messages.",
+    "Numerical IDs supplied as strings were rejected and retried; original failed attempts preserved."
+  ]
+}
