@@ -106,6 +106,11 @@ class ReportPlan(Closed):
 
 class ReportSpec(ReportPlan):
     evidence: list[Evidence] = Field(min_length=1, max_length=100)
+    # Recetas que la fuente no anota (perfil medido): sus contadores en cero no
+    # acreditan ausencia y el bloque se marca `empty_with_coverage`.
+    zero_only_insights: list[str] = Field(default_factory=list, max_length=40)
+    # Métricas que la fuente no anota (receta → claves): en cero no son un cero real.
+    unannotated_metrics: dict[str, list[str]] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def valid_references(self):
@@ -150,6 +155,9 @@ class BlockData(Closed):
     rows: list[dict] = Field(default_factory=list)
     polygons: list[dict] = Field(default_factory=list)
     frames: list[dict] = Field(default_factory=list)
+    markers: list[dict] = Field(default_factory=list)
+    # Métricas por equipo (id de equipo → clave → valor) de las piezas de partido.
+    by_team: dict = Field(default_factory=dict)
     scope: list[dict] = Field(default_factory=list)
     unit: str | None = None
     teams: dict = Field(default_factory=dict)

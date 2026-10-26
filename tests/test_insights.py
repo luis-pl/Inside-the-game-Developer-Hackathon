@@ -288,6 +288,36 @@ def test_mcp_resolves_host_evidence_and_returns_an_html_resource():
     asyncio.run(scenario())
 
 
+def test_mcp_render_insight_embeds_only_referenced_evidence_and_match_context():
+    async def scenario():
+        manifest = one_block("shot_map")
+        evidence = manifest.pop("evidence")
+        block = manifest["blocks"][0]
+        referenced = set(block["evidence_ids"])
+        # El contexto del partido aporta nombres y dorsales aunque nadie lo declare.
+        context = {
+            e["evidence_id"] for e in evidence if e["operation"] == "get_match_context"
+        }
+        unreferenced = {e["evidence_id"] for e in evidence} - referenced - context
+        assert unreferenced and context
+        async with Client(create_server(evidence)) as client:
+            result = await client.call_tool("render_insight", block)
+            assert not result.is_error
+            resource = await client.read_resource(
+                result.structured_content["resource_uri"]
+            )
+        html = resource.contents[0].text
+        assert all(
+            f'id="evidence-{evidence_id}"' in html
+            for evidence_id in referenced | context
+        )
+        assert all(
+            f'id="evidence-{evidence_id}"' not in html for evidence_id in unreferenced
+        )
+
+    asyncio.run(scenario())
+
+
 def test_aggregated_values_cannot_be_refiltered_as_another_team():
     manifest = one_block("occupation_heatmap")
     manifest["blocks"][0]["parameters"]["team_id"] = 2
@@ -601,3 +631,227 @@ def test_mcp_valid_plan_does_not_claim_missing_data_ready():
             assert result["blocks"][0]["state"] == "unavailable"
 
     asyncio.run(scenario())
+
+
+def test_report_parts_are_the_same_organisms_as_the_exported_page():
+    from inside_game.insights.pages import report_parts
+
+    manifest = demo_manifest()
+    html = render_report(manifest)["html"]
+    parts = report_parts(manifest)
+    # La web compone su lienzo con estas piezas: deben ser idénticas a la exportación.
+    assert f"<header>{parts['header']}</header>" in html
+    assert f'<main class="report {parts["template_id"]}">{parts["main"]}</main>' in html
+    assert parts["payload_json"] in html
+    assert (
+        html.count('<section class="insight"')
+        == parts["main"].count('<section class="insight"')
+        == 30
+    )
+
+
+def test_structural_pass_says_when_the_scope_has_no_completed_passes():
+    import copy
+
+    from inside_game.insights.demo import demo_manifest
+    from inside_game.insights.pages import compile_report
+
+    manifest = demo_manifest()
+    evidence = copy.deepcopy(
+        [e for e in manifest["evidence"] if e["evidence_id"] in {"e5", "e1"}]
+    )
+    next(e for e in evidence if e["evidence_id"] == "e5")["response"]["data"][
+        "items"
+    ] = []
+    block = next(b for b in manifest["blocks"] if b["id"] == "structural_pass")
+    _, [compiled] = compile_report(
+        {"title": "Sin pases", "blocks": [block], "evidence": evidence}
+    )
+    assert compiled.state == "unavailable"
+    assert any("No hay pases completados" in w for w in compiled.warnings)
+
+
+def test_metrics_drop_missing_values_and_unknown_categories():
+    from inside_game.insights.adapters import meaningful_metrics
+
+    metrics = {
+        "q5.shots": 21,
+        "q5.goals": None,
+        "q5.xg": None,
+        "q5.outcomes.Unknown (source shot outcome unavailable)": 21,
+        "q5.body_parts.Unknown": 20,
+        "q5.body_parts.Head": 1,
+        "q5.shots_unknown_total": 0,
+    }
+    assert meaningful_metrics(metrics) == {
+        "q5.shots": 21,
+        "q5.body_parts.Head": 1,
+        "q5.shots_unknown_total": 0,
+    }
+
+
+def test_shot_tooltip_omits_unknown_outcome_and_missing_xg():
+    import copy
+    import re
+
+    from inside_game.insights.demo import demo_manifest
+    from inside_game.insights.pages import render_report
+
+    manifest = demo_manifest()
+    block = next(b for b in manifest["blocks"] if b["insight_id"] == "shot_map")
+    evidence = copy.deepcopy(manifest["evidence"])
+    for e in evidence:
+        for item in e["response"]["data"].get("items", []):
+            shot = item.get("shot")
+            if shot:
+                shot["statsbomb_xg"] = None
+                shot["outcome"] = {"name": "Unknown (source shot outcome unavailable)"}
+    request = {"title": "Tooltip", "blocks": [block], "evidence": evidence}
+    html = render_report(request)["html"]
+    tooltips = re.findall(r"<title>([^<]*)</title>", html)
+    shot_tooltips = [t for t in tooltips if " · P" in t]
+    assert shot_tooltips
+    assert not any("Unknown" in t or "xG" in t for t in shot_tooltips)
+
+
+def test_match_timeline_graphs_event_activity_per_team_not_only_shots():
+    from inside_game.insights.adapters import ACTIVITY_BIN_MS
+    from inside_game.insights.demo import demo_manifest
+    from inside_game.insights.pages import compile_report
+
+    manifest = demo_manifest()
+    block = next(b for b in manifest["blocks"] if b["id"] == "match_timeline")
+    ids = set(block["evidence_ids"])
+    evidence = [e for e in manifest["evidence"] if e["evidence_id"] in ids]
+    _, [compiled] = compile_report(
+        {"title": "Cronología", "blocks": [block], "evidence": evidence}
+    )
+    wanted = block["parameters"]
+    events = [
+        item
+        for e in evidence
+        if e["operation"] == "get_events"
+        for item in e["response"]["data"]["items"]
+        if item.get("team_id") == wanted["team_id"]
+        and item.get("period") == wanted["period"]
+    ]
+    assert compiled.series, "la cronología debe tener serie de actividad"
+    assert {s["team_id"] for s in compiled.series} == {wanted["team_id"]}
+    assert sum(s["value"] for s in compiled.series) == len(events) > 0
+    assert all(s["time_ms"] % ACTIVITY_BIN_MS == 0 for s in compiled.series)
+    assert not any(s["group"] == "shots" for s in compiled.series)
+
+
+def test_match_timeline_lists_goals_substitutions_and_cards_without_duplicates():
+    import copy
+
+    from inside_game.insights.demo import demo_manifest
+    from inside_game.insights.pages import compile_report
+
+    manifest = demo_manifest()
+    block = copy.deepcopy(
+        next(b for b in manifest["blocks"] if b["id"] == "match_timeline")
+    )
+    block["parameters"].pop("team_id")
+    block["parameters"].pop("period")
+    block["parameters"].pop("time_ms")
+    base = next(e for e in manifest["evidence"] if e["operation"] == "get_events")
+
+    def evidence(evidence_id, operation, data):
+        item = copy.deepcopy(base)
+        item["evidence_id"], item["operation"] = evidence_id, operation
+        item["response"]["operation_id"] = operation
+        item["response"]["data"] = data
+        return item
+
+    def event(event_id, team_id, period_time_ms, **extra):
+        return {
+            "event_id": event_id,
+            "period": 1,
+            "period_time_ms": period_time_ms,
+            "team_id": team_id,
+            "player_id": 103,
+            **extra,
+        }
+
+    goal = event("g1", 1, 600000, shot={"outcome": {"name": "Goal"}})
+    miss = event("s1", 1, 700000, shot={"outcome": {"name": "Saved"}})
+    sub = event("c1", 2, 1200000)
+    card = event(
+        "k1",
+        2,
+        1300000,
+        details={"foul_committed": {"card": {"name": "Yellow Card"}}},
+    )
+    evidence_list = [
+        evidence("m1", "get_events", {"items": [goal, miss], "total": 2}),
+        evidence("m2", "get_substitutions", {"items": [sub, sub], "total": 2}),
+        evidence("m3", "get_discipline", {"items": [], "cards": [card]}),
+    ]
+    block["evidence_ids"] = ["m1", "m2", "m3"]
+    _, [compiled] = compile_report(
+        {"title": "Cronología", "blocks": [block], "evidence": evidence_list}
+    )
+    assert [(m["kind"], m["time_ms"]) for m in compiled.markers] == [
+        ("goal", 600000),
+        ("substitution", 1200000),
+        ("card", 1300000),
+    ]
+    assert compiled.markers[2]["label"] == "Tarjeta amarilla"
+
+
+def test_timeline_chart_draws_markers_in_team_lanes_with_tooltips():
+    from inside_game.insights.charts import series
+    from inside_game.insights.contracts import BlockData
+
+    block = BlockData(
+        id="match_timeline",
+        insight_id="match_timeline",
+        title="Cronología",
+        method_id="visual_match_timeline_v1",
+        evidence_ids=["e1"],
+        series=[
+            {"period": 1, "time_ms": 0, "value": 3, "group": "events:1", "team_id": 1},
+            {
+                "period": 1,
+                "time_ms": 300000,
+                "value": 5,
+                "group": "events:1",
+                "team_id": 1,
+            },
+        ],
+        markers=[
+            {
+                "kind": "goal",
+                "label": None,
+                "period": 1,
+                "time_ms": 600000,
+                "team_id": 1,
+            },
+            {
+                "kind": "card",
+                "label": "Tarjeta roja",
+                "period": 1,
+                "time_ms": 900000,
+                "team_id": 2,
+            },
+            {
+                "kind": "substitution",
+                "label": None,
+                "period": 2,
+                "time_ms": 100000,
+                "team_id": 1,
+            },
+        ],
+        teams={
+            "1": {"name": "Local", "color": "#2463bc"},
+            "2": {"name": "Visita", "color": "#bf402e"},
+        },
+    )
+    html = series(block)
+    assert "P1 10′ · Gol · Local" in html and "P1 15′ · Tarjeta roja · Visita" in html
+    assert "Cambio" not in html  # el período 2 no tiene serie: sólo lo muestra la lista
+    assert "#c0392b" in html  # tarjeta roja
+    assert 'viewBox="0 0 690 258"' in html
+    # el eje se extiende hasta el último marcador para que no se salga del gráfico
+    assert "15.0′" in html

@@ -27,6 +27,8 @@ El frontend [Topology Lab](docs/topology-lab.md) está implementado con reproduc
 
 La [biblioteca atómica de insights](docs/insights.md) implementa **30 recetas paramétricas**, exportación HTML autocontenida y un MCP de composición local que usa IDs de evidencia. Incluye [diez extensiones investigadas en FIFA y fuentes primarias](docs/insights-research.md). Galería: `python -m inside_game.insights.demo`; genera `.temp/insights/gallery.html` con un fixture marcado sintético. El agente conversacional de insights está documentado a continuación; el HTTP propio no certifica compatibilidad A2A externa.
 
+También se conserva el agente con planificación determinista y transporte estándar A2A: [agente y web](docs/insights-agent.md), [A2A](docs/a2a.md) y [cobertura por fuente](docs/insights-availability.md). El servicio con revisiones y texto del analista se describe más abajo.
+
 Informe compuesto con datos de la API: `python scripts/build_insights_report.py --match-id 900001`.
 Genera `.temp/insights/match-900001.html` con quince bloques coordinados por equipo:
 redes ponderadas, tiros, xG, posesiones, ocupación, Voronoi, replay y topología.

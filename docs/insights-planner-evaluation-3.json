@@ -1,0 +1,309 @@
+{
+  "cases": [
+    {
+      "id": "overview_by_id",
+      "question": "Dame un resumen del partido 900001",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "match_overview",
+        "match_id": 900001
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 6972,
+      "seconds": 11.0
+    },
+    {
+      "id": "overview_by_name",
+      "question": "¿Cómo fue el primer partido de Metrica?",
+      "passed": true,
+      "failed_checks": [],
+      "status": "clarification",
+      "intent": null,
+      "message": "¿A cuál partido de “Metrica” te refieres? Hay varios registros en el catálogo — elige uno:",
+      "options": [
+        "900011 — Metrica 1 · Equipo A vs Metrica 1 · Equipo B (match_id 900011, fecha: desconocida)",
+        "900012 — Metrica 2 · Equipo A vs Metrica 2 · Equipo B (match_id 900012, fecha: desconocida)"
+      ],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 7171,
+      "seconds": 9.2
+    },
+    {
+      "id": "player_by_name",
+      "question": "Muéstrame qué hizo SC01 Jugador 02",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "player_dossier",
+        "match_id": 900101,
+        "team_id": 202,
+        "player_id": 10102
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 3,
+      "tool_calls": 3,
+      "total_tokens": 13232,
+      "seconds": 16.3
+    },
+    {
+      "id": "player_by_jersey",
+      "question": "Ficha del número 10 del Synthetic FC 1 en su partido del 1 de octubre",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "player_dossier",
+        "match_id": 900001,
+        "team_id": 1,
+        "player_id": 110
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 3,
+      "tool_calls": 3,
+      "total_tokens": 12706,
+      "seconds": 10.3
+    },
+    {
+      "id": "jersey_not_name",
+      "question": "¿Qué hizo el dorsal 10 del SC 01 · Equipo A?",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "player_dossier",
+        "match_id": 900101,
+        "team_id": 202,
+        "player_id": 10115
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 3,
+      "tool_calls": 3,
+      "total_tokens": 13150,
+      "seconds": 10.9
+    },
+    {
+      "id": "team_comparison",
+      "question": "Compara a los dos equipos del partido SC 03",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "entity_comparison",
+        "match_id": 900103
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 6894,
+      "seconds": 7.4
+    },
+    {
+      "id": "episode_period_clock",
+      "question": "¿Qué pasó en el minuto 20 del segundo tiempo del partido 900001? Céntrate en el visitante",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "tactical_episode",
+        "match_id": 900001,
+        "team_id": 2,
+        "period": 2,
+        "time_ms": 1200000
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 3,
+      "tool_calls": 3,
+      "total_tokens": 12781,
+      "seconds": 12.1
+    },
+    {
+      "id": "episode_match_clock",
+      "question": "Analiza la estructura defensiva en el minuto 65 del partido Metrica 2",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "tactical_episode",
+        "match_id": 900012,
+        "period": 2,
+        "time_ms": 1200000
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 3,
+      "tool_calls": 3,
+      "total_tokens": 12584,
+      "seconds": 13.6
+    },
+    {
+      "id": "custom_shots",
+      "question": "¿Desde dónde remató el Equipo B en Metrica 2?",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "custom_report",
+        "match_id": 900012,
+        "team_id": 105,
+        "insight_ids": [
+          "shot_map"
+        ]
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 7411,
+      "seconds": 10.5
+    },
+    {
+      "id": "custom_network_by_date",
+      "question": "Red de pases de Synthetic FC 3 en su partido contra Synthetic FC 4 del 1 de octubre",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "custom_report",
+        "match_id": 900002,
+        "team_id": 3,
+        "insight_ids": [
+          "passing_network"
+        ]
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 7268,
+      "seconds": 10.0
+    },
+    {
+      "id": "follow_up_period",
+      "question": "¿Y solo el segundo tiempo?",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "match_overview",
+        "match_id": 900011,
+        "period": 2
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 1,
+      "tool_calls": 1,
+      "total_tokens": 2857,
+      "seconds": 5.5
+    },
+    {
+      "id": "follow_up_other_team",
+      "question": "¿Y el otro equipo?",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "custom_report",
+        "match_id": 900002,
+        "team_id": 4,
+        "insight_ids": [
+          "passing_network"
+        ]
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 3,
+      "tool_calls": 3,
+      "total_tokens": 12833,
+      "seconds": 17.1
+    },
+    {
+      "id": "ambiguous_team",
+      "question": "Muéstrame el partido del Synthetic FC 1",
+      "passed": true,
+      "failed_checks": [],
+      "status": "clarification",
+      "intent": null,
+      "message": "¿Qué partido de Synthetic FC 1 quieres ver exactamente? Elige una opción:",
+      "options": [
+        "900001 — 2026-10-01 vs Synthetic FC 2 (1-2) — Synthetic Demo League",
+        "900003 — 2026-10-05 vs Synthetic FC 3 (1-0) — Synthetic Demo League",
+        "900005 — 2026-10-09 vs Synthetic FC 4 (1-0) — Synthetic Demo League",
+        "900007 — 2026-10-13 vs Synthetic FC 2 (0-0) — Synthetic Demo League",
+        "900009 — 2026-10-17 vs Synthetic FC 3 (3-1) — Synthetic Demo League"
+      ],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 7076,
+      "seconds": 8.2
+    },
+    {
+      "id": "out_of_scope",
+      "question": "¿Quién ganará el próximo Mundial?",
+      "passed": true,
+      "failed_checks": [],
+      "status": "declined",
+      "intent": null,
+      "message": "No puedo responder a solicitudes de predicción sobre quién ganará un futuro Mundial; el sistema no genera predicciones ni apuestas. Puedo, en cambio, ofrecer análisis y comparaciones basadas en partidos y datos disponibles del catálogo.",
+      "options": [],
+      "issues": [],
+      "model_turns": 1,
+      "tool_calls": 1,
+      "total_tokens": 3014,
+      "seconds": 9.3
+    },
+    {
+      "id": "unavailable_in_source",
+      "question": "Quiero ver el xG del partido SC 04",
+      "passed": true,
+      "failed_checks": [],
+      "status": "intent",
+      "intent": {
+        "template_id": "custom_report",
+        "match_id": 900104,
+        "insight_ids": [
+          "xg_story"
+        ]
+      },
+      "message": null,
+      "options": [],
+      "issues": [],
+      "model_turns": 2,
+      "tool_calls": 2,
+      "total_tokens": 6799,
+      "seconds": 7.2
+    }
+  ],
+  "model": "gpt-5-mini-1",
+  "prompt_sha256": "0b1a3d335da096ad136da2e116bd8ab485e69fbc162e0e737022b0b338d01630",
+  "summary": {
+    "passed": 15,
+    "total": 15,
+    "median_seconds": 10.3,
+    "total_tokens": 132748
+  }
+}

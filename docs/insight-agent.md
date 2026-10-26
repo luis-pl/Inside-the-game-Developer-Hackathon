@@ -10,6 +10,14 @@ El transporte es **HTTP/JSON propio, versionado**, bajo `/a2a/v1/`. Ese nombre
 de ruta no significa compatibilidad con una versión del estándar A2A externo.
 El MCP deportivo y el MCP de composición conservan sus protocolos existentes.
 
+También se conserva la implementación de tu compañero: `InsightsAgent` con
+planificador/resolvedor, interfaz web y transporte SDK A2A, documentada en
+[insights-agent.md](insights-agent.md) y [a2a.md](a2a.md). Ambas entradas reutilizan
+la biblioteca y el MCP. Para crear/modificar páginas con revisiones y texto del
+analista usa el servicio de este documento (`DashboardBuilder` en `page_builder.py`).
+La fachada `dashboard_builder.py` exporta ambos ejecutores. La cadena A2A conserva
+sus contratos `AskRequest`; el HTTP con revisiones utiliza `InsightRequest`.
+
 ## Ejecutar
 
 ```powershell
@@ -165,3 +173,12 @@ Los HTML exportados pueden verse con el servidor estático local:
 Informe medido y límites: `docs/insight-agent-verification.json`. Los tiempos
 registrados son de ejecuciones concretas; no son una garantía ante un arranque
 en frío o una incidencia del proveedor.
+
+## Integración del trabajo paralelo
+
+Durante las pruebas se publicó y fusionó `feature/insights-agent-a2a`. Se
+conservan su planificador, resolvedor, perfiles, web, transporte SDK A2A y
+mejoras visuales. La entrada A2A usa ahora un deadline por defecto de 55 s
+(planificador: 40 s). El HTTP con revisiones conserva la identidad individual
+y el texto del analista. La biblioteca comparte contratos y renderer; el MCP
+conserva también la evidencia citada por el analista aunque no la use un gráfico.

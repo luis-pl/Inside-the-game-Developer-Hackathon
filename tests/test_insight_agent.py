@@ -400,3 +400,23 @@ def test_aggregated_network_from_another_period_cannot_be_mislabeled_by_agent():
     ]
     manifest["blocks"][0]["parameters"]["period"] = 2
     assert compile_report(manifest)[1][0].state == "incompatible"
+
+
+def test_analyst_references_keep_evidence_not_used_by_a_chart_after_merge():
+    async def run():
+        source = fixture_result()
+        metric = next(e for e in source.evidence if e.operation == "get_metric_series")
+        result = await DashboardBuilder(Model()).run(
+            {
+                "request_text": "Crea",
+                "data_result": source,
+                "analyst": {
+                    "text": "Lectura suministrada.",
+                    "evidence_ids": [metric.evidence_id],
+                },
+            }
+        )
+        assert result.status == "complete", result.issues
+        assert f'id="evidence-{metric.evidence_id}"' in result.html
+
+    asyncio.run(run())

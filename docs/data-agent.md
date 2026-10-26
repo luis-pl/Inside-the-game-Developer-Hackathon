@@ -104,7 +104,9 @@ for item in result.evidence:
 El analista y dashboard pueden invocar la misma interfaz. Cada ejecución mantiene
 estado propio. Este módulo no implementa un servidor A2A ni el intérprete; el
 adaptador de comunicación entre agentes debe autenticar a su llamador y pasar
-este mensaje. `context` aporta contexto, no autorización de acceso.
+este mensaje. `context` aporta contexto, no autorización de acceso. El adaptador
+A2A con la skill determinista `execute_plan` está en `a2a_agents/data_server.py`
+([a2a.md](a2a.md)); la skill en lenguaje natural sobre este módulo está pendiente.
 
 La respuesta incluye `status`, `clarification`, notas de recuperación, `evidence`,
 `issues`, modelo, versión de prompt y contadores. Cada evidencia tiene ID, query,

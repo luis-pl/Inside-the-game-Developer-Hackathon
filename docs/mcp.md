@@ -4,7 +4,7 @@ También está publicado en Azure con claves individuales: `https://api-inside-g
 
 Servidor implementado con el [SDK oficial de MCP para Python](https://py.sdk.modelcontextprotocol.io/advanced/low-level-server/). Expone **34 herramientas de sólo lectura**: las mismas 25 consultas de datos y nueve análisis espaciales/topológicos de la [API](api.md). El registro y los modelos Pydantic son compartidos, sin mantener otra implementación de las consultas.
 
-Flujo: **cliente o agente → herramienta MCP → API HTTP → vistas de lectura de Azure SQL**. El MCP no necesita credenciales SQL, no abre conexiones a la base y no ejecuta SQL enviado por el cliente. La API debe estar activa. Todos los resultados identifican su procedencia sintética.
+Flujo: **cliente o agente → herramienta MCP → API HTTP → vistas de lectura de Azure SQL**. El MCP no necesita credenciales SQL, no abre conexiones a la base y no ejecuta SQL enviado por el cliente. La API debe estar activa. Todos los resultados identifican su procedencia (sintética o real anonimizada/seudonimizada), su cobertura y sus advertencias.
 
 ## Arranque
 
@@ -106,7 +106,7 @@ Los errores de herramienta devuelven `isError=true` y un objeto JSON `error` en 
 
 El MCP vuelve a validar los argumentos antes de llamar a la API. Rechaza propiedades desconocidas, SQL, nombres de herramientas no registrados, valores fuera de los enums y parámetros fuera de rango. La API conserva sus propias validaciones y permisos de lectura. Hay límites por proceso de 120 llamadas válidas por minuto, cuatro llamadas simultáneas y 35 segundos por consulta. El HTTP MCP limita el cuerpo completo a 64 KiB; los argumentos por stdio también se limitan a 64 KiB. La respuesta de la API se lee en streaming hasta 1 MiB; MCP añade el envoltorio y duplica el objeto como texto para compatibilidad.
 
-Un resultado vacío y una falta de cobertura tienen significado distinto; el agente debe leer advertencias y cobertura. El tracking es sintético a 1 Hz, el xG es ilustrativo, Voronoi es área geométrica y no probabilidad de control. El MCP no añade modelos calibrados ni convierte un indicador geométrico en una conclusión de rendimiento real.
+Un resultado vacío y una falta de cobertura tienen significado distinto; el agente debe leer advertencias y cobertura. El tracking es de 1 Hz en el historial sintético y de 5 Hz en los partidos reales; el xG es ilustrativo y sólo existe en los datos sintéticos, mientras que en Metrica y SkillCorner queda `null`. Voronoi es área geométrica y no probabilidad de control. El MCP no añade modelos calibrados ni convierte un indicador geométrico en una conclusión de rendimiento real.
 
 ## Verificación
 
