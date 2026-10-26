@@ -1,0 +1,102 @@
+{
+  "python_tests": 423,
+  "frontend_tests": 42,
+  "build": "passed",
+  "cases": [
+    {
+      "case": "create",
+      "stage": "complete",
+      "report_id": "507136b2-77b6-4b2a-b431-65a92494debb",
+      "revision": 2,
+      "seconds": 34.974,
+      "facts_verified": 31,
+      "blocks": 2,
+      "interpreter_tools": [
+        {
+          "tool": "delegate_request",
+          "status": "rejected",
+          "code": "INVALID_PLAN_FIELDS",
+          "fields": [
+            {
+              "path": [
+                "context",
+                "scope"
+              ],
+              "type": "union_tag_not_found"
+            }
+          ]
+        },
+        {
+          "tool": "delegate_request",
+          "status": "validated",
+          "normalized_fields": []
+        }
+      ],
+      "html_sha256": "29b10d9e04c06728b433b0b35cc70193c7f5b7a4870f2eb3dae2f8638b63ba95"
+    },
+    {
+      "case": "modify",
+      "stage": "complete",
+      "report_id": "507136b2-77b6-4b2a-b431-65a92494debb",
+      "revision": 4,
+      "seconds": 36.901,
+      "facts_verified": 26,
+      "blocks": 2,
+      "interpreter_tools": [
+        {
+          "tool": "delegate_request",
+          "status": "rejected",
+          "code": "INVALID_PLAN_FIELDS",
+          "fields": [
+            {
+              "path": [
+                "context",
+                "match_ids",
+                0
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "context",
+                "team_ids",
+                0
+              ],
+              "type": "int_type"
+            },
+            {
+              "path": [
+                "context",
+                "team_ids",
+                1
+              ],
+              "type": "int_type"
+            }
+          ]
+        },
+        {
+          "tool": "delegate_request",
+          "status": "validated",
+          "normalized_fields": []
+        }
+      ],
+      "html_sha256": "dbfc8483e62fa48f20b9898d30963b1b9f7720b5c3e3a2899619aea11e5ba137"
+    }
+  ],
+  "missing_real_xg": "clarification",
+  "viewer_catalog": 10,
+  "notes": [
+    "Beam Free Go, free-only guard enabled.",
+    "One rejected ID serialization was corrected by the model using typed field errors; IDs were not coerced.",
+    "Earlier failed attempt is retained in .temp/workspace-qa-final.",
+    "Sessions and conversations are local and in memory; restarting removes them."
+  ],
+  "secrets_absent_from_outputs": true,
+  "passed": true,
+  "visual_review": {
+    "disposition": "ship",
+    "scope": "The material mobile drawer accessibility fix was scored resolved; no regressions from the fix were visible in desktop/light/mobile captures.",
+    "detector_findings": [],
+    "overflow": false
+  }
+}

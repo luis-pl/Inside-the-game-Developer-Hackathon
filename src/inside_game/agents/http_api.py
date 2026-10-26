@@ -315,4 +315,13 @@ def create_agent_app(
         data_transport=data_transport,
         insights_transport=insights_transport,
     )
+    from inside_game.agents.chat_http import register_chat_routes
+
+    register_chat_routes(
+        app,
+        store=store,
+        model_factory=model_factory,
+        data_url=data_base_url,
+        insights_url=insights_base_url or data_base_url,
+    )
     return app

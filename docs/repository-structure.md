@@ -10,7 +10,8 @@ Inside-the-game-Developer-Hackathon/
 │       ├── __init__.py
 │       ├── agents/
 │       │   ├── __init__.py
-│       │   ├── interpreter.py
+│       │   ├── interpreter.py    # Intención conversacional y delegación tipada
+│       │   ├── chat_http.py      # Conversaciones privadas y trabajos del chat
 │       │   ├── data_agent.py
 │       │   ├── contracts.py       # Mensajes del agente de datos
 │       │   ├── sports_analyst.py  # Texto deportivo con hechos y referencias

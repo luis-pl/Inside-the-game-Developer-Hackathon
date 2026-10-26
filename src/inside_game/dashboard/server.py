@@ -55,6 +55,18 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             return self.respond(403, {"error": "Origen no permitido."})
         url = urlsplit(self.path)
         if not url.path.startswith("/dashboard-api/"):
+            if url.path in ("/", "/index.html"):
+                # El servidor clásico sigue abriendo el visor; el CLI workspace
+                # sirve el mismo bundle con el chat como entrada principal.
+                body = (Path(self.directory) / "index.html").read_bytes().replace(
+                    b"<head>", b'<head><meta name="inside-game-surface" content="viewer">', 1
+                )
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
             return super().do_GET()
         if not self.server.slots.acquire(blocking=False):
             return self.respond(
