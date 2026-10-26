@@ -1,3 +1,4 @@
+a2a-sdk==1.2.3
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.15.1
@@ -11,6 +12,9 @@ click==8.5.0
 colorama==0.4.6
 cryptography==50.0.2
 fastapi==0.161.1
+google-api-core==2.43.0
+google-auth==2.62.0
+googleapis-common-protos==1.76.0
 gudhi==3.13.0
 h11==0.16.0
 httpcore==1.0.9
@@ -19,6 +23,7 @@ httpx==0.28.1
 httpx2==2.16.0
 idna==3.20
 iniconfig==2.3.1
+json-rpc==1.15.0
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
 mcp==2.3.0
@@ -33,6 +38,10 @@ numpy==2.5.4
 opentelemetry-api==1.45.1
 packaging==26.3
 pluggy==1.7.0
+proto-plus==1.29.0
+protobuf==7.36.2
+pyasn1==0.6.4
+pyasn1-modules==0.4.2
 pycparser==3.12
 pydantic==2.14.1
 pydantic_core==2.50.1
