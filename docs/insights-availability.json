@@ -1,0 +1,3203 @@
+{
+  "llm_used": false,
+  "matches": [
+    {
+      "match_id": 900001,
+      "label": "Synthetic FC 1 vs Synthetic FC 2",
+      "competition": "Synthetic Demo League",
+      "is_synthetic": true,
+      "provider": null,
+      "provenance": {
+        "is_synthetic": true,
+        "data_kinds": [
+          "synthetic"
+        ],
+        "datasets": [
+          {
+            "match_id": 900001,
+            "generator_version": "3.0.0",
+            "provider": null,
+            "data_kind": "synthetic",
+            "dataset_revision": "01aed4bfaa3d7afbf796dbc8934562d6ffd4ac8bd0317b273e7b197ca4eaa839",
+            "run_ids": [
+              "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+            ]
+          }
+        ]
+      },
+      "decisions": {
+        "source": "synthetic",
+        "focus_team_id": 1,
+        "focus_team": "local por defecto",
+        "profile_measured_on": null,
+        "period": 1,
+        "time_ms": 600000,
+        "roles": "posiciones anotadas por la fuente en el instante",
+        "roles_by_team": {
+          "1": {
+            "defender_ids": [
+              102,
+              103,
+              104,
+              105
+            ],
+            "midfielder_ids": [
+              106,
+              107,
+              108
+            ],
+            "goalkeeper_id": 101
+          },
+          "2": {
+            "defender_ids": [
+              202,
+              203,
+              204,
+              205
+            ],
+            "midfielder_ids": [
+              206,
+              207,
+              208
+            ],
+            "goalkeeper_id": 201
+          }
+        },
+        "attack_positive_x": {
+          "1": true,
+          "2": false
+        },
+        "pass_windows": {
+          "1": {
+            "kind": "window",
+            "period": 1,
+            "start_ms": 640000,
+            "end_ms": 700000
+          }
+        }
+      },
+      "api_seconds": 22.2,
+      "api_queries": 27,
+      "insights": {
+        "shot_map": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q4.shots": 13,
+            "q4.goals": 2,
+            "q4.shots_on_target": 8,
+            "q4.xg": 0.9240358532126146,
+            "q4.xg_per_shot": 0.07107968101635496,
+            "q4.goals_minus_xg": 1.0759641467873853,
+            "q4.conversion_rate": 0.15384615384615385,
+            "q4.on_target_rate": 0.6153846153846154,
+            "q4.outcomes.Blocked": 4,
+            "q4.outcomes.Saved": 6,
+            "q4.outcomes.Goal": 2,
+            "q4.outcomes.Off T": 1
+          },
+          "items": {
+            "points": 13,
+            "rows": 13
+          }
+        },
+        "xg_story": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "observed_xg": 0.9240358532126147
+          },
+          "items": {
+            "series": 13
+          }
+        },
+        "match_timeline": {
+          "api_errors": [],
+          "evidence_pages": 10,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "total": 0
+          },
+          "items": {
+            "series": 10,
+            "rows": 1250
+          }
+        },
+        "pass_map": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q3.attempted_passes": 151,
+            "q3.completed_passes": 140,
+            "q3.completion_rate": 0.9271523178807947,
+            "q3.passes_with_geometry": 151,
+            "q3.total_pass_length_m": 5864.179941771291,
+            "q3.progressive_passes": 60,
+            "q3.final_third_entries": 40,
+            "q3.cross": 4,
+            "q3.cut_back": 6,
+            "q3.switch": 34,
+            "events_in_supplied_evidence": 151
+          },
+          "items": {
+            "points": 151,
+            "vectors": 151,
+            "rows": 151
+          }
+        },
+        "passing_network": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+          ],
+          "metrics": {
+            "density": 0.6636363636363637,
+            "components_weak": 1
+          },
+          "items": {
+            "points": 11,
+            "vectors": 73,
+            "rows": 73
+          }
+        },
+        "sequence_explorer": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Recorded event span is not exact temporal possession."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 37
+          }
+        },
+        "defensive_actions": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q11.tackle_attempts": 11,
+            "q11.tackles_won": 4,
+            "q11.tackles_lost": 7,
+            "q11.aerial_contests": 3,
+            "q11.aerial_won": 3,
+            "q11.aerial_lost": 3,
+            "q11.fifty_fifty_winning_records": 6,
+            "q11.fifty_fifty_losing_records": 6,
+            "q11.interceptions": 7,
+            "q11.pressures": 122,
+            "q11.blocks": 4,
+            "q11.clearances": 3
+          },
+          "items": {
+            "points": 200,
+            "rows": 200
+          }
+        },
+        "pressure_recovery": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 205
+          }
+        },
+        "ball_progression": {
+          "api_errors": [],
+          "evidence_pages": 4,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q13.dribble_attempts": 36,
+            "q13.dribbles_complete": 32,
+            "q13.dribbles_incomplete": 4,
+            "q13.dribble_success_rate": 0.8888888888888888,
+            "q13.carries": 348,
+            "q13.carry_seconds": 1494.0,
+            "q13.carry_displacement_m": 1909.2579408050465,
+            "q13.carry_progression_m": 58.228975590954654,
+            "q13.miscontrols": 3,
+            "q13.dispossessed": 4,
+            "q13.receipts": 267,
+            "events_in_supplied_evidence": 658
+          },
+          "items": {
+            "points": 658,
+            "rows": 658
+          }
+        },
+        "occupation_heatmap": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "grid_m": 5,
+            "total_player_seconds": 29700.0,
+            "heatmap_scale_max": 1710.0
+          },
+          "items": {
+            "rows": 333,
+            "polygons": 235
+          }
+        },
+        "movement_profile": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 11
+          }
+        },
+        "play_replay": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+          ],
+          "metrics": {
+            "observations": 20,
+            "period": 1
+          },
+          "items": {
+            "frames": 20
+          }
+        },
+        "zone_presence": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Event filters condition action counts. Playing minutes remain the covered time in the requested scope."
+          ],
+          "metrics": {
+            "player_seconds_in_zone": 7800.0,
+            "sampled_entries": 20,
+            "valid_player_seconds": 29700.0,
+            "event_counts.Ball Receipt*": 53,
+            "event_counts.Carry": 63,
+            "event_counts.Pass": 48,
+            "event_counts.Pressure": 15,
+            "event_counts.Dribbled Past": 6,
+            "event_counts.Foul Won": 4,
+            "event_counts.Shot": 7,
+            "event_counts.Foul Committed": 5,
+            "event_counts.50/50": 1
+          },
+          "items": {}
+        },
+        "team_shape": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "players": 10,
+            "width_m": 46.512675340028025,
+            "length_m": 67.62616890837009,
+            "radius_of_gyration_m": 30.702566050903513,
+            "hull_area_m2": 2663.781181693313,
+            "hull_perimeter_m": 204.14048993646372,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "points": 11,
+            "polygons": 1
+          }
+        },
+        "proximity_network": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "epsilon_m": 15,
+            "component_count": 9,
+            "largest_component_fraction": 0.2,
+            "critical_connection_distance_m": 34.95099568626832,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "points": 11,
+            "vectors": 1,
+            "rows": 1
+          }
+        },
+        "space_partition": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Voronoi area is geometric proximity, not pitch-control probability."
+          ],
+          "metrics": {
+            "team_area_m2.1": 3552.290571674082,
+            "team_area_m2.2": 3587.7094283259125,
+            "pitch_area_m2": 7140.0,
+            "area_sum_m2": 7139.9999999999945,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "points": 22,
+            "polygons": 22
+          }
+        },
+        "persistent_structure": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "maximum_edge_length_m": 40,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "rows": 16
+          }
+        },
+        "node_robustness": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {
+            "baseline.epsilon_m": 15,
+            "baseline.component_count": 9,
+            "baseline.largest_component_fraction": 0.2,
+            "baseline.critical_connection_distance_m": 34.95099568626832,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "rows": 10
+          }
+        },
+        "entity_comparison": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 2
+          }
+        },
+        "defensive_geometry": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo.",
+            "Ruptura geométrica de líneas según roles y tracking: no equivale a la etiqueta through_ball, que no está disponible en esta fuente."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo.",
+            "Ruptura geométrica de líneas según roles y tracking: no equivale a la etiqueta through_ball, que no está disponible en esta fuente."
+          ],
+          "metrics": {
+            "observed_line_breaks": 47,
+            "mapped_line_breaks": 47
+          },
+          "items": {
+            "points": 47,
+            "vectors": 47,
+            "rows": 47
+          }
+        },
+        "defensive_line_height": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas."
+          ],
+          "metrics": {
+            "defensive_line_height_m": 20.831372410023285,
+            "observed_outfield_length_m": 67.62616890837009
+          },
+          "items": {
+            "points": 22
+          }
+        },
+        "goalkeeper_connection": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Distancia longitudinal y euclídea del portero a una línea declarada, no inferida por dorsal."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Distancia longitudinal y euclídea del portero a una línea declarada, no inferida por dorsal."
+          ],
+          "metrics": {
+            "defensive_line_height_m": 20.831372410023285,
+            "observed_outfield_length_m": 67.62616890837009,
+            "goalkeeper_height_m": 7.18090592694723,
+            "longitudinal_gap_m": 13.650466483076055
+          },
+          "items": {
+            "points": 22
+          }
+        },
+        "final_third_channels": {
+          "api_errors": [],
+          "evidence_pages": 3,
+          "state": "ready",
+          "reasons": [
+            "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+          ],
+          "metrics": {
+            "channel_1": 10,
+            "channel_2": 4,
+            "channel_3": 14,
+            "channel_4": 1,
+            "channel_5": 11
+          },
+          "items": {
+            "points": 40,
+            "rows": 40
+          }
+        },
+        "between_lines_receptions": {
+          "api_errors": [],
+          "evidence_pages": 3,
+          "state": "ready",
+          "reasons": [
+            "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles."
+          ],
+          "metrics": {
+            "eligible_passes": 6,
+            "computed_passes": 6
+          },
+          "items": {
+            "points": 6,
+            "rows": 6
+          }
+        },
+        "ball_recovery_time": {
+          "api_errors": [],
+          "evidence_pages": 8,
+          "state": "ready",
+          "reasons": [
+            "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Recorded event span is not exact temporal possession.",
+            "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA."
+          ],
+          "metrics": {},
+          "items": {
+            "series": 17,
+            "rows": 17
+          }
+        },
+        "pressure_turnovers": {
+          "api_errors": [],
+          "evidence_pages": 8,
+          "state": "ready",
+          "reasons": [
+            "Presión seguida de pérdida/rival y recuperación anotadas en ventana local; asociación, no causalidad."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Presión seguida de pérdida/rival y recuperación anotadas en ventana local; asociación, no causalidad."
+          ],
+          "metrics": {
+            "observed_sequences": 2
+          },
+          "items": {
+            "rows": 2
+          }
+        },
+        "structural_pass": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+          ],
+          "metrics": {
+            "eligible_passes": 6,
+            "computed_passes": 6
+          },
+          "items": {
+            "points": 6,
+            "vectors": 6,
+            "rows": 6
+          }
+        },
+        "hodge_flow": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+          ],
+          "metrics": {
+            "net_flow_energy": 138.0,
+            "gradient_fraction": 0.09806077529327605,
+            "curl_fraction": 0.9019392247067224,
+            "harmonic_fraction": 7.363384231151766e-30,
+            "reconstruction_error": 0.0,
+            "orthogonality_error": 7.496271687435502e-16
+          },
+          "items": {
+            "points": 11,
+            "vectors": 43,
+            "rows": 43
+          }
+        },
+        "topological_change": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "partial",
+          "reasons": [
+            "Hay pares no comparables por huecos, cambios de identidad o censura; no se interpolaron.",
+            "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Hay pares no comparables por huecos, cambios de identidad o censura; no se interpolaron.",
+            "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico."
+          ],
+          "metrics": {
+            "supplied_frames": 20,
+            "comparable_pairs": 15
+          },
+          "items": {
+            "series": 15,
+            "rows": 15
+          }
+        },
+        "clearance_connectivity": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+          ],
+          "warnings": [
+            "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+            "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+          ],
+          "metrics": {
+            "reachable_players": 0
+          },
+          "items": {
+            "points": 12,
+            "vectors": 9
+          }
+        }
+      },
+      "templates": {
+        "match_overview": {
+          "discarded": [],
+          "decisions": {
+            "source": "synthetic",
+            "focus_team_id": 1,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900001,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "1": {
+                "defender_ids": [
+                  102,
+                  103,
+                  104,
+                  105
+                ],
+                "midfielder_ids": [
+                  106,
+                  107,
+                  108
+                ],
+                "goalkeeper_id": 101
+              },
+              "2": {
+                "defender_ids": [
+                  202,
+                  203,
+                  204,
+                  205
+                ],
+                "midfielder_ids": [
+                  206,
+                  207,
+                  208
+                ],
+                "goalkeeper_id": 201
+              }
+            },
+            "attack_positive_x": {
+              "1": true,
+              "2": false
+            },
+            "pass_windows": {}
+          },
+          "page": "match_overview-900001.html",
+          "blocks": {
+            "shot_map": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "xg_story": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "match_timeline": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "entity_comparison": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "passing_network-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "passing_network-2": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "final_third_channels-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+              ]
+            },
+            "final_third_channels-2": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+              ]
+            },
+            "defensive_actions": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "team_shape-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            }
+          }
+        },
+        "player_dossier": {
+          "discarded": [],
+          "decisions": {
+            "source": "synthetic",
+            "focus_team_id": 1,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900001,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "1": {
+                "defender_ids": [
+                  102,
+                  103,
+                  104,
+                  105
+                ],
+                "midfielder_ids": [
+                  106,
+                  107,
+                  108
+                ],
+                "goalkeeper_id": 101
+              },
+              "2": {
+                "defender_ids": [
+                  202,
+                  203,
+                  204,
+                  205
+                ],
+                "midfielder_ids": [
+                  206,
+                  207,
+                  208
+                ],
+                "goalkeeper_id": 201
+              }
+            },
+            "attack_positive_x": {
+              "1": true,
+              "2": false
+            },
+            "pass_windows": {}
+          },
+          "page": "player_dossier-900001.html",
+          "blocks": {
+            "movement_profile-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "occupation_heatmap-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "pass_map-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "shot_map": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "ball_progression": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "defensive_actions": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "zone_presence-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Event filters condition action counts. Playing minutes remain the covered time in the requested scope."
+              ]
+            }
+          }
+        },
+        "entity_comparison": {
+          "discarded": [],
+          "decisions": {
+            "source": "synthetic",
+            "focus_team_id": 1,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900001,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "1": {
+                "defender_ids": [
+                  102,
+                  103,
+                  104,
+                  105
+                ],
+                "midfielder_ids": [
+                  106,
+                  107,
+                  108
+                ],
+                "goalkeeper_id": 101
+              },
+              "2": {
+                "defender_ids": [
+                  202,
+                  203,
+                  204,
+                  205
+                ],
+                "midfielder_ids": [
+                  206,
+                  207,
+                  208
+                ],
+                "goalkeeper_id": 201
+              }
+            },
+            "attack_positive_x": {
+              "1": true,
+              "2": false
+            },
+            "pass_windows": {}
+          },
+          "page": "entity_comparison-900001.html",
+          "blocks": {
+            "entity_comparison": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "passing_network-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "passing_network-2": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "movement_profile-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "movement_profile-2": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "occupation_heatmap-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "occupation_heatmap-2": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            }
+          }
+        },
+        "tactical_episode": {
+          "discarded": [],
+          "decisions": {
+            "source": "synthetic",
+            "focus_team_id": 1,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900001,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "1": {
+                "defender_ids": [
+                  102,
+                  103,
+                  104,
+                  105
+                ],
+                "midfielder_ids": [
+                  106,
+                  107,
+                  108
+                ],
+                "goalkeeper_id": 101
+              },
+              "2": {
+                "defender_ids": [
+                  202,
+                  203,
+                  204,
+                  205
+                ],
+                "midfielder_ids": [
+                  206,
+                  207,
+                  208
+                ],
+                "goalkeeper_id": 201
+              }
+            },
+            "attack_positive_x": {
+              "1": true,
+              "2": false
+            },
+            "pass_windows": {
+              "1": {
+                "kind": "window",
+                "period": 1,
+                "start_ms": 640000,
+                "end_ms": 700000
+              }
+            }
+          },
+          "page": "tactical_episode-900001.html",
+          "blocks": {
+            "play_replay": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+              ]
+            },
+            "team_shape-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "space_partition": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Voronoi area is geometric proximity, not pitch-control probability."
+              ]
+            },
+            "proximity_network-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+              ]
+            },
+            "defensive_line_height-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas."
+              ]
+            },
+            "clearance_connectivity-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+              ]
+            },
+            "structural_pass-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+              ]
+            },
+            "between_lines_receptions-1": {
+              "state": "ready",
+              "warnings": [
+                "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+                "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles."
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "match_id": 900011,
+      "label": "Metrica 1 · Equipo A vs Metrica 1 · Equipo B",
+      "competition": "Metrica anonymized samples (competition undisclosed)",
+      "is_synthetic": false,
+      "provider": "Metrica Sports",
+      "provenance": {
+        "is_synthetic": false,
+        "data_kinds": [
+          "real_anonymized"
+        ],
+        "datasets": [
+          {
+            "match_id": 900011,
+            "generator_version": "metrica-anonymized-1.0.0",
+            "provider": "Metrica Sports",
+            "data_kind": "real_anonymized",
+            "dataset_revision": "d78a553196c91799647bf88fd78792994ddb2345f550c38ca602db72093cf8f5",
+            "run_ids": [
+              "00e14616-fecf-5720-baa1-ead1f9a169a7"
+            ]
+          }
+        ]
+      },
+      "decisions": {
+        "source": "Metrica Sports",
+        "focus_team_id": 102,
+        "focus_team": "local por defecto",
+        "profile_measured_on": null,
+        "period": 1,
+        "time_ms": 600000,
+        "roles": "posiciones anotadas por la fuente en el instante",
+        "roles_by_team": {
+          "102": {
+            "goalkeeper_id": 1011
+          },
+          "103": {
+            "goalkeeper_id": 1025
+          }
+        },
+        "attack_positive_x": {
+          "102": true,
+          "103": false
+        },
+        "pass_windows": {
+          "102": {
+            "kind": "window",
+            "period": 1,
+            "start_ms": 596000,
+            "end_ms": 656000
+          }
+        }
+      },
+      "api_seconds": 19.0,
+      "api_queries": 26,
+      "insights": {
+        "shot_map": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q4.shots": 13,
+            "q4.goals": 1,
+            "q4.shots_on_target": 5,
+            "q4.xg": null,
+            "q4.xg_per_shot": null,
+            "q4.goals_minus_xg": null,
+            "q4.conversion_rate": 0.07692307692307693,
+            "q4.on_target_rate": 0.38461538461538464,
+            "q4.outcomes.Goal": 1,
+            "q4.outcomes.Off T": 7,
+            "q4.outcomes.Saved": 4,
+            "q4.outcomes.Blocked": 1
+          },
+          "items": {
+            "points": 13,
+            "rows": 13
+          }
+        },
+        "xg_story": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "unavailable",
+          "reasons": [
+            "xG no disponible para todos los tiros. No se sustituye por cero."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "xG no disponible para todos los tiros. No se sustituye por cero."
+          ],
+          "metrics": {},
+          "items": {}
+        },
+        "match_timeline": {
+          "api_errors": [],
+          "evidence_pages": 8,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {},
+          "items": {
+            "series": 10,
+            "rows": 906
+          }
+        },
+        "pass_map": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q3.attempted_passes": null,
+            "q3.completed_passes": 187,
+            "q3.completion_rate": null,
+            "q3.passes_with_geometry": 187,
+            "q3.total_pass_length_m": 2999.4236266881435,
+            "q3.progressive_passes": 38,
+            "q3.final_third_entries": 12,
+            "q3.cross": 0,
+            "q3.cut_back": 0,
+            "q3.switch": 0,
+            "events_in_supplied_evidence": 187
+          },
+          "items": {
+            "points": 187,
+            "vectors": 187,
+            "rows": 187
+          }
+        },
+        "passing_network": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+          ],
+          "metrics": {
+            "density": 0.6439393939393939,
+            "components_weak": 1
+          },
+          "items": {
+            "points": 12,
+            "vectors": 85,
+            "rows": 85
+          }
+        },
+        "sequence_explorer": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Recorded event span is not exact temporal possession."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 196
+          }
+        },
+        "defensive_actions": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q11.tackle_attempts": 20,
+            "q11.tackles_won": 10,
+            "q11.tackles_lost": 10,
+            "q11.aerial_contests": 0,
+            "q11.aerial_won": 0,
+            "q11.aerial_lost": 0,
+            "q11.fifty_fifty_winning_records": 0,
+            "q11.fifty_fifty_losing_records": 0,
+            "q11.interceptions": 86,
+            "q11.pressures": 0,
+            "q11.blocks": 0,
+            "q11.clearances": 0
+          },
+          "items": {
+            "points": 174,
+            "rows": 174
+          }
+        },
+        "pressure_recovery": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {
+            "total": 0
+          },
+          "items": {
+            "rows": 174
+          }
+        },
+        "ball_progression": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q13.dribble_attempts": 0,
+            "q13.dribbles_complete": 0,
+            "q13.dribbles_incomplete": 0,
+            "q13.dribble_success_rate": null,
+            "q13.carries": 0,
+            "q13.carry_seconds": 0,
+            "q13.carry_displacement_m": 0,
+            "q13.carry_progression_m": 0,
+            "q13.miscontrols": 0,
+            "q13.dispossessed": 0,
+            "q13.receipts": 0,
+            "events_in_supplied_evidence": 0
+          },
+          "items": {}
+        },
+        "occupation_heatmap": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {
+            "grid_m": 5,
+            "total_player_seconds": 30854.0,
+            "heatmap_scale_max": 527.0
+          },
+          "items": {
+            "rows": 1883,
+            "polygons": 328
+          }
+        },
+        "movement_profile": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 12
+          }
+        },
+        "play_replay": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+          ],
+          "metrics": {
+            "observations": 20,
+            "period": 1
+          },
+          "items": {
+            "frames": 20
+          }
+        },
+        "zone_presence": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Event filters condition action counts. Playing minutes remain the covered time in the requested scope."
+          ],
+          "metrics": {
+            "player_seconds_in_zone": 6306.0,
+            "sampled_entries": 237,
+            "valid_player_seconds": 31347.0,
+            "event_counts.Metrica Ball Lost": 21,
+            "event_counts.Pass": 42,
+            "event_counts.Shot": 11,
+            "event_counts.Metrica Challenge": 16,
+            "event_counts.Interception": 2,
+            "event_counts.Ball Recovery": 5,
+            "event_counts.Duel": 2,
+            "event_counts.Ball Out": 2,
+            "event_counts.Foul Won": 1
+          },
+          "items": {}
+        },
+        "team_shape": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {
+            "players": 10,
+            "width_m": 38.3078,
+            "length_m": 35.575050000000005,
+            "radius_of_gyration_m": 17.620693207791685,
+            "hull_area_m2": 1043.344130703,
+            "hull_perimeter_m": 123.6796638167421,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "points": 11,
+            "polygons": 1
+          }
+        },
+        "proximity_network": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {
+            "epsilon_m": 15,
+            "component_count": 5,
+            "largest_component_fraction": 0.5,
+            "critical_connection_distance_m": 21.797833933673314,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "points": 11,
+            "vectors": 8,
+            "rows": 8
+          }
+        },
+        "space_partition": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Voronoi area is geometric proximity, not pitch-control probability."
+          ],
+          "metrics": {
+            "team_area_m2.102": 4447.602682648583,
+            "team_area_m2.103": 2692.3973173514178,
+            "pitch_area_m2": 7140.0,
+            "area_sum_m2": 7140.000000000001,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "points": 22,
+            "polygons": 22
+          }
+        },
+        "persistent_structure": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {
+            "maximum_edge_length_m": 40,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "rows": 15
+          }
+        },
+        "node_robustness": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {
+            "baseline.epsilon_m": 15,
+            "baseline.component_count": 5,
+            "baseline.largest_component_fraction": 0.5,
+            "baseline.critical_connection_distance_m": 21.797833933673314,
+            "sample_time_ms": 600000
+          },
+          "items": {
+            "rows": 10
+          }
+        },
+        "entity_comparison": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 2
+          }
+        },
+        "defensive_geometry": {
+          "api_errors": [
+            "get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE"
+          ],
+          "evidence_pages": 1,
+          "state": "unavailable",
+          "reasons": [
+            "Falta evidencia de las operaciones requeridas.",
+            "get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE"
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Falta evidencia de las operaciones requeridas."
+          ],
+          "metrics": {},
+          "items": {}
+        },
+        "defensive_line_height": {
+          "state": "unavailable",
+          "reasons": [
+            "Resolvedor: La fuente no anota defensores de este equipo; no se infieren por dorsal."
+          ],
+          "api_errors": [],
+          "evidence_pages": 0
+        },
+        "goalkeeper_connection": {
+          "state": "unavailable",
+          "reasons": [
+            "Resolvedor: La fuente no anota portero y defensores de este equipo."
+          ],
+          "api_errors": [],
+          "evidence_pages": 0
+        },
+        "final_third_channels": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+          ],
+          "metrics": {
+            "channel_1": 5,
+            "channel_2": 0,
+            "channel_3": 1,
+            "channel_4": 1,
+            "channel_5": 5
+          },
+          "items": {
+            "points": 12,
+            "rows": 12
+          }
+        },
+        "between_lines_receptions": {
+          "state": "unavailable",
+          "reasons": [
+            "Resolvedor: La fuente no anota defensores y medios del rival; no se infieren por dorsal."
+          ],
+          "api_errors": [],
+          "evidence_pages": 0
+        },
+        "ball_recovery_time": {
+          "api_errors": [],
+          "evidence_pages": 6,
+          "state": "ready",
+          "reasons": [
+            "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Recorded event span is not exact temporal possession.",
+            "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA."
+          ],
+          "metrics": {},
+          "items": {
+            "series": 36,
+            "rows": 36
+          }
+        },
+        "pressure_turnovers": {
+          "api_errors": [],
+          "evidence_pages": 6,
+          "state": "unavailable",
+          "reasons": [
+            "No hay presiones anotadas; no se infieren desde proximidad."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "No hay presiones anotadas; no se infieren desde proximidad."
+          ],
+          "metrics": {},
+          "items": {}
+        },
+        "structural_pass": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+          ],
+          "metrics": {
+            "eligible_passes": 14,
+            "computed_passes": 14
+          },
+          "items": {
+            "points": 14,
+            "vectors": 14,
+            "rows": 14
+          }
+        },
+        "hodge_flow": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+          ],
+          "metrics": {
+            "net_flow_energy": 187.0,
+            "gradient_fraction": 0.20269844274008694,
+            "curl_fraction": 0.7973015572599123,
+            "harmonic_fraction": 2.2521804171483113e-30,
+            "reconstruction_error": 0.0,
+            "orthogonality_error": 3.0517741359605166e-16
+          },
+          "items": {
+            "points": 12,
+            "vectors": 51,
+            "rows": 51
+          }
+        },
+        "topological_change": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico."
+          ],
+          "metrics": {
+            "supplied_frames": 20,
+            "comparable_pairs": 19
+          },
+          "items": {
+            "series": 19,
+            "rows": 19
+          }
+        },
+        "clearance_connectivity": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+          ],
+          "warnings": [
+            "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+            "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+          ],
+          "metrics": {
+            "reachable_players": 7
+          },
+          "items": {
+            "points": 12,
+            "vectors": 11,
+            "rows": 7
+          }
+        }
+      },
+      "templates": {
+        "match_overview": {
+          "discarded": [
+            {
+              "insight_id": "xg_story",
+              "team_id": null,
+              "reason": "xG no disponible para todos los tiros. No se sustituye por cero."
+            }
+          ],
+          "decisions": {
+            "source": "Metrica Sports",
+            "focus_team_id": 102,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900011,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "102": {
+                "goalkeeper_id": 1011
+              },
+              "103": {
+                "goalkeeper_id": 1025
+              }
+            },
+            "attack_positive_x": {
+              "102": true,
+              "103": false
+            },
+            "pass_windows": {}
+          },
+          "page": "match_overview-900011.html",
+          "blocks": {
+            "shot_map": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "match_timeline": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "entity_comparison": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "passing_network-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "passing_network-103": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "final_third_channels-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+              ]
+            },
+            "final_third_channels-103": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+              ]
+            },
+            "defensive_actions": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "team_shape-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            }
+          }
+        },
+        "player_dossier": {
+          "discarded": [
+            {
+              "insight_id": "ball_progression",
+              "team_id": null,
+              "reason": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+            }
+          ],
+          "decisions": {
+            "source": "Metrica Sports",
+            "focus_team_id": 102,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900011,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "102": {
+                "goalkeeper_id": 1011
+              },
+              "103": {
+                "goalkeeper_id": 1025
+              }
+            },
+            "attack_positive_x": {
+              "102": true,
+              "103": false
+            },
+            "pass_windows": {}
+          },
+          "page": "player_dossier-900011.html",
+          "blocks": {
+            "movement_profile-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "occupation_heatmap-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "pass_map-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "shot_map": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "defensive_actions": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "zone_presence-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Event filters condition action counts. Playing minutes remain the covered time in the requested scope."
+              ]
+            }
+          }
+        },
+        "entity_comparison": {
+          "discarded": [],
+          "decisions": {
+            "source": "Metrica Sports",
+            "focus_team_id": 102,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900011,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "102": {
+                "goalkeeper_id": 1011
+              },
+              "103": {
+                "goalkeeper_id": 1025
+              }
+            },
+            "attack_positive_x": {
+              "102": true,
+              "103": false
+            },
+            "pass_windows": {}
+          },
+          "page": "entity_comparison-900011.html",
+          "blocks": {
+            "entity_comparison": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "passing_network-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "passing_network-103": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "movement_profile-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "movement_profile-103": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "occupation_heatmap-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "occupation_heatmap-103": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            }
+          }
+        },
+        "tactical_episode": {
+          "discarded": [
+            {
+              "insight_id": "defensive_line_height",
+              "team_id": 102,
+              "reason": "Resolvedor: La fuente no anota defensores de este equipo; no se infieren por dorsal."
+            },
+            {
+              "insight_id": "between_lines_receptions",
+              "team_id": 102,
+              "reason": "Resolvedor: La fuente no anota defensores y medios del rival; no se infieren por dorsal."
+            }
+          ],
+          "decisions": {
+            "source": "Metrica Sports",
+            "focus_team_id": 102,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900011,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "102": {
+                "goalkeeper_id": 1011
+              },
+              "103": {
+                "goalkeeper_id": 1025
+              }
+            },
+            "attack_positive_x": {
+              "102": true,
+              "103": false
+            },
+            "pass_windows": {
+              "102": {
+                "kind": "window",
+                "period": 1,
+                "start_ms": 596000,
+                "end_ms": 656000
+              }
+            }
+          },
+          "page": "tactical_episode-900011.html",
+          "blocks": {
+            "play_replay": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+              ]
+            },
+            "team_shape-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "space_partition": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Voronoi area is geometric proximity, not pitch-control probability."
+              ]
+            },
+            "proximity_network-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable."
+              ]
+            },
+            "clearance_connectivity-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+              ]
+            },
+            "structural_pass-102": {
+              "state": "ready",
+              "warnings": [
+                "Real anonymized Metrica Sports data. Missing observations are retained; formation, pass height, pressure, ball height and xG are unavailable. Possessions and ball-in-play flags are inferred. PASS rows are source-labelled completed passes; other BALL LOST actions retain their source type, so all-attempted-pass totals and completion rates are unavailable.",
+                "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "match_id": 900101,
+      "label": "SC 01 · Equipo A vs SC 01 · Equipo B",
+      "competition": "SkillCorner Open Data (pseudonymized teams)",
+      "is_synthetic": false,
+      "provider": "SkillCorner",
+      "provenance": {
+        "is_synthetic": false,
+        "data_kinds": [
+          "real_pseudonymized"
+        ],
+        "datasets": [
+          {
+            "match_id": 900101,
+            "generator_version": "skillcorner-pseudonymized-1.0.0",
+            "provider": "SkillCorner",
+            "data_kind": "real_pseudonymized",
+            "dataset_revision": "88ae38aa60c2179d19d218b5d5a9034c5e3934aa54ea512aa37b1cb608bc9a94",
+            "run_ids": [
+              "c5c8a5a7-0455-5c0d-9363-194d11540ca7"
+            ]
+          }
+        ]
+      },
+      "decisions": {
+        "source": "SkillCorner",
+        "focus_team_id": 202,
+        "focus_team": "local por defecto",
+        "profile_measured_on": null,
+        "period": 1,
+        "time_ms": 900000,
+        "roles": "posiciones anotadas por la fuente en el instante",
+        "roles_by_team": {
+          "202": {
+            "defender_ids": [
+              10116,
+              10119,
+              10133,
+              10134
+            ],
+            "midfielder_ids": [
+              10102,
+              10125,
+              10126
+            ],
+            "goalkeeper_id": 10118
+          },
+          "203": {
+            "defender_ids": [
+              10101,
+              10109,
+              10117,
+              10123
+            ],
+            "midfielder_ids": [
+              10105,
+              10106
+            ],
+            "goalkeeper_id": 10127
+          }
+        },
+        "attack_positive_x": {
+          "202": true,
+          "203": false
+        },
+        "pass_windows": {
+          "202": {
+            "kind": "window",
+            "period": 1,
+            "start_ms": 885000,
+            "end_ms": 945000
+          }
+        }
+      },
+      "api_seconds": 23.2,
+      "api_queries": 26,
+      "insights": {
+        "shot_map": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q5.shots": 21,
+            "q5.goals": null,
+            "q5.shots_on_target": null,
+            "q5.xg": null,
+            "q5.xg_per_shot": null,
+            "q5.goals_minus_xg": null,
+            "q5.conversion_rate": null,
+            "q5.on_target_rate": null,
+            "q5.outcomes.Unknown (source shot outcome unavailable)": 21,
+            "q5.body_parts.Unknown": 20,
+            "q5.body_parts.Head": 1,
+            "events_in_supplied_evidence": 21
+          },
+          "items": {
+            "points": 21,
+            "rows": 21
+          }
+        },
+        "xg_story": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "unavailable",
+          "reasons": [
+            "xG no disponible para todos los tiros. No se sustituye por cero."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "xG no disponible para todos los tiros. No se sustituye por cero."
+          ],
+          "metrics": {},
+          "items": {}
+        },
+        "match_timeline": {
+          "api_errors": [],
+          "evidence_pages": 14,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "total": 0
+          },
+          "items": {
+            "series": 10,
+            "rows": 2055
+          }
+        },
+        "pass_map": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q4.attempted_passes": 181,
+            "q4.completed_passes": 155,
+            "q4.completion_rate": 0.856353591160221,
+            "q4.passes_with_geometry": 155,
+            "q4.total_pass_length_m": null,
+            "q4.progressive_passes": null,
+            "q4.final_third_entries": null,
+            "q4.cross": 0,
+            "q4.cut_back": 0,
+            "q4.switch": 0,
+            "events_in_supplied_evidence": 181
+          },
+          "items": {
+            "points": 181,
+            "vectors": 155,
+            "rows": 181
+          }
+        },
+        "passing_network": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+          ],
+          "metrics": {
+            "density": 0.5909090909090909,
+            "components_weak": 1
+          },
+          "items": {
+            "points": 11,
+            "vectors": 65,
+            "rows": 65
+          }
+        },
+        "sequence_explorer": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Recorded event span is not exact temporal possession."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 100
+          }
+        },
+        "defensive_actions": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q12.tackle_attempts": 0,
+            "q12.tackles_won": 0,
+            "q12.tackles_lost": 0,
+            "q12.aerial_contests": 0,
+            "q12.aerial_won": 0,
+            "q12.aerial_lost": 0,
+            "q12.fifty_fifty_winning_records": 0,
+            "q12.fifty_fifty_losing_records": 0,
+            "q12.interceptions": 0,
+            "q12.pressures": 0,
+            "q12.blocks": 0,
+            "q12.clearances": 0
+          },
+          "items": {}
+        },
+        "pressure_recovery": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "total": 0,
+            "summary.tackle_attempts": 0,
+            "summary.tackles_won": 0,
+            "summary.tackles_lost": 0,
+            "summary.aerial_contests": 0,
+            "summary.aerial_won": 0,
+            "summary.aerial_lost": 0,
+            "summary.fifty_fifty_winning_records": 0,
+            "summary.fifty_fifty_losing_records": 0,
+            "summary.interceptions": 0,
+            "summary.pressures": 0,
+            "summary.blocks": 0
+          },
+          "items": {}
+        },
+        "ball_progression": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+          ],
+          "metrics": {
+            "q14.dribble_attempts": 0,
+            "q14.dribbles_complete": 0,
+            "q14.dribbles_incomplete": 0,
+            "q14.dribble_success_rate": null,
+            "q14.carries": 0,
+            "q14.carry_seconds": 0,
+            "q14.carry_displacement_m": 0,
+            "q14.carry_progression_m": 0,
+            "q14.miscontrols": 0,
+            "q14.dispossessed": 0,
+            "q14.receipts": 0,
+            "events_in_supplied_evidence": 0
+          },
+          "items": {}
+        },
+        "occupation_heatmap": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "grid_m": 5,
+            "total_player_seconds": 22740.0,
+            "heatmap_scale_max": 415.0
+          },
+          "items": {
+            "rows": 1787,
+            "polygons": 310
+          }
+        },
+        "movement_profile": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 11
+          }
+        },
+        "play_replay": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+          ],
+          "metrics": {
+            "observations": 20,
+            "period": 1
+          },
+          "items": {
+            "frames": 20
+          }
+        },
+        "zone_presence": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Event filters condition action counts. Playing minutes remain the covered time in the requested scope."
+          ],
+          "metrics": {
+            "player_seconds_in_zone": 3490.0,
+            "sampled_entries": 176,
+            "valid_player_seconds": 22868.0,
+            "event_counts.SkillCorner passing_option": 183,
+            "event_counts.SkillCorner off_ball_run": 27,
+            "event_counts.Pass": 36,
+            "event_counts.Shot": 10,
+            "event_counts.SkillCorner player_possession": 10,
+            "event_counts.SkillCorner on_ball_engagement": 24,
+            "xg": null
+          },
+          "items": {}
+        },
+        "team_shape": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "players": 10,
+            "width_m": 60.800000000000004,
+            "length_m": 31.220000000000006,
+            "radius_of_gyration_m": 20.211377810530387,
+            "hull_area_m2": 1197.6741000000002,
+            "hull_perimeter_m": 147.40169807236597,
+            "sample_time_ms": 900000
+          },
+          "items": {
+            "points": 11,
+            "polygons": 1
+          }
+        },
+        "proximity_network": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "epsilon_m": 15,
+            "component_count": 5,
+            "largest_component_fraction": 0.6,
+            "critical_connection_distance_m": 23.013752410243757,
+            "sample_time_ms": 900000
+          },
+          "items": {
+            "points": 11,
+            "vectors": 6,
+            "rows": 6
+          }
+        },
+        "space_partition": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Voronoi area is geometric proximity, not pitch-control probability."
+          ],
+          "metrics": {
+            "team_area_m2.202": 4783.531865571975,
+            "team_area_m2.203": 2356.4681344280248,
+            "pitch_area_m2": 7140.0,
+            "area_sum_m2": 7140.0,
+            "sample_time_ms": 900000
+          },
+          "items": {
+            "points": 22,
+            "polygons": 22
+          }
+        },
+        "persistent_structure": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "maximum_edge_length_m": 40,
+            "sample_time_ms": 900000
+          },
+          "items": {
+            "rows": 15
+          }
+        },
+        "node_robustness": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {
+            "baseline.epsilon_m": 15,
+            "baseline.component_count": 5,
+            "baseline.largest_component_fraction": 0.6,
+            "baseline.critical_connection_distance_m": 23.013752410243757,
+            "sample_time_ms": 900000
+          },
+          "items": {
+            "rows": 10
+          }
+        },
+        "entity_comparison": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+          ],
+          "metrics": {},
+          "items": {
+            "rows": 2
+          }
+        },
+        "defensive_geometry": {
+          "api_errors": [
+            "get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE"
+          ],
+          "evidence_pages": 1,
+          "state": "unavailable",
+          "reasons": [
+            "Falta evidencia de las operaciones requeridas.",
+            "get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE"
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Falta evidencia de las operaciones requeridas."
+          ],
+          "metrics": {},
+          "items": {}
+        },
+        "defensive_line_height": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas."
+          ],
+          "metrics": {
+            "defensive_line_height_m": 43.62,
+            "observed_outfield_length_m": 31.220000000000006
+          },
+          "items": {
+            "points": 22
+          }
+        },
+        "goalkeeper_connection": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Distancia longitudinal y euclídea del portero a una línea declarada, no inferida por dorsal."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Distancia longitudinal y euclídea del portero a una línea declarada, no inferida por dorsal."
+          ],
+          "metrics": {
+            "defensive_line_height_m": 43.62,
+            "observed_outfield_length_m": 31.220000000000006,
+            "goalkeeper_height_m": 19.42,
+            "longitudinal_gap_m": 24.199999999999996
+          },
+          "items": {
+            "points": 22
+          }
+        },
+        "final_third_channels": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+          ],
+          "metrics": {
+            "channel_1": 6,
+            "channel_2": 2,
+            "channel_3": 0,
+            "channel_4": 1,
+            "channel_5": 0
+          },
+          "items": {
+            "points": 9,
+            "rows": 9
+          }
+        },
+        "between_lines_receptions": {
+          "api_errors": [],
+          "evidence_pages": 3,
+          "state": "partial",
+          "reasons": [
+            "Se omitieron pases sin participantes, roles o snapshots compatibles; se informa el denominador.",
+            "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Se omitieron pases sin participantes, roles o snapshots compatibles; se informa el denominador.",
+            "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles."
+          ],
+          "metrics": {
+            "eligible_passes": 11,
+            "computed_passes": 10
+          },
+          "items": {
+            "points": 10,
+            "rows": 10
+          }
+        },
+        "ball_recovery_time": {
+          "api_errors": [],
+          "evidence_pages": 12,
+          "state": "ready",
+          "reasons": [
+            "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Recorded event span is not exact temporal possession.",
+            "Proxy entre eventos de control por equipo; no duración exacta de posesión ni media oficial FIFA."
+          ],
+          "metrics": {},
+          "items": {
+            "series": 36,
+            "rows": 36
+          }
+        },
+        "pressure_turnovers": {
+          "api_errors": [],
+          "evidence_pages": 12,
+          "state": "unavailable",
+          "reasons": [
+            "No hay presiones anotadas; no se infieren desde proximidad."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "No hay presiones anotadas; no se infieren desde proximidad."
+          ],
+          "metrics": {},
+          "items": {}
+        },
+        "structural_pass": {
+          "api_errors": [],
+          "evidence_pages": 2,
+          "state": "ready",
+          "reasons": [
+            "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+          ],
+          "metrics": {
+            "eligible_passes": 11,
+            "computed_passes": 11
+          },
+          "items": {
+            "points": 11,
+            "vectors": 11,
+            "rows": 11
+          }
+        },
+        "hodge_flow": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Descomposición ortogonal no ponderada del flujo neto; dirección por IDs, no ataque; contraste graph/clique."
+          ],
+          "metrics": {
+            "net_flow_energy": 121.0,
+            "gradient_fraction": 0.16295997766489229,
+            "curl_fraction": 0.8370400223351083,
+            "harmonic_fraction": 1.6315985068780265e-30,
+            "reconstruction_error": 0.0,
+            "orthogonality_error": 2.863851297189601e-16
+          },
+          "items": {
+            "points": 11,
+            "vectors": 40,
+            "rows": 40
+          }
+        },
+        "topological_change": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Distancia bottleneck entre diagramas consecutivos con mismas identidades y frecuencia; no prueba cambio táctico."
+          ],
+          "metrics": {
+            "supplied_frames": 20,
+            "comparable_pairs": 19
+          },
+          "items": {
+            "series": 19,
+            "rows": 19
+          }
+        },
+        "clearance_connectivity": {
+          "api_errors": [],
+          "evidence_pages": 1,
+          "state": "ready",
+          "reasons": [
+            "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+          ],
+          "warnings": [
+            "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+            "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+          ],
+          "metrics": {
+            "reachable_players": 7
+          },
+          "items": {
+            "points": 12,
+            "vectors": 9,
+            "rows": 7
+          }
+        }
+      },
+      "templates": {
+        "match_overview": {
+          "discarded": [
+            {
+              "insight_id": "xg_story",
+              "team_id": null,
+              "reason": "xG no disponible para todos los tiros. No se sustituye por cero."
+            },
+            {
+              "insight_id": "defensive_actions",
+              "team_id": null,
+              "reason": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+            }
+          ],
+          "decisions": {
+            "source": "SkillCorner",
+            "focus_team_id": 202,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900101,
+            "period": 1,
+            "time_ms": 900000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "202": {
+                "defender_ids": [
+                  10116,
+                  10119,
+                  10133,
+                  10134
+                ],
+                "midfielder_ids": [
+                  10102,
+                  10125,
+                  10126
+                ],
+                "goalkeeper_id": 10118
+              },
+              "203": {
+                "defender_ids": [
+                  10101,
+                  10109,
+                  10117,
+                  10123
+                ],
+                "midfielder_ids": [
+                  10105,
+                  10106
+                ],
+                "goalkeeper_id": 10127
+              }
+            },
+            "attack_positive_x": {
+              "202": true,
+              "203": false
+            },
+            "pass_windows": {}
+          },
+          "page": "match_overview-900101.html",
+          "blocks": {
+            "shot_map": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "match_timeline": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "entity_comparison": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "passing_network-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "passing_network-203": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "final_third_channels-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+              ]
+            },
+            "final_third_channels-203": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Cinco carriles de igual anchura, cruce origen-final y recepción/pase completado; definición local."
+              ]
+            },
+            "team_shape-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            }
+          }
+        },
+        "player_dossier": {
+          "discarded": [
+            {
+              "insight_id": "ball_progression",
+              "team_id": null,
+              "reason": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+            },
+            {
+              "insight_id": "defensive_actions",
+              "team_id": null,
+              "reason": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+            }
+          ],
+          "decisions": {
+            "source": "SkillCorner",
+            "focus_team_id": 202,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900101,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "202": {
+                "defender_ids": [
+                  10116,
+                  10119,
+                  10133,
+                  10134
+                ],
+                "midfielder_ids": [
+                  10102,
+                  10125,
+                  10126
+                ],
+                "goalkeeper_id": 10118
+              },
+              "203": {
+                "defender_ids": [
+                  10101,
+                  10109,
+                  10117,
+                  10123
+                ],
+                "midfielder_ids": [
+                  10105,
+                  10106
+                ],
+                "goalkeeper_id": 10127
+              }
+            },
+            "attack_positive_x": {
+              "202": true,
+              "203": false
+            },
+            "pass_windows": {}
+          },
+          "page": "player_dossier-900101.html",
+          "blocks": {
+            "movement_profile-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "occupation_heatmap-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "pass_map-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "shot_map": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+              ]
+            },
+            "zone_presence-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Event filters condition action counts. Playing minutes remain the covered time in the requested scope."
+              ]
+            }
+          }
+        },
+        "entity_comparison": {
+          "discarded": [],
+          "decisions": {
+            "source": "SkillCorner",
+            "focus_team_id": 202,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900101,
+            "period": 1,
+            "time_ms": 600000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "202": {
+                "defender_ids": [
+                  10116,
+                  10119,
+                  10133,
+                  10134
+                ],
+                "midfielder_ids": [
+                  10102,
+                  10125,
+                  10126
+                ],
+                "goalkeeper_id": 10118
+              },
+              "203": {
+                "defender_ids": [
+                  10101,
+                  10109,
+                  10117,
+                  10123
+                ],
+                "midfielder_ids": [
+                  10105,
+                  10106
+                ],
+                "goalkeeper_id": 10127
+              }
+            },
+            "attack_positive_x": {
+              "202": true,
+              "203": false
+            },
+            "pass_windows": {}
+          },
+          "page": "entity_comparison-900101.html",
+          "blocks": {
+            "entity_comparison": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "passing_network-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "passing_network-203": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Nodos: media de orígenes de pases y destinos de recepciones observados; no posición media de tracking."
+              ]
+            },
+            "movement_profile-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "movement_profile-203": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "occupation_heatmap-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "occupation_heatmap-203": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            }
+          }
+        },
+        "tactical_episode": {
+          "discarded": [],
+          "decisions": {
+            "source": "SkillCorner",
+            "focus_team_id": 202,
+            "focus_team": "local por defecto",
+            "profile_measured_on": 900101,
+            "period": 1,
+            "time_ms": 900000,
+            "roles": "posiciones anotadas por la fuente en el instante",
+            "roles_by_team": {
+              "202": {
+                "defender_ids": [
+                  10116,
+                  10119,
+                  10133,
+                  10134
+                ],
+                "midfielder_ids": [
+                  10102,
+                  10125,
+                  10126
+                ],
+                "goalkeeper_id": 10118
+              },
+              "203": {
+                "defender_ids": [
+                  10101,
+                  10109,
+                  10117,
+                  10123
+                ],
+                "midfielder_ids": [
+                  10105,
+                  10106
+                ],
+                "goalkeeper_id": 10127
+              }
+            },
+            "attack_positive_x": {
+              "202": true,
+              "203": false
+            },
+            "pass_windows": {
+              "202": {
+                "kind": "window",
+                "period": 1,
+                "start_ms": 885000,
+                "end_ms": 945000
+              }
+            }
+          },
+          "page": "tactical_episode-900101.html",
+          "blocks": {
+            "play_replay": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Reproducción de muestras originales: sin interpolar huecos ni posiciones."
+              ]
+            },
+            "team_shape-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "space_partition": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Voronoi area is geometric proximity, not pitch-control probability."
+              ]
+            },
+            "proximity_network-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed."
+              ]
+            },
+            "defensive_line_height-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Adaptación: mínimo longitudinal de defensores explícitos; orientación e identidades requeridas."
+              ]
+            },
+            "clearance_connectivity-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Grafo Gabriel y caminos maximin por separación a defensores puntuales; no probabilidad de pase."
+              ]
+            },
+            "structural_pass-202": {
+              "state": "ready",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "LBS y SGM en el snapshot de inicio; no reproduce TIV, estandarización o clustering entrenado del paper."
+              ]
+            },
+            "between_lines_receptions-202": {
+              "state": "partial",
+              "warnings": [
+                "Real SkillCorner broadcast tracking with pseudonymized player/team names and identifiers. Provider-observed and provider-extrapolated positions are distinguished; missing samples remain missing. Coordinates are normalized to 105x68 m. Shot outcomes and xG are unavailable; match scores come from provider metadata. Dynamic events are provider-derived, not a full referee event feed.",
+                "Se omitieron pases sin participantes, roles o snapshots compatibles; se informa el denominador.",
+                "Requiere grupos defensivo/medio explícitos y snapshot sincronizado al final del pase; sin inferir roles."
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "profiles": {
+    "synthetic": {
+      "measured_match_id": 900001,
+      "unavailable": {},
+      "zero_only": {}
+    },
+    "Metrica Sports": {
+      "measured_match_id": 900011,
+      "unavailable": {
+        "xg_story": "xG no disponible para todos los tiros. No se sustituye por cero.",
+        "defensive_geometry": "Falta evidencia de las operaciones requeridas. get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE",
+        "defensive_line_height": "Resolvedor: La fuente no anota defensores de este equipo; no se infieren por dorsal.",
+        "goalkeeper_connection": "Resolvedor: La fuente no anota portero y defensores de este equipo.",
+        "between_lines_receptions": "Resolvedor: La fuente no anota defensores y medios del rival; no se infieren por dorsal.",
+        "pressure_turnovers": "No hay presiones anotadas; no se infieren desde proximidad."
+      },
+      "zero_only": {
+        "ball_progression": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+      }
+    },
+    "SkillCorner": {
+      "measured_match_id": 900101,
+      "unavailable": {
+        "xg_story": "xG no disponible para todos los tiros. No se sustituye por cero.",
+        "defensive_geometry": "Falta evidencia de las operaciones requeridas. get_line_breaks: HTTP 422 SOURCE_FIELD_UNAVAILABLE",
+        "pressure_turnovers": "No hay presiones anotadas; no se infieren desde proximidad."
+      },
+      "zero_only": {
+        "defensive_actions": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia.",
+        "pressure_recovery": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia.",
+        "ball_progression": "La fuente no anota estas acciones; el bloque mostraría ceros que no significan ausencia."
+      }
+    }
+  }
+}

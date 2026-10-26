@@ -65,7 +65,7 @@ def create_app(settings=None, repository=None):
     app = FastAPI(
         title="Inside the game — Football Analytics API",
         version="1.0.0",
-        description="25 consultas predeterminadas y 9 análisis espaciales sobre datos sintéticos de Azure SQL. Los POST de consulta son de sólo lectura.",
+        description="25 consultas predeterminadas y 9 análisis espaciales sobre datos reales anonimizados/seudonimizados y sintéticos de Azure SQL, separados por procedencia. Los POST de consulta son de sólo lectura.",
     )
     app.state.service, app.state.settings = service, settings
     app.state.registry = registry
