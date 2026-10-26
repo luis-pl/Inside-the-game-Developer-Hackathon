@@ -21,17 +21,22 @@ DeepSeek V4 Flash está desplegado como candidato: pasó una consulta real de ti
 
 La conexión [OpenCode Go con Beam Free](docs/opencode.md) verificó catálogo, precios publicados cero y una consulta real modelo → MCP → SQL. Se mantiene `INSIDE_GAME_OPENCODE_FREE_ONLY=1`: si no se confirma precio cero, se detiene antes de inferencia. No se compraron créditos ni se activó fallback a Console/Zen. La [demostración trazada](docs/examples/agent-live-demo-20261024/README.md) conserva entrada, llamadas y evidencia; una prueba acotada no equivale al QA de todo el corpus. Los ensayos con Luna/GPT-OSS/DeepSeek quedan como historial. El [presupuesto Azure](deployment/demo-budget.json) sólo registra un objetivo y no corta consumo.
 
-Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json), [MCP HTTP](docs/mcp-verification-streamable-http.json) y [datos reales](docs/metrica-service-verification.json). El intérprete, analista, dashboard builder y comunicación A2A siguen pendientes.
+Instalación, ejemplos y límites: [API](docs/api.md) y [MCP](docs/mcp.md). Verificación contra Azure: [API](docs/api-verification.json), [MCP stdio](docs/mcp-verification-stdio.json), [MCP HTTP](docs/mcp-verification-streamable-http.json) y [datos reales](docs/metrica-service-verification.json). El intérprete y el analista conservan sus módulos reservados; el agente de insights ya coopera con data mediante HTTP propio.
 
 El frontend [Topology Lab](docs/topology-lab.md) está implementado con reproducción a tiempo real, persistencia, conectividad y descomposición de Hodge de la red de pases. Es un visor determinista y no requiere el LLM para mostrar los partidos.
 
-La [biblioteca atómica de insights](docs/insights.md) implementa **30 recetas paramétricas**, exportación HTML autocontenida y un MCP de composición local que usa IDs de evidencia. Incluye [diez extensiones investigadas en FIFA y fuentes primarias](docs/insights-research.md). Galería: `python -m inside_game.insights.demo`; genera `.temp/insights/gallery.html` con un fixture marcado sintético. El agente conversacional de insights y la conexión A2A quedan pendientes.
+La [biblioteca atómica de insights](docs/insights.md) implementa **30 recetas paramétricas**, exportación HTML autocontenida y un MCP de composición local que usa IDs de evidencia. Incluye [diez extensiones investigadas en FIFA y fuentes primarias](docs/insights-research.md). Galería: `python -m inside_game.insights.demo`; genera `.temp/insights/gallery.html` con un fixture marcado sintético. El agente conversacional de insights está documentado a continuación; el HTTP propio no certifica compatibilidad A2A externa.
 
 Informe compuesto con datos de la API: `python scripts/build_insights_report.py --match-id 900001`.
 Genera `.temp/insights/match-900001.html` con quince bloques coordinados por equipo:
 redes ponderadas, tiros, xG, posesiones, ocupación, Voronoi, replay y topología.
 La [guía visual](docs/insights-visual-design.md) explica colores, filtros, layout,
 referencias y límites de interpretación. El partido de ejemplo está marcado sintético.
+
+El [agente de insights](docs/insight-agent.md) está implementado: recibe intención
+y texto del analista, coopera con data por HTTP, compone páginas mediante MCP y
+las modifica con revisiones. Inicio local: `python -m inside_game.agents_cli`.
+QA real de tres páginas y dos modificaciones: `python scripts/qa_insight_agent.py`.
 
 > Build something that breaks the fourth wall.
 

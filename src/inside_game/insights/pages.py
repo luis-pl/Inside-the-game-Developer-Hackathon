@@ -10,7 +10,7 @@ from .atoms import text
 from .catalog import RECIPES
 from .contracts import ReportSpec
 from .identity import identities
-from .molecules import legend
+from .molecules import evidence_links, legend
 from .organisms import evidence_footer, insight_section
 from .templates import CSS, JS
 
@@ -42,6 +42,7 @@ def render_report(request):
         "title": spec.title,
         "template_id": spec.template_id,
         "teams": teams,
+        "analyst": spec.analyst.model_dump(mode="json") if spec.analyst else None,
         "blocks": [b.model_dump(mode="json") for b in blocks],
         "evidence": [e.model_dump(mode="json") for e in spec.evidence],
     }
@@ -62,6 +63,18 @@ def render_report(request):
     body = "".join(
         insight_section(b, RECIPES[b.insight_id]["organism_family"]) for b in blocks
     )
+    if spec.analyst:
+        body = (
+            '<section class="analyst-note"><h2>Lectura del analista</h2>'
+            f'<p class="analyst-copy">{text(spec.analyst.text)}</p>'
+            + (
+                evidence_links(spec.analyst.evidence_ids)
+                if spec.analyst.evidence_ids
+                else ""
+            )
+            + "</section>"
+            + body
+        )
     kinds = sorted(
         {
             "Sintético"

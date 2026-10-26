@@ -206,8 +206,9 @@ El agente no vuelve a redactar todos los eventos o frames en JSON: usa IDs de
 evidencia. El anfitrión conecta esos IDs con los originales autorizados.
 Las cinco tools están implementadas en `inside_game.insights.mcp_server`. La
 evidencia autorizada y los recursos HTML viven en la instancia de cada solicitud.
-La comunicación A2A y el agente conversacional siguen pendientes; el renderer
-y su MCP no dependen de ellos para funcionar. Uso: [insights.md](insights.md).
+El agente conversacional y la comunicación HTTP propia están implementados en
+[insight-agent.md](insight-agent.md). El renderer y su MCP también funcionan
+de forma independiente. No se afirma compatibilidad con un estándar A2A externo.
 
 ## HTML autocontenido y objetivo de tiempo
 

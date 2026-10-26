@@ -77,6 +77,13 @@ class BlockSpec(Closed):
         return self
 
 
+class AnalystNote(Closed):
+    """Texto aportado por el analista; el compositor no inventa su contenido."""
+
+    text: str = Field(min_length=1, max_length=16000)
+    evidence_ids: list[str] = Field(default_factory=list, max_length=100)
+
+
 class ReportPlan(Closed):
     title: str = Field(default="Informe de fútbol", min_length=1, max_length=180)
     template_id: Literal[
@@ -88,6 +95,7 @@ class ReportPlan(Closed):
     ] = "custom_report"
     blocks: list[BlockSpec] = Field(min_length=1, max_length=40)
     teams: list[TeamStyle] = Field(default_factory=list, max_length=20)
+    analyst: AnalystNote | None = None
 
     @model_validator(mode="after")
     def unique_team_styles(self):
@@ -108,6 +116,8 @@ class ReportSpec(ReportPlan):
             raise ValueError("DUPLICATE_ID")
         if any(set(b.evidence_ids) - set(ids) for b in self.blocks):
             raise ValueError("UNKNOWN_EVIDENCE")
+        if self.analyst and set(self.analyst.evidence_ids) - set(ids):
+            raise ValueError("UNKNOWN_ANALYST_EVIDENCE")
         if any(
             e.operation not in OPERATIONS or e.operation != e.response.operation_id
             for e in self.evidence

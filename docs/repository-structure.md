@@ -14,7 +14,10 @@ Inside-the-game-Developer-Hackathon/
 │       │   ├── data_agent.py
 │       │   ├── contracts.py       # Mensajes del agente de datos
 │       │   ├── sports_analyst.py
-│       │   └── dashboard_builder.py
+│       │   ├── dashboard_builder.py # Agente de insights con MCP
+│       │   ├── insight_contracts.py # Mensajes y patches de páginas
+│       │   ├── http_api.py          # Data e insights por HTTP
+│       │   └── report_store.py      # Artefactos privados y revisiones
 │       ├── tools/
 │       │   ├── __init__.py
 │       │   ├── synthetic_db.py
@@ -60,7 +63,9 @@ El servidor MCP está implementado con SDK oficial y transportes stdio y Streama
 El contenedor público de Azure usa credenciales individuales y lectura SQL con identidad
 administrada. Uso: [mcp.md](mcp.md) y [azure-demo.md](azure-demo.md). El agente de datos,
 su prompt en `prompts/data_agent.md`, proveedor Azure OpenAI y cliente MCP están
-implementados; uso y límites en [data-agent.md](data-agent.md). El intérprete,
-analista, dashboard builder, orquestación, frontend e integraciones A2A mantienen
-sus módulos reservados. La infraestructura y los datos de Azure SQL
+implementados; uso y límites en [data-agent.md](data-agent.md). El agente de
+insights, su prompt, MCP y comunicación HTTP con data están implementados:
+[insight-agent.md](insight-agent.md). El intérprete, analista y orquestador general
+conservan sus módulos reservados. El frontend Topology Lab está implementado;
+el HTTP de agentes es un protocolo propio. La infraestructura y los datos de Azure SQL
 se conservan en `database/azure-sql/`. Los scripts de despliegue están en `scripts/` y los identificadores públicos del alojamiento en `deployment/cloud.json`.

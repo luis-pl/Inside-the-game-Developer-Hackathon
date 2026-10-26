@@ -3,8 +3,8 @@
 Las veinte familias aprobadas y las diez extensiones investigadas tienen recetas
 y adaptadores ejecutables. El renderer es determinista: no genera código con un
 LLM, no accede a SQL y no necesita red. El agente conversacional de insights y su
-comunicación A2A todavía no se implementan aquí; ya dispone de un MCP de composición
-con cinco tools y recursos HTML para conectarlo.
+comunicación HTTP están implementados en [insight-agent.md](insight-agent.md).
+El MCP de composición ofrece cinco tools y recursos HTML.
 
 ## Archivos y metodología atómica
 

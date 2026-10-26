@@ -139,6 +139,26 @@ def prepare(spec, all_evidence):
         return b
     for e in selected:
         if e.operation in recipe["source_operations"]:
+            if (
+                e.operation
+                in {
+                    "get_passing_network",
+                    "get_heatmap",
+                    "get_movement_summary",
+                    "get_zone_summary",
+                }
+                and spec.parameters.period is not None
+            ):
+                scope = e.arguments.get("scope", {})
+                if (
+                    scope.get("kind") not in {"period", "window"}
+                    or scope.get("period") != spec.parameters.period
+                ):
+                    b.state = "incompatible"
+                    b.warnings.append(
+                        "El agregado no corresponde al período solicitado: recupera evidencia con ese alcance antes de graficarlo."
+                    )
+                    return b
             if e.operation in {
                 "get_metric_series",
                 "get_heatmap",
@@ -388,6 +408,13 @@ def _populate(b, spec, evidence):
             if key == "entity_comparison" and "reports" in data:
                 b.rows.extend(data["reports"])
     elif key == "passing_network":
+        if (
+            len({e.query_id for e in relevant if e.operation == "get_passing_network"})
+            > 1
+        ):
+            raise ValueError(
+                "Una red requiere una sola consulta agregada; no se suman redes de distintos alcances."
+            )
         for e in relevant:
             b.rows.extend(e.response.data.get("edges", []))
             b.metrics.update(
