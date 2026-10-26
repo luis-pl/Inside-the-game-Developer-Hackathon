@@ -84,3 +84,7 @@ python scripts/build_insight_qa_bundle.py .temp/insights/xg-review
 La generación requiere sesiones/credenciales vigentes y confirmación de precio
 cero de Beam Free. La traza de QA es optativa y local; detener su servidor al
 terminar para no registrar solicitudes ajenas a la prueba.
+
+## Integración concurrente
+
+Se conservó el push del compañero `306f266` y se integró sin conflictos. La suite posterior al merge pasó **404 pruebas**. Las páginas y los 31 turnos del modelo corresponden a la ejecución anterior al merge (snapshot `2870fd3`); no se inventaron turnos ni se repitió inferencia para esta comprobación.
