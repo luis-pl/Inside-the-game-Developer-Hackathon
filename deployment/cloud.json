@@ -19,7 +19,7 @@
   "url": "https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io",
   "app_id": "/subscriptions/40baf6ea-db75-448e-8482-ec1d0449d05b/resourceGroups/rg-inside-game-demo/providers/Microsoft.App/containerapps/api-inside-game",
   "image_tag": "open-data-10-real-v2-20261023",
-  "revision": "api-inside-game--0000005",
+  "revision": "api-inside-game--0000006",
   "outbound_ips": [
     "4.172.10.70"
   ],
