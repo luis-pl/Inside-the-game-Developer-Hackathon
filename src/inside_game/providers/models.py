@@ -370,6 +370,10 @@ def model_settings_from_env():
         from inside_game.providers.ollama import OllamaModelSettings
 
         return OllamaModelSettings.from_env()
+    if provider == "nim":
+        from inside_game.providers.nim import NimModelSettings
+
+        return NimModelSettings.from_env()
     if provider != "azure":
         raise ValueError("Unsupported model provider")
     return AzureModelSettings.from_env()
@@ -381,6 +385,10 @@ def create_model(settings=None):
         from inside_game.providers.ollama import OllamaChatModel
 
         return OllamaChatModel(settings)
+    if getattr(settings, "provider", "azure") == "nim":
+        from inside_game.providers.nim import NimChatModel
+
+        return NimChatModel(settings)
     if getattr(settings, "provider", "azure") in {"opencode", "opencode-go"}:
         from inside_game.providers.opencode import (
             OpenCodeChatModel,

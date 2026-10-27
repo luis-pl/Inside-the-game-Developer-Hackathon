@@ -23,6 +23,7 @@ from inside_game.agents.conversation_copy import (
     concept_reply,
     report_reply,
 )
+from inside_game.agents.experiments import T, experiment, with_original_question
 from inside_game.agents.http_client import HttpDataAgent
 from inside_game.agents.insight_contracts import InsightRequest
 from inside_game.agents.insights_http_client import HttpInsightsAgent, PayloadParser
@@ -81,30 +82,42 @@ class Conversations:
                 DataMcpSettings.from_env().url.removesuffix("/mcp")
                 + "/api/operations/list_matches"
             )
-            try:
-                async with (
-                    httpx.AsyncClient(
-                        timeout=25, trust_env=False, follow_redirects=False
-                    ) as client,
-                    client.stream(
-                        "POST",
-                        url,
-                        headers={"Authorization": "Bearer " + key},
-                        json={"limit": 50},
-                    ) as response,
-                ):
-                    if response.status_code != 200:
-                        raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
-                    raw = bytearray()
-                    async for chunk in response.aiter_bytes():
-                        raw.extend(chunk)
-                        if len(raw) > 1024 * 1024:
-                            raise ModelFailure("MATCH_CATALOG_TOO_LARGE")
-                result = ApiResponse.model_validate_json(raw)
-                if result.operation_id != "list_matches":
-                    raise ModelFailure("INVALID_MATCH_CATALOG")
-            except httpx.HTTPError:
-                raise ModelFailure("MATCH_CATALOG_UNAVAILABLE") from None
+            # EXPERIMENTO LOCAL "guards": un reintento más largo si Azure
+            # arranca en frío; sin el experimento, un único intento como antes.
+            timeouts = (25, 60) if experiment("guards") else (25,)
+            for attempt, timeout in enumerate(timeouts):
+                try:
+                    async with (
+                        httpx.AsyncClient(
+                            timeout=timeout, trust_env=False, follow_redirects=False
+                        ) as client,
+                        client.stream(
+                            "POST",
+                            url,
+                            headers={"Authorization": "Bearer " + key},
+                            json={"limit": 50},
+                        ) as response,
+                    ):
+                        if response.status_code != 200:
+                            raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
+                        raw = bytearray()
+                        async for chunk in response.aiter_bytes():
+                            raw.extend(chunk)
+                            if len(raw) > 1024 * 1024:
+                                raise ModelFailure("MATCH_CATALOG_TOO_LARGE")
+                    result = ApiResponse.model_validate_json(raw)
+                    if result.operation_id != "list_matches":
+                        raise ModelFailure("INVALID_MATCH_CATALOG")
+                    break
+                except (httpx.HTTPError, ModelFailure) as exc:
+                    if attempt + 1 < len(timeouts) and (
+                        isinstance(exc, httpx.HTTPError)
+                        or exc.code == "MATCH_CATALOG_UNAVAILABLE"
+                    ):
+                        continue
+                    if isinstance(exc, ModelFailure):
+                        raise
+                    raise ModelFailure("MATCH_CATALOG_UNAVAILABLE") from None
         rows = result.data.get("items", [])
         if not rows:
             raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
@@ -138,7 +151,7 @@ class Conversations:
         previous_plan = None
         analysis_reused = False
         try:
-            async with asyncio.timeout(110):
+            async with asyncio.timeout(T(110)):
                 if message.retry_analysis:
                     if not value["report"]:
                         raise ModelFailure("REPORT_REQUIRED_FOR_ANALYSIS")
@@ -205,9 +218,12 @@ class Conversations:
                         self.stage(value, "data")
                         data = await HttpDataAgent(self.data_url, key).fetch(
                             DataRequest(
-                                request_text=plan.data_request, context=plan.context
+                                request_text=with_original_question(
+                                    plan.data_request, message.text
+                                ),
+                                context=plan.context,
                             ),
-                            timeout=35,
+                            timeout=T(35),
                         )
                         audit["data"] = {
                             **data.model_dump(mode="json", exclude={"evidence"}),
@@ -235,7 +251,7 @@ class Conversations:
                         raw = await client._request(
                             "POST",
                             "/a2a/v1/analysis-reports",
-                            timeout=56,
+                            timeout=T(56),
                             payload=AnalysisRequest(
                                 request_text=plan.analysis_request,
                                 context=plan.context,
@@ -263,7 +279,7 @@ class Conversations:
                                     + " Recupera sólo lo necesario para esta modificación. En get_rankings usa limit=100 para recuperar este catálogo en una página, no resúmenes jugador por jugador. No repitas tiros o series si ya los aporta el informe.",
                                     context=plan.context,
                                 ),
-                                timeout=25,
+                                timeout=T(25),
                             )
                             audit["data"] = {
                                 "request_id": str(handoff.request_id),
@@ -303,7 +319,8 @@ class Conversations:
                                     ),
                                 ),
                                 timeout=min(
-                                    52, max(1, 95 - (time.perf_counter() - started))
+                                    T(52),
+                                    max(1, T(95) - (time.perf_counter() - started)),
                                 ),
                             )
                         analysis = None
@@ -390,10 +407,10 @@ class Conversations:
                                         insights_client=CurrentPage(),
                                         limits=AnalystLimits(
                                             timeout_seconds=min(
-                                                40,
+                                                T(40),
                                                 max(
                                                     1,
-                                                    102
+                                                    T(102)
                                                     - (time.perf_counter() - started),
                                                 ),
                                             )

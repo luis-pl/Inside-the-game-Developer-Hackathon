@@ -28,6 +28,7 @@ from inside_game.agents.contracts import (
 )
 from inside_game.agents.dashboard_builder import DashboardBuilder, InsightLimits
 from inside_game.agents.data_agent import AgentLimits, DataAgent
+from inside_game.agents.experiments import T
 from inside_game.agents.http_client import HttpDataAgent
 from inside_game.agents.insight_contracts import InsightRequest, InsightResult
 from inside_game.agents.report_store import ReportError, ReportStore
@@ -171,7 +172,9 @@ def create_agent_app(
     async def data(
         message: DataRequest,
         request: Request,
-        x_agent_deadline_ms: int = Header(default=40000, ge=1000, le=45000),
+        x_agent_deadline_ms: int = Header(
+            default=int(T(40000)), ge=1000, le=int(T(45000))
+        ),
     ):
         key = request.headers["authorization"][7:]
         try:
@@ -208,7 +211,9 @@ def create_agent_app(
     async def insights(
         message: InsightRequest,
         request: Request,
-        x_agent_deadline_ms: int = Header(default=55000, ge=1000, le=55000),
+        x_agent_deadline_ms: int = Header(
+            default=int(T(55000)), ge=1000, le=int(T(55000))
+        ),
     ):
         owner = request.state.principal.id
         digest = hashlib.sha256(message.model_dump_json().encode()).hexdigest()

@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 import sysconfig
 from pathlib import Path
 from typing import Literal
@@ -10,7 +11,31 @@ from uuid import uuid4
 from pydantic import Field, ValidationError
 
 from inside_game.agents.contracts import DataContext, Message
+from inside_game.agents.experiments import experiment
 from inside_game.providers.models import ModelFailure
+
+
+def team_ids_from(text, context, match_id, matches):
+    """EXPERIMENTO LOCAL "guards": equipos del partido nombrados por el usuario.
+
+    Sólo devuelve IDs que juegan ese partido según el catálogo: seleccionados,
+    citados como "equipo N" o por su nombre completo.
+    """
+    row = next((m for m in matches if m.get("match_id") == match_id), None)
+    if not row:
+        return []
+    names = {
+        row.get("home_team_id"): row.get("home_team_name"),
+        row.get("away_team_id"): row.get("away_team_name"),
+    }
+    names.pop(None, None)
+    selected = [t for t in context.team_ids if t in names]
+    if selected:
+        return selected
+    lowered = text.lower()
+    found = [int(n) for n in re.findall(r"equipo\s+(\d+)", lowered) if int(n) in names]
+    found += [t for t, name in names.items() if name and name.lower() in lowered]
+    return list(dict.fromkeys(found))
 
 
 class Interpretation(Message):
@@ -112,6 +137,39 @@ class Interpreter:
                         except ValueError:
                             pass
                 plan = Interpretation.model_validate(args)
+                if (
+                    experiment("guards")
+                    and plan.action in {"create", "modify"}
+                    and not plan.context.match_ids
+                ):
+                    # EXPERIMENTO LOCAL: el partido ya es conocido (selector o
+                    # texto); el modelo a veces lo omite en el plan.
+                    known = {m["match_id"] for m in matches}
+                    selected = [m for m in context.match_ids if m in known]
+                    named = [
+                        int(m)
+                        for m in re.findall(r"\b(9\d{5})\b", text)
+                        if int(m) in known
+                    ]
+                    chosen = selected or list(dict.fromkeys(named))
+                    if len(chosen) == 1:
+                        plan.context.match_ids = chosen
+                        normalized.append("context.match_ids")
+                if (
+                    experiment("guards")
+                    and plan.action in {"create", "modify"}
+                    and len(plan.context.match_ids) == 1
+                    and not plan.context.team_ids
+                ):
+                    # EXPERIMENTO LOCAL: el equipo pedido (selector, "equipo N"
+                    # o su nombre) no puede perderse; sin él, las cifras serían
+                    # las del partido entero presentadas como del equipo.
+                    teams = team_ids_from(
+                        text, context, plan.context.match_ids[0], matches
+                    )
+                    if len(teams) == 1:
+                        plan.context.team_ids = teams
+                        normalized.append("context.team_ids")
                 if plan.action == "clarify" and plan.reply.count("?") > 1:
                     raise ValueError("ASK_ONE_CLARIFYING_QUESTION")
                 allowed = {m["match_id"] for m in matches}

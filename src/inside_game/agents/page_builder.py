@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from inside_game.agents.contracts import DataRequest, DataResult, Evidence
 from inside_game.agents.data_agent import preview
 from inside_game.agents.evidence_pages import include_query_pages
+from inside_game.agents.experiments import T
 from inside_game.agents.insight_contracts import (
     FinishInsight,
     InsightRequest,
@@ -28,14 +29,14 @@ from inside_game.providers.models import ModelFailure
 
 @dataclass(frozen=True)
 class InsightLimits:
-    timeout_seconds: float = 55
+    timeout_seconds: float = T(55)
     max_turns: int = 6
     max_tool_calls: int = 10
     max_input_bytes: int = 180000
     max_evidence_bytes: int = 8 * 1024 * 1024
 
     def __post_init__(self):
-        if not 0 < self.timeout_seconds < 60 or any(
+        if not 0 < self.timeout_seconds < T(60) or any(
             v <= 0 for v in self.__dict__.values()
         ):
             raise ValueError("INSIGHT_LIMITS_INVALID")
@@ -407,7 +408,7 @@ class _InsightRun:
             before = time.perf_counter()
             result = await self.agent.data_client.fetch(
                 DataRequest(request_text=requested.request_text, context=context),
-                timeout=max(0.01, min(40, remaining - 3)),
+                timeout=max(0.01, min(T(40), remaining - 3)),
             )
             self.timings["data_http"] += (time.perf_counter() - before) * 1000
             result = DataResult.model_validate(result)

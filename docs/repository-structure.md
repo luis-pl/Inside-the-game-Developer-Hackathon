@@ -51,7 +51,8 @@ Inside-the-game-Developer-Hackathon/
 │       │   ├── __init__.py
 │       │   ├── models.py
 │       │   ├── opencode.py         # Console/Zen o Go; planes y credenciales separados
-│       │   └── ollama.py           # Modelo local opcional, sin credenciales
+│       │   ├── ollama.py           # Modelo local opcional, sin credenciales
+│       │   └── nim.py              # NVIDIA NIM alojado, endpoint gratuito fijo
 │       ├── contracts.py
 │       ├── analytics.py           # Definiciones deterministas de métricas
 │       ├── service.py             # Registro de operaciones y consultas
