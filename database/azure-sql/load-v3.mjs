@@ -4,6 +4,8 @@ import { pathToFileURL } from 'node:url';
 import { connect, sql, bulk, model, safeError } from './connection.mjs';
 import { generateMatch, SEED, VERSION, MATCH_COUNT, payload } from './scenario-v3.mjs';
 import { auditData } from './audit-data.mjs';
+// Alias ficticios por team_id; misma fuente que rename-teams.sql.
+const TEAM_NAMES=Object.fromEntries(JSON.parse(readFileSync(new URL('./team-names.json',import.meta.url),'utf8')).teams.map(t=>[t.team_id,t.team_name]));
 export const order=['matches','match_teams','match_team_managers','match_lineups','lineup_cards','lineup_positions','events','event_relations',
  'event_passes','event_shots','shot_freeze_players','event_tactics','tactical_lineups','frames_360','frame_360_players',
  'tracking_runs','tracking_periods','tracking_frames','tracking_player_positions','tracking_ball_positions','event_tracking_links'];
@@ -20,7 +22,7 @@ export async function seed({replace=false}={}){
   const catalogs={countries:[{country_id:1,name:'Synthetic Country'}],competitions:[{competition_id:900,competition_name:'Synthetic Demo League',competition_gender:'mixed',competition_youth:false,competition_international:false,country_name:'Synthetic Country'}],
    seasons:[{season_id:2026,season_name:'2026 synthetic'}],competition_seasons:[{competition_id:900,season_id:2026,raw_payload:payload()}],teams:[],players:[],managers:[],stadiums:[],referees:[]};
   for(let team=1;team<=4;team++){
-   catalogs.teams.push({team_id:team,team_name:`Synthetic FC ${team}`,country_id:1});catalogs.managers.push({manager_id:team,name:`Synthetic Coach ${team}`,country_id:1});catalogs.stadiums.push({stadium_id:team,name:`Synthetic Stadium ${team}`,country_id:1});
+   catalogs.teams.push({team_id:team,team_name:TEAM_NAMES[team],country_id:1});catalogs.managers.push({manager_id:team,name:`Synthetic Coach ${team}`,country_id:1});catalogs.stadiums.push({stadium_id:team,name:`Synthetic Stadium ${team}`,country_id:1});
    for(let slot=1;slot<=14;slot++)catalogs.players.push({player_id:team*100+slot,player_name:`Synthetic Player ${team}-${slot}`,country_id:1});
   }
   for(let i=1;i<=2;i++)catalogs.referees.push({referee_id:i,name:`Synthetic Referee ${i}`,country_id:1});
