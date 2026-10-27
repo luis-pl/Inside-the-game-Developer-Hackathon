@@ -18,6 +18,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache/metrica"
 VERSION = "metrica-anonymized-1.0.0"
 STEP_MS = 200
+# Alias ficticios por team_id; misma fuente que database/azure-sql/rename-teams.sql.
+TEAM_NAMES = {
+    t["team_id"]: t["team_name"]
+    for t in json.loads(
+        (ROOT / "database/azure-sql/team-names.json").read_text(encoding="utf-8")
+    )["teams"]
+}
 
 
 def number(value):
@@ -165,7 +172,7 @@ def prepare_game(game, manifest):
     tables["teams"] = [
         {
             "team_id": teams[s],
-            "team_name": f"Metrica {game} · Equipo {'A' if s == 0 else 'B'}",
+            "team_name": TEAM_NAMES[teams[s]],
         }
         for s in (0, 1)
     ]

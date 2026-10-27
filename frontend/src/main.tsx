@@ -1,13 +1,32 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App.tsx";
-import { ApiEpisodeRepository } from "./data/api-repository.ts";
-import { MemoryEpisodeRepository } from "./data/memory-repository.ts";
-import "./styles.css";
+import { Workspace } from "./Workspace.tsx";
 
-const repository = new MemoryEpisodeRepository(new ApiEpisodeRepository());
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App repository={repository} />
-  </StrictMode>,
-);
+const root = createRoot(document.getElementById("root")!);
+if (
+  location.pathname === "/viewer" ||
+  document
+    .querySelector('meta[name="inside-game-surface"]')
+    ?.getAttribute("content") === "viewer"
+) {
+  Promise.all([
+    import("./App.tsx"),
+    import("./styles.css"),
+    import("./data/api-repository.ts"),
+    import("./data/memory-repository.ts"),
+  ]).then(
+    ([{ App }, , { ApiEpisodeRepository }, { MemoryEpisodeRepository }]) =>
+      root.render(
+        <StrictMode>
+          <App
+            repository={new MemoryEpisodeRepository(new ApiEpisodeRepository())}
+          />
+        </StrictMode>,
+      ),
+  );
+} else
+  root.render(
+    <StrictMode>
+      <Workspace />
+    </StrictMode>,
+  );

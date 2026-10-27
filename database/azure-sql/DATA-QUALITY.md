@@ -5,6 +5,18 @@
 El conjunto actual incorpora **2 partidos de Metrica y 8 de SkillCorner**. Los
 diez partidos sintéticos históricos no cuentan para este mínimo. Los ocho nuevos
 partidos conservan fuentes distintas; no se duplican registros cambiando alias.
+
+### Nombres de equipos
+
+Los equipos usan alias ficticios con temática de programación (p. ej. «Tabs
+United — Spaces Athletic», «Null Pointers — Undefined Athletic»). Son seudónimos:
+no identifican a los clubes originales ni corresponden a clubes conocidos. Los
+cuatro equipos sintéticos llevan nombres de testing (Mock Objects FC, Test
+Fixtures United, Stub City, Dummy Data Rovers) y conservan `is_synthetic` y la
+competición «Synthetic Demo League». La correspondencia y los nombres anteriores
+(`Synthetic FC n`, `Metrica n · Equipo A/B`, `SC nn · Equipo A/B`) están en
+`team-names.json`; `rename-teams.mjs` (o `rename-teams.sql`) los aplica en una
+transacción y `--rollback` (o `rename-teams-rollback.sql`) los restaura.
 Hay 291.770 frames a 5 Hz y 6.418.940 filas de posición de jugadores, incluidas
 las ausencias explícitas. `real-data-cloud-report.json` compara las filas completas
 de los diez partidos contra la preparación de las fuentes fijadas por SHA-256.

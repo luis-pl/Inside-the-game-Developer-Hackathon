@@ -58,8 +58,23 @@ class ReportStore:
         return None
 
     def finish(self, owner, result):
+        fields = type(result).model_fields
+        if "analysis" in fields:
+            result = result.model_copy(
+                update={
+                    "analysis": result.analysis.model_copy(
+                        update={"evidence": []}, deep=True
+                    )
+                },
+                deep=True,
+            )
         self.requests[(owner, str(result.request_id))]["result"] = result.model_copy(
-            update={"html": None, "plan": None, "evidence": []}, deep=True
+            update={
+                k: v
+                for k, v in {"html": None, "plan": None, "evidence": []}.items()
+                if k in fields
+            },
+            deep=True,
         )
 
     def abort(self, owner, request_id):

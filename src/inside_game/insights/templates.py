@@ -8,7 +8,7 @@ CSS = """
 """
 
 CSS += """
-.analyst-note{grid-column:1/-1;padding:2rem 0;border-bottom:1px solid var(--line)}.analyst-copy{white-space:pre-wrap;max-width:72ch;line-height:1.75}
+.analyst-note{grid-column:1/-1;padding:2rem 0;border-bottom:1px solid var(--line)}.analyst-copy{white-space:pre-wrap;max-width:72ch;line-height:1.75}.analyst-note h3{font-size:1.05rem;line-height:1.4;margin:1.4rem 0 .5rem}.analysis-details{margin:.75rem 0;max-width:72ch}
 .block-question{font-size:.82rem;color:var(--muted);margin:.6rem 0 1.3rem;max-width:70ch}.possession-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}.possession-card{border-top:1px solid var(--line);padding:.8rem 0}.possession-card strong{font-size:.82rem;color:var(--team)}.possession-card p{font-size:.8rem;margin:.4rem 0}.metric-details .metrics{padding:.5rem 0}/* Templates arrange organisms; the charts retain their own parametric data. */
 :root{--ink:#192f2c;--muted:#51645e;--line:#d8dfd7;background:#f6f6f0}
 header,main,footer{max-width:1380px;padding-left:3.5rem;padding-right:3.5rem}

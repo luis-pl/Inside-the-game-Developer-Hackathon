@@ -15,7 +15,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
-from prepare_metrica import clock, lineup_clock, number
+from prepare_metrica import TEAM_NAMES, clock, lineup_clock, number
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache/skillcorner"
@@ -111,7 +111,7 @@ def prepare(game, source_id, manifest):
         tables["teams"].append(
             {
                 "team_id": teams[side],
-                "team_name": f"SC {game:02} · Equipo {'A' if side == 0 else 'B'}",
+                "team_name": TEAM_NAMES[teams[side]],
             }
         )
         tables["match_teams"].append(

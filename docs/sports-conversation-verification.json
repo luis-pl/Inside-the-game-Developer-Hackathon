@@ -1,0 +1,112 @@
+{
+  "tested_at_utc": "2026-10-27T04:47:05.507701+00:00",
+  "python_tests": 435,
+  "frontend_tests": 46,
+  "typescript_and_build": "passed",
+  "conversation_cases": [
+    {
+      "case": "welcome",
+      "action": "answer",
+      "answer_topic": "welcome",
+      "passed": true,
+      "seconds": 2.68,
+      "request": "Hola, ¿qué puedo mirar aquí?",
+      "reply": "Aquí podemos explorar las ocasiones de gol, cómo circuló el balón y qué espacios dejaron los equipos.\n\nElige un partido en el selector y cuéntame qué te gustaría entender."
+    },
+    {
+      "case": "explain-xg",
+      "action": "answer",
+      "answer_topic": "xg",
+      "passed": true,
+      "seconds": 2.64,
+      "request": "¿Qué es el xG? Explícamelo fácil, que no sé mucho de fútbol.",
+      "reply": "El xG, o goles esperados, estima la probabilidad de que un tiro termine en gol según un modelo. La suma de los tiros ayuda a resumir la calidad de las ocasiones de un equipo. No predice el marcador ni dice cuántos goles debía marcar.\n\nEn los partidos sintéticos de esta demo es una medida ilustrativa, no una estimación calibrada para fútbol real."
+    },
+    {
+      "case": "casual-analysis",
+      "action": "clarify",
+      "answer_topic": "general",
+      "passed": true,
+      "seconds": 4.78,
+      "request": "¿Quién fue mejor en este partido? No entiendo mucho de estadísticas.",
+      "reply": "¿Quieres comparar a los dos equipos o buscar un jugador destacado?"
+    },
+    {
+      "case": "real-match-attack",
+      "action": "create",
+      "answer_topic": "general",
+      "passed": true,
+      "seconds": 4.74,
+      "request": "Muéstrame cómo atacaron los dos equipos.",
+      "reply": "Voy a preparar una página comparando cómo atacaron los dos equipos, con mapas de tiros, pases, red de conexiones y canales de entrada al último tercio."
+    },
+    {
+      "case": "missing-xg",
+      "action": "clarify",
+      "answer_topic": "general",
+      "passed": true,
+      "seconds": 3.62,
+      "request": "Añade el xG y dime quién fue el jugador estrella.",
+      "reply": "Este partido (Metrica 1) no tiene datos de xG disponibles. ¿Quieres que muestre el mapa de tiros y destaque al jugador con más disparos?"
+    },
+    {
+      "case": "explain-voronoi",
+      "action": "answer",
+      "answer_topic": "voronoi",
+      "passed": true,
+      "seconds": 3.26,
+      "request": "Eso del Voronoi no lo entiendo. ¿Para qué sirve en fútbol?",
+      "reply": "Imagina que asignamos cada punto del campo al jugador que tiene más cerca en ese instante. Ese reparto se llama Voronoi.\n\nSirve para leer distancias y espacios entre jugadores. No demuestra quién controla el balón o domina una zona, ni asegura que un pase sea seguro."
+    },
+    {
+      "case": "simplify-report",
+      "action": "clarify",
+      "answer_topic": "general",
+      "passed": true,
+      "seconds": 2.66,
+      "request": "Ese gráfico no me ayuda, quiero algo más sencillo y que me expliques lo importante.",
+      "reply": "¿Te refieres al mapa de tiros o a la evolución del xG?"
+    }
+  ],
+  "full_flow": [
+    {
+      "case": "create",
+      "stage": "complete",
+      "facts_verified": 15,
+      "blocks": 2,
+      "seconds": 35.22,
+      "html_sha256": "763580f219852f12be7b38ed68be38e2e30b82d316a815db49fc62c54e10de02"
+    },
+    {
+      "case": "modify",
+      "stage": "complete",
+      "facts_verified": 15,
+      "blocks": 2,
+      "seconds": 4.983,
+      "html_sha256": "d9d3912976d343ad06c198d162e6879205f51909d61cb48ce68da6470c15b162"
+    }
+  ],
+  "missing_xg": {
+    "action": "answer",
+    "stage": "complete",
+    "report_created": false,
+    "seconds": 2.887,
+    "explicitly_unavailable": true
+  },
+  "ui": {
+    "desktop": "1440x920",
+    "mobile": "390x844",
+    "shell_overflow": false,
+    "references_expand": "passed",
+    "console_errors": 0,
+    "review": "ship: conversación, procedencia, fuentes desplegables y lectura móvil revisadas"
+  },
+  "secrets_absent_from_changed_files_artifacts_and_bundle": true,
+  "limits": [
+    "Seven interpreter cases do not execute analytical delegations.",
+    "Full-flow times are observations, not a latency guarantee.",
+    "Previous timeouts and one catalog HTTP503 remain documented.",
+    "One QA retry was interrupted by the local server restart, not scored as a model failure."
+  ],
+  "passed_for_this_scope": true
+}

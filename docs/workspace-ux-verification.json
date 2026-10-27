@@ -1,0 +1,36 @@
+{
+  "scope": "Actualización xG y jugador estrella; datos sintéticos del partido 900001",
+  "python_tests": 428,
+  "frontend_tests": 45,
+  "build": "passed",
+  "graphs_ready": 11,
+  "previous_blocks_preserved": true,
+  "insights_status": "complete",
+  "analysis_status": "partial",
+  "analysis_runtime_issues": [],
+  "sourced_facts_verified": 22,
+  "analysis_scope": "Top cinco por xG total; no es una evaluación exhaustiva ni premio oficial.",
+  "seconds": 93.45,
+  "under_one_minute": false,
+  "criterion": "Mayor xG acumulado",
+  "player_id": 110,
+  "player_name": "Synthetic Player 1-10",
+  "html_sha256": "ff61a6ae749ea1b2772fb73696ab50a6639c6bf6b1d200b853ff25d68aaa0a08",
+  "secrets_absent_from_outputs_and_bundle": true,
+  "notes": [
+    "INSIGHTS_TIMEOUT original: límite de 40 s y data_request de edición ignorado; corregidos.",
+    "Un intento intermedio devolvió MODEL_INCOMPLETE_RESPONSE; se añadió un reintento acotado.",
+    "Lectura partial sin issues expresa alcance limitado; no se transformó en complete.",
+    "Beam Free Go con verificación de precio cero; no se modificó facturación."
+  ],
+  "passed_for_requested_scope": true,
+  "ui_checks": {
+    "desktop": "1440x920; chat a la izquierda y ancho ajustado con teclado y arrastre",
+    "mobile": "390x844; sin desbordamiento del shell; tabla desplazable con decimales completos",
+    "themes": ["light", "dark"],
+    "document_navigation": "foco y scroll a gráficos/actualización mediante puente con nonce y token efímeros",
+    "console_errors_on_final_pass": 0,
+    "reviewer_verdict": "ship: resueltos los tres hallazgos de contraste, recuperación del catálogo y números en móvil",
+    "screenshots": [".temp/ux-review/desktop.png", ".temp/ux-review/mobile.png", ".temp/ux-review/light.png", ".temp/ux-review/loading.png"]
+  }
+}

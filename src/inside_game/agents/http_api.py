@@ -19,13 +19,14 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from inside_game.access import KeyRegistry
+from inside_game.agents.analyst_facts import source_key
 from inside_game.agents.contracts import (
     AgentIssue,
     DataContext,
     DataRequest,
     DataResult,
 )
-from inside_game.agents.dashboard_builder import DashboardBuilder
+from inside_game.agents.dashboard_builder import DashboardBuilder, InsightLimits
 from inside_game.agents.data_agent import AgentLimits, DataAgent
 from inside_game.agents.http_client import HttpDataAgent
 from inside_game.agents.insight_contracts import InsightRequest, InsightResult
@@ -126,6 +127,8 @@ def create_agent_app(
     model_factory=create_model,
     data_runner=None,
     data_transport=None,
+    insights_base_url=None,
+    insights_transport=None,
     store=None,
     allowed_hosts=("localhost", "127.0.0.1", "testserver"),
 ):
@@ -140,6 +143,7 @@ def create_agent_app(
         redoc_url=None,
     )
     app.state.store = store
+    app.state.registry = registry
     app.add_middleware(AgentGuard, registry=registry)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(allowed_hosts))
 
@@ -201,7 +205,11 @@ def create_agent_app(
         return JSONResponse(payload, headers={"X-Request-ID": str(message.request_id)})
 
     @app.post("/a2a/v1/insights")
-    async def insights(message: InsightRequest, request: Request):
+    async def insights(
+        message: InsightRequest,
+        request: Request,
+        x_agent_deadline_ms: int = Header(default=55000, ge=1000, le=55000),
+    ):
         owner = request.state.principal.id
         digest = hashlib.sha256(message.model_dump_json().encode()).hexdigest()
         cached = store.begin(owner, message.request_id, digest)
@@ -236,9 +244,15 @@ def create_agent_app(
                 transport=data_transport,
             )
             try:
-                async with asyncio.timeout(55):
+                async with asyncio.timeout(x_agent_deadline_ms / 1000):
                     async with model_factory() as model:
-                        result = await DashboardBuilder(model, data_client=client).run(
+                        result = await DashboardBuilder(
+                            model,
+                            data_client=client,
+                            limits=InsightLimits(
+                                timeout_seconds=x_agent_deadline_ms / 1000
+                            ),
+                        ).run(
                             message,
                             previous_plan=previous.result.plan if previous else None,
                             previous_evidence=previous.result.evidence
@@ -269,6 +283,13 @@ def create_agent_app(
         return {
             **snapshot.result.model_dump(mode="json"),
             "plan": snapshot.result.plan.model_dump(mode="json"),
+            "evidence_catalog": [
+                {
+                    "evidence_id": e.evidence_id,
+                    "source_sha256": hashlib.sha256(source_key(e).encode()).hexdigest(),
+                }
+                for e in snapshot.result.evidence
+            ],
         }
 
     @app.get(
@@ -284,4 +305,24 @@ def create_agent_app(
             },
         )
 
+    from inside_game.agents.analyst_http import register_analyst_routes
+
+    register_analyst_routes(
+        app,
+        store=store,
+        model_factory=model_factory,
+        data_url=data_base_url,
+        insights_url=insights_base_url or data_base_url,
+        data_transport=data_transport,
+        insights_transport=insights_transport,
+    )
+    from inside_game.agents.chat_http import register_chat_routes
+
+    register_chat_routes(
+        app,
+        store=store,
+        model_factory=model_factory,
+        data_url=data_base_url,
+        insights_url=insights_base_url or data_base_url,
+    )
     return app

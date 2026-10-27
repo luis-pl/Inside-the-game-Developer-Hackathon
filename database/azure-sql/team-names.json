@@ -1,0 +1,34 @@
+{
+  "description": "Nombres ficticios de equipos con temática de programación. Fuente única para los generadores y para rename-teams.sql. Son alias: no identifican a los equipos originales. Los sintéticos conservan un nombre de testing (Mock/Test/Stub/Dummy) y siguen marcados is_synthetic.",
+  "backup": {
+    "taken_at": "2026-10-27",
+    "source": "API list_matches (request_id 369d1d01-2c3a-4910-8c9b-ab95fe5a5091)",
+    "note": "previous_name es el valor de statsbomb.teams.team_name antes del cambio."
+  },
+  "teams": [
+    {"team_id": 1, "previous_name": "Synthetic FC 1", "team_name": "Mock Objects FC"},
+    {"team_id": 2, "previous_name": "Synthetic FC 2", "team_name": "Test Fixtures United"},
+    {"team_id": 3, "previous_name": "Synthetic FC 3", "team_name": "Stub City"},
+    {"team_id": 4, "previous_name": "Synthetic FC 4", "team_name": "Dummy Data Rovers"},
+    {"team_id": 102, "previous_name": "Metrica 1 · Equipo A", "team_name": "Tabs United"},
+    {"team_id": 103, "previous_name": "Metrica 1 · Equipo B", "team_name": "Spaces Athletic"},
+    {"team_id": 104, "previous_name": "Metrica 2 · Equipo A", "team_name": "Frontend FC"},
+    {"team_id": 105, "previous_name": "Metrica 2 · Equipo B", "team_name": "Backend Rovers"},
+    {"team_id": 202, "previous_name": "SC 01 · Equipo A", "team_name": "Merge Wanderers"},
+    {"team_id": 203, "previous_name": "SC 01 · Equipo B", "team_name": "Rebase City"},
+    {"team_id": 204, "previous_name": "SC 02 · Equipo A", "team_name": "Light Mode FC"},
+    {"team_id": 205, "previous_name": "SC 02 · Equipo B", "team_name": "Dark Mode United"},
+    {"team_id": 206, "previous_name": "SC 03 · Equipo A", "team_name": "Null Pointers"},
+    {"team_id": 207, "previous_name": "SC 03 · Equipo B", "team_name": "Undefined Athletic"},
+    {"team_id": 208, "previous_name": "SC 04 · Equipo A", "team_name": "Sync Rangers"},
+    {"team_id": 209, "previous_name": "SC 04 · Equipo B", "team_name": "Async Albion"},
+    {"team_id": 210, "previous_name": "SC 05 · Equipo A", "team_name": "Commit FC"},
+    {"team_id": 211, "previous_name": "SC 05 · Equipo B", "team_name": "Rollback Town"},
+    {"team_id": 212, "previous_name": "SC 06 · Equipo A", "team_name": "Segfault United"},
+    {"team_id": 213, "previous_name": "SC 06 · Equipo B", "team_name": "Kernel Panic FC"},
+    {"team_id": 214, "previous_name": "SC 07 · Equipo A", "team_name": "Infinite Loop City"},
+    {"team_id": 215, "previous_name": "SC 07 · Equipo B", "team_name": "Off-by-One Rovers"},
+    {"team_id": 216, "previous_name": "SC 08 · Equipo A", "team_name": "Race Condition FC"},
+    {"team_id": 217, "previous_name": "SC 08 · Equipo B", "team_name": "Deadlock Athletic"}
+  ]
+}

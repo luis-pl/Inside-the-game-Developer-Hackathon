@@ -6,6 +6,7 @@ import json
 import time
 
 from .adapters import prepare
+from .analysis_note import analyst_copy
 from .atoms import text
 from .catalog import RECIPES
 from .contracts import ReportSpec
@@ -85,7 +86,7 @@ def report_parts(request):
     if spec.analyst:
         body = (
             '<section class="analyst-note"><h2>Lectura del analista</h2>'
-            f'<p class="analyst-copy">{text(spec.analyst.text)}</p>'
+            + analyst_copy(spec.analyst.text)
             + (
                 evidence_links(spec.analyst.evidence_ids)
                 if spec.analyst.evidence_ids

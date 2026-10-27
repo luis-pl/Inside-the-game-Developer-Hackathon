@@ -1,0 +1,540 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T04:38:34.7497639Z",
+  "title": "Design System: Inside the game — Conversational workspace",
+  "extensions": {
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "min-width: 1500px"
+      },
+      {
+        "name": "compact",
+        "value": "max-width: 1120px"
+      },
+      {
+        "name": "icon-rail",
+        "value": "max-width: 900px and min-width: 761px"
+      },
+      {
+        "name": "mobile",
+        "value": "max-width: 760px"
+      },
+      {
+        "name": "desktop-layout",
+        "value": "min-width: 901px"
+      }
+    ],
+    "typographyMeta": {
+      "message": {
+        "displayName": "Message",
+        "purpose": "Chat paragraphs with preserved line breaks."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Pane headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Workspace text, navigation, and controls."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Chat welcome heading."
+      },
+      "metadata": {
+        "displayName": "Metadata",
+        "purpose": "Supporting row descriptions and toolbar actions."
+      }
+    },
+    "shadows": [
+      {
+        "value": "20px 0 45px #0004",
+        "purpose": "Open mobile drawer only; desktop panes remain flat.",
+        "name": "mobile-drawer"
+      }
+    ],
+    "motion": [
+      {
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Press feedback and 200ms chat docking position animation.",
+        "name": "ease-ui-out"
+      },
+      {
+        "value": "150ms",
+        "purpose": "Press transform and background response; separator hover tone.",
+        "name": "motion-feedback"
+      },
+      {
+        "value": "200ms",
+        "purpose": "Declared state duration; the chat docking animation uses the equivalent duration in the layout hook.",
+        "name": "motion-state"
+      },
+      {
+        "value": "background 0.15s, color 0.15s",
+        "purpose": "Ordinary button and link state changes.",
+        "name": "control-state"
+      },
+      {
+        "value": "scale(0.96)",
+        "purpose": "Primary, send, and retry actions while pressed; removed under reduced motion.",
+        "name": "press"
+      },
+      {
+        "value": "transform 0.2s",
+        "purpose": "Mobile conversation drawer entry and exit.",
+        "name": "drawer"
+      },
+      {
+        "value": "activity-spin 1s linear infinite",
+        "purpose": "Indeterminate activity alongside real stage text and elapsed time.",
+        "name": "activity-spinner"
+      },
+      {
+        "value": "busy 1.5s ease-in-out infinite",
+        "purpose": "Small status dot fades to opacity 0.3 at 50%.",
+        "name": "busy"
+      },
+      {
+        "value": "outline-color 180ms ease-out",
+        "purpose": "Focused destination inside the isolated report document.",
+        "name": "document-focus"
+      },
+      {
+        "value": "animation: none !important; transition: none !important; scroll-behavior: auto !important",
+        "purpose": "Disables ordinary CSS motion; JavaScript also skips docking animation; update notice permits only 100ms opacity.",
+        "name": "reduced-motion"
+      }
+    ],
+    "colorMeta": {
+      "dark-bg": {
+        "displayName": "dark Workspace Ground",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#151515"
+      },
+      "dark-side": {
+        "displayName": "dark Conversation Rail",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#101010"
+      },
+      "dark-panel": {
+        "displayName": "dark Assistant Surface",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#191919"
+      },
+      "dark-input": {
+        "displayName": "dark Input Surface",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#242424"
+      },
+      "dark-hover": {
+        "displayName": "dark Interaction Tone",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#292929"
+      },
+      "dark-line": {
+        "displayName": "dark Divider",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#303030"
+      },
+      "dark-text": {
+        "displayName": "dark Reading Ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#ededed"
+      },
+      "dark-muted": {
+        "displayName": "dark Secondary Ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#a4a4a4"
+      },
+      "dark-inverse": {
+        "displayName": "dark Action Contrast",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#171717"
+      },
+      "dark-primary": {
+        "displayName": "dark Action Ink / Action Paper",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#f0f0f0"
+      },
+      "light-bg": {
+        "displayName": "light Workspace Ground",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#fff"
+      },
+      "light-side": {
+        "displayName": "light Conversation Rail",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#f5f5f5"
+      },
+      "light-panel": {
+        "displayName": "light Assistant Surface",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#fafafa"
+      },
+      "light-input": {
+        "displayName": "light Input Surface",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#f1f1f1"
+      },
+      "light-hover": {
+        "displayName": "light Interaction Tone",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#e9e9e9"
+      },
+      "light-line": {
+        "displayName": "light Divider",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#dedede"
+      },
+      "light-text": {
+        "displayName": "light Reading Ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#202020"
+      },
+      "light-muted": {
+        "displayName": "light Secondary Ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#666"
+      },
+      "light-inverse": {
+        "displayName": "light Action Contrast",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#fff"
+      },
+      "light-primary": {
+        "displayName": "light Action Ink / Action Paper",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(49% 0 0)",
+          "oklch(61% 0 0)",
+          "oklch(72% 0 0)",
+          "oklch(84% 0 0)",
+          "oklch(95% 0 0)"
+        ],
+        "canonical": "#202020"
+      }
+    }
+  },
+  "components": [
+    {
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);border:0;border-radius:6px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}.ds-primary:hover:not(:disabled){filter:brightness(.88)}.ds-primary:disabled{opacity:.4;cursor:not-allowed}.ds-primary:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-primary{transition:transform var(--motion-feedback,150ms) var(--ease-ui-out,cubic-bezier(.23,1,.32,1)),background-color var(--motion-feedback,150ms) ease}.ds-primary:active:not(:disabled){transform:scale(.96)}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}.ds-primary:active:not(:disabled){transform:none}}",
+      "refersTo": "button-primary",
+      "html": "<button class=\"ds-primary\">Entrar al espacio <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14m-5-5 5 5-5 5\"/></svg></button>",
+      "description": "Filled login or entry action with paired theme roles.",
+      "name": "Primary action",
+      "kind": "button"
+    },
+    {
+      "css": ".ds-ghost{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:transparent;color:var(--text,#ededed);border:0;border-radius:5px;cursor:pointer;transition:background .15s,color .15s}.ds-ghost:hover:not(:disabled){background:var(--hover,#292929)}.ds-ghost:disabled{opacity:.4;cursor:not-allowed}.ds-ghost:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}",
+      "refersTo": "button-ghost",
+      "html": "<button class=\"ds-ghost\" aria-label=\"Abrir conversación\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 4h14v12H9l-4 4V4Z\"/></svg></button>",
+      "description": "Transparent auxiliary action.",
+      "name": "Ghost icon action",
+      "kind": "button"
+    },
+    {
+      "css": ".ds-label{display:block;color:var(--text,#ededed);font:400 12px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-field{display:block;width:100%;margin-top:8px;padding:12px;background:var(--input,#242424);color:var(--text,#ededed);border:1px solid var(--line,#303030);border-radius:6px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-field::placeholder{color:var(--muted,#a4a4a4)}.ds-field:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}",
+      "refersTo": "field",
+      "html": "<label class=\"ds-label\" for=\"ds-credential\">Credencial del equipo<input class=\"ds-field\" id=\"ds-credential\" type=\"password\" placeholder=\"Tu clave de acceso\" autocomplete=\"off\"/></label>",
+      "description": "Labeled access field with a restrained border and visible focus.",
+      "name": "Credential field",
+      "kind": "input"
+    },
+    {
+      "css": ".ds-history{display:flex;flex-direction:column;gap:4px;background:var(--side,#101010);padding:15px;width:220px}.ds-conversation{display:flex;align-items:center;justify-content:flex-start;gap:9px;padding:10px 9px;background:transparent;color:var(--text,#ededed);border:0;border-radius:5px;text-align:left;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}.ds-conversation svg{flex:none}.ds-conversation span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ds-conversation:hover,.ds-conversation.ds-selected{background:var(--hover,#292929)}.ds-conversation:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}",
+      "refersTo": "conversation-item",
+      "html": "<nav class=\"ds-history\" aria-label=\"Historial\"><button class=\"ds-conversation ds-selected\" aria-label=\"Las ocasiones del partido\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 4h14v12H9l-4 4V4Z\"/></svg><span>Las ocasiones del partido</span></button><button class=\"ds-conversation\" aria-label=\"Red de pases\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 4h14v12H9l-4 4V4Z\"/></svg><span>Red de pases</span></button></nav>",
+      "description": "Single-line history entries with outline icons and tonal selection.",
+      "name": "Conversation navigation",
+      "kind": "nav"
+    },
+    {
+      "css": ".ds-tag{display:inline-block;background:transparent;color:var(--muted,#a4a4a4);border:1px solid var(--line,#303030);padding:2px 7px;border-radius:4px;font:400 10px/1.5 \"Segoe UI\",system-ui,sans-serif}",
+      "refersTo": "agent-tag",
+      "html": "<span class=\"ds-tag\">Intérprete</span>",
+      "description": "Non-interactive role metadata in the chat header.",
+      "name": "Interpreter tag",
+      "kind": "chip"
+    },
+    {
+      "css": ".ds-user-message{margin-left:24px;margin-bottom:26px;padding:12px 14px;background:var(--input,#242424);color:var(--text,#ededed);border-radius:10px;overflow-wrap:anywhere}.ds-user-message p{margin:0;white-space:pre-wrap;font:400 13px/1.7 \"Segoe UI\",system-ui,sans-serif}",
+      "refersTo": "user-message",
+      "html": "<div class=\"ds-user-message\"><p>Analiza las ocasiones del partido seleccionado.</p></div>",
+      "description": "A tonal bubble distinguishes a user request from open assistant text.",
+      "name": "User message",
+      "kind": "card"
+    },
+    {
+      "css": ".ds-composer{position:relative;margin-top:12px;border:1px solid var(--line,#303030);border-radius:10px;background:var(--input,#242424);padding:11px 10px 40px}.ds-message{display:block;resize:vertical;min-height:58px;max-height:180px;width:100%;background:transparent;color:var(--text,#ededed);border:0;font:400 13px/1.6 \"Segoe UI\",system-ui,sans-serif}.ds-message::placeholder{color:var(--muted,#a4a4a4)}.ds-send{display:inline-flex;align-items:center;justify-content:center;position:absolute;bottom:8px;right:8px;width:29px;height:29px;border:0;border-radius:6px;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);cursor:pointer;transition:background .15s,color .15s}.ds-send:hover:not(:disabled){filter:brightness(.88)}.ds-send:disabled{opacity:.4;cursor:not-allowed}.ds-message:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-send:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-send{transition:transform var(--motion-feedback,150ms) var(--ease-ui-out,cubic-bezier(.23,1,.32,1)),background-color var(--motion-feedback,150ms) ease}.ds-send:active:not(:disabled){transform:scale(.96)}@media(prefers-reduced-motion:reduce){.ds-send{transition:none}.ds-send:active:not(:disabled){transform:none}}",
+      "refersTo": "composer",
+      "html": "<div class=\"ds-composer\"><textarea class=\"ds-message\" aria-label=\"Mensaje al intérprete\" placeholder=\"Pregunta sobre el partido…\"></textarea><button class=\"ds-send\" aria-label=\"Enviar mensaje\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7M12 5v15\"/></svg></button></div>",
+      "description": "Resizable request field with a compact submit action.",
+      "name": "Chat composer",
+      "kind": "input"
+    },
+    {
+      "kind": "custom",
+      "name": "Document update",
+      "description": "Exact change counts and revision, paired with an explicit destination in the document.",
+      "html": "<div class=\"ds-update\" role=\"status\"><span class=\"ds-update-arrow\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v16m-5-5 5 5 5-5\"/></svg></span><div><strong>1 gráfico actualizado</strong><small>Versión 2 · Cambios listos para revisar</small></div><button class=\"ds-update-action\">Ver cambios <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v16m-5-5 5 5 5-5\"/></svg></button></div>",
+      "css": ".ds-update{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line,#303030);background:var(--panel,#191919);color:var(--text,#ededed);font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-update-arrow{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line,#303030);border-radius:6px;flex:none}.ds-update>div{flex:1;min-width:0}.ds-update strong{font-size:12px;font-weight:550}.ds-update small{display:block;font-size:10px;color:var(--muted,#a4a4a4);margin-top:3px}.ds-update-action{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);font:400 11px/1.5 \"Segoe UI\",system-ui,sans-serif;border-radius:5px;padding:8px 10px;cursor:pointer;transition:background .15s,color .15s}.ds-update-action:hover:not(:disabled){background:var(--hover,#292929)}.ds-update-action:disabled{opacity:.4;cursor:not-allowed}.ds-update-action:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}@media(max-width:760px){.ds-update{padding:10px;gap:7px;flex-wrap:wrap}.ds-update>div{min-width:160px}.ds-update-action{margin-left:35px}}",
+      "refersTo": "document-update"
+    },
+    {
+      "kind": "custom",
+      "name": "Panel separator",
+      "description": "Focusable resize handle; application code supplies drag, keyboard resizing, and range updates.",
+      "html": "<div class=\"ds-grip\" role=\"separator\" tabindex=\"0\" aria-orientation=\"vertical\" aria-label=\"Ajustar ancho del chat\" aria-valuemin=\"250\" aria-valuemax=\"620\" aria-valuenow=\"350\"><span></span></div>",
+      "css": ".ds-grip{position:relative;display:flex;align-items:center;justify-content:center;width:8px;height:120px;cursor:col-resize;touch-action:none;background:var(--bg,#151515);outline-offset:-2px}.ds-grip>span{width:2px;height:34px;border-radius:2px;background:var(--line,#303030);transition:background-color var(--motion-feedback,150ms) ease}.ds-grip:hover>span,.ds-grip:focus-visible>span{background:var(--muted,#a4a4a4)}@media(prefers-reduced-motion:reduce){.ds-grip>span{transition:none}}",
+      "refersTo": "panel-grip"
+    },
+    {
+      "kind": "card",
+      "name": "Work status",
+      "description": "Actual stage, elapsed seconds, and process grouping while preserving access to the current document.",
+      "html": "<div class=\"ds-working\" role=\"status\"><div class=\"ds-status-line\"><span class=\"ds-spinner\"></span><strong>Analista e Insights están trabajando</strong><time>32s</time></div><ol class=\"ds-steps\" aria-label=\"Proceso de la solicitud\"><li><span></span>Intención</li><li><span></span>Datos</li><li data-state=\"active\"><span></span>Informe</li></ol><small>Sigo trabajando. El informe actual permanece disponible.</small></div>",
+      "css": ".ds-working{display:block;padding:14px;background:var(--input,#242424);color:var(--text,#ededed);border:1px solid var(--line,#303030);border-radius:8px;margin:10px 0 18px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-status-line{display:flex;align-items:flex-start;gap:9px}.ds-status-line strong{font-size:12px;font-weight:500;flex:1}.ds-status-line time{font-size:11px;color:var(--muted,#a4a4a4);font-variant-numeric:tabular-nums}.ds-spinner{margin-top:2px;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line,#303030);border-top-color:var(--text,#ededed);display:inline-block;animation:ds-spin 1s linear infinite;flex:none}@keyframes ds-spin{to{transform:rotate(360deg)}}.ds-steps{list-style:none;display:flex;gap:14px;padding:0;margin:14px 0 9px;font-size:10px}.ds-steps li{display:flex;align-items:center;gap:6px;color:var(--muted,#a4a4a4)}.ds-steps li>span{width:5px;height:5px;border:1px solid var(--muted,#a4a4a4);border-radius:50%}.ds-steps li[data-state=\"active\"]{color:var(--text,#ededed)}.ds-steps li[data-state=\"active\"]>span{background:var(--text,#ededed);border-color:var(--text,#ededed)}.ds-working>small{display:block;font-size:10px;line-height:1.6;color:var(--muted,#a4a4a4)}@media(prefers-reduced-motion:reduce){.ds-spinner{animation:none}}",
+      "refersTo": "work-status"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Analysis Desk",
+    "donts": [
+      "**Don't** introduce a chromatic accent into the monochrome workspace shell.",
+      "**Don't** turn flat workspace panes into a collection of raised cards.",
+      "**Don't** reuse the mobile drawer shadow on permanent desktop surfaces.",
+      "**Don't** promote surface-specific large headings or the existing text-glyph\n  error dismiss control into reusable display or icon primitives.",
+      "**Don't** substitute an elapsed timer or ready graphics for a promise of\n  exhaustive analysis or a fixed completion time."
+    ],
+    "rules": [
+      {
+        "section": "colors",
+        "name": "The Paired Roles Rule",
+        "body": "Change themes by swapping the complete semantic role\nset; keep the same information hierarchy in both themes."
+      },
+      {
+        "section": "colors",
+        "name": "The Document Color Rule",
+        "body": "Keep the workspace shell monochrome while preserving\nthe report and viewer's established analytical color meanings."
+      },
+      {
+        "section": "elevation",
+        "name": "The Flat Workspace Rule",
+        "body": "Keep permanent desktop panes flat; reserve the\nimplemented shadow for the temporary mobile drawer."
+      }
+    ],
+    "dos": [
+      "**Do** apply the complete theme role set and keep focus visible in both modes.",
+      "**Do** preserve independent pane scrolling and keep chat composition reachable.",
+      "**Do** show evidence provenance, including synthetic-data labels, near selection.",
+      "**Do** use inline outline SVG icons and geometric football illustrations.",
+      "**Do** preserve the existing report and topology viewer's analytical colors.",
+      "**Do** pair update summaries with a destination and keep old evidence readable\n  while the next version is being prepared.",
+      "**Do** keep provenance and the first limitation visible when source details\n  are folded behind disclosures in the report."
+    ],
+    "keyCharacteristics": [
+      "Pure neutral interface with theme-paired semantic roles.",
+      "Compact navigation and controls around a spacious document.",
+      "Tonal grouping and fine dividers rather than raised cards.",
+      "Geometric football imagery and inline outline SVG icons.",
+      "Visible focus, real progress states, and reduced-motion support.",
+      "Adjustable panes and explicit destinations for document updates.",
+      "Readable analytical prose with visible provenance and scope."
+    ],
+    "overview": "The conversational workspace is a compact, quiet place to ask about a match,\ninspect the resulting document, and continue refining it. Its visual language\ncomes from the implemented workspace: pure neutrals, tonal surfaces, restrained\ndividers, compact controls, and visible keyboard focus. Black and white themes\ncarry equivalent roles.\n\nThis system applies to `frontend/src/Workspace.tsx` and\n`frontend/src/workspace.css`. The existing topology viewer and generated reports\nretain their separate visual systems, including approved team colors. The\nworkspace's document theme adapter is an integration detail, not a redefinition\nof those systems. Product evidence and source provenance must remain readable."
+  }
+}

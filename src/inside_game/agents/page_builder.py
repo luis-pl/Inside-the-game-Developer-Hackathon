@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from inside_game.agents.contracts import DataRequest, DataResult, Evidence
 from inside_game.agents.data_agent import preview
+from inside_game.agents.evidence_pages import include_query_pages
 from inside_game.agents.insight_contracts import (
     FinishInsight,
     InsightRequest,
@@ -257,9 +258,31 @@ class _InsightRun:
             ):
                 return self.result("error", issues=["CONTEXT_BUDGET_EXCEEDED"])
             before = time.perf_counter()
-            turn = await self.agent.model.respond(
-                self.agent.prompt, messages, functions
-            )
+            try:
+                turn = await self.agent.model.respond(
+                    self.agent.prompt, messages, functions
+                )
+            except ModelFailure as exc:
+                if (
+                    not self.previous
+                    or exc.code != "MODEL_INCOMPLETE_RESPONSE"
+                    or any(t.get("code") == exc.code for t in self.trace)
+                ):
+                    raise
+                # Una respuesta truncada aún no ejecutó herramientas: un solo
+                # reintento con el patch mínimo es seguro y queda en la traza.
+                self.trace.append(
+                    {"tool": "model_response", "status": "retry", "code": exc.code}
+                )
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": "La respuesta quedó incompleta. Usa update_report y sólo el patch mínimo de los bloques solicitados. No repitas el plan anterior, HTML ni texto analítico.",
+                    }
+                )
+                turn = await self.agent.model.respond(
+                    self.agent.prompt, messages, functions
+                )
             self.timings["model"] += (time.perf_counter() - before) * 1000
             self.turns += 1
             self.tokens += turn.total_tokens
@@ -413,6 +436,7 @@ class _InsightRun:
                 "analyst": self.analyst,
             }
             plan = ReportPlan.model_validate(args)
+            plan = include_query_pages(plan, self.evidence)
             selected = {key for block in plan.blocks for key in block.evidence_ids}
             if self.request.context.match_ids and any(
                 e.evidence_id in selected

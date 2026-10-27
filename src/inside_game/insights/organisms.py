@@ -305,7 +305,7 @@ def ask_panel(groups, recipes, model_available):
         ("true", "false") if model_available else ("false", "true")
     )
     question = (
-        '<textarea id="question" rows="2" maxlength="2000" placeholder="Por ejemplo: ¿quién creó más peligro en Metrica 2?"></textarea>'
+        '<textarea id="question" rows="2" maxlength="2000" placeholder="Por ejemplo: ¿quién creó más peligro, Frontend FC o Backend Rovers?"></textarea>'
         '<div class="compose-row"><p class="hint">Intro envía · Mayús+Intro, nueva línea</p>'
         '<button type="submit" class="primary" id="ask-button">Pedir informe</button></div>'
         if model_available

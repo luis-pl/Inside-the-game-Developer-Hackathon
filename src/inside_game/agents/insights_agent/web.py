@@ -45,9 +45,9 @@ MAX_BODY = 64 * 1024
 MAX_REPORTS = 12
 KEEP_MANIFESTS = 3
 SUGGESTIONS = (
-    "¿Desde dónde remató el Equipo B en Metrica 2?",
-    "Compara a los dos equipos del partido SC 03",
-    "¿Qué hizo el dorsal 10 del SC 01 · Equipo A?",
+    "¿Desde dónde remató Backend Rovers?",
+    "Compara a Null Pointers y Undefined Athletic",
+    "¿Qué hizo el dorsal 10 de Merge Wanderers?",
 )
 # Sin scripts en línea; los organismos usan atributos `style` para colores de equipo.
 PAGE_CSP = (
