@@ -14,12 +14,14 @@ from inside_game.providers.models import ModelFailure
 
 
 class Interpretation(Message):
-    action: Literal["create", "modify", "clarify", "catalog"]
+    action: Literal["create", "modify", "clarify", "catalog", "answer"]
     title: str = Field(min_length=1, max_length=100)
     reply: str = Field(min_length=1, max_length=1000)
+    answer_topic: Literal["general", "welcome", "xg", "voronoi"] = "general"
     context: DataContext = Field(default_factory=DataContext)
     data_request: str = Field(default="", max_length=5000)
     analysis_request: str = Field(default="", max_length=5000)
+    refresh_analysis: bool = True
 
 
 def load_prompt():
@@ -69,7 +71,7 @@ class Interpreter:
                 "type": "function",
                 "name": "delegate_request",
                 "strict": False,
-                "description": "Decide crear, modificar, mostrar catálogo o pedir aclaración. Sin SQL ni cifras deportivas.",
+                "description": "Responde conceptos u orientación, o decide crear, modificar, mostrar partidos o pedir una aclaración. Sin SQL ni resultados deportivos inventados.",
                 "parameters": Interpretation.model_json_schema(),
             }
         ]
@@ -110,6 +112,8 @@ class Interpreter:
                         except ValueError:
                             pass
                 plan = Interpretation.model_validate(args)
+                if plan.action == "clarify" and plan.reply.count("?") > 1:
+                    raise ValueError("ASK_ONE_CLARIFYING_QUESTION")
                 allowed = {m["match_id"] for m in matches}
                 if not set(plan.context.match_ids) <= allowed:
                     raise ValueError("MATCH_NOT_IN_CATALOG")

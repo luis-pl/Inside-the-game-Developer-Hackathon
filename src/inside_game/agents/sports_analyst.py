@@ -551,12 +551,9 @@ class _Run:
                     if key not in used:
                         used.append(key)
                 citations = ", ".join(str(used.index(key) + 1) for key in item.fact_ids)
-                label = {
-                    "observation": "Observación",
-                    "interpretation": "Interpretación prudente",
-                    "recommendation": "Propuesta de comprobación",
-                }[item.kind]
-                parts.append(f"{label}: {value} [{citations}]")
+                # El tipo de afirmación permanece en el contrato y la trazabilidad.
+                # La prosa del lector conserva las citas sin repetir etiquetas.
+                parts.append(f"{value} [{citations}]")
                 statements.append(item.model_copy(update={"text": value}))
             sections.append(section.model_copy(update={"statements": statements}))
         limits = list(dict.fromkeys([*args.limitations, *warnings]))

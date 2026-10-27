@@ -117,6 +117,18 @@ components:
     textColor: "{colors.dark-text}"
     rounded: "{rounded.message}"
     padding: "11px 10px 40px"
+  document-update:
+    backgroundColor: "{colors.dark-panel}"
+    textColor: "{colors.dark-text}"
+    padding: "12px 16px"
+  work-status:
+    backgroundColor: "{colors.dark-input}"
+    textColor: "{colors.dark-text}"
+    rounded: "{rounded.assistant}"
+    padding: "14px"
+  panel-grip:
+    backgroundColor: "{colors.dark-bg}"
+    width: "8px"
 ---
 
 # Design System: Inside the game — Conversational workspace
@@ -143,6 +155,8 @@ of those systems. Product evidence and source provenance must remain readable.
 - Tonal grouping and fine dividers rather than raised cards.
 - Geometric football imagery and inline outline SVG icons.
 - Visible focus, real progress states, and reduced-motion support.
+- Adjustable panes and explicit destinations for document updates.
+- Readable analytical prose with visible provenance and scope.
 
 ## Colors
 
@@ -192,17 +206,28 @@ browser's monospace default at 11px with 1.6 line height.
 
 ## Layout
 
-The desktop workspace fills `100dvh`. Conversations occupy the left rail, the
-document occupies the flexible center, and chat occupies a fixed right column.
-The base rail is 220px and chat is 350px; the top bar is 62px and the document
-toolbar and chat heading are 52px. Panes scroll independently, with the composer
-anchored below chat messages.
+The desktop workspace fills `100dvh`. The default arrangement is conversations
+on the left, a flexible document in the center, and chat on the right. Chat can
+move to the other side of the document. Initial widths are 220px for history and
+350px for chat; layout preferences persist locally. Above 900px, history can
+collapse to a 62px icon rail. Reset restores initial widths, expanded history,
+and chat on the right.
 
-At 1500px and wider the rail grows to 238px and chat to 390px. At 1120px and below,
-they shrink to 180px and 310px. Between 761px and 900px, the rail becomes a 62px
-icon strip. At 760px and below, conversations move into a 240px modal drawer and
-the top bar becomes 54px. Document and chat alternate through explicit view
-buttons; the active pane takes the available height.
+History resizes between 170px and 300px; chat resizes between 250px and 620px,
+with tighter maxima when space is limited. Chat's clamp preserves 290px in its
+container; history's clamp reserves 700px of viewport width. A 6px history grip
+and 8px chat grip provide separate drag targets. Keyboard separators expose
+their current range and value: arrows change 10px, Shift plus arrows 40px, and
+Home/End select the allowed extremes. Double-click restores that panel's default,
+subject to the same clamp. While dragging, the iframe stops intercepting pointers.
+
+Between 761px and 900px, history uses the 62px icon strip and its resizing/collapse
+controls are hidden; chat remains adjustable. At 760px and below, conversations
+move into a 240px modal drawer and the top bar becomes 54px. Resize and docking
+controls are hidden. Document and chat alternate through explicit view buttons;
+the active pane takes the available height. The desktop top bar is 62px, and
+document toolbar and chat heading are 52px. Panes scroll independently, with the
+composer anchored below messages.
 
 The spacing scale is a vocabulary of repeated values, not a strict multiple-only
 grid. Conversation rows have a compact 4px gap, panel padding commonly uses 16px,
@@ -250,6 +275,13 @@ The workspace uses structural panes rather than a repeated raised-card system.
 The user message is the recurring compact container: input surface, message
 radius, 12px 14px padding, and a 24px left inset. Assistant messages remain on
 the chat surface with a small speaker label and preserved text breaks.
+Assistant replies can explain a concept without creating a document. Following
+an analysis, their open-text treatment carries a short answer from validated
+analytical statements, rather than replacing the answer with a graphic count.
+The frontend preserves that server-authored answer even when its scope is partial.
+The bounded progress panel is a functional state container: input surface,
+assistant radius, fine divider border, and 14px padding. It does not change the
+flat-pane rule.
 
 ### Inputs / Fields
 Login fields use the input surface, action radius, and divider border. The match
@@ -268,9 +300,47 @@ pressed-state document/chat controls.
 
 ### Starting points and progress
 Starting points form a divided list with an action title, muted description,
-and a trailing arrow; they do not become separate cards. Progress combines real
-stage text with a small pulsing dot. The dot animates over 1.5s; the drawer moves
-over 0.2s. Reduced-motion preference disables animations and transitions.
+and a trailing arrow; they do not become separate cards. In-flight work appears
+both above the document and in chat: real stage text, elapsed seconds with
+tabular numerals, and a 14px spinner. Chat groups stages into Intención, Datos,
+and Informe without inventing completion percentages. After 25 seconds the
+supporting copy reassures that the current document remains available; it makes
+no delivery-time promise. The original small dot remains for history/empty-state
+progress. Reading older chat messages does not force a jump to the bottom;
+a Nuevos mensajes control offers a return.
+
+### Document updates and recovery
+After a requested publication or newer revision, a flat notice reports counts
+of added, updated, and removed graphics, or a title/analysis-only change. It
+shows the revision and an explicit Ver cambios action; the report also offers
+Ir a los gráficos and Leer análisis. New or changed blocks receive an Actualizado
+label. Navigation moves focus and scroll to the intended content through a
+token-bearing message bridge inside the isolated iframe. The document keeps its
+separate analytical visual system.
+Its existing script hashes remain in force; an ephemeral nonce authorizes the
+injected bridge. Document navigation becomes available after the embedded DOM
+confirms readiness through a message whose source and token the parent verifies.
+
+The embedded analytical reading uses section headings and readable paragraphs.
+Provenance and the first limitation stay visible; remaining scope detail and
+sources use labeled disclosures. Statement kinds, facts, and citations remain
+in the underlying analytical contract and trace. These are report presentation
+patterns and do not introduce a new workspace palette or typography system.
+
+Failures use plain recovery copy, with technical details behind a disclosure.
+Reintentar solicitud or Completar análisis appears only when applicable. A partial
+analysis with no issues and complete graphics retains the validated answer and
+its limited-scope wording, rather than being treated as a failed or exhaustive
+analysis. Failed refreshes
+keep the previously displayed document available.
+
+### Motion
+Controls use the 150ms feedback duration and `cubic-bezier(0.23, 1, 0.32, 1)`
+for the implemented press response; primary/send/retry actions scale to 0.96
+while pressed. Chat docking uses a 200ms position animation with that easing.
+The spinner rotates over 1s, the small dot pulses over 1.5s, and the drawer moves
+over 0.2s. Reduced-motion disables spinners, docking motion, press scaling, and
+ordinary transitions; the update notice permits only a 100ms opacity transition.
 
 ## Do's and Don'ts
 
@@ -280,6 +350,10 @@ over 0.2s. Reduced-motion preference disables animations and transitions.
 - **Do** show evidence provenance, including synthetic-data labels, near selection.
 - **Do** use inline outline SVG icons and geometric football illustrations.
 - **Do** preserve the existing report and topology viewer's analytical colors.
+- **Do** pair update summaries with a destination and keep old evidence readable
+  while the next version is being prepared.
+- **Do** keep provenance and the first limitation visible when source details
+  are folded behind disclosures in the report.
 
 ### Don't:
 - **Don't** introduce a chromatic accent into the monochrome workspace shell.
@@ -287,3 +361,5 @@ over 0.2s. Reduced-motion preference disables animations and transitions.
 - **Don't** reuse the mobile drawer shadow on permanent desktop surfaces.
 - **Don't** promote surface-specific large headings or the existing text-glyph
   error dismiss control into reusable display or icon primitives.
+- **Don't** substitute an elapsed timer or ready graphics for a promise of
+  exhaustive analysis or a fixed completion time.

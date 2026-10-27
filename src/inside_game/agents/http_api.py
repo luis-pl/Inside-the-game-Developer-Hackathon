@@ -143,6 +143,7 @@ def create_agent_app(
         redoc_url=None,
     )
     app.state.store = store
+    app.state.registry = registry
     app.add_middleware(AgentGuard, registry=registry)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(allowed_hosts))
 

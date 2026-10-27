@@ -1,0 +1,144 @@
+{
+  "tested_at_utc": "2026-10-27T04:09:49.163132+00:00",
+  "python_tests": {
+    "passed": 428,
+    "failed": 0
+  },
+  "frontend_tests": {
+    "passed": 45,
+    "failed": 0
+  },
+  "typescript_and_build": "passed",
+  "http_negative_cases": [
+    {
+      "case": "browser_no_session",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "case": "agents_no_credential",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "case": "mutation_without_intent",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "case": "cross_origin",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "case": "no_arbitrary_sql_route",
+      "status": 404,
+      "expected": 404,
+      "passed": true
+    },
+    {
+      "case": "invalid_request_id",
+      "status": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "case": "empty_message",
+      "status": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "case": "long_message",
+      "status": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "case": "unknown_conversation",
+      "status": 404,
+      "expected": 404,
+      "passed": true
+    }
+  ],
+  "transport": {
+    "llm_used": false,
+    "steps": [
+      {
+        "step": "mcp_handshake_and_tools",
+        "tools": 34,
+        "seconds": 0.851
+      },
+      {
+        "step": "get_match_context",
+        "seconds": 0.272,
+        "passed": true
+      },
+      {
+        "step": "get_shots",
+        "seconds": 0.366,
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "seconds": 1.494
+  },
+  "live_successes": [
+    {
+      "case": "modify-existing",
+      "passed": true,
+      "stage": "complete",
+      "error": null,
+      "seconds": 15.05,
+      "conversation_id": "71010338-85dd-4dfb-88e8-f6bb9e4ed3de"
+    },
+    {
+      "case": "missing-xg",
+      "passed": true,
+      "stage": "clarification",
+      "error": null,
+      "seconds": 12.01,
+      "conversation_id": "a7388d84-4881-4b4b-80fc-689a9ea21cfd"
+    }
+  ],
+  "live_failures": [
+    {
+      "case": "create",
+      "stage": "error",
+      "error": "DATA_EVIDENCE_UNAVAILABLE",
+      "seconds": 39.24,
+      "data_issue_codes": [
+        "DEADLINE_EXCEEDED"
+      ]
+    },
+    {
+      "case": "create",
+      "stage": "error",
+      "error": "CHAT_DEADLINE_EXCEEDED",
+      "seconds": 110.014,
+      "data_issue_codes": []
+    }
+  ],
+  "data_cross_checks": {
+    "synthetic_match": 900001,
+    "shots": 23,
+    "shots_on_target": 10,
+    "goals": 3,
+    "xg_sum": 1.6903801272059698,
+    "xg_matches_event_sum": true,
+    "facts_verified_against_report_sources": 26,
+    "html_sha256": "abff4ecb60ce513dc782f33818c75ee9981ed9425ef55ce9126ba0e8bcbc1504"
+  },
+  "ui": {
+    "desktop": "1440x920: move chat, keyboard resizing, reset and draft preservation passed",
+    "mobile": "390x844: focus trapping/return, Escape close, no shell overflow and graph navigation passed"
+  },
+  "secrets_absent_from_saved_outputs_and_bundle": true,
+  "overall": "FAILED: fresh end-to-end creation is not reliable within its deadlines",
+  "scope": "Real Beam Free Go runs and two MCP/SQL operations; not a complete audit of all 34 cloud operations.",
+  "artifacts": ".temp/workspace-qa-current/"
+}

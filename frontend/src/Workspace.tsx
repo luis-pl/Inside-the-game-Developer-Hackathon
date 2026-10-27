@@ -1,6 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import "./workspace.css";
+import { useWorkspaceLayout } from "./hooks/use-workspace-layout.tsx";
+import { documentHtml } from "./report-document.ts";
+import {
+  changeLabel,
+  friendlyIssue,
+  hasScopedAnalysis,
+  reportLinkLabel,
+} from "./domain/workspace-feedback.ts";
+import type { ReportChanges } from "./domain/workspace-feedback.ts";
 
 type Match = {
   match_id: number;
@@ -18,7 +27,12 @@ type Context = {
 type Conversation = {
   id: string;
   title: string;
-  messages: { role: string; content: string; error?: string }[];
+  messages: {
+    role: string;
+    content: string;
+    error?: string;
+    retry_analysis?: boolean;
+  }[];
   context: Context;
   busy: boolean;
   stage: string;
@@ -29,6 +43,9 @@ type Conversation = {
     status: string;
   };
   runs: unknown[];
+  changes?: ReportChanges;
+  started_at?: number;
+  events?: { stage: string; at: number }[];
 };
 type Summary = { id: string; title: string; busy: boolean };
 const stages: Record<string, string> = {
@@ -73,6 +90,9 @@ function Icon({ name }: { name: string }) {
     menu: "M4 6h16M4 12h16M4 18h16",
     arrow: "M5 12h14m-5-5 5 5-5 5",
     close: "m6 6 12 12M6 18 18 6",
+    down: "M12 4v16m-5-5 5 5 5-5",
+    dock: "M4 4h16v16H4V4Zm8 0v16",
+    reset: "M5 8a8 8 0 1 1-1 7M5 3v5h5",
   };
   return (
     <svg
@@ -98,16 +118,6 @@ function download(text: string, name: string, type: string) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
-function documentHtml(html: string, dark: boolean) {
-  const policy = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">`;
-  const theme = dark
-    ? `<style>:root{--ink:#ebebeb;--muted:#aaa;--line:#353535;--paper:#181818;color-scheme:dark}body,header,main,footer,section.insight{background:#181818!important;color:#ebebeb!important}h1,h2,h3,dt,dd,p,summary{color:inherit}figure svg,.pitch{background:#242824!important}figcaption,.method,.palette-note{color:#aaa}a{color:#ccc}button,select{background:#292929;color:#eee;border-color:#555}pre{background:#242424;color:#ddd}.field-lines{stroke:#8b9c90}figure svg text:not(.jersey){fill:#ccc}.status{background:#2b3a2e;color:#d4e0d6}</style>`
-    : "";
-  return html
-    .replace(/<head>/i, "<head>" + policy)
-    .replace("</head>", theme + "</head>");
-}
-
 export function Workspace() {
   const [mobile, setMobile] = useState(
     () => matchMedia("(max-width:760px)").matches,
@@ -118,6 +128,21 @@ export function Workspace() {
   const [auth, setAuth] = useState(false),
     [local, setLocal] = useState(false),
     [key, setKey] = useState("");
+  const sizing = useWorkspaceLayout(auth);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const pendingRequest = useRef(false);
+  const displayedRevision = useRef<{ id: string; revision: number } | null>(
+    null,
+  );
+  const [loadedChanges, setLoadedChanges] = useState<ReportChanges | null>(
+    null,
+  );
+  const [notice, setNotice] = useState(false),
+    [documentReady, setDocumentReady] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [nearEnd, setNearEnd] = useState(true),
+    [unread, setUnread] = useState(false);
+  const messageScroll = useRef<HTMLDivElement>(null);
   const [sessions, setSessions] = useState<Summary[]>([]),
     [conversation, setConversation] = useState<Conversation | null>(null);
   const [matches, setMatches] = useState<Match[]>([]),
@@ -130,6 +155,36 @@ export function Workspace() {
   const [pane, setPane] = useState("document"),
     [view, setView] = useState("report"),
     [sidebar, setSidebar] = useState(false);
+  const frameToken = useMemo(() => crypto.randomUUID(), [html, theme]);
+  const renderedDocument = useMemo(
+    () => documentHtml(html, theme === "dark", frameToken, loadedChanges),
+    [html, theme, frameToken, loadedChanges],
+  );
+  useLayoutEffect(() => {
+    setDocumentReady(false);
+    // El iframe confirma su propio DOM. Una nueva revisión puede reutilizar
+    // exactamente el mismo HTML; consultar el servidor no implica recargarlo.
+    const ready = (event: MessageEvent) => {
+      if (
+        event.source === frame.current?.contentWindow &&
+        event.data?.type === "inside-game-ready" &&
+        event.data?.token === frameToken
+      )
+        setDocumentReady(true);
+    };
+    window.addEventListener("message", ready);
+    return () => window.removeEventListener("message", ready);
+  }, [renderedDocument, frameToken]);
+  function focusDocument(
+    target: "changes" | "analysis" | "graphics" | "title",
+  ) {
+    setPane("document");
+    setView("report");
+    frame.current?.contentWindow?.postMessage(
+      { type: "inside-game-focus", token: frameToken, target },
+      "*",
+    );
+  }
   const active = useRef<string | null>(null),
     end = useRef<HTMLDivElement>(null),
     input = useRef<HTMLTextAreaElement>(null);
@@ -199,8 +254,30 @@ export function Workspace() {
       .finally(() => setCatalogLoading(false));
   }, [auth]);
   useEffect(() => {
-    end.current?.scrollIntoView({ block: "end", behavior: "smooth" });
-  }, [conversation?.messages.length, conversation?.stage]);
+    if (nearEnd) {
+      end.current?.scrollIntoView({
+        block: "end",
+        behavior: matchMedia("(prefers-reduced-motion:reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+      setUnread(false);
+    } else setUnread(true);
+  }, [conversation?.messages.length, conversation?.stage, nearEnd]);
+  useEffect(() => {
+    if (!conversation?.busy) return;
+    const start =
+      conversation.started_at ??
+      [...(conversation.events ?? [])]
+        .reverse()
+        .find((e) => e.stage === "queued")?.at ??
+      Date.now() / 1000;
+    const tick = () =>
+      setElapsed(Math.max(0, Math.floor(Date.now() / 1000 - start)));
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, [conversation?.busy, conversation?.started_at, conversation?.id]);
   useEffect(() => {
     if (!conversation?.busy) return;
     const id = conversation.id;
@@ -209,7 +286,10 @@ export function Workspace() {
         api("conversations/" + id)
           .then((c) => {
             if (active.current === id) setConversation(c);
-            if (!c.busy) api("conversations").then(setSessions);
+            if (!c.busy)
+              api("conversations")
+                .then(setSessions)
+                .catch(() => {});
           })
           .catch(() =>
             setError(
@@ -221,20 +301,39 @@ export function Workspace() {
     return () => clearInterval(timer);
   }, [conversation?.id, conversation?.busy]);
   useEffect(() => {
-    setHtml("");
     if (!conversation?.report) return;
     const id = conversation.id;
+    const controller = new AbortController();
+    const changes = conversation.changes ?? null;
+    const revision = conversation.report.revision;
     fetch("/workspace-api/conversations/" + id + "/page", {
       credentials: "same-origin",
+      signal: controller.signal,
     })
       .then(async (r) => {
         if (!r.ok) throw Error();
         const h = await r.text();
-        if (active.current === id) setHtml(h);
+        if (active.current === id && !controller.signal.aborted) {
+          setHtml(h);
+          setLoadedChanges(changes);
+          setNotice(
+            pendingRequest.current ||
+              !!(
+                displayedRevision.current?.id === id &&
+                revision > displayedRevision.current.revision
+              ),
+          );
+          displayedRevision.current = { id, revision };
+          if (!conversation.busy) pendingRequest.current = false;
+        }
       })
-      .catch(() =>
-        setError("El informe ya no está disponible. Puedes generar uno nuevo."),
-      );
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setError(
+            "No pude cargar esta versión. El informe que estabas viendo se conserva.",
+          );
+      });
+    return () => controller.abort();
   }, [
     conversation?.id,
     conversation?.report?.report_id,
@@ -260,6 +359,14 @@ export function Workspace() {
   }
   async function open(id: string) {
     setError("");
+    if (active.current !== id) {
+      setHtml("");
+      setLoadedChanges(null);
+      setNotice(false);
+      pendingRequest.current = false;
+      displayedRevision.current = null;
+      setNearEnd(true);
+    }
     active.current = id;
     try {
       const c = await api("conversations/" + id);
@@ -276,15 +383,18 @@ export function Workspace() {
     active.current = null;
     setConversation(null);
     setHtml("");
+    setLoadedChanges(null);
+    setNotice(false);
+    pendingRequest.current = false;
+    displayedRevision.current = null;
     setText("");
     setMatch("");
     setError("");
     setSidebar(false);
     setView("report");
   }
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!text.trim() || loading || conversation?.busy) return;
+  async function sendMessage(value: string, retryAnalysis = false) {
+    if (!value.trim() || loading || conversation?.busy) return;
     setLoading(true);
     setError("");
     try {
@@ -302,14 +412,19 @@ export function Workspace() {
         method: "POST",
         body: JSON.stringify({
           request_id: crypto.randomUUID(),
-          text,
+          text: value,
           context,
+          retry_analysis: retryAnalysis,
         }),
       });
       setConversation(next);
+      pendingRequest.current = true;
+      setNearEnd(true);
       setText("");
       setPane("chat");
-      setSessions(await api("conversations"));
+      void api("conversations")
+        .then(setSessions)
+        .catch(() => {});
     } catch (e) {
       setError(
         e instanceof Error && e.message === "CONVERSATION_BUSY"
@@ -320,14 +435,25 @@ export function Workspace() {
       setLoading(false);
     }
   }
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    void sendMessage(text);
+  }
   function suggestion(value: string) {
     setText(value);
     setPane("chat");
     input.current?.focus();
   }
   const currentMatch = matches.find((m) => m.match_id === Number(match));
+  const scopedAnalysis = hasScopedAnalysis(conversation?.runs ?? []);
   return (
-    <div className="workspace" data-theme={theme}>
+    <div
+      className="workspace"
+      data-theme={theme}
+      style={sizing.style}
+      data-history-collapsed={sizing.layout.collapsed}
+      data-resizing={sizing.dragging ?? undefined}
+    >
       <aside
         id="conversation-drawer"
         ref={drawer}
@@ -427,8 +553,33 @@ export function Workspace() {
           </div>
         </div>
       </aside>
+      {!sizing.layout.collapsed && (
+        <div
+          className="panel-grip history-grip"
+          {...sizing.grip("history")}
+          title="Arrastra para ajustar · Flechas para cambiar · Doble clic para restablecer"
+        >
+          <span />
+        </div>
+      )}
       <div className="work-main" inert={mobile && sidebar}>
         <header className="workspace-topbar">
+          <button
+            className="icon-button desktop-layout-control"
+            onClick={sizing.toggleHistory}
+            aria-label={
+              sizing.layout.collapsed
+                ? "Expandir historial"
+                : "Contraer historial"
+            }
+            title={
+              sizing.layout.collapsed
+                ? "Expandir historial"
+                : "Contraer historial"
+            }
+          >
+            <Icon name="dock" />
+          </button>
           <button
             className="icon-button mobile-menu"
             ref={menuButton}
@@ -440,6 +591,28 @@ export function Workspace() {
             <Icon name="menu" />
           </button>
           <span className="workspace-name">Espacio de análisis</span>
+          <div className="layout-controls">
+            <button
+              className="icon-button"
+              onClick={sizing.moveChat}
+              aria-label={
+                sizing.layout.side === "right"
+                  ? "Mover chat a la izquierda"
+                  : "Mover chat a la derecha"
+              }
+              title="Cambiar lado del chat"
+            >
+              <Icon name="dock" />
+            </button>
+            <button
+              className="icon-button"
+              onClick={sizing.reset}
+              aria-label="Restablecer paneles"
+              title="Restablecer paneles"
+            >
+              <Icon name="reset" />
+            </button>
+          </div>
           <a href="/viewer" className="viewer-link">
             Abrir visor de posiciones <Icon name="arrow" />
           </a>
@@ -510,7 +683,13 @@ export function Workspace() {
             </div>
           </main>
         ) : (
-          <div className="workspace-panels" data-pane={pane}>
+          <div
+            className="workspace-panels"
+            data-pane={pane}
+            ref={sizing.panels}
+            data-chat-side={sizing.layout.side}
+            data-layout-moved={sizing.moved}
+          >
             <main className="document-panel" aria-label="Página de análisis">
               <div className="document-toolbar">
                 <div>
@@ -553,12 +732,82 @@ export function Workspace() {
                   )}
                 </div>
               </div>
+              {conversation?.busy && (
+                <div className="document-loading" role="status">
+                  <span className="activity-spinner" />
+                  <span>
+                    {stages[conversation.stage] ?? "Preparando tu informe"}
+                    <small>
+                      {html
+                        ? "Puedes seguir explorando esta versión."
+                        : "La página aparecerá aquí cuando esté lista."}
+                    </small>
+                  </span>
+                  <time>{elapsed}s</time>
+                </div>
+              )}
+              {html && notice && loadedChanges && !conversation?.busy && (
+                <div className="document-update" role="status">
+                  <span className="update-arrow">
+                    <Icon name="down" />
+                  </span>
+                  <div>
+                    <strong>{changeLabel(loadedChanges)}</strong>
+                    <small>
+                      Versión {loadedChanges.revision} · Cambios listos para
+                      revisar
+                    </small>
+                  </div>
+                  <button
+                    disabled={!documentReady}
+                    onClick={() =>
+                      focusDocument(
+                        loadedChanges.title_changed &&
+                          !loadedChanges.added.length &&
+                          !loadedChanges.updated.length
+                          ? "title"
+                          : "changes",
+                      )
+                    }
+                  >
+                    Ver cambios <Icon name="down" />
+                  </button>
+                  <button
+                    className="icon-button"
+                    aria-label="Cerrar aviso de actualización"
+                    onClick={() => setNotice(false)}
+                  >
+                    <Icon name="close" />
+                  </button>
+                </div>
+              )}
+              {html && (
+                <nav
+                  className="report-navigation"
+                  aria-label="Explorar el informe"
+                >
+                  <button
+                    onClick={() => focusDocument("graphics")}
+                    disabled={!documentReady}
+                  >
+                    Ir a los gráficos <Icon name="down" />
+                  </button>
+                  <button
+                    onClick={() => focusDocument("analysis")}
+                    disabled={!documentReady}
+                  >
+                    Leer análisis
+                  </button>
+                </nav>
+              )}
               {html ? (
                 view === "report" ? (
                   <iframe
+                    ref={frame}
+                    onLoad={() => setDocumentReady(true)}
                     title="Informe deportivo generado"
                     sandbox="allow-scripts allow-downloads allow-modals"
-                    srcDoc={documentHtml(html, theme === "dark")}
+                    srcDoc={renderedDocument}
                   />
                 ) : (
                   <div className="trace-view">
@@ -670,12 +919,29 @@ export function Workspace() {
                 </div>
               )}
             </main>
+            <div
+              className="panel-grip chat-grip"
+              {...sizing.grip("chat")}
+              title="Arrastra para ajustar · Flechas para cambiar · Doble clic para restablecer"
+            >
+              <span />
+            </div>
             <aside className="chat-panel" aria-label="Chat con el intérprete">
               <div className="chat-heading">
                 <span>Asistente del partido</span>
                 <span className="agent-label">Intérprete</span>
               </div>
-              <div className="chat-messages" aria-live="polite">
+              <div
+                className="chat-messages"
+                aria-live="polite"
+                ref={messageScroll}
+                onScroll={(e) => {
+                  const el = e.currentTarget;
+                  setNearEnd(
+                    el.scrollHeight - el.scrollTop - el.clientHeight < 70,
+                  );
+                }}
+              >
                 {!conversation?.messages.length && (
                   <div className="chat-welcome">
                     <span className="assistant-mark">
@@ -698,18 +964,122 @@ export function Workspace() {
                 {conversation?.messages.map((m, i) => (
                   <div key={i} className={"chat-message " + m.role}>
                     <span>{m.role === "user" ? "Tú" : "Inside the game"}</span>
-                    <p>{m.content}</p>
-                    {m.error && <small>{m.error}</small>}
+                    <p>{m.error ? friendlyIssue(m.error) : m.content}</p>
+                    {m.error && (
+                      <details className="message-debug">
+                        <summary>Detalles de la ejecución</summary>
+                        <code>{m.error}</code>
+                      </details>
+                    )}
+                    {m.role === "assistant" &&
+                      i === conversation.messages.length - 1 &&
+                      !conversation.busy &&
+                      (m.error ||
+                        (conversation.stage === "partial" &&
+                          !scopedAnalysis)) && (
+                        <button
+                          className="retry-action"
+                          onClick={() => {
+                            const last = [...conversation.messages]
+                              .reverse()
+                              .find((x) => x.role === "user");
+                            if (last)
+                              void sendMessage(
+                                last.content,
+                                !!m.retry_analysis,
+                              );
+                          }}
+                        >
+                          <Icon name="reset" />
+                          {m.retry_analysis
+                            ? "Completar análisis"
+                            : "Reintentar solicitud"}
+                        </button>
+                      )}
+                    {m.role === "assistant" &&
+                      i === conversation.messages.length - 1 &&
+                      !conversation.busy &&
+                      !m.error &&
+                      conversation.report && (
+                        <button
+                          className="message-open-report"
+                          disabled={!documentReady}
+                          onClick={() =>
+                            focusDocument(
+                              loadedChanges?.title_changed &&
+                                !loadedChanges.added.length &&
+                                !loadedChanges.updated.length
+                                ? "title"
+                                : "changes",
+                            )
+                          }
+                        >
+                          {reportLinkLabel(conversation.runs)}{" "}
+                          <Icon name="down" />
+                        </button>
+                      )}
                   </div>
                 ))}
                 {conversation?.busy && (
                   <div className="chat-working" role="status">
-                    <span className="busy-dot" />
-                    {stages[conversation.stage] ?? "Trabajando…"}
+                    <div className="work-status-line">
+                      <span className="activity-spinner" />
+                      <strong>
+                        {stages[conversation.stage] ?? "Trabajando…"}
+                      </strong>
+                      <time>{elapsed}s</time>
+                    </div>
+                    <ol
+                      className="work-steps"
+                      aria-label="Proceso de la solicitud"
+                    >
+                      {["Intención", "Datos", "Informe"].map((label, index) => {
+                        const activeIndex = [
+                          "queued",
+                          "catalog",
+                          "interpreting",
+                        ].includes(conversation.stage)
+                          ? 0
+                          : conversation.stage === "data"
+                            ? 1
+                            : 2;
+                        return (
+                          <li
+                            key={label}
+                            data-state={
+                              index === activeIndex
+                                ? "active"
+                                : index < activeIndex
+                                  ? "past"
+                                  : "next"
+                            }
+                          >
+                            <span />
+                            {label}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                    <small>
+                      {elapsed > 25
+                        ? "Sigo trabajando. El informe actual permanece disponible."
+                        : "Preparando la información de tu solicitud."}
+                    </small>
                   </div>
                 )}
                 <div ref={end} />
               </div>
+              {unread && !nearEnd && (
+                <button
+                  className="new-messages"
+                  onClick={() => {
+                    setNearEnd(true);
+                    setUnread(false);
+                  }}
+                >
+                  Nuevos mensajes <Icon name="down" />
+                </button>
+              )}
               <form className="chat-composer" onSubmit={submit}>
                 <label className="match-label" htmlFor="chat-match">
                   Partido
@@ -746,7 +1116,17 @@ export function Workspace() {
                     onClick={() => {
                       setCatalogLoading(true);
                       api("chat-catalog")
-                        .then((d) => setMatches(d.matches))
+                        .then((d) => {
+                          setMatches(d.matches);
+                          setError((current) =>
+                            [
+                              "No pude cargar los partidos. Pulsa «Recargar partidos».",
+                              "Los partidos siguen sin estar disponibles.",
+                            ].includes(current)
+                              ? ""
+                              : current,
+                          );
+                        })
                         .catch(() =>
                           setError(
                             "Los partidos siguen sin estar disponibles.",

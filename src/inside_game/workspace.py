@@ -229,6 +229,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8090)
     parser.add_argument(
+        "--restore", type=Path, help="Restaurar un respaldo explícito del titular local"
+    )
+    parser.add_argument(
         "--local-demo",
         action="store_true",
         help="Usa la credencial agent-data sólo en este equipo",
@@ -236,8 +239,15 @@ def main():
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     load_local_env(root)
+    agents = app_from_env(args.port)
+    if args.restore:
+        if not args.local_demo:
+            parser.error("--restore requiere --local-demo")
+        from inside_game.workspace_snapshot import restore_snapshot
+
+        restore_snapshot(agents, args.restore, DataMcpSettings.from_env().key)
     app = create_workspace(
-        app_from_env(args.port),
+        agents,
         frontend_dir=root / "frontend/dist",
         local_key=DataMcpSettings.from_env().key if args.local_demo else None,
     )

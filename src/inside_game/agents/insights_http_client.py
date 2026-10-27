@@ -39,7 +39,7 @@ class HttpInsightsAgent(HttpDataAgent):
                 transport=self.transport,
                 follow_redirects=False,
                 trust_env=False,
-                timeout=timeout,
+                timeout=timeout + 2,
             ) as client:
                 async with client.stream(
                     method,

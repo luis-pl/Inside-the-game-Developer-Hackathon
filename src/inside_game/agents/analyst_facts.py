@@ -152,10 +152,69 @@ def scalar_facts(value, evidence, path, *, block_id=None, scope=None, depth=0):
 
 def evidence_facts(evidence):
     facts = []
+    ranked_players = {
+        row.get("entity_id")
+        for ev in evidence
+        if ev.operation == "get_rankings"
+        and ev.arguments.get("entity_kind", "player") == "player"
+        for row in ev.response.data.get("items", [])
+        if type(row.get("rank")) is int and 1 <= row["rank"] <= 5
+    }
     for ev in evidence:
         data = ev.response.data
         for key in ("summary", "metrics", "match"):
             facts.extend(scalar_facts(data.get(key, {}), ev, "/data/" + key))
+        ranking_rows = [
+            (i, row)
+            for i, row in enumerate(data.get("items", []))
+            if type(row.get("rank")) is int and 1 <= row["rank"] <= 5
+        ]
+        if ev.operation == "get_rankings" and ranking_rows:
+            facts.extend(
+                scalar_facts(
+                    {k: data[k] for k in ("metric", "normalization") if k in data},
+                    ev,
+                    "/data",
+                )
+            )
+            for i, row in ranking_rows:
+                facts.extend(
+                    scalar_facts(
+                        row,
+                        ev,
+                        f"/data/items/{i}",
+                        scope={
+                            **ev.response.scope,
+                            "metric": data.get("metric"),
+                            "normalization": data.get("normalization"),
+                            "entity_id": row.get("entity_id"),
+                            "match_id": ev.arguments.get("match_ids", [None])[0]
+                            if len(ev.arguments.get("match_ids", [])) == 1
+                            else None,
+                            "player_id"
+                            if ev.arguments.get("entity_kind", "player") == "player"
+                            else "team_id": row.get("entity_id"),
+                            "rank": row.get("rank"),
+                            "ranked_rows_supplied": len(data.get("items", [])),
+                            "rank_limit_in_analysis": 5,
+                        },
+                    )
+                )
+        if ev.operation == "get_match_context" and ranked_players:
+            for i, row in enumerate(data.get("lineups", [])):
+                if row.get("player_id") in ranked_players:
+                    facts.extend(
+                        scalar_facts(
+                            {
+                                k: row[k]
+                                for k in ("player_id", "player_name", "team_id")
+                                if k in row
+                            },
+                            ev,
+                            f"/data/lineups/{i}",
+                            scope={**ev.response.scope, "player_id": row["player_id"]},
+                        )
+                    )
         if ev.operation in {"list_matches", "find_entities"}:
             for i, item in enumerate(data.get("items", [])):
                 keys = {

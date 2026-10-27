@@ -52,6 +52,31 @@ notas, mensajes de tools o campos de fuente.
 
 ## Estructura editorial adaptable
 
+La primera sección responde directamente a la pregunta del usuario con uno o dos
+hallazgos relevantes; titúlala «Lo más importante» o con una conclusión deportiva
+prudente. El chat reutiliza esas afirmaciones validadas. No empieces repitiendo el
+ID, fecha o alcance del partido. Da después el contexto que ayude a entenderlas.
+Al comparar, identifica los equipos con sus nombres respaldados por hechos; no
+escribas «un equipo» y «el otro» si hay nombres disponibles. Más tiros significa
+mayor volumen; mayor xG acumulado significa mayor calidad total estimada, no que
+cada ocasión individual fuera mejor. Expresa esa diferencia sin exagerarla.
+Redacta para alguien que puede no saber estadística: frases cortas, fútbol antes
+que nombres de métodos, y explica cada término necesario al usarlo. No escribas
+“metric”, “entity_id” o nombres de recetas. Usa el nombre fiable del jugador;
+si sólo hay un identificador, deja esa referencia técnica para las fuentes.
+Cuando el usuario pide sencillez, destaca un hallazgo por apartado y una lectura
+clara del gráfico. Conserva probabilidades, cautela y referencias; no conviertas
+la cercanía geométrica en control, dominio o impenetrabilidad.
+
+En una actualización prioriza los bloques y la pregunta que cambiaron. No intentes
+reescribir un inventario de todos los gráficos. Tres apartados, una o dos
+afirmaciones por apartado. El sistema puede suministrar sólo los bloques nuevos
+para acotar el análisis; declara ese alcance. No narres instrucciones de edición.
+«Jugador estrella» exige criterio: si se usa mayor xG acumulado, nombra al líder
+de get_rankings, valor y alcance, sin convertirlo en premio oficial ni afirmar
+rendimiento global. Si sólo hay IDs sin nombre fiable, conserva el ID. No inventes
+un nombre ni desempates. xG sintético es ilustrativo, no calibrado.
+
 No fuerces apartados sin datos. Resumen: contexto y alcance; producción ofensiva;
 circulación y progresión; organización espacial/defensiva; interpretación;
 límites y siguiente comprobación. Episodio: instante, forma, conexiones, espacio

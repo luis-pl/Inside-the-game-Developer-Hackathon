@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-26T23:01:09.0182604Z",
+  "generatedAt": "2026-10-27T04:38:34.7497639Z",
   "title": "Design System: Inside the game — Conversational workspace",
   "extensions": {
     "breakpoints": [
@@ -19,6 +19,10 @@
       {
         "name": "mobile",
         "value": "max-width: 760px"
+      },
+      {
+        "name": "desktop-layout",
+        "value": "min-width: 901px"
       }
     ],
     "typographyMeta": {
@@ -52,9 +56,29 @@
     ],
     "motion": [
       {
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Press feedback and 200ms chat docking position animation.",
+        "name": "ease-ui-out"
+      },
+      {
+        "value": "150ms",
+        "purpose": "Press transform and background response; separator hover tone.",
+        "name": "motion-feedback"
+      },
+      {
+        "value": "200ms",
+        "purpose": "Declared state duration; the chat docking animation uses the equivalent duration in the layout hook.",
+        "name": "motion-state"
+      },
+      {
         "value": "background 0.15s, color 0.15s",
-        "purpose": "Button and link state changes.",
+        "purpose": "Ordinary button and link state changes.",
         "name": "control-state"
+      },
+      {
+        "value": "scale(0.96)",
+        "purpose": "Primary, send, and retry actions while pressed; removed under reduced motion.",
+        "name": "press"
       },
       {
         "value": "transform 0.2s",
@@ -62,13 +86,23 @@
         "name": "drawer"
       },
       {
+        "value": "activity-spin 1s linear infinite",
+        "purpose": "Indeterminate activity alongside real stage text and elapsed time.",
+        "name": "activity-spinner"
+      },
+      {
         "value": "busy 1.5s ease-in-out infinite",
-        "purpose": "Stage dot fades to opacity 0.3 at 50%; reduced-motion disables animation.",
+        "purpose": "Small status dot fades to opacity 0.3 at 50%.",
         "name": "busy"
       },
       {
+        "value": "outline-color 180ms ease-out",
+        "purpose": "Focused destination inside the isolated report document.",
+        "name": "document-focus"
+      },
+      {
         "value": "animation: none !important; transition: none !important; scroll-behavior: auto !important",
-        "purpose": "Applied for prefers-reduced-motion: reduce.",
+        "purpose": "Disables ordinary CSS motion; JavaScript also skips docking animation; update notice permits only 100ms opacity.",
         "name": "reduced-motion"
       }
     ],
@@ -377,7 +411,7 @@
   },
   "components": [
     {
-      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);border:0;border-radius:6px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}.ds-primary:hover:not(:disabled){filter:brightness(.88)}.ds-primary:disabled{opacity:.4;cursor:not-allowed}.ds-primary:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);border:0;border-radius:6px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}.ds-primary:hover:not(:disabled){filter:brightness(.88)}.ds-primary:disabled{opacity:.4;cursor:not-allowed}.ds-primary:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-primary{transition:transform var(--motion-feedback,150ms) var(--ease-ui-out,cubic-bezier(.23,1,.32,1)),background-color var(--motion-feedback,150ms) ease}.ds-primary:active:not(:disabled){transform:scale(.96)}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}.ds-primary:active:not(:disabled){transform:none}}",
       "refersTo": "button-primary",
       "html": "<button class=\"ds-primary\">Entrar al espacio <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14m-5-5 5 5-5 5\"/></svg></button>",
       "description": "Filled login or entry action with paired theme roles.",
@@ -425,7 +459,7 @@
       "kind": "card"
     },
     {
-      "css": ".ds-composer{position:relative;margin-top:12px;border:1px solid var(--line,#303030);border-radius:10px;background:var(--input,#242424);padding:11px 10px 40px}.ds-message{display:block;resize:vertical;min-height:58px;max-height:180px;width:100%;background:transparent;color:var(--text,#ededed);border:0;font:400 13px/1.6 \"Segoe UI\",system-ui,sans-serif}.ds-message::placeholder{color:var(--muted,#a4a4a4)}.ds-send{display:inline-flex;align-items:center;justify-content:center;position:absolute;bottom:8px;right:8px;width:29px;height:29px;border:0;border-radius:6px;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);cursor:pointer;transition:background .15s,color .15s}.ds-send:hover:not(:disabled){filter:brightness(.88)}.ds-send:disabled{opacity:.4;cursor:not-allowed}.ds-message:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-send:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}",
+      "css": ".ds-composer{position:relative;margin-top:12px;border:1px solid var(--line,#303030);border-radius:10px;background:var(--input,#242424);padding:11px 10px 40px}.ds-message{display:block;resize:vertical;min-height:58px;max-height:180px;width:100%;background:transparent;color:var(--text,#ededed);border:0;font:400 13px/1.6 \"Segoe UI\",system-ui,sans-serif}.ds-message::placeholder{color:var(--muted,#a4a4a4)}.ds-send{display:inline-flex;align-items:center;justify-content:center;position:absolute;bottom:8px;right:8px;width:29px;height:29px;border:0;border-radius:6px;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);cursor:pointer;transition:background .15s,color .15s}.ds-send:hover:not(:disabled){filter:brightness(.88)}.ds-send:disabled{opacity:.4;cursor:not-allowed}.ds-message:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-send:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}.ds-send{transition:transform var(--motion-feedback,150ms) var(--ease-ui-out,cubic-bezier(.23,1,.32,1)),background-color var(--motion-feedback,150ms) ease}.ds-send:active:not(:disabled){transform:scale(.96)}@media(prefers-reduced-motion:reduce){.ds-send{transition:none}.ds-send:active:not(:disabled){transform:none}}",
       "refersTo": "composer",
       "html": "<div class=\"ds-composer\"><textarea class=\"ds-message\" aria-label=\"Mensaje al intérprete\" placeholder=\"Pregunta sobre el partido…\"></textarea><button class=\"ds-send\" aria-label=\"Enviar mensaje\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7M12 5v15\"/></svg></button></div>",
       "description": "Resizable request field with a compact submit action.",
@@ -433,11 +467,28 @@
       "kind": "input"
     },
     {
-      "description": "A divided request suggestion with a descriptive second line and outline arrow.",
       "kind": "custom",
-      "css": ".ds-start{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;max-width:400px;background:transparent;color:var(--text,#ededed);text-align:left;border:0;border-top:1px solid var(--line,#303030);border-bottom:1px solid var(--line,#303030);padding:15px 8px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}.ds-start small{display:block;color:var(--muted,#a4a4a4);font-size:11px;margin-top:3px}.ds-start:hover{background:var(--hover,#292929)}.ds-start svg{flex:none}.ds-start:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}",
-      "name": "Starting-point row",
-      "html": "<button class=\"ds-start\"><span>Entender la circulación<small>Conexiones y estructura de los pases</small></span><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14m-5-5 5 5-5 5\"/></svg></button>"
+      "name": "Document update",
+      "description": "Exact change counts and revision, paired with an explicit destination in the document.",
+      "html": "<div class=\"ds-update\" role=\"status\"><span class=\"ds-update-arrow\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v16m-5-5 5 5 5-5\"/></svg></span><div><strong>1 gráfico actualizado</strong><small>Versión 2 · Cambios listos para revisar</small></div><button class=\"ds-update-action\">Ver cambios <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 4v16m-5-5 5 5 5-5\"/></svg></button></div>",
+      "css": ".ds-update{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line,#303030);background:var(--panel,#191919);color:var(--text,#ededed);font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-update-arrow{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line,#303030);border-radius:6px;flex:none}.ds-update>div{flex:1;min-width:0}.ds-update strong{font-size:12px;font-weight:550}.ds-update small{display:block;font-size:10px;color:var(--muted,#a4a4a4);margin-top:3px}.ds-update-action{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;background:var(--primary,#f0f0f0);color:var(--inverse,#171717);font:400 11px/1.5 \"Segoe UI\",system-ui,sans-serif;border-radius:5px;padding:8px 10px;cursor:pointer;transition:background .15s,color .15s}.ds-update-action:hover:not(:disabled){background:var(--hover,#292929)}.ds-update-action:disabled{opacity:.4;cursor:not-allowed}.ds-update-action:focus-visible{outline:2px solid var(--text,#ededed);outline-offset:3px}@media(max-width:760px){.ds-update{padding:10px;gap:7px;flex-wrap:wrap}.ds-update>div{min-width:160px}.ds-update-action{margin-left:35px}}",
+      "refersTo": "document-update"
+    },
+    {
+      "kind": "custom",
+      "name": "Panel separator",
+      "description": "Focusable resize handle; application code supplies drag, keyboard resizing, and range updates.",
+      "html": "<div class=\"ds-grip\" role=\"separator\" tabindex=\"0\" aria-orientation=\"vertical\" aria-label=\"Ajustar ancho del chat\" aria-valuemin=\"250\" aria-valuemax=\"620\" aria-valuenow=\"350\"><span></span></div>",
+      "css": ".ds-grip{position:relative;display:flex;align-items:center;justify-content:center;width:8px;height:120px;cursor:col-resize;touch-action:none;background:var(--bg,#151515);outline-offset:-2px}.ds-grip>span{width:2px;height:34px;border-radius:2px;background:var(--line,#303030);transition:background-color var(--motion-feedback,150ms) ease}.ds-grip:hover>span,.ds-grip:focus-visible>span{background:var(--muted,#a4a4a4)}@media(prefers-reduced-motion:reduce){.ds-grip>span{transition:none}}",
+      "refersTo": "panel-grip"
+    },
+    {
+      "kind": "card",
+      "name": "Work status",
+      "description": "Actual stage, elapsed seconds, and process grouping while preserving access to the current document.",
+      "html": "<div class=\"ds-working\" role=\"status\"><div class=\"ds-status-line\"><span class=\"ds-spinner\"></span><strong>Analista e Insights están trabajando</strong><time>32s</time></div><ol class=\"ds-steps\" aria-label=\"Proceso de la solicitud\"><li><span></span>Intención</li><li><span></span>Datos</li><li data-state=\"active\"><span></span>Informe</li></ol><small>Sigo trabajando. El informe actual permanece disponible.</small></div>",
+      "css": ".ds-working{display:block;padding:14px;background:var(--input,#242424);color:var(--text,#ededed);border:1px solid var(--line,#303030);border-radius:8px;margin:10px 0 18px;font:400 13px/1.5 \"Segoe UI\",system-ui,sans-serif}.ds-status-line{display:flex;align-items:flex-start;gap:9px}.ds-status-line strong{font-size:12px;font-weight:500;flex:1}.ds-status-line time{font-size:11px;color:var(--muted,#a4a4a4);font-variant-numeric:tabular-nums}.ds-spinner{margin-top:2px;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line,#303030);border-top-color:var(--text,#ededed);display:inline-block;animation:ds-spin 1s linear infinite;flex:none}@keyframes ds-spin{to{transform:rotate(360deg)}}.ds-steps{list-style:none;display:flex;gap:14px;padding:0;margin:14px 0 9px;font-size:10px}.ds-steps li{display:flex;align-items:center;gap:6px;color:var(--muted,#a4a4a4)}.ds-steps li>span{width:5px;height:5px;border:1px solid var(--muted,#a4a4a4);border-radius:50%}.ds-steps li[data-state=\"active\"]{color:var(--text,#ededed)}.ds-steps li[data-state=\"active\"]>span{background:var(--text,#ededed);border-color:var(--text,#ededed)}.ds-working>small{display:block;font-size:10px;line-height:1.6;color:var(--muted,#a4a4a4)}@media(prefers-reduced-motion:reduce){.ds-spinner{animation:none}}",
+      "refersTo": "work-status"
     }
   ],
   "narrative": {
@@ -446,7 +497,8 @@
       "**Don't** introduce a chromatic accent into the monochrome workspace shell.",
       "**Don't** turn flat workspace panes into a collection of raised cards.",
       "**Don't** reuse the mobile drawer shadow on permanent desktop surfaces.",
-      "**Don't** promote surface-specific large headings or the existing text-glyph\n  error dismiss control into reusable display or icon primitives."
+      "**Don't** promote surface-specific large headings or the existing text-glyph\n  error dismiss control into reusable display or icon primitives.",
+      "**Don't** substitute an elapsed timer or ready graphics for a promise of\n  exhaustive analysis or a fixed completion time."
     ],
     "rules": [
       {
@@ -470,14 +522,18 @@
       "**Do** preserve independent pane scrolling and keep chat composition reachable.",
       "**Do** show evidence provenance, including synthetic-data labels, near selection.",
       "**Do** use inline outline SVG icons and geometric football illustrations.",
-      "**Do** preserve the existing report and topology viewer's analytical colors."
+      "**Do** preserve the existing report and topology viewer's analytical colors.",
+      "**Do** pair update summaries with a destination and keep old evidence readable\n  while the next version is being prepared.",
+      "**Do** keep provenance and the first limitation visible when source details\n  are folded behind disclosures in the report."
     ],
     "keyCharacteristics": [
       "Pure neutral interface with theme-paired semantic roles.",
       "Compact navigation and controls around a spacious document.",
       "Tonal grouping and fine dividers rather than raised cards.",
       "Geometric football imagery and inline outline SVG icons.",
-      "Visible focus, real progress states, and reduced-motion support."
+      "Visible focus, real progress states, and reduced-motion support.",
+      "Adjustable panes and explicit destinations for document updates.",
+      "Readable analytical prose with visible provenance and scope."
     ],
     "overview": "The conversational workspace is a compact, quiet place to ask about a match,\ninspect the resulting document, and continue refining it. Its visual language\ncomes from the implemented workspace: pure neutrals, tonal surfaces, restrained\ndividers, compact controls, and visible keyboard focus. Black and white themes\ncarry equivalent roles.\n\nThis system applies to `frontend/src/Workspace.tsx` and\n`frontend/src/workspace.css`. The existing topology viewer and generated reports\nretain their separate visual systems, including approved team colors. The\nworkspace's document theme adapter is an integration detail, not a redefinition\nof those systems. Product evidence and source provenance must remain readable."
   }

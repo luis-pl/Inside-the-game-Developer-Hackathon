@@ -64,13 +64,16 @@ def run(folder=Path(".temp/workspace-qa")):
 
         first = send(
             "create",
-            "Crea una página con shot_map y xg_story de ambos equipos de todo el partido seleccionado. Recupera sólo get_match_context y get_shots view events, todas las páginas. Tres apartados breves y xG sintético ilustrativo.",
+            "Muéstrame en una página los tiros de ambos equipos y cómo fue creciendo su xG. Usa los nombres de los equipos y explícame lo más importante en pocas palabras.",
             {"match_ids": [900001]},
         )
         assert first["stage"] == "complete" and len(first["report"]["blocks"]) == 2, (
             first["runs"][-1].get("error")
         )
         report_id = first["report"]["report_id"]
+        assert not first["messages"][-1]["content"].startswith("Creé la página"), (
+            "SPORTS_REPLY_MISSING"
+        )
         edited = send(
             "modify",
             "En la página actual cambia únicamente el título a «Ocasiones bajo la lupa». Conserva los dos gráficos, su evidencia y sus colores.",
@@ -89,7 +92,15 @@ def run(folder=Path(".temp/workspace-qa")):
             "Quiero el xG de este partido real Metrica. Si no está disponible explícamelo sin inventarlo.",
             {"match_ids": [900011]},
         )
-        assert unsupported["stage"] == "clarification" and unsupported["report"] is None
+        assert (
+            unsupported["stage"] in {"clarification", "complete"}
+            and unsupported["report"] is None
+        )
+        assert unsupported["runs"][-1]["delegation"]["action"] in {"clarify", "answer"}
+        assert (
+            "no tiene xg" in unsupported["messages"][-1]["content"].casefold()
+            or "no hay" in unsupported["messages"][-1]["content"].casefold()
+        )
         result = {
             "passed": True,
             "create": first["id"],
