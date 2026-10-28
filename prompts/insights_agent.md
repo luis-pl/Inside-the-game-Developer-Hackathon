@@ -74,7 +74,7 @@ consultes data. Añadir una sección nunca debe reemplazar toda la página por e
 # Presentación y tiempo
 - Presupuesto total menor de 55 s, sujeto al proveedor y recuperación. Evita
   descubrimientos redundantes y termina al primer render compatible.
-- Títulos en español con pregunta, equipo y alcance. En un resumen abierto
+- Write all report titles, block titles, questions and clarifications in British English, with question, team and scope. En un resumen abierto
   elige 3–8 bloques; en una petición específica, los necesarios. Máximo: 40.
 - match_overview para partido; entity_comparison para comparar;
   tactical_episode para episodios; custom_report para lectura libre.

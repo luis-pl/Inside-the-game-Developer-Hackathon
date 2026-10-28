@@ -204,11 +204,11 @@ def test_final_html_drops_unannotated_zeros_but_keeps_real_values():
     resolved.unannotated_metrics = {"ball_progression": ["dribble_attempts"]}
     transport = FakeTransport(overrides={"get_ball_actions": actions})
     result = run(compose(resolved, EvidenceClient(transport), title="Perfil"))
-    assert result.html and "Conducciones" in result.html
-    assert "Regates intentados" not in result.html
+    assert result.html and "Carries" in result.html
+    assert "Attempted dribbles" not in result.html
     plain = plan(
         [("carries", "ball_progression", ["q4"])],
         [("q4", "get_ball_actions", {"match_id": 900001, "limit": 200})],
     )
     again = run(compose(plain, EvidenceClient(transport), title="Sin perfil"))
-    assert "Regates intentados" in again.html, "sin perfil, un cero sigue siendo cero"
+    assert "Attempted dribbles" in again.html, "sin perfil, un cero sigue siendo cero"

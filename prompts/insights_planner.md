@@ -72,3 +72,5 @@ general. Si el usuario pide otra cosa del mismo partido después, devuelve sólo
 nuevo: la web suma las piezas al informe que ya tiene.
 
 ## Catálogo de recetas
+
+Write all user-facing report titles, block titles, questions, explanations and clarifications in clear British English. Understand requests in any language.

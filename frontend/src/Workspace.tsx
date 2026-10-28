@@ -1,6 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import "./workspace.css";
+import { useTheme } from "./hooks/use-theme.ts";
+import { Icon } from "./components/Icon.tsx";
+import { Brand } from "./components/Brand.tsx";
+import { ThemeToggle } from "./components/ThemeToggle.tsx";
+import "./analyst-workspace.css";
+import { AgentPipeline } from "./components/AgentPipeline.tsx";
+import { RunActivity } from "./components/RunActivity.tsx";
 import { useWorkspaceLayout } from "./hooks/use-workspace-layout.tsx";
 import { documentHtml } from "./report-document.ts";
 import {
@@ -49,16 +56,16 @@ type Conversation = {
 };
 type Summary = { id: string; title: string; busy: boolean };
 const stages: Record<string, string> = {
-  queued: "Solicitud en cola",
-  catalog: "Consultando partidos",
-  interpreting: "Entendiendo tu solicitud",
-  data: "Data está recuperando la evidencia",
-  analysis: "Analista e Insights están trabajando",
-  editing: "Actualizando la página",
-  partial: "Informe con resultados parciales",
-  complete: "Informe listo",
-  clarification: "Necesito un detalle más",
-  error: "La ejecución se interrumpió",
+  queued: "Request queued",
+  catalog: "Checking match catalogue",
+  interpreting: "Understanding your question",
+  data: "Retrieving match evidence",
+  analysis: "Analysing the match and preparing charts",
+  editing: "Updating your report",
+  partial: "Report ready with partial results",
+  complete: "Request complete",
+  clarification: "One more detail is needed",
+  error: "Analysis interrupted",
 };
 
 async function api(path: string, options: RequestInit = {}) {
@@ -77,39 +84,6 @@ async function api(path: string, options: RequestInit = {}) {
   }
   return result.json();
 }
-function Icon({ name }: { name: string }) {
-  const paths: Record<string, string> = {
-    plus: "M12 5v14M5 12h14",
-    chat: "M5 4h14v12H9l-4 4V4Z",
-    sun: "M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0",
-    moon: "M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z",
-    send: "m5 12 7-7 7 7M12 5v15",
-    download: "M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4",
-    file: "M6 3h8l4 4v14H6V3Zm8 0v5h4M9 12h6m-6 4h6",
-    logout: "M9 4H4v16h5m5-13 5 5-5 5m-6-5h11",
-    menu: "M4 6h16M4 12h16M4 18h16",
-    arrow: "M5 12h14m-5-5 5 5-5 5",
-    close: "m6 6 12 12M6 18 18 6",
-    down: "M12 4v16m-5-5 5 5 5-5",
-    dock: "M4 4h16v16H4V4Zm8 0v16",
-    reset: "M5 8a8 8 0 1 1-1 7M5 3v5h5",
-  };
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d={paths[name] ?? paths.file} />
-    </svg>
-  );
-}
 function download(text: string, name: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type }));
   const a = document.createElement("a");
@@ -122,9 +96,7 @@ export function Workspace() {
   const [mobile, setMobile] = useState(
     () => matchMedia("(max-width:760px)").matches,
   );
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem("inside-game-theme") ?? "dark",
-  );
+  const { theme, toggleTheme } = useTheme();
   const [auth, setAuth] = useState(false),
     [local, setLocal] = useState(false),
     [key, setKey] = useState("");
@@ -152,10 +124,13 @@ export function Workspace() {
     [error, setError] = useState("");
   const [loading, setLoading] = useState(false),
     [catalogLoading, setCatalogLoading] = useState(false);
-  const [pane, setPane] = useState("document"),
+  const [pane, setPane] = useState("chat"),
     [view, setView] = useState("report"),
     [sidebar, setSidebar] = useState(false);
   const frameToken = useMemo(() => crypto.randomUUID(), [html, theme]);
+  const [focusTarget, setFocusTarget] = useState<
+    "changes" | "analysis" | "graphics" | "title" | null
+  >(null);
   const renderedDocument = useMemo(
     () => documentHtml(html, theme === "dark", frameToken, loadedChanges),
     [html, theme, frameToken, loadedChanges],
@@ -174,16 +149,21 @@ export function Workspace() {
     };
     window.addEventListener("message", ready);
     return () => window.removeEventListener("message", ready);
-  }, [renderedDocument, frameToken]);
+  }, [renderedDocument, frameToken, view]);
+  useEffect(() => {
+    if (!focusTarget || !documentReady || view !== "report") return;
+    frame.current?.contentWindow?.postMessage(
+      { type: "inside-game-focus", token: frameToken, target: focusTarget },
+      "*",
+    );
+    setFocusTarget(null);
+  }, [focusTarget, documentReady, view, pane, frameToken]);
   function focusDocument(
     target: "changes" | "analysis" | "graphics" | "title",
   ) {
     setPane("document");
     setView("report");
-    frame.current?.contentWindow?.postMessage(
-      { type: "inside-game-focus", token: frameToken, target },
-      "*",
-    );
+    setFocusTarget(target);
   }
   const active = useRef<string | null>(null),
     end = useRef<HTMLDivElement>(null),
@@ -230,12 +210,15 @@ export function Workspace() {
     document.addEventListener("keydown", handle);
     return () => document.removeEventListener("keydown", handle);
   }, [mobile, sidebar]);
+
   useEffect(() => {
-    localStorage.setItem("inside-game-theme", theme);
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
-  useEffect(() => {
-    api("config").then((c) => setLocal(c.local_demo));
+    api("config")
+      .then((c) => setLocal(c.local_demo))
+      .catch(() =>
+        setError(
+          "The analysis service is unavailable. Check that the workspace server is running, then refresh.",
+        ),
+      );
     api("conversations")
       .then((rows) => {
         setAuth(true);
@@ -249,7 +232,7 @@ export function Workspace() {
     api("chat-catalog")
       .then((d) => setMatches(d.matches))
       .catch(() =>
-        setError("No pude cargar los partidos. Pulsa «Recargar partidos»."),
+        setError("Could not load matches. Select Reload matches to try again."),
       )
       .finally(() => setCatalogLoading(false));
   }, [auth]);
@@ -293,7 +276,7 @@ export function Workspace() {
           })
           .catch(() =>
             setError(
-              "Se perdió la conexión. Vuelve a abrir la conversación para recuperar su estado.",
+              "Connection lost. Reopen the conversation to recover its status.",
             ),
           ),
       2500,
@@ -330,7 +313,7 @@ export function Workspace() {
       .catch(() => {
         if (!controller.signal.aborted)
           setError(
-            "No pude cargar esta versión. El informe que estabas viendo se conserva.",
+            "Could not load this version. Your current report is still available.",
           );
       });
     return () => controller.abort();
@@ -352,7 +335,7 @@ export function Workspace() {
       setAuth(true);
       setSessions(await api("conversations"));
     } catch {
-      setError("No pude iniciar la sesión. Comprueba tu credencial de acceso.");
+      setError("Could not sign in. Check your access credential.");
     } finally {
       setLoading(false);
     }
@@ -376,7 +359,7 @@ export function Workspace() {
       setMatch(c.context.match_ids?.[0]?.toString() ?? "");
       setSidebar(false);
     } catch {
-      setError("La conversación ha caducado. Crea un nuevo análisis.");
+      setError("This conversation has expired. Start a new analysis.");
     }
   }
   function fresh() {
@@ -428,8 +411,8 @@ export function Workspace() {
     } catch (e) {
       setError(
         e instanceof Error && e.message === "CONVERSATION_BUSY"
-          ? "Ya hay una solicitud en curso en esta conversación."
-          : "No pude enviar el mensaje. La página anterior sigue disponible.",
+          ? "A request is already running in this conversation."
+          : "Could not send your message. Your previous report is still available.",
       );
     } finally {
       setLoading(false);
@@ -448,7 +431,7 @@ export function Workspace() {
   const scopedAnalysis = hasScopedAnalysis(conversation?.runs ?? []);
   return (
     <div
-      className="workspace"
+      className="workspace app-theme"
       data-theme={theme}
       style={sizing.style}
       data-history-collapsed={sizing.layout.collapsed}
@@ -462,44 +445,28 @@ export function Workspace() {
         aria-hidden={mobile && !sidebar}
         inert={mobile && !sidebar}
         className={`work-sidebar ${sidebar ? "is-open" : ""}`}
-        aria-label="Conversaciones"
+        aria-label="Analysis history"
       >
         <button
           className="drawer-close icon-button"
           ref={closeButton}
           onClick={() => setSidebar(false)}
-          aria-label="Cerrar conversaciones"
+          aria-label="Close analysis history"
         >
           <Icon name="close" />
         </button>
-        <a className="work-brand" href="/" aria-label="Inside the game, inicio">
-          <svg
-            viewBox="0 0 32 32"
-            width="28"
-            height="28"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <rect x="3" y="5" width="26" height="22" rx="2" />
-            <path d="M16 5v22M3 12h5v8H3m26-8h-5v8h5" />
-            <circle cx="16" cy="16" r="4" />
-          </svg>
-          <span>
-            inside the game<span className="brand-period">.</span>
-          </span>
-        </a>
+        <Brand />
         <button
           className="new-analysis"
           onClick={fresh}
-          aria-label="Nuevo análisis"
+          aria-label="New analysis"
           disabled={loading}
         >
           <Icon name="plus" />
-          <span>Nuevo análisis</span>
+          <span>New analysis</span>
         </button>
-        <p className="sidebar-label">Conversaciones</p>
-        <nav className="conversation-list" aria-label="Historial">
+        <p className="sidebar-label">Analysis history</p>
+        <nav className="conversation-list" aria-label="History">
           {sessions.length ? (
             sessions.map((s) => (
               <button
@@ -514,32 +481,23 @@ export function Workspace() {
               </button>
             ))
           ) : (
-            <p className="sidebar-empty">Tus análisis aparecerán aquí.</p>
+            <p className="sidebar-empty">
+              Your match analyses will appear here.
+            </p>
           )}
         </nav>
         <div className="sidebar-bottom">
-          <button
-            className="theme-switch"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label={
-              theme === "dark"
-                ? "Cambiar a tema claro"
-                : "Cambiar a tema oscuro"
-            }
-          >
-            <Icon name={theme === "dark" ? "sun" : "moon"} />
-            <span>{theme === "dark" ? "Tema claro" : "Tema oscuro"}</span>
-          </button>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <div className="session-info">
             <span className="session-avatar">IG</span>
             <span>
-              {local ? "Demo local" : "Equipo de análisis"}
-              <small>Conversaciones · 1 hora</small>
+              {local ? "Local demo" : "Analysis team"}
+              <small>Session history · 1 hour</small>
             </span>
             {auth && (
               <button
                 className="icon-button"
-                aria-label="Cerrar sesión"
+                aria-label="Sign out"
                 onClick={async () => {
                   await api("session", { method: "DELETE" });
                   setAuth(false);
@@ -557,7 +515,7 @@ export function Workspace() {
         <div
           className="panel-grip history-grip"
           {...sizing.grip("history")}
-          title="Arrastra para ajustar · Flechas para cambiar · Doble clic para restablecer"
+          title="Drag to resize · Arrow keys to adjust · Double-click to reset"
         >
           <span />
         </div>
@@ -568,14 +526,10 @@ export function Workspace() {
             className="icon-button desktop-layout-control"
             onClick={sizing.toggleHistory}
             aria-label={
-              sizing.layout.collapsed
-                ? "Expandir historial"
-                : "Contraer historial"
+              sizing.layout.collapsed ? "Expand history" : "Collapse history"
             }
             title={
-              sizing.layout.collapsed
-                ? "Expandir historial"
-                : "Contraer historial"
+              sizing.layout.collapsed ? "Expand history" : "Collapse history"
             }
           >
             <Icon name="dock" />
@@ -585,43 +539,45 @@ export function Workspace() {
             ref={menuButton}
             aria-expanded={sidebar}
             aria-controls="conversation-drawer"
-            aria-label="Mostrar conversaciones"
+            aria-label="Show analysis history"
             onClick={() => setSidebar(!sidebar)}
           >
             <Icon name="menu" />
           </button>
-          <span className="workspace-name">Espacio de análisis</span>
+          <span className="workspace-name">
+            <small>FOOTBALL INTELLIGENCE</small>Agent workspace
+          </span>
           <div className="layout-controls">
             <button
               className="icon-button"
               onClick={sizing.moveChat}
               aria-label={
                 sizing.layout.side === "right"
-                  ? "Mover chat a la izquierda"
-                  : "Mover chat a la derecha"
+                  ? "Move assistant to the left"
+                  : "Move assistant to the right"
               }
-              title="Cambiar lado del chat"
+              title="Switch assistant panel side"
             >
               <Icon name="dock" />
             </button>
             <button
               className="icon-button"
               onClick={sizing.reset}
-              aria-label="Restablecer paneles"
-              title="Restablecer paneles"
+              aria-label="Reset panel layout"
+              title="Reset panel layout"
             >
               <Icon name="reset" />
             </button>
           </div>
           <a href="/viewer" className="viewer-link">
-            Abrir visor de posiciones <Icon name="arrow" />
+            Match viewer <Icon name="arrow" />
           </a>
           <div className="mobile-tabs">
             <button
               aria-pressed={pane === "document"}
               onClick={() => setPane("document")}
             >
-              Informe
+              Report
             </button>
             <button
               aria-pressed={pane === "chat"}
@@ -631,10 +587,21 @@ export function Workspace() {
             </button>
           </div>
         </header>
+        {auth && (
+          <AgentPipeline
+            stage={conversation?.stage}
+            busy={conversation?.busy ?? false}
+            match={
+              currentMatch
+                ? `${currentMatch.home_team_name} vs ${currentMatch.away_team_name}`
+                : undefined
+            }
+          />
+        )}
         {error && (
           <div className="workspace-error" role="alert">
             {error}
-            <button onClick={() => setError("")} aria-label="Cerrar aviso">
+            <button onClick={() => setError("")} aria-label="Dismiss notice">
               ×
             </button>
           </div>
@@ -643,42 +610,55 @@ export function Workspace() {
           <main className="workspace-login">
             <div className="login-content">
               <Icon name="chat" />
+              <span className="workspace-eyebrow">
+                YOUR FOOTBALL ANALYSIS TEAM
+              </span>
               <h1>
-                El partido empieza
-                <br />
-                con una pregunta.
+                Better questions.
+                <br />A clearer game.
               </h1>
               <p>
-                Entra para explorar partidos, generar un informe y afinarlo
-                conversando.
+                Ask a football question. Your agents bring together the
+                evidence, the analysis and the visual report.
               </p>
+              <div className="login-capabilities">
+                <span>
+                  01 <b>Ask</b>
+                </span>
+                <span>
+                  02 <b>Analyse</b>
+                </span>
+                <span>
+                  03 <b>Explore</b>
+                </span>
+              </div>
               <form onSubmit={login}>
                 {!local && (
                   <label>
-                    Credencial del equipo
+                    Team access credential
                     <input
                       type="password"
                       autoComplete="off"
                       value={key}
                       onChange={(e) => setKey(e.target.value)}
-                      placeholder="Tu clave de acceso"
+                      placeholder="Your access key"
                       required
                     />
                   </label>
                 )}
                 <button className="primary-button" disabled={loading}>
                   {loading
-                    ? "Conectando…"
+                    ? "Connecting…"
                     : local
-                      ? "Entrar a la demo local"
-                      : "Entrar al espacio"}
+                      ? "Open local workspace"
+                      : "Enter workspace"}
                   <Icon name="arrow" />
                 </button>
               </form>
               <small>
                 {local
-                  ? "Los agentes se ejecutan con la configuración privada de este equipo."
-                  : "Utiliza tu credencial individual de la API deportiva."}
+                  ? "Uses this computer's configured analysis services."
+                  : "Sign in with your individual football API credential."}
               </small>
             </div>
           </main>
@@ -690,40 +670,37 @@ export function Workspace() {
             data-chat-side={sizing.layout.side}
             data-layout-moved={sizing.moved}
           >
-            <main className="document-panel" aria-label="Página de análisis">
+            <main className="document-panel" aria-label="Analysis report">
               <div className="document-toolbar">
                 <div>
                   <Icon name="file" />
-                  <span>{conversation?.title ?? "Tu próximo análisis"}</span>
+                  <span>{conversation?.title ?? "Match analysis"}</span>
                   {conversation?.report && (
                     <small>v{conversation.report.revision}</small>
                   )}
                 </div>
                 <div className="document-actions">
-                  {html && (
+                  {Boolean(html || conversation?.runs.length) && (
                     <>
                       <button
                         aria-pressed={view === "report"}
                         onClick={() => setView("report")}
                       >
-                        Informe
+                        Report
                       </button>
                       <button
                         aria-pressed={view === "trace"}
                         onClick={() => setView("trace")}
                       >
-                        Trazabilidad
+                        Activity
                       </button>
                       <button
                         className="icon-button"
-                        title="Descargar HTML"
-                        aria-label="Descargar página HTML"
+                        disabled={!html}
+                        title="Download HTML"
+                        aria-label="Download report as HTML"
                         onClick={() =>
-                          download(
-                            html,
-                            "inside-game-informe.html",
-                            "text/html",
-                          )
+                          download(html, "inside-game-report.html", "text/html")
                         }
                       >
                         <Icon name="download" />
@@ -736,11 +713,11 @@ export function Workspace() {
                 <div className="document-loading" role="status">
                   <span className="activity-spinner" />
                   <span>
-                    {stages[conversation.stage] ?? "Preparando tu informe"}
+                    {stages[conversation.stage] ?? "Preparing your report"}
                     <small>
                       {html
-                        ? "Puedes seguir explorando esta versión."
-                        : "La página aparecerá aquí cuando esté lista."}
+                        ? "You can keep exploring this version."
+                        : "Your report will appear here when ready."}
                     </small>
                   </span>
                   <time>{elapsed}s</time>
@@ -754,12 +731,11 @@ export function Workspace() {
                   <div>
                     <strong>{changeLabel(loadedChanges)}</strong>
                     <small>
-                      Versión {loadedChanges.revision} · Cambios listos para
-                      revisar
+                      Version {loadedChanges.revision} · Changes ready to review
                     </small>
                   </div>
                   <button
-                    disabled={!documentReady}
+                    disabled={view === "report" && !documentReady}
                     onClick={() =>
                       focusDocument(
                         loadedChanges.title_changed &&
@@ -770,11 +746,11 @@ export function Workspace() {
                       )
                     }
                   >
-                    Ver cambios <Icon name="down" />
+                    Review changes <Icon name="down" />
                   </button>
                   <button
                     className="icon-button"
-                    aria-label="Cerrar aviso de actualización"
+                    aria-label="Dismiss update notice"
                     onClick={() => setNotice(false)}
                   >
                     <Icon name="close" />
@@ -784,54 +760,55 @@ export function Workspace() {
               {html && (
                 <nav
                   className="report-navigation"
-                  aria-label="Explorar el informe"
+                  aria-label="Explore the report"
                 >
                   <button
                     onClick={() => focusDocument("graphics")}
-                    disabled={!documentReady}
+                    disabled={view === "report" && !documentReady}
                   >
-                    Ir a los gráficos <Icon name="down" />
+                    Explore charts <Icon name="down" />
                   </button>
                   <button
                     onClick={() => focusDocument("analysis")}
-                    disabled={!documentReady}
+                    disabled={view === "report" && !documentReady}
                   >
-                    Leer análisis
+                    Read findings
                   </button>
                 </nav>
               )}
-              {html ? (
-                view === "report" ? (
-                  <iframe
-                    ref={frame}
-                    onLoad={() => setDocumentReady(true)}
-                    title="Informe deportivo generado"
-                    sandbox="allow-scripts allow-downloads allow-modals"
-                    srcDoc={renderedDocument}
+              {view === "trace" ? (
+                <div className="trace-view">
+                  <RunActivity
+                    key={conversation?.id}
+                    runs={conversation?.runs ?? []}
+                    busy={conversation?.busy ?? false}
                   />
-                ) : (
-                  <div className="trace-view">
-                    <h2>El recorrido de tu solicitud</h2>
-                    <p>
-                      Intención, delegaciones, hechos y resultados de las
-                      herramientas.
-                    </p>
-                    <button
-                      onClick={() =>
-                        download(
-                          JSON.stringify(conversation?.runs, null, 2),
-                          "inside-game-trace.json",
-                          "application/json",
-                        )
-                      }
-                    >
-                      Descargar JSON <Icon name="download" />
-                    </button>
-                    <pre>{JSON.stringify(conversation?.runs, null, 2)}</pre>
-                  </div>
-                )
+                  <button
+                    className="trace-download"
+                    disabled={!conversation?.runs.length}
+                    onClick={() =>
+                      download(
+                        JSON.stringify(conversation?.runs, null, 2),
+                        "inside-game-trace.json",
+                        "application/json",
+                      )
+                    }
+                  >
+                    Download trace <Icon name="download" />
+                  </button>
+                </div>
+              ) : html ? (
+                <iframe
+                  ref={frame}
+                  title="Generated match analysis report"
+                  sandbox="allow-scripts allow-downloads allow-modals"
+                  srcDoc={renderedDocument}
+                />
               ) : (
                 <div className="document-empty">
+                  <span className="workspace-eyebrow">
+                    FROM YOUR QUESTION TO THE FINDINGS
+                  </span>
                   <svg
                     className="empty-pitch"
                     viewBox="0 0 420 240"
@@ -858,54 +835,54 @@ export function Workspace() {
                     </g>
                   </svg>
                   <h1>
-                    Otra forma de
+                    See the patterns.
                     <br />
-                    leer el partido.
+                    Understand the game.
                   </h1>
                   <p>
-                    De una pregunta a una página con datos,
+                    One conversation. A team of analysis agents.
                     <br />
-                    gráficos y una lectura deportiva.
+                    Ask, review the evidence, then refine your report.
                   </p>
                   <div className="starting-points">
                     <button
                       onClick={() =>
                         suggestion(
-                          "Crea un mapa de tiros y un análisis de las ocasiones del partido seleccionado.",
+                          "Create a shot map and analyse chance creation for the selected match. Write the report and chart labels in English.",
                         )
                       }
                     >
                       <span>
-                        Explorar las ocasiones
+                        Chance creation
+                        <small>Shot locations, outcomes and available xG</small>
+                      </span>
+                      <Icon name="arrow" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        suggestion(
+                          "Analyse the home team's passing network in the first half of the selected match. Write the report and chart labels in English.",
+                        )
+                      }
+                    >
+                      <span>
+                        Passing & progression
+                        <small>Player connections and passing structure</small>
+                      </span>
+                      <Icon name="arrow" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        suggestion(
+                          "Analyse the home team's shape and connectivity. Which match instant do you need? Reply and write the report in English.",
+                        )
+                      }
+                    >
+                      <span>
+                        Team shape & space
                         <small>
-                          Tiros, ubicaciones y resultados disponibles
+                          Positioning, proximity and available space
                         </small>
-                      </span>
-                      <Icon name="arrow" />
-                    </button>
-                    <button
-                      onClick={() =>
-                        suggestion(
-                          "Analiza la red de pases del equipo local en el primer tiempo del partido seleccionado.",
-                        )
-                      }
-                    >
-                      <span>
-                        Entender la circulación
-                        <small>Conexiones y estructura de los pases</small>
-                      </span>
-                      <Icon name="arrow" />
-                    </button>
-                    <button
-                      onClick={() =>
-                        suggestion(
-                          "Quiero analizar la forma y conectividad del equipo local. ¿Qué instante necesitas?",
-                        )
-                      }
-                    >
-                      <span>
-                        Leer la estructura del equipo
-                        <small>Forma, proximidad y espacio ocupado</small>
                       </span>
                       <Icon name="arrow" />
                     </button>
@@ -922,14 +899,14 @@ export function Workspace() {
             <div
               className="panel-grip chat-grip"
               {...sizing.grip("chat")}
-              title="Arrastra para ajustar · Flechas para cambiar · Doble clic para restablecer"
+              title="Drag to resize · Arrow keys to adjust · Double-click to reset"
             >
               <span />
             </div>
-            <aside className="chat-panel" aria-label="Chat con el intérprete">
+            <aside className="chat-panel" aria-label="Match analysis assistant">
               <div className="chat-heading">
-                <span>Asistente del partido</span>
-                <span className="agent-label">Intérprete</span>
+                <span>Talk to your analyst</span>
+                <span className="agent-label">Agent team</span>
               </div>
               <div
                 className="chat-messages"
@@ -947,27 +924,27 @@ export function Workspace() {
                     <span className="assistant-mark">
                       <Icon name="chat" />
                     </span>
-                    <h2>¿Qué quieres descubrir?</h2>
+                    <h2>What do you want to understand?</h2>
                     <p>
-                      Elige un partido y cuéntame qué te interesa. Coordinaré
-                      los datos, los gráficos y el análisis.
+                      Select a match and set the brief. Your interpreter
+                      coordinates the data, analyst and visualisation agents.
                     </p>
                     <p className="chat-tip">
-                      Después puedes pedirme cambios:
+                      Refine your report as you go:
                       <br />
-                      «Añade el reparto del espacio»
+                      “Add a spatial breakdown”
                       <br />
-                      «Compara a estos dos jugadores»
+                      “Compare these two players”
                     </p>
                   </div>
                 )}
                 {conversation?.messages.map((m, i) => (
                   <div key={i} className={"chat-message " + m.role}>
-                    <span>{m.role === "user" ? "Tú" : "Inside the game"}</span>
+                    <span>{m.role === "user" ? "You" : "Inside the game"}</span>
                     <p>{m.error ? friendlyIssue(m.error) : m.content}</p>
                     {m.error && (
                       <details className="message-debug">
-                        <summary>Detalles de la ejecución</summary>
+                        <summary>Technical details</summary>
                         <code>{m.error}</code>
                       </details>
                     )}
@@ -992,8 +969,8 @@ export function Workspace() {
                         >
                           <Icon name="reset" />
                           {m.retry_analysis
-                            ? "Completar análisis"
-                            : "Reintentar solicitud"}
+                            ? "Complete analysis"
+                            : "Retry request"}
                         </button>
                       )}
                     {m.role === "assistant" &&
@@ -1003,7 +980,7 @@ export function Workspace() {
                       conversation.report && (
                         <button
                           className="message-open-report"
-                          disabled={!documentReady}
+                          disabled={view === "report" && !documentReady}
                           onClick={() =>
                             focusDocument(
                               loadedChanges?.title_changed &&
@@ -1029,41 +1006,40 @@ export function Workspace() {
                       </strong>
                       <time>{elapsed}s</time>
                     </div>
-                    <ol
-                      className="work-steps"
-                      aria-label="Proceso de la solicitud"
-                    >
-                      {["Intención", "Datos", "Informe"].map((label, index) => {
-                        const activeIndex = [
-                          "queued",
-                          "catalog",
-                          "interpreting",
-                        ].includes(conversation.stage)
-                          ? 0
-                          : conversation.stage === "data"
-                            ? 1
-                            : 2;
-                        return (
-                          <li
-                            key={label}
-                            data-state={
-                              index === activeIndex
-                                ? "active"
-                                : index < activeIndex
-                                  ? "past"
-                                  : "next"
-                            }
-                          >
-                            <span />
-                            {label}
-                          </li>
-                        );
-                      })}
+                    <ol className="work-steps" aria-label="Analysis progress">
+                      {["Question", "Evidence", "Report"].map(
+                        (label, index) => {
+                          const activeIndex = [
+                            "queued",
+                            "catalog",
+                            "interpreting",
+                          ].includes(conversation.stage)
+                            ? 0
+                            : conversation.stage === "data"
+                              ? 1
+                              : 2;
+                          return (
+                            <li
+                              key={label}
+                              data-state={
+                                index === activeIndex
+                                  ? "active"
+                                  : index < activeIndex
+                                    ? "past"
+                                    : "next"
+                              }
+                            >
+                              <span />
+                              {label}
+                            </li>
+                          );
+                        },
+                      )}
                     </ol>
                     <small>
                       {elapsed > 25
-                        ? "Sigo trabajando. El informe actual permanece disponible."
-                        : "Preparando la información de tu solicitud."}
+                        ? "Still working. Your current report remains available."
+                        : "Preparing the evidence for your request."}
                     </small>
                   </div>
                 )}
@@ -1077,12 +1053,12 @@ export function Workspace() {
                     setUnread(false);
                   }}
                 >
-                  Nuevos mensajes <Icon name="down" />
+                  New messages <Icon name="down" />
                 </button>
               )}
               <form className="chat-composer" onSubmit={submit}>
                 <label className="match-label" htmlFor="chat-match">
-                  Partido
+                  Match
                 </label>
                 <select
                   id="chat-match"
@@ -1091,9 +1067,7 @@ export function Workspace() {
                   onChange={(e) => setMatch(e.target.value)}
                 >
                   <option value="">
-                    {catalogLoading
-                      ? "Cargando partidos…"
-                      : "Seleccionar partido"}
+                    {catalogLoading ? "Loading matches…" : "Select a match"}
                   </option>
                   {matches.map((m) => (
                     <option key={m.match_id} value={m.match_id}>
@@ -1105,8 +1079,10 @@ export function Workspace() {
                   <span className="match-source">
                     {currentMatch.is_synthetic ||
                     currentMatch.data_kind === "synthetic"
-                      ? "Datos sintéticos"
-                      : "Datos reales · identidades sustituidas"}
+                      ? "Synthetic data"
+                      : currentMatch.data_kind?.startsWith("real_")
+                        ? "Recorded data · identities replaced"
+                        : "Data provenance not specified"}
                   </span>
                 )}
                 {!catalogLoading && !matches.length && (
@@ -1120,31 +1096,27 @@ export function Workspace() {
                           setMatches(d.matches);
                           setError((current) =>
                             [
-                              "No pude cargar los partidos. Pulsa «Recargar partidos».",
-                              "Los partidos siguen sin estar disponibles.",
+                              "Could not load matches. Select Reload matches to try again.",
+                              "Matches are still unavailable.",
                             ].includes(current)
                               ? ""
                               : current,
                           );
                         })
-                        .catch(() =>
-                          setError(
-                            "Los partidos siguen sin estar disponibles.",
-                          ),
-                        )
+                        .catch(() => setError("Matches are still unavailable."))
                         .finally(() => setCatalogLoading(false));
                     }}
                   >
-                    Recargar partidos
+                    Reload matches
                   </button>
                 )}
                 <div className="composer-input">
                   <textarea
                     ref={input}
-                    aria-label="Mensaje al intérprete"
+                    aria-label="Ask the match analyst"
                     maxLength={4000}
                     value={text}
-                    placeholder="Pregunta sobre el partido…"
+                    placeholder="Ask about chances, passing or team shape…"
                     disabled={conversation?.busy}
                     onChange={(e) => setText(e.target.value)}
                     onKeyDown={(e) => {
@@ -1161,12 +1133,12 @@ export function Workspace() {
                   <button
                     className="send-button"
                     disabled={!text.trim() || loading || conversation?.busy}
-                    aria-label="Enviar mensaje"
+                    aria-label="Send message"
                   >
                     <Icon name="send" />
                   </button>
                 </div>
-                <small>Enter para enviar · Mayús + Enter para otra línea</small>
+                <small>Enter to send · Shift + Enter for a new line</small>
               </form>
             </aside>
           </div>

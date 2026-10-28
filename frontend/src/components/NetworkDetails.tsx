@@ -6,57 +6,56 @@ export function NetworkDetails({ lab }: { lab: Lab }) {
   const network = lab.tactics?.network;
   return (
     <section className="network-details">
-      <h2>Cómo leer los nodos atacantes</h2>
+      <h2>Reading the attacking network</h2>
       <p>
-        Los aros y líneas verdes identifican atacantes conectados al balón,
-        directamente o mediante compañeros. Los trazos grises discontinuos
-        muestran conexiones entre atacantes que no llegan al balón en esta red.
-        El contador de arriba incluye todos los atacantes enlazados; «directos»
-        cuenta únicamente los vecinos del balón. La línea amarilla destaca la
-        cadena hacia el espacio elegido.
+        Green rings and lines identify attackers connected to the ball, directly
+        or through teammates. Grey dashed lines connect attackers without a path
+        to the ball. The counter includes all connected attackers; direct
+        connections count only the ball's immediate neighbours. Yellow
+        highlights the chain towards the selected space.
       </p>
       <p>
-        En modo automático, el equipo atacante es una estimación por el jugador
-        más cercano al balón en cada muestra original. Se conserva el equipo
-        anterior durante detenciones, ausencia de balón o empate de distancias
-        entre equipos. No equivale a posesión confirmada. Los colores de los
-        equipos no cambian al cambiar el rol. Puedes fijar la defensa
-        manualmente en la configuración.
+        Automatic mode estimates the attacking team from the player nearest to
+        the ball in each original sample. The previous team is retained during
+        stoppages, missing ball positions or tied distances. This is not
+        confirmed possession. Team colours remain consistent when roles change.
+        You can select the defending team manually.
       </p>
-      <h2>Cómo se calculan las conexiones</h2>
+      <h2>How connections are calculated</h2>
       <p>
-        Los nodos son el balón y los jugadores del equipo atacante. Se conectan
-        dos nodos si el disco cuyo diámetro es su segmento no contiene ningún
-        otro jugador ni el balón: es el grafo de Gabriel de todas las
-        posiciones, restringido a nodos atacantes. Un defensa dentro de ese
-        disco impide esa conexión. No se selecciona una distancia máxima.
+        Nodes represent the ball and attacking players. Two nodes connect when
+        the disc with their segment as its diameter contains no other player or
+        ball: a Gabriel graph of all positions, restricted to attacking nodes. A
+        defender inside that disc prevents the connection. No maximum connection
+        distance is selected.
       </p>
       <p>
-        Para cada arista se calcula exactamente la distancia mínima de todos los
-        defensas al segmento, limitada por las bandas del campo. El doble de ese
-        valor es la anchura del corredor libre de posiciones defensivas. Un
-        defensa sobre el segmento produce anchura cero y elimina la arista.
+        For each edge, the minimum distance from every defender to the segment
+        is calculated and limited by pitch boundaries. Twice this value is the
+        corridor width clear of defensive positions. A defender on the segment
+        gives zero width and removes the edge.
       </p>
-      <h3>Topología del espacio disponible</h3>
+      <h3>Topology of available space</h3>
       <p>
-        La filtración H₀ añade aristas de mayor a menor holgura. Kruskal obtiene
-        un bosque de expansión máxima; conserva la mayor anchura mínima posible
-        de cualquier cadena entre el balón y cada compañero en este grafo. No se
-        elige un umbral: se recorren todos los valores críticos. Las cadenas
-        indican conexiones geométricas posibles, no pases ejecutados.
+        The H₀ filtration adds edges from greatest to smallest clearance.
+        Kruskal's algorithm produces a maximum spanning forest, preserving the
+        widest bottleneck of any chain between the ball and each teammate in
+        this graph. All critical values are considered, without a selected
+        threshold. Chains show potential geometric connections, not completed
+        passes.
       </p>
       {network && (
         <>
           <p>
-            <b>{network.nodes.length}</b> nodos · <b>{network.edges.length}</b>{" "}
-            conexiones · <b>{network.components}</b> componentes finales.
+            <b>{network.nodes.length}</b> nodes · <b>{network.edges.length}</b>{" "}
+            connections · <b>{network.components}</b> final components.
           </p>
           <table>
-            <caption>Fusiones H₀ · anchura de corredor en metros</caption>
+            <caption>H₀ merges · corridor width in metres</caption>
             <thead>
               <tr>
-                <th>Anchura crítica</th>
-                <th>Componentes restantes</th>
+                <th>Critical width</th>
+                <th>Remaining components</th>
               </tr>
             </thead>
             <tbody>
@@ -70,50 +69,47 @@ export function NetworkDetails({ lab }: { lab: Lab }) {
           </table>
         </>
       )}
-      <h3>Espacios de ruptura</h3>
+      <h3>Spaces between defenders</h3>
       <p>
-        Se buscan centros de círculos vacíos de tres defensas, vértices de
-        Voronoi, dentro de la envolvente de los jugadores de campo. El portero
-        también limita el espacio. Se recortan por los límites del campo. Se
-        conservan hasta tres candidatos separados con radio ≥ 1 m; este filtro
-        sólo reduce lo que se dibuja, no determina conexiones.
+        Candidate centres are Voronoi vertices of three defenders inside the
+        outfield players' convex hull. Goalkeepers and pitch boundaries also
+        limit the space. Up to three separated candidates with radius ≥ 1 m are
+        retained. This display filter does not determine connections.
       </p>
       <p>
-        Cada espacio es un destino terminal: nunca se utiliza como un jugador
-        intermediario. Se busca la cadena desde el balón que maximiza su
-        corredor más estrecho. La pantalla prioriza espacios conectados por esta
-        red, después su holgura, avance y tamaño. El tamaño es el diámetro del
-        círculo, no la anchura de la cadena.
+        Each space is a terminal destination, never an intermediate player. The
+        chain from the ball maximises its narrowest corridor. Connected spaces
+        are prioritised, then clearance, progress and size. Space size is the
+        circle diameter, not the chain width.
       </p>
-      <h3>Alcance del modelo</h3>
+      <h3>Model scope</h3>
       <p>
-        Defensas modelados como posiciones puntuales. No se supone un radio de
-        control, velocidad ni tiempo de reacción. «Libre» significa vacío en
-        esta instantánea, no seguro frente a una intercepción. El grafo de
-        Gabriel es conservador: que no exista conexión en él no demuestra que no
-        exista un pase o un camino en el campo.{" "}
+        Defenders are point positions. No control radius, speed or reaction time
+        is assumed. Clear means empty in this snapshot, not safe from
+        interception. The Gabriel graph is conservative: a missing connection
+        does not prove that a pass or route is impossible.{" "}
         {lab.episode?.dataKind?.startsWith("real_")
-          ? `Datos reales con identidades enmascaradas de ${lab.episode.provider ?? "la fuente indicada"},`
-          : "Datos sintéticos de demostración,"}{" "}
-        con observaciones seleccionadas cada{" "}
-        {episodeTiming(lab.episode).sampleStepMs / 1000} segundos. La animación
-        interpola linealmente posiciones entre muestras contiguas para dibujar.
-        Los cálculos topológicos utilizan exclusivamente muestras originales. No
-        se interpolan huecos ni identidades ausentes. El reloj reproduce una
-        ventana, no una transmisión en directo.
+          ? `Real data with masked identities from ${lab.episode.provider ?? "the stated provider"},`
+          : "Synthetic demonstration data,"}{" "}
+        with observations sampled every{" "}
+        {episodeTiming(lab.episode).sampleStepMs / 1000} seconds. Animation
+        interpolates positions between adjacent samples for display. Topological
+        calculations use original samples only. Gaps and absent identities are
+        not interpolated. The clock replays a recorded window; it is not a live
+        broadcast.
       </p>
-      <h3>Firma del bloque · persistencia de Rips</h3>
+      <h3>Block signature · Rips persistence</h3>
       <p>
-        Diagnóstico independiente sobre todas las escalas hasta 40 m, sobre F₂.
-        Sus ciclos H₁ no son los círculos dibujados ni deciden las conexiones
-        del partido.
+        An independent diagnostic across scales up to 40 m, over F₂. Its H₁
+        cycles are not the circles on the pitch and do not determine match
+        connections.
       </p>
       {lab.analysis && <Persistence bars={lab.analysis.bars} />}
       <details className="node-comparison">
-        <summary>Comparar retirando un defensor del modelo</summary>
+        <summary>Compare by removing a defender</summary>
         <p>
-          Comparación geométrica, no una sustitución ni una predicción del
-          movimiento del resto.
+          A geometric comparison, not a substitution or prediction of other
+          players' movement.
         </p>
         <div className="node-buttons">
           {lab.frame?.players
@@ -132,7 +128,7 @@ export function NetworkDetails({ lab }: { lab: Lab }) {
         </div>
         {lab.removed !== null && (
           <button onClick={() => lab.setRemoved(null)}>
-            Restaurar bloque completo
+            Restore full defensive block
           </button>
         )}
       </details>

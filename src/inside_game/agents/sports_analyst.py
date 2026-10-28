@@ -533,13 +533,13 @@ class _Run:
             for e in analytical or self.evidence
         }
         parts.append(
-            "Procedencia: "
+            "Provenance: "
             + (
-                "datos sintéticos de demostración."
+                "synthetic demonstration data."
                 if kinds == {True}
-                else "fuentes reales; consultar cobertura."
+                else "recorded sources; check coverage."
                 if kinds == {False}
-                else "fuentes separadas por procedencia; no comparables automáticamente."
+                else "sources with different provenance; not automatically comparable."
             )
         )
         for section in args.sections:
@@ -559,16 +559,16 @@ class _Run:
         limits = list(dict.fromkeys([*args.limitations, *warnings]))
         if any(f.scope.get("exhaustive") is False for f in self.facts):
             limits.append(
-                "La lectura de tablas usa las primeras diez filas, en el orden de la fuente; no representa todas las entidades."
+                "Table readings use the first ten rows in source order; they do not represent every entity."
             )
         if self.visual and self.visual.status != "complete":
             limits.append(
-                "La revisión visual fue incompleta; consultar estados y límites de cada bloque."
+                "Visual review was incomplete; check the status and limitations of each block."
             )
-        parts.append("\nAlcance y límites\n" + "\n".join(limits))
+        parts.append("\nScope and limitations\n" + "\n".join(limits))
         cited = [next(f for f in self.facts if f.id == key) for key in used]
         parts.append(
-            "\nReferencias\n"
+            "\nReferences\n"
             + "\n".join(reference_line(i + 1, f) for i, f in enumerate(cited))
         )
         text = "\n".join(parts)

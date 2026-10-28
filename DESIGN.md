@@ -2,26 +2,26 @@
 name: Inside the game — Conversational workspace
 description: A monochrome workspace for asking, inspecting, and refining football analysis.
 colors:
-  dark-bg: "#151515"
-  dark-side: "#101010"
-  dark-panel: "#191919"
-  dark-input: "#242424"
-  dark-hover: "#292929"
-  dark-line: "#303030"
+  dark-bg: "#181818"
+  dark-side: "#131313"
+  dark-panel: "#1c1c1c"
+  dark-input: "#252525"
+  dark-hover: "#2c2c2c"
+  dark-line: "#363636"
   dark-text: "#ededed"
-  dark-muted: "#a4a4a4"
+  dark-muted: "#adadad"
   dark-inverse: "#171717"
-  dark-primary: "#f0f0f0"
-  light-bg: "#fff"
-  light-side: "#f5f5f5"
-  light-panel: "#fafafa"
-  light-input: "#f1f1f1"
-  light-hover: "#e9e9e9"
-  light-line: "#dedede"
-  light-text: "#202020"
-  light-muted: "#666"
+  dark-primary: "#e6e6e6"
+  light-bg: "#f7f7f7"
+  light-side: "#f0f0f0"
+  light-panel: "#fdfdfd"
+  light-input: "#ededed"
+  light-hover: "#e5e5e5"
+  light-line: "#d7d7d7"
+  light-text: "#242424"
+  light-muted: "#626262"
   light-inverse: "#fff"
-  light-primary: "#202020"
+  light-primary: "#292929"
 typography:
   title:
     fontFamily: "Segoe UI, system-ui, sans-serif"
@@ -143,11 +143,13 @@ comes from the implemented workspace: pure neutrals, tonal surfaces, restrained
 dividers, compact controls, and visible keyboard focus. Black and white themes
 carry equivalent roles.
 
-This system applies to `frontend/src/Workspace.tsx` and
-`frontend/src/workspace.css`. The existing topology viewer and generated reports
-retain their separate visual systems, including approved team colors. The
-workspace's document theme adapter is an integration detail, not a redefinition
-of those systems. Product evidence and source provenance must remain readable.
+This system applies to the conversational workspace and the match viewer.
+`frontend/src/theme.css` owns their shared light/dark semantic roles, while
+`frontend/src/hooks/use-theme.ts` persists one appearance preference across both
+views and synchronises open tabs. Brand and theme controls are shared components.
+The viewer uses the same neutral surfaces, typography, controls and dividers as
+the workspace. Pitch, team and chart colours keep their analytical meanings;
+the embedded report retains its theme adapter and original evidence.
 
 **Key Characteristics:**
 - Pure neutral interface with theme-paired semantic roles.

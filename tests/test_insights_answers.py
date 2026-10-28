@@ -28,7 +28,7 @@ RAW = re.compile(
     r"[a-z]+_[a-z_]+|\b[a-z]+\.[a-z_]+\b|\b(None|NaN|nan|undefined|null)\b"
 )
 TEAMS = {
-    "1": {"name": "Local", "color": "#2463bc"},
+    "1": {"name": "Home", "color": "#2463bc"},
     "2": {"name": "Visita", "color": "#bf402e"},
 }
 
@@ -50,13 +50,13 @@ def test_there_is_a_headline_for_every_recipe_in_the_catalog():
 
 
 @pytest.mark.parametrize("recipe", sorted(BY_RECIPE))
-def test_every_recipe_answers_with_a_clean_spanish_sentence(recipe):
+def test_every_recipe_answers_with_a_clean_english_sentence(recipe):
     line = headline(BY_RECIPE[recipe])
     assert line, f"{recipe} no tiene lectura"
     assert line[0].isupper() or line[0].isdigit()
     assert line.endswith(".")
     assert not RAW.search(line), line
-    assert "1 pases" not in line and "1 acciones" not in line, line
+    assert "1 passes" not in line and "1 actions" not in line, line
 
 
 def test_every_rendered_piece_shows_its_answer_right_under_the_question():
@@ -78,11 +78,11 @@ def test_blocks_that_are_not_shown_have_no_answer_line():
 def test_recovery_time_answers_with_median_mean_and_maximum():
     rows = [{"recovery_s": v} for v in (10, 30, 20, 100)]
     assert headline(block("ball_recovery_time", rows=rows)) == (
-        "Mediana de 25 s para recuperar el balón tras perderlo "
-        "(media 40 s, máximo 100 s; 4 recuperaciones)."
+        "Median of 25 s to recover the ball after losing it "
+        "(mean 40 s, maximum 100 s; 4 recoveries)."
     )
     one = headline(block("ball_recovery_time", rows=[{"recovery_s": 8}]))
-    assert "1 recuperación)" in one
+    assert "1 recovery)" in one
 
 
 def test_shot_headline_splits_by_team_and_counts_goals():
@@ -92,16 +92,16 @@ def test_shot_headline_splits_by_team_and_counts_goals():
         + [{"team_id": 2, "outcome": "Off T"}]
     )
     line = headline(block("shot_map", points=points, teams=TEAMS))
-    assert line == "Local: 3 tiros (2 goles); Visita: 1 tiro."
+    assert line == "Home: 3 shots (2 goals); Visita: 1 shot."
 
 
 def test_lane_headline_names_the_busiest_lane_and_its_share():
     values = (7, 4, 2, 2, 0)
     metrics = {f"q1.channel_{n}": v for n, v in zip(range(1, 6), values, strict=True)}
     line = headline(block("final_third_channels", metrics=metrics))
-    assert line == "15 entradas al último tercio; el carril 1 concentró 7 (47%)."
+    assert line == "15 entries into the final third; channel 1 accounted for 7 (47%)."
     empty = {f"q1.channel_{n}": 0 for n in range(1, 6)}
-    assert "No hubo entradas" in headline(block("final_third_channels", metrics=empty))
+    assert "No final-third entries" in headline(block("final_third_channels", metrics=empty))
 
 
 def test_comparison_headline_pits_the_two_entities_against_each_other():
@@ -110,7 +110,7 @@ def test_comparison_headline_pits_the_two_entities_against_each_other():
         {"entity_id": 2, "metrics": {"aggregate": {"shots": 3, "goals": 0}}},
     ]
     line = headline(block("entity_comparison", rows=rows, teams=TEAMS))
-    assert line == "Tiros: Local 5 frente a Visita 3; Goles: Local 2 frente a Visita 0."
+    assert line == "Shots: Home 5 versus Visita 3; Goals: Home 2 versus Visita 0."
 
 
 def test_comparison_ignores_source_categories_as_headline_figures():
@@ -119,7 +119,7 @@ def test_comparison_ignores_source_categories_as_headline_figures():
         {"entity_id": 2, "metrics": {"body_parts": {"Head": 2}, "shots": 3}},
     ]
     line = headline(block("entity_comparison", rows=rows, teams=TEAMS))
-    assert "Cabeza" not in line and "Tiros" in line
+    assert "Head" not in line and "Shots" in line
 
 
 def test_line_breaks_headline_agrees_in_number():
@@ -127,8 +127,8 @@ def test_line_breaks_headline_agrees_in_number():
     many = headline(
         block("defensive_geometry", metrics={"q1.observed_line_breaks": 47})
     )
-    assert one == "1 pase cruzó líneas defensivas rivales."
-    assert many == "47 pases cruzaron líneas defensivas rivales."
+    assert one == "1 pass crossed opposition defensive lines."
+    assert many == "47 passes crossed opposition defensive lines."
 
 
 def test_a_headline_never_raises_on_odd_data():
@@ -152,13 +152,13 @@ def test_pressure_headline_describes_the_events_really_shown():
     )
     line = headline(block("pressure_recovery", rows=rows))
     assert line == (
-        "9 acciones registradas (Intercepciones 5, Recuperaciones 3, "
-        "Acciones de portero 1); la fuente no anota presiones en este ámbito."
+        "9 recorded actions (Interceptions 5, Recoveries 3, "
+        "Goalkeeper actions 1); the source does not annotate pressures in this scope."
     )
     with_pressure = headline(
         block("pressure_recovery", rows=[{"type_name": "Pressure"}] * 2)
     )
-    assert "no anota presiones" not in with_pressure
+    assert "does not annotate pressures" not in with_pressure
 
 
 def test_between_lines_headline_counts_each_reception_category():
@@ -171,8 +171,8 @@ def test_between_lines_headline_counts_each_reception_category():
     metrics = {"q1.computed_passes": 4, "q1.eligible_passes": 6}
     line = headline(block("between_lines_receptions", rows=rows, metrics=metrics))
     assert line == (
-        "Recepciones entre líneas: 2 de 4 pases calculados (había 6 pases elegibles) "
-        "(1 a espaldas de la defensa, 1 por delante de los medios rivales)."
+        "Between-lines receptions: 2 out of 4 evaluated passes (from 6 eligible passes) "
+        "(1 behind the defence, 1 in front of the opposition midfield)."
     )
 
 

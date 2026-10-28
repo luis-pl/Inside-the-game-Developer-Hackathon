@@ -12,8 +12,8 @@ export type ReportChanges = {
 export function reportLinkLabel(runs: unknown[]) {
   const run = runs.at(-1) as { delegation?: { action?: string } } | undefined;
   return ["create", "modify"].includes(run?.delegation?.action ?? "")
-    ? "Ver la actualización"
-    : "Ver el informe";
+    ? "View update"
+    : "View report";
 }
 
 export function hasScopedAnalysis(runs: unknown[]) {
@@ -41,33 +41,32 @@ export function changeLabel(changes: ReportChanges) {
   const parts = [];
   if (changes.added.length)
     parts.push(
-      `${changes.added.length} ${changes.added.length === 1 ? "gráfico añadido" : "gráficos añadidos"}`,
+      `${changes.added.length} ${changes.added.length === 1 ? "chart added" : "charts added"}`,
     );
   if (changes.updated.length)
     parts.push(
-      `${changes.updated.length} ${changes.updated.length === 1 ? "gráfico actualizado" : "gráficos actualizados"}`,
+      `${changes.updated.length} ${changes.updated.length === 1 ? "chart updated" : "charts updated"}`,
     );
   if (changes.removed.length)
     parts.push(
-      `${changes.removed.length} ${changes.removed.length === 1 ? "gráfico retirado" : "gráficos retirados"}`,
+      `${changes.removed.length} ${changes.removed.length === 1 ? "chart removed" : "charts removed"}`,
     );
-  if (!parts.length && changes.title_changed) parts.push("Título actualizado");
-  if (!parts.length && changes.analysis_updated)
-    parts.push("Análisis actualizado");
-  return parts.join(" · ") || "Página actualizada";
+  if (!parts.length && changes.title_changed) parts.push("Title updated");
+  if (!parts.length && changes.analysis_updated) parts.push("Analysis updated");
+  return parts.join(" · ") || "Report updated";
 }
 export function friendlyIssue(code: string) {
   if (code.startsWith("MODEL_"))
-    return "El modelo no terminó de preparar este cambio. Puedes reintentarlo; el informe disponible se conserva.";
+    return "The model could not finish this update. You can retry; your current report is still available.";
   if (/TIMEOUT|DEADLINE/.test(code))
-    return "La preparación tardó más de lo previsto. Puedes volver a intentarlo; el informe disponible se conserva.";
+    return "This took longer than expected. You can retry; your current report is still available.";
   if (/UNAUTHORIZED|SESSION_EXPIRED/.test(code))
-    return "Tu sesión ha caducado. Vuelve a entrar para continuar.";
+    return "Your session has expired. Sign in again to continue.";
   if (/RATE|BUSY|CAPACITY/.test(code))
-    return "Hay varias consultas en curso. Espera un momento y vuelve a intentarlo.";
+    return "Several requests are running. Wait a moment and try again.";
   if (/EVIDENCE|CATALOG/.test(code))
-    return "No pude recuperar la información necesaria. Revisa el partido o vuelve a intentarlo.";
-  return "La solicitud no se completó. Puedes reintentarlo o precisar lo que necesitas.";
+    return "The required evidence could not be retrieved. Check the match or try again.";
+  return "The request was not completed. Try again or provide more detail.";
 }
 export function clampPanel(
   width: number,

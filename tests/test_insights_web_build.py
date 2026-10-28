@@ -283,7 +283,7 @@ def test_message_reports_what_was_shown_and_what_was_not(built):
     assert "SINTÉTICO" in overview or "sintéticos" in overview
     assert "Equipo protagonista por defecto" in overview
     assert built["match_overview"]["data"]["next"]["intent"]["match_id"] == 900001
-    assert "Datos sintéticos" in built["match_overview"]["data"]["source_html"]
+    assert "Synthetic data" in built["match_overview"]["data"]["source_html"]
 
 
 def test_standalone_report_has_the_same_pieces_and_is_sandboxed(built):
@@ -344,8 +344,8 @@ def test_failed_data_degrades_to_a_message_with_reasons_not_to_an_error_page():
         page = Page(data["message_html"])
         assert page.errors == []
         assert "no disponibles" in page.visible
-        assert "Mapa de tiros" in page.visible and "API_UNAVAILABLE" in page.visible
-        assert "Mapa de tiros" not in re.findall(
+        assert "Shot map" in page.visible and "API_UNAVAILABLE" in page.visible
+        assert "Shot map" not in re.findall(
             r"<h2>([^<]*)</h2>", data["canvas_html"]
         )
 
@@ -423,9 +423,9 @@ def test_evidence_footer_groups_pages_by_query_and_keeps_every_anchor():
     html = evidence_footer(rows)
     page = Page(html)
     assert page.errors == []
-    assert "2 consultas (4 páginas)" in page.visible
-    assert "q6 · get_events · sintético · 3 páginas" in page.visible
-    assert "q2 · get_events · sintético" in page.visible
+    assert "2 queries (4 pages)" in page.visible
+    assert "q6 · get_events · synthetic · 3 pages" in page.visible
+    assert "q2 · get_events · synthetic" in page.visible
     # Todas las páginas siguen siendo destino de los enlaces «Evidencia» de las piezas.
     assert all(f'id="evidence-q6-p{n}"' in html for n in (1, 2, 3))
     assert 'id="evidence-q2-p1"' in html
@@ -454,7 +454,7 @@ def test_reader_never_sees_raw_api_metric_keys(built, name):
 
 def test_match_overview_shows_a_per_team_table_with_both_team_names(built):
     canvas = built["match_overview"]["canvas"]
-    assert "Por equipo" in canvas.visible
+    assert "By team" in canvas.visible
     assert "Synthetic FC 1" in canvas.visible and "Synthetic FC 2" in canvas.visible
     assert "table" in canvas.tags
 
@@ -478,6 +478,6 @@ def test_web_canvas_applies_the_source_profile_like_the_exported_report():
     with web(profiles=profile, overrides={"get_ball_actions": actions}) as client:
         data = client.post("/api/ask", json={"intent": intent}).json()
         standalone = client.get(data["report_url"]).text
-    assert "Conducciones" in data["canvas_html"]
-    assert "Regates intentados" not in data["canvas_html"]
-    assert "Regates intentados" not in standalone
+    assert "Carries" in data["canvas_html"]
+    assert "Attempted dribbles" not in data["canvas_html"]
+    assert "Attempted dribbles" not in standalone

@@ -47,7 +47,7 @@ def compile_report(request):
     return spec, blocks
 
 
-FOOTER = "Datos y procedencia incluidos. Los cálculos geométricos no son probabilidades ni puntuaciones tácticas calibradas. Las familias inspiradas en FIFA y papers declaran su adaptación local."
+FOOTER = "Data and provenance are included. Geometric measures are not probabilities or calibrated tactical scores. Methods inspired by FIFA and research papers disclose their local adaptations."
 
 
 def report_parts(request):
@@ -77,7 +77,7 @@ def report_parts(request):
         .replace("\u2028", "\\u2028")
         .replace("\u2029", "\\u2029")
     )
-    options = '<option value="all">Informe completo</option>' + "".join(
+    options = '<option value="all">Full report</option>' + "".join(
         f'<option value="{text(b.id)}">{text(b.title)}</option>' for b in blocks
     )
     body = "".join(
@@ -85,7 +85,7 @@ def report_parts(request):
     )
     if spec.analyst:
         body = (
-            '<section class="analyst-note"><h2>Lectura del analista</h2>'
+            '<section class="analyst-note"><h2>Analyst findings</h2>'
             + analyst_copy(spec.analyst.text)
             + (
                 evidence_links(spec.analyst.evidence_ids)
@@ -97,9 +97,11 @@ def report_parts(request):
         )
     kinds = sorted(
         {
-            "Sintético"
-            if e.response.provenance.get("is_synthetic")
-            else "Real · consultar proveedor"
+            "Synthetic"
+            if e.response.provenance.get("is_synthetic") is True
+            else "Recorded · see provider"
+            if e.response.provenance.get("is_synthetic") is False
+            else "Provenance not specified"
             for e in spec.evidence
         }
     )
@@ -115,14 +117,14 @@ def report_parts(request):
     if match:
         home = teams.get(str(match.get("home_team_id")), {})
         away = teams.get(str(match.get("away_team_id")), {})
-        scoreboard = f'<div class="match-banner"><div><span class="eyebrow">Local</span><strong style="--team:{home.get("color", "#2463bc")}">{text(home.get("name", "Local"))}</strong></div><p class="score">{text(match.get("home_score", "—"))}<span>:</span>{text(match.get("away_score", "—"))}</p><div><span class="eyebrow">Visitante</span><strong style="--team:{away.get("color", "#bf402e")}">{text(away.get("name", "Visitante"))}</strong></div></div>'
+        scoreboard = f'<div class="match-banner"><div><span class="eyebrow">Home</span><strong style="--team:{home.get("color", "#2463bc")}">{text(home.get("name", "Home"))}</strong></div><p class="score">{text(match.get("home_score", "—"))}<span>:</span>{text(match.get("away_score", "—"))}</p><div><span class="eyebrow">Away</span><strong style="--team:{away.get("color", "#bf402e")}">{text(away.get("name", "Away"))}</strong></div></div>'
     team_legend = legend([(v["color"], v["name"]) for v in teams.values()])
     header = (
-        f'<p>Inside the game · Informe deportivo</p><h1>{text(spec.title)}</h1><p class="intro">Evidencia del partido, gráficos y métodos en un documento que puedes explorar sin conexión.</p><p class="report-meta">{len(blocks)} bloques · {len(spec.evidence)} evidencias · {text(" / ".join(kinds))}</p>'
+        f'<p>Inside the game · Match analysis</p><h1>{text(spec.title)}</h1><p class="intro">Match evidence, charts and methods in a report you can explore offline.</p><p class="report-meta">{len(blocks)} blocks · {len(spec.evidence)} evidence sources · {text(" / ".join(kinds))}</p>'
         + scoreboard
         + team_legend
-        + '<p class="palette-note">Paleta configurada para este informe; no representa colores oficiales.</p>'
-        + f'<div class="toolbar"><label>Mostrar <select id="block-filter">{options}</select></label><button id="download-data" type="button">Descargar datos</button><button id="print-report" type="button">Imprimir</button></div>'
+        + '<p class="palette-note">Report colours identify the teams; they are not official club colours.</p>'
+        + f'<div class="toolbar"><label>Show <select id="block-filter">{options}</select></label><button id="download-data" type="button">Download data</button><button id="print-report" type="button">Print</button></div>'
     )
     return {
         "spec": spec,
@@ -142,7 +144,7 @@ def render_report(request):
     spec, blocks = parts["spec"], parts["blocks"]
     script_hash = base64.b64encode(hashlib.sha256(JS.encode()).digest()).decode()
     csp = f"default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-{script_hash}'; connect-src 'none'; img-src data:; base-uri 'none'; form-action 'none'"
-    document = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="{text(csp)}"><title>{text(spec.title)}</title><style>{CSS}</style></head><body><header>{parts["header"]}</header><main class="report {text(parts["template_id"])}">{parts["main"]}</main><footer>{parts["footer"]}</footer><script type="application/json" id="report-data">{parts["payload_json"]}</script><script>{JS}</script></body></html>'''
+    document = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="{text(csp)}"><title>{text(spec.title)}</title><style>{CSS}</style></head><body><header>{parts["header"]}</header><main class="report {text(parts["template_id"])}">{parts["main"]}</main><footer>{parts["footer"]}</footer><script type="application/json" id="report-data">{parts["payload_json"]}</script><script>{JS}</script></body></html>'''
     size = len(document.encode())
     if size > 16 * 1024 * 1024:
         raise ValueError("REPORT_SIZE_EXCEEDED")
@@ -174,7 +176,7 @@ def render_workspace(groups, recipes, model_available, details, suggestions=()):
         else "Elige un partido y el tipo de informe que quieres ver."
     )
     return (
-        '<!doctype html><html lang="es"><head><meta charset="utf-8">'
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         "<title>Inside the Game · Insights de partido</title>"
         '<link rel="stylesheet" href="/assets/insights.css">'

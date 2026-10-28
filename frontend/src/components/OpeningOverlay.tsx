@@ -7,10 +7,7 @@ export function OpeningOverlay({
   selected: string | null;
 }) {
   return (
-    <g
-      className="opening-overlay"
-      aria-label="Aperturas geométricas destacadas"
-    >
+    <g className="opening-overlay" aria-label="Highlighted geometric spaces">
       {openings.map((opening) => {
         const active = opening.id === selected,
           { x, y } = opening.center;
@@ -65,11 +62,11 @@ export function OpeningOverlay({
               {opening.diameter.toFixed(1)} m
             </text>
             <title>
-              {opening.id}: círculo libre de {opening.diameter.toFixed(1)}{" "}
-              metros de diámetro.{" "}
+              {opening.id}: empty circle of {opening.diameter.toFixed(1)} metres
+              in diameter.{" "}
               {opening.ballConnected
-                ? "Conectado con el balón en la malla."
-                : "Sin conexión confirmada con el balón."}
+                ? "Connected to the ball in the grid."
+                : "No confirmed connection to the ball."}
             </title>
           </g>
         );

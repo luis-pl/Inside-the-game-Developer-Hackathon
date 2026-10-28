@@ -146,7 +146,7 @@ class Conversations:
                     plan = Interpretation(
                         action="modify",
                         title=value["title"],
-                        reply="Completo el análisis del informe disponible.",
+                        reply="I will complete the analysis of the available report.",
                         context=DataContext.model_validate(value["report_context"]),
                         analysis_request=message.text,
                     )
@@ -298,7 +298,7 @@ class Conversations:
                                     expected_revision=current["revision"],
                                     data_result=handoff,
                                     analyst=AnalystNote(
-                                        text="Análisis en actualización.",
+                                        text="Analysis is being updated.",
                                         evidence_ids=[],
                                     ),
                                 ),
@@ -414,7 +414,7 @@ class Conversations:
                                     )
                                 note = (
                                     analysis.text
-                                    or "No se pudo actualizar el análisis; consulta los gráficos y su procedencia."
+                                    or "The analysis could not be updated; review the charts and their provenance."
                                 )
                                 aliases = analysis.visual_evidence_aliases
                                 ids = list(
@@ -513,9 +513,9 @@ class Conversations:
                 {
                     "role": "assistant",
                     "content": (
-                        "Los gráficos tardaron más de lo previsto y se agotó la espera. Puedes reintentar la solicitud; el informe disponible se conserva."
+                        "The charts took longer than expected and the request timed out. You can retry; your current report remains available."
                         if "TIMEOUT" in code or "DEADLINE" in code
-                        else "No pude completar esta petición. Puedes reintentarlo; el informe disponible se conserva."
+                        else "This request could not be completed. You can retry; your current report remains available."
                     ),
                     "error": code,
                     "retry_analysis": bool(
@@ -530,7 +530,7 @@ class Conversations:
             value["messages"].append(
                 {
                     "role": "assistant",
-                    "content": "La ejecución se interrumpió. Puedes volver a intentarlo.",
+                    "content": "The request was interrupted. You can try again.",
                     "error": "CHAT_EXECUTION_FAILED",
                 }
             )
@@ -564,7 +564,7 @@ def register_chat_routes(app, *, store, model_factory, data_url, insights_url):
         cid = str(uuid4())
         engine.items[owner, cid] = {
             "id": cid,
-            "title": "Nuevo análisis",
+            "title": "New analysis",
             "messages": [],
             "context": DataContext().model_dump(mode="json"),
             "report_context": {},

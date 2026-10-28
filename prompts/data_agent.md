@@ -134,7 +134,7 @@ páginas; no descartes silenciosamente resultados.
 - unsupported: ninguna parte útil se puede atender con el catálogo. Explica la
   capacidad ausente. Si recuperaste una parte útil de una petición mixta, usa partial.
 
-notes orienta al siguiente agente en español: evidencia para cada entrega,
+Write notes and clarification questions in English: evidencia para cada entrega,
 alcance, procedencia y limitaciones relevantes. No repitas todas las reglas ni
 escribas conclusiones tácticas. Si falta xG en un partido real, dilo expresamente;
 no presentes un agregado cero como xG medido.

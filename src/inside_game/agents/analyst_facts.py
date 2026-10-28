@@ -385,38 +385,38 @@ def render_statement(statement, facts):
 def reference_line(index, fact):
     """Referencia de lectura; rutas y JSON completos permanecen en el sobre QA."""
     labels = {
-        "players": "Jugadores de campo",
-        "width_m": "Anchura",
-        "length_m": "Longitud",
-        "radius_of_gyration_m": "Dispersión alrededor del centro",
-        "hull_area_m2": "Área de la envolvente",
-        "hull_perimeter_m": "Perímetro de la envolvente",
-        "epsilon_m": "Distancia de conexión",
-        "component_count": "Grupos conectados",
-        "largest_component_fraction": "Mayor grupo",
-        "critical_connection_distance_m": "Distancia necesaria para conectar el conjunto",
-        "h0": "Componentes (homología de dimensión cero)",
-        "h1": "Ciclos (homología de dimensión uno)",
-        "removed_player_id": "Jugador retirado virtualmente",
-        "remaining_players": "Jugadores restantes en la simulación",
-        "component_count_delta": "Variación del número de componentes",
-        "birth_m": "Aparición del intervalo",
-        "death_m": "Cierre del intervalo",
+        "players": "Outfield players",
+        "width_m": "Width",
+        "length_m": "Length",
+        "radius_of_gyration_m": "Spread around the centre",
+        "hull_area_m2": "Convex hull area",
+        "hull_perimeter_m": "Convex hull perimeter",
+        "epsilon_m": "Connection distance",
+        "component_count": "Connected groups",
+        "largest_component_fraction": "Largest group",
+        "critical_connection_distance_m": "Distance needed to connect the group",
+        "h0": "Components (dimension-zero homology)",
+        "h1": "Cycles (dimension-one homology)",
+        "removed_player_id": "Virtually removed player",
+        "remaining_players": "Remaining players in the simulation",
+        "component_count_delta": "Change in component count",
+        "birth_m": "Interval birth",
+        "death_m": "Interval death",
     }
     scope = fact.scope
     if scope.get("visual_scopes"):
         scope = scope["visual_scopes"][0]
     details = []
-    for key, label in [("match_id", "partido"), ("team_id", "equipo")]:
+    for key, label in [("match_id", "match"), ("team_id", "team")]:
         if scope.get(key) is not None:
             details.append(f"{label} {scope[key]}")
     if scope.get("period") is not None:
-        details.append(f"período {scope['period']}")
+        details.append(f"period {scope['period']}")
     if scope.get("time_ms") is not None:
         seconds = scope["time_ms"] // 1000
         details.append(f"{seconds // 60}:{seconds % 60:02d}")
     unit = "" if not fact.unit or fact.unit == "proporción" else " " + fact.unit
     label = labels.get(fact.label, fact.label)
     if fact.label.startswith("team_area_m2."):
-        label = "Área Voronoi del equipo " + fact.label.rsplit(".", 1)[-1]
+        label = "Team Voronoi area " + fact.label.rsplit(".", 1)[-1]
     return f"[{index}] {label}: {display(fact)}{unit} · " + ", ".join(details)

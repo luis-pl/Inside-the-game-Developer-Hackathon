@@ -107,7 +107,7 @@ def test_ask_returns_fragments_built_from_the_same_organisms():
     with client() as c:
         data = c.post("/api/ask", json={"intent": INTENT}).json()
         assert 'class="msg answer"' in data["message_html"]
-        assert "Datos sintéticos" in data["source_html"]
+        assert "Synthetic data" in data["source_html"]
         # El lienzo usa los organismos del informe exportado y sus datos.
         assert '<section class="insight"' in data["canvas_html"]
         assert 'class="report-payload"' in data["canvas_html"]

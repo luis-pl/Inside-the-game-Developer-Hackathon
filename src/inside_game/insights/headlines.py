@@ -30,7 +30,7 @@ def _player(block, key):
     if info.get("name"):
         return info["name"]
     if info.get("number") is not None:
-        return f"dorsal {info['number']}"
+        return f"shirt {info['number']}"
     return str(key)
 
 
@@ -57,7 +57,7 @@ def _by_team_text(block, limit=3):
     keys = list(dict.fromkeys(k for row in block.by_team.values() for k in row))
     parts = []
     for key in keys[:limit]:
-        label = metric_label(key, block.teams).removeprefix("Eventos · ")
+        label = metric_label(key, block.teams).removeprefix("Events · ")
         values = ", ".join(
             f"{names[t]} {_fmt(key, row.get(key))}" for t, row in block.by_team.items()
         )
@@ -68,15 +68,15 @@ def _by_team_text(block, limit=3):
 def shot_map(block):
     teams = Counter(p.get("team_id") for p in block.points)
     if not teams:
-        return "No hay tiros registrados en este ámbito."
+        return "No shots are recorded in this scope."
     goals = Counter(
         p.get("team_id") for p in block.points if p.get("outcome") == "Goal"
     )
     parts = []
     for team, count in sorted(teams.items(), key=lambda kv: -kv[1]):
-        text = plural(count, "tiro", "tiros")
+        text = plural(count, "shot", "shots")
         if goals.get(team):
-            text += f" ({plural(goals[team], 'gol', 'goles')})"
+            text += f" ({plural(goals[team], 'goal', 'goals')})"
         parts.append(f"{_team(block, team)}: {text}" if len(teams) > 1 else text)
     return "; ".join(parts) + "."
 
@@ -85,7 +85,7 @@ def xg_story(block):
     total = _metric(block, "observed_xg")
     if total is None:
         return None
-    return f"El xG acumulado de los tiros con dato es {total:.2f}."
+    return f"Cumulative xG for shots with available data is {total:.2f}."
 
 
 def match_timeline(block):
@@ -95,19 +95,19 @@ def match_timeline(block):
         if key is not None and item["value"] > peaks.get(key, (0,))[0]:
             peaks[key] = (item["value"], item["period"], item["time_ms"])
     parts = [
-        f"{_team(block, key)} tuvo su pico en P{period} {ms // 60000}′ "
-        f"({value:g} eventos en 5 min)"
+        f"{_team(block, key)} peaked in P{period} {ms // 60000}′ "
+        f"({value:g} events in 5 min)"
         for key, (value, period, ms) in peaks.items()
     ]
     kinds = Counter(m["kind"] for m in block.markers)
     names = {
-        "goal": ("gol", "goles"),
-        "substitution": ("cambio", "cambios"),
-        "card": ("tarjeta", "tarjetas"),
+        "goal": ("goal", "goals"),
+        "substitution": ("substitution", "substitutions"),
+        "card": ("card", "cards"),
     }
     seen = [plural(kinds[k], *names[k]) for k in names if kinds.get(k)]
     if seen:
-        parts.append("registrados " + ", ".join(seen))
+        parts.append("recorded " + ", ".join(seen))
     return ("; ".join(parts) + ".") if parts else None
 
 
@@ -119,11 +119,11 @@ def pass_map(block):
         seen = len(block.vectors) or len(block.points)
         if not seen:
             return None
-        return f"{plural(seen, 'pase registrado', 'pases registrados')}."
+        return f"{plural(seen, 'recorded pass', 'recorded passes')}."
     if tried:
         extra = f" ({rate:.0%})" if _num(rate) else ""
-        return f"{done:g} pases completados de {tried:g} intentados{extra}."
-    return f"{done:g} pases completados (la fuente no registra los intentados)."
+        return f"{done:g} completed passes from {tried:g} attempted{extra}."
+    return f"{done:g} completed passes (attempts are not recorded by the source)."
 
 
 def passing_network(block):
@@ -132,10 +132,10 @@ def passing_network(block):
         return None
     top = max(rows, key=lambda r: r["passes"])
     density = _metric(block, "density")
-    extra = f" Densidad de conexiones: {density:.2f}." if density is not None else ""
+    extra = f" Connection density: {density:.2f}." if density is not None else ""
     return (
-        f"La conexión más repetida es {_player(block, top['source'])} → "
-        f"{_player(block, top['target'])} ({top['passes']:g} pases).{extra}"
+        f"The most frequent connection is {_player(block, top['source'])} → "
+        f"{_player(block, top['target'])} ({top['passes']:g} passes).{extra}"
     )
 
 
@@ -145,8 +145,8 @@ def sequence_explorer(block):
         return None
     longest = max(len(r["event_ids"]) for r in chains)
     return (
-        f"{plural(len(chains), 'cadena', 'cadenas')} de acciones; la más larga tiene "
-        f"{plural(longest, 'acción', 'acciones')}."
+        f"{plural(len(chains), 'chain', 'chains')} of actions; the longest has "
+        f"{plural(longest, 'action', 'actions')}."
     )
 
 
@@ -160,7 +160,7 @@ def _counted(block, singular, many):
 
 def defensive_actions(block):
     return _counted(
-        block, "acción defensiva registrada", "acciones defensivas registradas"
+        block, "recorded defensive action", "recorded defensive actions"
     )
 
 
@@ -172,17 +172,17 @@ def pressure_recovery(block):
     top = ", ".join(
         f"{EVENT_TYPES.get(kind, kind)} {n}" for kind, n in kinds.most_common(3)
     )
-    text = f"{plural(count, 'acción registrada', 'acciones registradas')}"
+    text = f"{plural(count, 'recorded action', 'recorded actions')}"
     if top:
         text += f" ({top})"
     if "Pressure" not in kinds:
-        text += "; la fuente no anota presiones en este ámbito"
+        text += "; the source does not annotate pressures in this scope"
     return text + "."
 
 
 def ball_progression(block):
     return _counted(
-        block, "acción con balón registrada", "acciones con balón registradas"
+        block, "recorded ball action", "recorded ball actions"
     )
 
 
@@ -192,9 +192,9 @@ def occupation_heatmap(block):
         return None
     top = max(rows, key=lambda r: r["seconds_in_zone"])
     return (
-        f"Zona más ocupada: alrededor de x {top['cell_x_m']:.0f} m, "
-        f"y {top['cell_y_m']:.0f} m del campo de 105×68 m "
-        f"({top['seconds_in_zone']:.0f} s·jugador)."
+        f"Most occupied zone: around x {top['cell_x_m']:.0f} m, "
+        f"y {top['cell_y_m']:.0f} m on the 105×68 m pitch "
+        f"({top['seconds_in_zone']:.0f} player·s)."
     )
 
 
@@ -206,19 +206,19 @@ def movement_profile(block):
     who = (
         _player(block, top["player_id"])
         if top.get("player_id") is not None
-        else "el grupo"
+        else "the group"
     )
     if len(rows) == 1 and top.get("player_id") is not None:
-        return f"{who} recorrió {top['distance_m']:.0f} m."
-    observed = plural(len(rows), "jugador observado", "jugadores observados")
-    return f"Mayor recorrido: {who} ({top['distance_m']:.0f} m) entre {observed}."
+        return f"{who} covered {top['distance_m']:.0f} m."
+    observed = plural(len(rows), "observed player", "observed players")
+    return f"Greatest distance: {who} ({top['distance_m']:.0f} m) among {observed}."
 
 
 def play_replay(block):
     times = [f["period_time_ms"] for f in block.frames if _num(f.get("period_time_ms"))]
     if len(times) < 2:
         return None
-    return f"{len(times)} instantes que cubren {(max(times) - min(times)) / 1000:.0f} s de juego."
+    return f"{len(times)} snapshots covering {(max(times) - min(times)) / 1000:.0f} s of play."
 
 
 def zone_presence(block):
@@ -229,9 +229,9 @@ def zone_presence(block):
     extra = ""
     if entries:
         extra = (
-            f" en {plural(int(entries), 'entrada muestreada', 'entradas muestreadas')}"
+            f" across {plural(int(entries), 'sampled entry', 'sampled entries')}"
         )
-    return f"{seconds:.0f} s·jugador dentro de la zona{extra}."
+    return f"{seconds:.0f} player·s inside the zone{extra}."
 
 
 def team_shape(block):
@@ -239,10 +239,10 @@ def team_shape(block):
     if width is None or length is None:
         return None
     area = _metric(block, "hull_area_m2")
-    extra = f", con {area:.0f} m² de envolvente" if area is not None else ""
+    extra = f", with a {area:.0f} m² convex hull" if area is not None else ""
     return (
-        f"En ese instante el bloque ocupaba {width:.0f} m de ancho y "
-        f"{length:.0f} m de largo{extra}."
+        f"At that instant the team shape was {width:.0f} m wide and "
+        f"{length:.0f} m long{extra}."
     )
 
 
@@ -250,13 +250,13 @@ def proximity_network(block):
     count = _metric(block, "component_count")
     if count is None:
         return None
-    text = plural(int(count), "grupo conectado", "grupos conectados")
+    text = plural(int(count), "connected group", "connected groups")
     eps = _metric(block, "epsilon_m")
     if eps is not None:
-        text += f" a {eps:g} m"
+        text += f" at {eps:g} m"
     critical = _metric(block, "critical_connection_distance_m")
     if critical is not None:
-        text += f"; todos quedan unidos a partir de {critical:.1f} m"
+        text += f"; all are connected from {critical:.1f} m"
     return text + "."
 
 
@@ -273,7 +273,7 @@ def space_partition(block):
         f"{_team(block, t)} {a:.0f} m² ({a / total:.0%})"
         for t, a in sorted(areas.items(), key=lambda kv: -kv[1])
     ]
-    return "Espacio más cercano a cada equipo: " + ", ".join(parts) + "."
+    return "Space nearest to each team: " + ", ".join(parts) + "."
 
 
 def persistent_structure(block):
@@ -281,8 +281,8 @@ def persistent_structure(block):
     if not dims:
         return None
     return (
-        f"{plural(dims.get(0, 0), 'componente persistente', 'componentes persistentes')} "
-        f"y {plural(dims.get(1, 0), 'ciclo', 'ciclos')} según la escala de conexión."
+        f"{plural(dims.get(0, 0), 'persistent component', 'persistent components')} "
+        f"and {plural(dims.get(1, 0), 'cycle', 'cycles')} across the connection scale."
     )
 
 
@@ -293,10 +293,10 @@ def node_robustness(block):
     top = max(rows, key=lambda r: r["component_count_delta"])
     delta = int(top["component_count_delta"])
     if delta <= 0:
-        return "Retirar a cualquier jugador no fragmenta la red de conexiones."
+        return "Removing any single player does not fragment the connection network."
     who = _player(block, top["removed_player_id"])
-    more = plural(delta, "componente", "componentes")
-    return f"Retirar a {who} es lo que más fragmenta la red (+{more})."
+    more = plural(delta, "component", "components")
+    return f"Removing {who} fragments the network the most (+{more})."
 
 
 def entity_comparison(block):
@@ -325,7 +325,7 @@ def entity_comparison(block):
             f"{_fmt(key.rsplit('.', 1)[-1], v[key])}"
             for e, v in rows
         ]
-        joined = " frente a ".join(shown) if len(shown) == 2 else " · ".join(shown)
+        joined = " versus ".join(shown) if len(shown) == 2 else " · ".join(shown)
         parts.append(f"{metric_label(key, block.teams)}: {joined}")
     return ("; ".join(parts) + ".") if parts else None
 
@@ -335,16 +335,16 @@ def defensive_geometry(block):
     if observed is not None:
         mapped = _metric(block, "mapped_line_breaks")
         extra = (
-            f" ({mapped:g} situados en el mapa)"
+            f" ({mapped:g} mapped)"
             if mapped not in (None, observed)
             else ""
         )
-        verb = "pase cruzó" if observed == 1 else "pases cruzaron"
-        return f"{observed:g} {verb} líneas defensivas rivales{extra}."
+        verb = "pass crossed" if observed == 1 else "passes crossed"
+        return f"{observed:g} {verb} opposition defensive lines{extra}."
     actions = _metric(block, "opponent_actions")
     if actions is None:
         return None
-    return f"Se analizaron {actions:g} acciones del rival frente a la estructura defensiva."
+    return f"Analysed {actions:g} opposition actions against the defensive structure."
 
 
 def defensive_line_height(block):
@@ -352,8 +352,8 @@ def defensive_line_height(block):
     if height is None:
         return None
     return (
-        "La línea defensiva (su defensor más retrasado) estaba a "
-        f"{height:.1f} m de su línea de fondo en ese instante."
+        "The defensive line (its deepest defender) was "
+        f"{height:.1f} m from its goal line at that instant."
     )
 
 
@@ -365,8 +365,8 @@ def goalkeeper_connection(block):
     line = _metric(block, "defensive_line_height_m")
     detail = ""
     if keeper is not None and line is not None:
-        detail = f" (portero a {keeper:.1f} m, línea a {line:.1f} m)"
-    return f"Distancia entre el portero y la línea defensiva: {gap:.1f} m{detail}."
+        detail = f" (goalkeeper at {keeper:.1f} m, line at {line:.1f} m)"
+    return f"Distance between goalkeeper and defensive line: {gap:.1f} m{detail}."
 
 
 def final_third_channels(block):
@@ -377,11 +377,11 @@ def final_third_channels(block):
     }
     total = sum(lanes.values())
     if not total:
-        return "No hubo entradas al último tercio en este ámbito."
+        return "No final-third entries are recorded in this scope."
     top = max(lanes, key=lanes.get)
     return (
-        f"{plural(int(total), 'entrada', 'entradas')} al último tercio; el carril {top} "
-        f"concentró {lanes[top]:g} ({lanes[top] / total:.0%})."
+        f"{plural(int(total), 'entry', 'entries')} into the final third; channel {top} "
+        f"accounted for {lanes[top]:g} ({lanes[top] / total:.0%})."
     )
 
 
@@ -392,20 +392,20 @@ def between_lines_receptions(block):
     eligible = _metric(block, "eligible_passes")
     extra = ""
     if eligible is not None and eligible != computed:
-        extra = f" (había {plural(int(eligible), 'pase elegible', 'pases elegibles')})"
+        extra = f" (from {plural(int(eligible), 'eligible pass', 'eligible passes')})"
     kinds = Counter(r.get("category") for r in block.rows)
     if (
         kinds.get("between_lines")
         or kinds.get("behind_defense")
         or kinds.get("in_front")
     ):
-        passes = plural(int(computed), "pase calculado", "pases calculados")
+        passes = plural(int(computed), "evaluated pass", "evaluated passes")
         return (
-            f"Recepciones entre líneas: {kinds.get('between_lines', 0)} de {passes}{extra} "
-            f"({kinds.get('behind_defense', 0)} a espaldas de la defensa, "
-            f"{kinds.get('in_front', 0)} por delante de los medios rivales)."
+            f"Between-lines receptions: {kinds.get('between_lines', 0)} out of {passes}{extra} "
+            f"({kinds.get('behind_defense', 0)} behind the defence, "
+            f"{kinds.get('in_front', 0)} in front of the opposition midfield)."
         )
-    return f"{plural(int(computed), 'pase calculado', 'pases calculados')}{extra}."
+    return f"{plural(int(computed), 'evaluated pass', 'evaluated passes')}{extra}."
 
 
 def ball_recovery_time(block):
@@ -413,9 +413,9 @@ def ball_recovery_time(block):
     if not seconds:
         return None
     return (
-        f"Mediana de {median(seconds):.0f} s para recuperar el balón tras perderlo "
-        f"(media {mean(seconds):.0f} s, máximo {max(seconds):.0f} s; "
-        f"{plural(len(seconds), 'recuperación', 'recuperaciones')})."
+        f"Median of {median(seconds):.0f} s to recover the ball after losing it "
+        f"(mean {mean(seconds):.0f} s, maximum {max(seconds):.0f} s; "
+        f"{plural(len(seconds), 'recovery', 'recoveries')})."
     )
 
 
@@ -424,8 +424,8 @@ def pressure_turnovers(block):
     if not delays:
         return None
     return (
-        f"{plural(len(delays), 'recuperación', 'recuperaciones')} tras presión; "
-        f"demora mediana de {median(delays):.1f} s."
+        f"{plural(len(delays), 'recovery', 'recoveries')} following pressure; "
+        f"median delay of {median(delays):.1f} s."
     )
 
 
@@ -436,8 +436,8 @@ def structural_pass(block):
     crossing = sum(1 for r in rows if (r.get("line_bypass_count") or 0) > 0)
     gain = median(r["relative_space_gain"] for r in rows)
     return (
-        f"{plural(len(rows), 'pase evaluado', 'pases evaluados')}; superan al menos "
-        f"una línea rival: {crossing}. Ganancia mediana de espacio: {gain:.2f}."
+        f"{plural(len(rows), 'evaluated pass', 'evaluated passes')}; bypass at least "
+        f"one opposition line: {crossing}. Median space gain: {gain:.2f}."
     )
 
 
@@ -448,8 +448,8 @@ def hodge_flow(block):
     if None in (grad, curl, harmonic):
         return None
     return (
-        f"El flujo de pases se reparte en {grad:.0%} gradiente, "
-        f"{curl:.0%} circulación local y {harmonic:.0%} armónico."
+        f"Passing flow energy comprises {grad:.0%} gradient, "
+        f"{curl:.0%} local circulation and {harmonic:.0%} harmonic."
     )
 
 
@@ -457,8 +457,8 @@ def topological_change(block):
     values = [s["value"] for s in block.series if _num(s.get("value"))]
     if not values:
         return None
-    pairs = plural(len(values), "par comparable", "pares comparables")
-    return f"El cuello de botella varió entre {min(values):.1f} y {max(values):.1f} m en {pairs}."
+    pairs = plural(len(values), "comparable pair", "comparable pairs")
+    return f"Bottleneck distance ranged from {min(values):.1f} to {max(values):.1f} m across {pairs}."
 
 
 def clearance_connectivity(block):
@@ -467,14 +467,14 @@ def clearance_connectivity(block):
         count = _metric(block, "reachable_players")
         if count is None:
             return None
-        return f"{plural(int(count), 'jugador', 'jugadores')} con conexión libre desde el balón."
+        return f"{plural(int(count), 'player', 'players')} with a clear connection from the ball."
     widest = max(rows, key=lambda r: r["full_width_m"])
     if len(rows) == 1:
         who = _player(block, widest["player_id"])
-        return f"1 jugador con conexión libre desde el balón: {who} ({widest['full_width_m']:.1f} m)."
+        return f"1 player with a clear connection from the ball: {who} ({widest['full_width_m']:.1f} m)."
     return (
-        f"{plural(len(rows), 'jugador', 'jugadores')} con conexión libre desde el balón; "
-        f"la más ancha es la de {_player(block, widest['player_id'])} "
+        f"{plural(len(rows), 'player', 'players')} with a clear connection from the ball; "
+        f"the widest connects to {_player(block, widest['player_id'])} "
         f"({widest['full_width_m']:.1f} m)."
     )
 

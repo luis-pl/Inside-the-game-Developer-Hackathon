@@ -1,146 +1,251 @@
-import { useMemo, useState } from "react";
-const clock = (ms: number) =>
-  `${String(Math.floor(ms / 60000)).padStart(2, "0")}:${String(Math.floor(ms / 1000) % 60).padStart(2, "0")}`;
-
+import { useId, useMemo, useState } from "react";
+import type { PointerEvent } from "react";
 import type { Lab } from "../hooks/use-lab.ts";
 import { episodeTiming } from "../domain/playback.ts";
+import { chartSegments, nearestSample } from "../domain/chart-series.ts";
+import { matchClock } from "./MatchPlayback.tsx";
 
 export function Timeline({ lab }: { lab: Lab }) {
-  const { episode, frame } = lab;
   const [metric, setMetric] = useState<"openings" | "groups">("openings");
-  const series = useMemo(
-    () => lab.tacticalSeries.map((t) => t.network.components),
-    [lab.tacticalSeries],
+  const [hover, setHover] = useState<number | null>(null);
+  const titleId = useId();
+  const gradientId = useId();
+  const samples = useMemo(
+    () =>
+      (lab.episode?.frames ?? []).map((frame, i) => ({
+        timeMs: frame.timeMs,
+        value:
+          frame.players.length < 3 || (metric === "groups" && !frame.ball)
+            ? null
+            : metric === "openings"
+              ? (lab.openingSeries[i] ?? null)
+              : (lab.tacticalSeries[i]?.network.components ?? null),
+      })),
+    [lab.episode, lab.openingSeries, lab.tacticalSeries, metric],
   );
-  const values = metric === "openings" ? lab.openingSeries : series;
-  const largest = Math.max(1, ...values);
-  const jumpToOpening = () => {
-    setMetric("openings");
-    lab.goToOpening();
-    document.getElementById("pitch-analysis")?.scrollIntoView({
-      block: "start",
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-    });
-  };
+  const timing = episodeTiming(lab.episode);
+  const segments = useMemo(
+    () => chartSegments(samples, timing.sampleStepMs * 1.5),
+    [samples, timing.sampleStepMs],
+  );
+  const maximum = Math.max(1, ...samples.map((p) => p.value ?? 0));
+  const step =
+    metric === "groups"
+      ? Math.max(1, Math.ceil(maximum / 4))
+      : Math.max(1, Math.ceil(maximum / 4 / 5) * 5);
+  const upper = step * 4;
+  const start = samples[0]?.timeMs ?? 0,
+    end = samples.at(-1)?.timeMs ?? 1;
+  const x = (ms: number) =>
+    52 + ((ms - start) / Math.max(1, end - start)) * 710;
+  const y = (value: number) => 202 - (value / upper) * 166;
+  const inspected = samples[hover ?? lab.index];
+  const unit = metric === "openings" ? "m" : "groups";
+  function pointerIndex(event: PointerEvent<SVGSVGElement>) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const fraction = Math.max(
+      0,
+      Math.min(
+        1,
+        (((event.clientX - bounds.left) / bounds.width) * 800 - 52) / 710,
+      ),
+    );
+    return nearestSample(samples, start + fraction * (end - start));
+  }
+  function select(index: number) {
+    if (index >= 0) {
+      lab.setPlaying(false);
+      lab.setIndex(index);
+    }
+  }
   return (
-    <section className="timeline panel">
-      <div className="timeline-top">
-        <div className="playback">
-          <button
-            className="play-button"
-            aria-label={lab.playing ? "Pausar" : "Reproducir"}
-            disabled={!episode || lab.loading}
-            onClick={() => {
-              if (episode && lab.index === episode.frames.length - 1)
-                lab.setIndex(0);
-              lab.setPlaying(!lab.playing);
-            }}
-          >
-            {lab.playing ? "Ⅱ" : "▶"}
-          </button>
-          <strong>{frame ? clock(frame.timeMs) : "00:00"}</strong>
-          <span>
-            / {episode ? clock(episode.frames.at(-1)!.timeMs) : "00:00"}
-          </span>
-        </div>
-        <label className="speed">
-          Velocidad de reproducción
-          <select
-            aria-label="Velocidad de reproducción"
-            value={lab.speed}
-            onChange={(e) => lab.setSpeed(Number(e.target.value))}
-          >
-            <option value="0.5">0.5×</option>
-            <option value="1">1×</option>
-            <option value="2">2×</option>
-            <option value="4">4×</option>
-            <option value="8">8×</option>
-          </select>
-        </label>
-      </div>
-      <input
-        className="scrubber"
-        aria-label="Instante de la ventana"
-        type="range"
-        min={episode?.frames[0].timeMs ?? 0}
-        max={episode?.frames.at(-1)!.timeMs ?? 1}
-        step="any"
-        value={lab.playheadMs}
-        disabled={!episode}
-        onChange={(e) => {
-          lab.setPlaying(false);
-          lab.seekTime(Number(e.target.value));
-        }}
-      />
-      <div className="timeline-explorer">
+    <section className="spatial-trends panel" aria-label="Spatial trends">
+      <div className="trend-heading">
         <div>
-          <strong>
-            {metric === "openings"
-              ? "¿Cuándo se abre más el espacio?"
-              : "¿Cuándo cambia la red?"}
-          </strong>
-          <p>
-            {metric === "openings"
-              ? "La altura de cada barra indica el tamaño de la apertura en ese instante."
-              : "Componentes de la red geométrica de balón y atacantes."}
-          </p>
+          <p className="section-label">THE MATCH, OVER TIME</p>
+          <h2>Spatial trends</h2>
+          <p>Find the moments when the shape changes.</p>
         </div>
         <button
           className="button secondary"
-          disabled={!episode || !lab.openingSeries.some((v) => v > 0)}
-          onClick={jumpToOpening}
+          disabled={!lab.episode || !lab.openingSeries.some((v) => v > 0)}
+          onClick={() => {
+            setMetric("openings");
+            setHover(null);
+            lab.goToOpening();
+          }}
         >
-          Ir a la mayor apertura ↗
+          Jump to peak <span aria-hidden="true">↗</span>
         </button>
       </div>
-      <div className="timeline-modes">
-        <button
-          aria-pressed={metric === "openings"}
-          onClick={() => setMetric("openings")}
-        >
-          Tamaño de aperturas
-        </button>
-        <button
-          aria-pressed={metric === "groups"}
-          onClick={() => setMetric("groups")}
-        >
-          Componentes de la red
-        </button>
-      </div>
-      <div
-        className="sparkline"
-        aria-label={
-          metric === "openings"
-            ? "Apertura mayor por muestra"
-            : "Componentes por muestra"
-        }
-      >
-        {values.map((n, i) => (
+      <div className="trend-toolbar">
+        <div className="chart-switch" aria-label="Trend metric">
           <button
-            key={i}
-            aria-label={`Ir a ${clock(episode!.frames[i].timeMs)}, ${metric === "openings" ? n.toFixed(1) + " metros de apertura" : n + " grupos"}`}
+            aria-pressed={metric === "openings"}
             onClick={() => {
-              lab.setPlaying(false);
-              lab.setIndex(i);
+              setMetric("openings");
+              setHover(null);
             }}
-            style={{ height: `${6 + (n / largest) * 34}px` }}
-            className={i === lab.index ? "current" : ""}
+          >
+            Highlighted space
+          </button>
+          <button
+            aria-pressed={metric === "groups"}
+            onClick={() => {
+              setMetric("groups");
+              setHover(null);
+            }}
+          >
+            Network groups
+          </button>
+        </div>
+        <div className="chart-readout">
+          <span>{inspected ? matchClock(inspected.timeMs) : "—"}</span>
+          <strong>
+            {inspected?.value == null
+              ? "—"
+              : metric === "openings"
+                ? inspected.value.toFixed(1)
+                : inspected.value}{" "}
+            <small>{unit}</small>
+          </strong>
+        </div>
+      </div>
+      {samples.length ? (
+        <>
+          <svg
+            className="trend-chart"
+            viewBox="0 0 800 240"
+            role="img"
+            aria-labelledby={titleId}
+            onPointerMove={(e) => setHover(pointerIndex(e))}
+            onPointerLeave={() => setHover(null)}
+            onPointerDown={(e) => select(pointerIndex(e))}
+          >
+            <title id={titleId}>
+              {metric === "openings"
+                ? "Highlighted space diameter in metres"
+                : "Number of connected network groups"}{" "}
+              over match time. Use the slider below to inspect each sample. Gaps
+              indicate missing tracking.
+            </title>
+            <defs>
+              <linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
+                <stop
+                  offset="0%"
+                  stopColor="var(--chart-ink)"
+                  stopOpacity=".2"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--chart-ink)"
+                  stopOpacity=".015"
+                />
+              </linearGradient>
+            </defs>
+            <text x="52" y="17" className="chart-unit">
+              {metric === "openings"
+                ? "SPACE DIAMETER (m)"
+                : "CONNECTED GROUPS"}
+            </text>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <g key={i}>
+                <line
+                  x1="52"
+                  x2="762"
+                  y1={y(i * step)}
+                  y2={y(i * step)}
+                  className="chart-grid"
+                />
+                <text x="37" y={y(i * step) + 4} textAnchor="end">
+                  {i * step}
+                </text>
+              </g>
+            ))}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <text key={i} x={52 + i * 177.5} y="228" textAnchor="middle">
+                {matchClock(start + ((end - start) * i) / 4)}
+              </text>
+            ))}
+            {segments.map((segment, i) => {
+              const line = segment
+                .map(
+                  (p, j) =>
+                    `${j ? "L" : "M"}${x(p.timeMs).toFixed(2)},${y(p.value!).toFixed(2)}`,
+                )
+                .join(" ");
+              return (
+                <g key={i}>
+                  <path
+                    d={`${line} L${x(segment.at(-1)!.timeMs)},202 L${x(segment[0].timeMs)},202 Z`}
+                    fill={`url(#${gradientId})`}
+                  />
+                  <path d={line} className="chart-series" />
+                  {segment.length === 1 && (
+                    <circle
+                      cx={x(segment[0].timeMs)}
+                      cy={y(segment[0].value!)}
+                      r="3"
+                      fill="#26715c"
+                    />
+                  )}
+                </g>
+              );
+            })}
+            {inspected && (
+              <g>
+                <line
+                  x1={x(inspected.timeMs)}
+                  x2={x(inspected.timeMs)}
+                  y1="32"
+                  y2="202"
+                  className="chart-cursor"
+                />
+                {inspected.value !== null && (
+                  <circle
+                    cx={x(inspected.timeMs)}
+                    cy={y(inspected.value)}
+                    r="5"
+                    className="chart-dot"
+                  />
+                )}
+              </g>
+            )}
+          </svg>
+          <label className="chart-scrub-label" htmlFor={titleId + "-slider"}>
+            Inspect match time{" "}
+            <span>{matchClock(lab.episode!.frames[lab.index].timeMs)}</span>
+          </label>
+          <input
+            id={titleId + "-slider"}
+            className="chart-scrubber"
+            aria-label="Inspect spatial trend sample"
+            aria-valuetext={`${matchClock(lab.episode!.frames[lab.index].timeMs)}, ${samples[lab.index]?.value == null ? "no tracking data" : `${samples[lab.index].value!.toFixed(metric === "openings" ? 1 : 0)} ${unit}`}`}
+            type="range"
+            min="0"
+            max={samples.length - 1}
+            value={lab.index}
+            onChange={(e) => {
+              setHover(null);
+              select(Number(e.target.value));
+            }}
           />
-        ))}
-      </div>
-      <div className="timeline-caption">
-        <span>
-          {metric === "openings"
-            ? "APERTURA MAYOR POR INSTANTE"
-            : "GRUPOS SEPARADOS"}
-        </span>
-        <span>
-          {metric === "openings" ? "Diámetro en metros" : "Componentes H₀"} ·
-          muestras cada {episodeTiming(episode).sampleStepMs / 1000} segundos
-        </span>
-      </div>
+        </>
+      ) : (
+        <div className="chart-empty">
+          <span aria-hidden="true">∿</span>
+          <strong>Your match timeline will appear here.</strong>
+          <p>Load a recorded match or open the local geometric example.</p>
+        </div>
+      )}
+      <p className="chart-footnote">
+        <span className="series-key" />
+        {metric === "openings"
+          ? "Prioritised space diameter · connected spaces take precedence."
+          : "Connected components in the ball-and-attackers network."}{" "}
+        {lab.episode &&
+          `Samples every ${timing.sampleStepMs / 1000}s. Select the chart or use the slider.`}
+      </p>
     </section>
   );
 }

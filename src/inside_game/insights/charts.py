@@ -45,7 +45,7 @@ def pitch(block, network=False):
                 f"{float(x):.4f},{float(y):.4f}" for x, y in polygon["vertices"]
             )
             shapes.append(
-                f'<polygon points="{pts}" fill="{color}" fill-opacity=".19" stroke="{color}" stroke-opacity=".55" stroke-width=".22"><title>{text(identity["name"])} · jugador {text(polygon.get("player_id", "—"))} · {numeric(polygon.get("value"))} m²</title></polygon>'
+                f'<polygon points="{pts}" fill="{color}" fill-opacity=".19" stroke="{color}" stroke-opacity=".55" stroke-width=".22"><title>{text(identity["name"])} · player {text(polygon.get("player_id", "—"))} · {numeric(polygon.get("value"))} m²</title></polygon>'
             )
     weights = max((abs(v.get("weight", 1)) for v in block.vectors), default=1) or 1
     markers = set()
@@ -73,7 +73,7 @@ def pitch(block, network=False):
             )
             markers.add(marker)
         shapes.append(
-            f'<path d="{path}" fill="none" stroke="{color}" stroke-width="{width:.3f}" stroke-opacity="{0.65 if network else 0.45}" {dash} marker-end="url(#{marker})"><title>{text(v.get("event_id", "Conexión"))} · {numeric(v.get("weight", 1))}</title></path>'
+            f'<path d="{path}" fill="none" stroke="{color}" stroke-width="{width:.3f}" stroke-opacity="{0.65 if network else 0.45}" {dash} marker-end="url(#{marker})"><title>{text(v.get("event_id", "Connection"))} · {numeric(v.get("weight", 1))}</title></path>'
         )
     involvement = max((p.get("involvement", 1) for p in block.points), default=1) or 1
     for p in block.points[:1000]:
@@ -99,7 +99,7 @@ def pitch(block, network=False):
             radius = 1.45
         outcome = p.get("outcome")
         hollow = shot and outcome not in {"Goal", "Saved", "Saved to Post"}
-        tooltip = f"{identity['name']} · {block.players.get(str(key), {}).get('name', p.get('label', key or 'Acción'))}"
+        tooltip = f"{identity['name']} · {block.players.get(str(key), {}).get('name', p.get('label', key or 'Action'))}"
         if shot:
             if outcome and not str(outcome).lower().startswith("unknown"):
                 tooltip += f" · {outcome}"
@@ -131,32 +131,32 @@ def pitch(block, network=False):
                 f'<text class="jersey" x="{x:.3f}" y="{y + 0.55:.3f}" text-anchor="middle">{text(player_label(block, key))}</text>'
             )
     caption = (
-        "Red esquemática: las posiciones de nodos no representan ubicación en cancha."
+        "Schematic network: node positions do not represent pitch locations."
         if schematic
         else "105 × 68 m"
     )
     if block.insight_id == "passing_network" and not schematic:
-        caption += " · Nodos: media de acciones de pase y recepción; tamaño: participación; grosor: pases."
+        caption += " · Nodes: mean pass and reception locations; size: involvement; line width: passes."
     elif block.insight_id == "space_partition":
-        caption += " · Cercanía geométrica (Voronoi); no probabilidad de control. Puntos: tracking observado."
+        caption += " · Geometric proximity (Voronoi), not control probability. Points: observed tracking."
     elif block.coordinate_reference == "acting_team_attack":
-        caption += " · Referencia de ataque de cada equipo →. No es la referencia fija del tracking."
+        caption += " · Each team's attacking direction →. This differs from the fixed tracking reference."
     elif not schematic:
-        caption += " · Posiciones observadas; consultar instante y alcance."
+        caption += " · Observed positions; check the time and scope."
     if network:
-        caption += f" Enlaces visibles con peso ≥ {block.visual.min_edge_weight}; las métricas conservan la red completa."
+        caption += f" Visible links have weight ≥ {block.visual.min_edge_weight}; metrics retain the full network."
     if len(block.vectors) > 1000 or len(block.points) > 1000:
-        caption += " Vista limitada a las primeras 1000 acciones; la evidencia completa está en el JSON."
+        caption += " Showing the first 1,000 actions; full evidence is included in the JSON."
     legends = [
         (team(block, key)["color"], team(block, key)["name"])
         for key in sorted(team_ids - {None}, key=str)
     ]
     if block.insight_id == "shot_map":
-        caption += " Doble anillo: gol; relleno: parado; hueco: otro resultado o sin clasificar."
+        caption += " Double ring: goal; filled: saved; hollow: other or unclassified outcome."
         caption += (
-            " Área proporcional a xG con tamaño mínimo de lectura."
+            " Area scales with xG, with a minimum visible size."
             if any(p.get("xg") is not None for p in block.points)
-            else " Tamaño fijo: xG ausente."
+            else " Fixed size: xG is unavailable."
         )
     scale = (
         f'<div class="heat-scale"><span>0</span><span class="heat-ramp" style="--team:{team(block, next(iter(team_ids - {None}), None))["color"]}"></span><span>{numeric(maximum)} {text(block.unit)}</span></div>'
@@ -181,7 +181,7 @@ def possession_timeline(block):
         end = max(r["end_ms"] for r in items) or 1
         top = 35 + pi * 125
         shapes.append(
-            f'<text x="12" y="{top - 12}">P{period} · tiempo del período</text>'
+            f'<text x="12" y="{top - 12}">P{period} · period time</text>'
         )
         for i, key in enumerate(teams):
             identity = team(block, key)
@@ -195,26 +195,26 @@ def possession_timeline(block):
                 x = 175 + 480 * row["start_ms"] / end
                 width = max(0.8, 480 * (row["end_ms"] - row["start_ms"]) / end)
                 shapes.append(
-                    f'<rect x="{x:.2f}" y="{y}" width="{width:.2f}" height="18" rx="2" fill="{identity["color"]}"><title>{text(identity["name"])} · P{period} · {row["start_ms"] / 1000:g}–{row["end_ms"] / 1000:g} s · {row.get("passes", 0)} pases · {row.get("shots", 0)} tiros</title></rect>'
+                    f'<rect x="{x:.2f}" y="{y}" width="{width:.2f}" height="18" rx="2" fill="{identity["color"]}"><title>{text(identity["name"])} · P{period} · {row["start_ms"] / 1000:g}–{row["end_ms"] / 1000:g} s · {row.get("passes", 0)} passes · {row.get("shots", 0)} shots</title></rect>'
                 )
             labels.append(
                 (
                     identity["color"],
-                    f"{identity['name']}: {sum(r['team_id'] == key for r in items)} secuencias en P{period}",
+                    f"{identity['name']}: {sum(r['team_id'] == key for r in items)} sequences in P{period}",
                 )
             )
         shapes.append(
             f'<text x="175" y="{top + 80}">0′</text><text x="620" y="{top + 80}">{end / 60000:.1f}′</text>'
         )
-    return f'<figure><svg class="series" viewBox="0 0 690 {30 + 125 * len(periods)}" role="img" aria-label="Secuencias de posesión registradas">{"".join(shapes)}</svg>{legend(labels)}<figcaption>Cada tramo une el primer y último evento de una posesión registrada. Los huecos se conservan. No equivale a porcentaje oficial de tiempo de posesión.</figcaption></figure>'
+    return f'<figure><svg class="series" viewBox="0 0 690 {30 + 125 * len(periods)}" role="img" aria-label="Recorded possession sequences">{"".join(shapes)}</svg>{legend(labels)}<figcaption>Each segment joins the first and last events of a recorded possession. Gaps are preserved. This is not an official possession percentage.</figcaption></figure>'
 
 
-MARKER_NAMES = {"goal": "Gol", "substitution": "Cambio", "card": "Tarjeta"}
+MARKER_NAMES = {"goal": "Goal", "substitution": "Substitution", "card": "Card"}
 MARKER_LANE_Y = (226, 242)
 
 
 def marker_marks(block, period, end):
-    """Goles, cambios y tarjetas bajo el eje del tiempo, una franja por equipo."""
+    """Goals, substitutions & cards bajo el eje del tiempo, una franja por equipo."""
     marks = []
     teams = sorted({m.get("team_id") for m in block.markers}, key=str)
     for m in block.markers:
@@ -224,7 +224,7 @@ def marker_marks(block, period, end):
         x = 48 + 600 * m["time_ms"] / end
         identity = team(block, m.get("team_id"))
         color = identity["color"]
-        label = m.get("label") or MARKER_NAMES.get(m["kind"], "Evento")
+        label = m.get("label") or MARKER_NAMES.get(m["kind"], "Event")
         who = block.players.get(str(m.get("player_id")), {}).get("name")
         tip = " · ".join(
             [f"P{period} {m['time_ms'] // 60000}′", label, identity["name"]]
@@ -235,7 +235,7 @@ def marker_marks(block, period, end):
         elif m["kind"] == "substitution":
             shape = f'<path d="M{x:.2f} {lane - 6}L{x + 6:.2f} {lane}L{x:.2f} {lane + 6}L{x - 6:.2f} {lane}Z" fill="{color}"/>'
         else:
-            fill = "#c0392b" if "roja" in label.lower() else "#e0b000"
+            fill = "#c0392b" if any(word in label.lower() for word in ("red", "roja")) else "#e0b000"
             shape = f'<rect x="{x - 3.5:.2f}" y="{lane - 6}" width="7" height="12" rx="1" fill="{fill}" stroke="{color}" stroke-width="1.5"/>'
         marks.append(f"<g>{shape}<title>{text(tip)}</title></g>")
     return "".join(marks)
@@ -276,7 +276,7 @@ def series(block):
                     color,
                     identity["name"]
                     if items[0].get("team_id") is not None
-                    else "Total de los equipos incluidos"
+                    else "Total for the included teams"
                     if block.insight_id == "xg_story"
                     else str(group),
                 )
@@ -303,19 +303,19 @@ def series(block):
                     f'<path d="{path}" stroke="{color}" stroke-width="2.5" fill="none"/>',
                 )
         marks.append(
-            f'<text x="48" y="210">0′</text><text x="608" y="210">{end / 60000:.1f}′</text><text x="48" y="20">P{period} · {text(block.unit or "valor observado")}</text>'
+            f'<text x="48" y="210">0′</text><text x="608" y="210">{end / 60000:.1f}′</text><text x="48" y="20">P{period} · {text(block.unit or "observed value")}</text>'
         )
         caption = (
-            "xG acumulado sólo dentro de este período; cada período comienza en cero. Escalones en cada tiro. Eje hasta la última acción incluida."
+            "Cumulative xG within this period only; each period starts at zero. Each step marks a shot. The axis ends at the last included action."
             if block.insight_id == "xg_story"
-            else "Eventos registrados por equipo en tramos de 5 minutos; el último tramo del período puede ser parcial."
+            else "Recorded events by team in 5-minute intervals; the last interval of a period may be partial."
             if block.insight_id == "match_timeline"
-            else "Muestras independientes; no se interpolan huecos ni se unen períodos."
+            else "Independent samples; gaps are not interpolated and periods are not connected."
         )
         height = 230
         if any(m["period"] == period for m in block.markers):
             marks.append(marker_marks(block, period, end))
-            caption += " Bajo el eje: ● gol, ◆ cambio, ▮ tarjeta, en el color del equipo (una franja por equipo)."
+            caption += " Below the axis: ● goal, ◆ substitution, ▮ card, in team colour (one lane per team)."
             height = 258
         figures.append(
             f'<figure><svg class="series" viewBox="0 0 690 {height}" role="img" aria-label="{text(block.title)}">{"".join(marks)}</svg>{legend(labels)}<figcaption>{caption}</figcaption></figure>'
@@ -325,9 +325,9 @@ def series(block):
 
 def energy_composition(block):
     fields = [
-        ("gradient_fraction", "Gradiente", "#2463bc"),
-        ("curl_fraction", "Circulación local", "#bf402e"),
-        ("harmonic_fraction", "Armónica", "#7752ac"),
+        ("gradient_fraction", "Gradient", "#2463bc"),
+        ("curl_fraction", "Local circulation", "#bf402e"),
+        ("harmonic_fraction", "Harmonic", "#7752ac"),
     ]
     if not any(k in block.metrics for k, _, _ in fields):
         return ""
@@ -342,4 +342,4 @@ def energy_composition(block):
         )
         labels.append((color, f"{name} · {value:.1%}"))
         offset += width
-    return f'<figure><svg viewBox="0 0 690 70" role="img" aria-label="Composición de energía Hodge">{"".join(shapes)}</svg>{legend(labels)}<figcaption>Fracciones de energía del flujo neto en el complejo seleccionado; no porcentajes de posesión.</figcaption></figure>'
+    return f'<figure><svg viewBox="0 0 690 70" role="img" aria-label="Hodge energy composition">{"".join(shapes)}</svg>{legend(labels)}<figcaption>Net flow energy fractions in the selected complex; not possession percentages.</figcaption></figure>'

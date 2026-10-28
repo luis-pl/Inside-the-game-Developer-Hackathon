@@ -32,15 +32,15 @@ def barcode(block):
     for i, b in enumerate(bars[:60]):
         death = b.get("death_m")
         marks.append(
-            f'<line x1="{20 + float(b["birth_m"]) * 14}" y1="{15 + i * 12}" x2="{20 + (float(death) if death is not None else 40) * 14}" y2="{15 + i * 12}" stroke="{["#2463bc", "#bf402e"][min(1, int(b["dimension"]))]}" stroke-width="3"><title>H{text(b["dimension"])}: {text(b["birth_m"])}–{text(death) if death is not None else "censurado a 40 m"}</title></line>'
+            f'<line x1="{20 + float(b["birth_m"]) * 14}" y1="{15 + i * 12}" x2="{20 + (float(death) if death is not None else 40) * 14}" y2="{15 + i * 12}" stroke="{["#2463bc", "#bf402e"][min(1, int(b["dimension"]))]}" stroke-width="3"><title>H{text(b["dimension"])}: {text(b["birth_m"])}–{text(death) if death is not None else "censored at 40 m"}</title></line>'
         )
-    return f'<figure><svg viewBox="0 0 600 {height}" role="img" aria-label="Intervalos de persistencia">{"".join(marks)}</svg>{legend([("#2463bc", "H0 · componentes"), ("#bf402e", "H1 · ciclos")])}<figcaption>Escala de distancia en metros; intervalos sin muerte observada están censurados a 40 m.</figcaption></figure>'
+    return f'<figure><svg viewBox="0 0 600 {height}" role="img" aria-label="Persistence intervals">{"".join(marks)}</svg>{legend([("#2463bc", "H0 · components"), ("#bf402e", "H1 · cycles")])}<figcaption>Distance scale in metres; intervals with no observed death are censored at 40 m.</figcaption></figure>'
 
 
 def replay(block):
     if not block.frames:
         return ""
-    return f'<div class="replay" data-block="{text(block.id)}"><svg class="pitch replay-field" viewBox="-4 -4 113 76" role="img" aria-label="Posiciones observadas"><g class="field-lines">{MARKINGS}</g><g class="replay-points"></g></svg><div class="replay-controls"><button type="button" class="play">Reproducir</button><label>Observación <input class="seek" type="range" min="0" max="{len(block.frames) - 1}" value="0"/></label><output aria-live="off"></output></div><p class="muted">1× = tiempo real. Sin interpolar; las ausencias permanecen vacías.</p></div>'
+    return f'<div class="replay" data-block="{text(block.id)}"><svg class="pitch replay-field" viewBox="-4 -4 113 76" role="img" aria-label="Observed positions"><g class="field-lines">{MARKINGS}</g><g class="replay-points"></g></svg><div class="replay-controls"><button type="button" class="play">Play</button><label>Sample <input class="seek" type="range" min="0" max="{len(block.frames) - 1}" value="0"/></label><output aria-live="off"></output></div><p class="muted">1× = real time. No interpolation; missing observations stay empty.</p></div>'
 
 
 def insight_section(block, family):
@@ -63,14 +63,14 @@ def insight_section(block, family):
     if family == "sequence":
         visual += sequence_strip(block)
     empty = (
-        '<p class="empty-note">No hay un gráfico compatible con la evidencia suministrada. Consulta los límites y el estado del bloque.</p>'
+        '<p class="empty-note">No compatible chart is available for this evidence. Check the block status and limitations.</p>'
         if not visual and block.state != "ready"
         else ""
     )
-    return f'<section class="insight" id="{text(block.id)}" data-insight="{text(block.insight_id)}" data-span="{block.visual.span}"><div class="section-heading"><h2>{text(block.title)}</h2>{status(block.state)}</div><p class="block-question">{text(RECIPES[block.insight_id].get("question", "Lectura calculada sobre la evidencia y el alcance seleccionados."))}</p>{answer_line(block)}{metrics(block.metrics, block.teams)}{team_breakdown(block.by_team, block.teams)}{visual}{empty}{data_table(block.rows)}{warnings(block.warnings)}<p class="method">Método: {text(block.method_id)}</p>{evidence_links(block.evidence_ids)}</section>'
+    return f'<section class="insight" id="{text(block.id)}" data-insight="{text(block.insight_id)}" data-span="{block.visual.span}"><div class="section-heading"><h2>{text(block.title)}</h2>{status(block.state)}</div><p class="block-question">{text(RECIPES[block.insight_id].get("question", "Calculated from the selected evidence and scope."))}</p>{answer_line(block)}{metrics(block.metrics, block.teams)}{team_breakdown(block.by_team, block.teams)}{visual}{empty}{data_table(block.rows)}{warnings(block.warnings)}<p class="method">Method: {text(block.method_id)}</p>{evidence_links(block.evidence_ids)}</section>'
 
 
-MOMENT_LABELS = {"goal": "Gol", "substitution": "Cambio", "card": "Tarjeta"}
+MOMENT_LABELS = {"goal": "Goal", "substitution": "Substitution", "card": "Card"}
 
 
 def answer_line(block):
@@ -90,16 +90,16 @@ def key_moments(block):
         ] + ([who] if who else [])
         items.append(f"<li>{text(' · '.join(parts))}</li>")
     more = len(block.markers) - 40
-    note = f" Se muestran los primeros 40 de {len(block.markers)}." if more > 0 else ""
+    note = f" Showing the first 40 of {len(block.markers)}." if more > 0 else ""
     return (
-        f'<details class="moments"><summary>Goles, cambios y tarjetas ({len(block.markers)})</summary>'
+        f'<details class="moments"><summary>Goals, substitutions & cards ({len(block.markers)})</summary>'
         f'<figure><ol class="event-chain">{"".join(items)}</ol>'
-        f"<figcaption>Registrados por la fuente.{note}</figcaption></figure></details>"
+        f"<figcaption>As recorded by the source.{note}</figcaption></figure></details>"
     )
 
 
 def entity_name(block, key):
-    """Nombre de un equipo o jugador comparado, no su identificador."""
+    """Nombre de un team o jugador comparado, no su identificador."""
     if str(key) in block.teams:
         return block.teams[str(key)]["name"]
     player = block.players.get(str(key), {})
@@ -123,7 +123,7 @@ def comparison_bars(block):
             block,
             row.get(
                 "entity_id",
-                row.get("player_id", row.get("removed_player_id", "Entidad")),
+                row.get("player_id", row.get("removed_player_id", "Entity")),
             ),
         )
         rows.append((label, values))
@@ -147,7 +147,7 @@ def comparison_bars(block):
                 f'<text x="5" y="{y + 14}">{text(label)}</text><rect x="{min(origin, x):.3f}" y="{y}" width="{abs(x - origin):.3f}" height="18" fill="#185540"/><text x="600" y="{y + 14}">{numeric(value)}</text>'
             )
         figures.append(
-            f'<figure><svg class="series" viewBox="0 0 690 {40 + len(selected) * 30}" role="img" aria-label="{text(metric_label(field, block.teams))}">{"".join(marks)}</svg><figcaption>{text(metric_label(field, block.teams))} · escala compartida, origen cero; sólo valores disponibles.</figcaption></figure>'
+            f'<figure><svg class="series" viewBox="0 0 690 {40 + len(selected) * 30}" role="img" aria-label="{text(metric_label(field, block.teams))}">{"".join(marks)}</svg><figcaption>{text(metric_label(field, block.teams))} · shared scale, zero baseline; available values only.</figcaption></figure>'
         )
     return "".join(figures)
 
@@ -163,7 +163,7 @@ def sequence_strip(block):
             if start is not None and end is not None:
                 identity = team(block, row.get("team_id"))
                 chains.append(
-                    f'<article class="possession-card" style="--team:{identity["color"]}"><span class="eyebrow">P{text(row.get("period"))} · {start / 60000:.1f}′–{end / 60000:.1f}′</span><strong>{text(identity["name"])}</strong><p>{text(row.get("passes", "—"))} pases · {text(row.get("shots", "—"))} tiros · {(end - start) / 1000:g} s de tramo registrado</p></article>'
+                    f'<article class="possession-card" style="--team:{identity["color"]}"><span class="eyebrow">P{text(row.get("period"))} · {start / 60000:.1f}′–{end / 60000:.1f}′</span><strong>{text(identity["name"])}</strong><p>{text(row.get("passes", "—"))} passes · {text(row.get("shots", "—"))} shots · {(end - start) / 1000:g} s of recorded sequence</p></article>'
                 )
                 continue
             chains.append(
@@ -193,7 +193,7 @@ def evidence_item(e, label):
 
 
 def evidence_summary(evidence, queries):
-    synthetic = {bool(e.response.provenance.get("is_synthetic")) for e in evidence}
+    synthetic = {e.response.provenance.get("is_synthetic") for e in evidence}
     providers = sorted(
         {
             d.get("provider")
@@ -203,17 +203,19 @@ def evidence_summary(evidence, queries):
         }
     )
     if synthetic == {True}:
-        source = "Datos SINTÉTICOS de demostración"
+        source = "SYNTHETIC demonstration data"
     elif synthetic == {False}:
-        source = "Datos reales" + (f" de {', '.join(providers)}" if providers else "")
+        source = "Recorded data" + (f" from {', '.join(providers)}" if providers else "")
+    elif synthetic == {True, False}:
+        source = "Recorded and synthetic data"
     else:
-        source = "Datos reales y sintéticos"
-    pages = f" ({len(evidence)} páginas)" if len(evidence) != queries else ""
-    return f"{source} · {queries} consultas{pages}. Cada una conserva sus argumentos, alcance, cobertura y advertencias originales."
+        source = "Mixed or unspecified provenance"
+    pages = f" ({len(evidence)} pages)" if len(evidence) != queries else ""
+    return f"{source} · {queries} queries{pages}. Each retains its original arguments, scope, coverage and warnings."
 
 
 def evidence_footer(evidence):
-    """Trazabilidad: una consulta por fila (sus páginas dentro), todo plegado."""
+    """Trazabilidad: una consulta por fila (sus pages dentro), todo plegado."""
     groups = {}
     for e in evidence:
         match = re.match(r"^(.+)-p(\d+)$", e.evidence_id)
@@ -222,20 +224,21 @@ def evidence_footer(evidence):
     rows = []
     for key, pages in groups.items():
         first = pages[0][0]
-        kind = "sintético" if first.response.provenance.get("is_synthetic") else "real"
+        flag = first.response.provenance.get("is_synthetic")
+        kind = "synthetic" if flag is True else "recorded" if flag is False else "unspecified"
         head = f"{display_evidence_id(key)} · {first.operation} · {kind}"
         if len(pages) == 1:
             rows.append(evidence_item(first, head))
         else:
             rows.append(
-                f'<details class="evidence-query"><summary>{text(head)} · {len(pages)} páginas</summary>'
-                + "".join(evidence_item(e, f"Página {n}") for e, n in pages)
+                f'<details class="evidence-query"><summary>{text(head)} · {len(pages)} pages</summary>'
+                + "".join(evidence_item(e, f"Page {n}") for e, n in pages)
                 + "</details>"
             )
     return (
-        '<section class="evidence-footer"><h2>Fuentes y alcance</h2>'
+        '<section class="evidence-footer"><h2>Sources & scope</h2>'
         f'<p class="muted">{text(evidence_summary(evidence, len(groups)))}</p>'
-        f'<details class="evidence-all"><summary>Ver las {len(groups)} consultas de datos (auditoría)</summary>'
+        f'<details class="evidence-all"><summary>Inspect {len(groups)} data queries (audit)</summary>'
         + "".join(rows)
         + "</details></section>"
     )
@@ -332,7 +335,7 @@ def ask_panel(groups, recipes, model_available):
         f'<div role="tabpanel" id="panel-pick" aria-labelledby="tab-pick"{" hidden" if model_available else ""}>'
         f'<form id="intent-form" class="pick">{match_select(groups)}'
         f'<fieldset class="kinds"><legend>Tipo de informe</legend>{kinds}</fieldset>'
-        '<div class="pair"><label class="field">Equipo<select id="team"><option value="">El local</option></select></label>'
+        '<div class="pair"><label class="field">Team<select id="team"><option value="">El local</option></select></label>'
         '<label class="field">Parte<select id="period"><option value="">Todo el partido</option>'
         '<option value="1">Primera parte</option><option value="2">Segunda parte</option></select></label></div>'
         '<label class="field" id="minute-field" hidden>Minuto dentro de esa parte'

@@ -10,7 +10,7 @@ from .labels import clean_key, column_label, metric_label
 def legend(items):
     """Color + texto: la identidad no depende únicamente del color."""
     return (
-        '<ul class="chart-legend" aria-label="Leyenda">'
+        '<ul class="chart-legend" aria-label="Legend">'
         + "".join(
             f'<li><span class="legend-key" style="background:{color}"></span>{text(label)}</li>'
             for color, label in dict.fromkeys(items)
@@ -38,21 +38,21 @@ def team_breakdown(by_team, teams):
         return ""
     columns = list(dict.fromkeys(k for row in by_team.values() for k in row))
     head = "".join(
-        f"<th>{text(metric_label(k, teams).removeprefix('Eventos · '))}</th>"
+        f"<th>{text(metric_label(k, teams).removeprefix('Events · '))}</th>"
         for k in columns
     )
     rows = []
     for team_id, row in by_team.items():
         info = (teams or {}).get(team_id, {})
-        name = info.get("name", f"Equipo {team_id}")
+        name = info.get("name", f"Team {team_id}")
         color = info.get("color", "#52675f")
         cells = "".join(f"<td>{metric_value(k, row.get(k))}</td>" for k in columns)
         rows.append(
             f'<tr><td class="team-name"><span class="legend-key" style="background:{text(color)}"></span>{text(name)}</td>{cells}</tr>'
         )
     return (
-        '<div class="table-scroll"><table class="team-breakdown"><caption>Por equipo</caption>'
-        f"<thead><tr><th>Equipo</th>{head}</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
+        '<div class="table-scroll"><table class="team-breakdown"><caption>By team</caption>'
+        f"<thead><tr><th>Team</th>{head}</tr></thead><tbody>{''.join(rows)}</tbody></table></div>"
     )
 
 
@@ -74,7 +74,7 @@ def metrics(values, teams=None):
     selected = ordered[:4]
     remaining = [(k, v) for k, v in values.items() if (k, v) not in selected]
     note = (
-        '<details class="metric-details"><summary>Más métricas y diagnóstico</summary><dl class="metrics">'
+        '<details class="metric-details"><summary>More metrics & diagnostics</summary><dl class="metrics">'
         + "".join(metric_reading(k, v, teams) for k, v in remaining)
         + "</dl></details>"
         if remaining
@@ -92,7 +92,7 @@ def warnings(items):
     if not items:
         return ""
     return (
-        '<details class="source-notes"><summary>Procedencia y límites</summary><ul>'
+        '<details class="source-notes"><summary>Source notes & limitations (original language)</summary><ul>'
         + "".join(f"<li>{text(w)}</li>" for w in items)
         + "</ul></details>"
     )
@@ -105,7 +105,7 @@ def display_evidence_id(value):
 
 def evidence_links(ids):
     return (
-        '<p class="evidence-links">Evidencia: '
+        '<p class="evidence-links">Evidence: '
         + ", ".join(
             f'<a href="#evidence-{text(e)}">{text(display_evidence_id(e))}</a>'
             for e in ids
@@ -130,7 +130,8 @@ def data_table(rows):
         "<tr>" + "".join(f"<td>{cell(row.get(k))}</td>" for k in keys) + "</tr>"
         for row in rows[:100]
     )
-    return f'<details class="data-table"><summary>Tabla de datos · {len(rows)} filas</summary><div class="table-scroll"><table><thead><tr>{heading}</tr></thead><tbody>{body}</tbody></table></div><p class="muted">Vista de hasta 100 filas y 8 columnas. Datos completos en el JSON incluido.</p></details>'
+    count_label = "row" if len(rows) == 1 else "rows"
+    return f'<details class="data-table"><summary>Data table · {len(rows)} {count_label}</summary><div class="table-scroll"><table><thead><tr>{heading}</tr></thead><tbody>{body}</tbody></table></div><p class="muted">Showing up to 100 rows and 8 columns. Full data is included in the JSON download.</p></details>'
 
 
 # --- Espacio de trabajo: mensajes de la conversación ---
@@ -143,8 +144,8 @@ def chat_message(role, inner):
 
 def source_tag(synthetic, provider=None):
     if synthetic:
-        return tag("Datos sintéticos", "synthetic")
-    return tag(f"Datos reales · {provider or 'fuente real'}", "real")
+        return tag("Synthetic data", "synthetic")
+    return tag(f"Recorded data · {provider or 'recorded source'}", "real")
 
 
 def answer_card(title, source, pieces, notes=(), missing=(), has_report=False):

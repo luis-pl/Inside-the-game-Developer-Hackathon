@@ -5,29 +5,29 @@ import re
 
 def concept_reply(topic, draft, selected_matches=()):
     if topic == "welcome":
-        lead = "Con el partido que tienes seleccionado" if selected_matches else "Aquí"
+        lead = "With your selected match" if selected_matches else "Here"
         return (
             lead
-            + " podemos explorar las ocasiones de gol, cómo circuló el balón y qué espacios dejaron los equipos.\n\n"
+            + " we can explore chance creation, ball circulation and the spaces between the teams.\n\n"
             + (
-                "Cuéntame qué te gustaría entender del partido."
+                "Tell me what you would like to understand about the match."
                 if selected_matches
-                else "Elige un partido en el selector y cuéntame qué te gustaría entender."
+                else "Select a match and tell me what you would like to understand."
             )
         )
     if topic == "xg":
-        reply = "El xG, o goles esperados, estima la probabilidad de que un tiro termine en gol según un modelo. La suma del xG de los tiros ayuda a resumir la calidad de las ocasiones de un equipo. No predice el marcador ni dice cuántos goles debía marcar."
+        reply = "Expected goals (xG) estimates how likely a shot is to result in a goal according to a model. Adding shot xG helps summarise the quality of a team’s chances. It does not predict the score or say how many goals a team should have scored."
         if selected_matches and all(
             m.get("provider") in {"Metrica Sports", "SkillCorner"}
             or m.get("data_kind") == "real_anonymized"
             for m in selected_matches
         ):
-            reply += "\n\nEl partido seleccionado no tiene xG disponible. Sí podemos revisar sus tiros y sus pases."
+            reply += "\n\nThe selected match has no available xG. We can still review its shots and passes."
         else:
-            reply += "\n\nEn los partidos sintéticos de esta demo es una medida ilustrativa, no una estimación calibrada para fútbol real."
+            reply += "\n\nFor synthetic matches in this demo, xG is illustrative and is not calibrated for real football."
         return reply
     if topic == "voronoi":
-        return "Imagina que asignamos cada punto del campo al jugador que tiene más cerca en ese instante. Ese reparto se llama Voronoi.\n\nSirve para leer distancias y espacios entre jugadores. No demuestra quién controla el balón o domina una zona, ni asegura que un pase sea seguro."
+        return "Imagine assigning each point on the pitch to its nearest player at that instant. This is called a Voronoi partition.\n\nIt helps describe distances and space between players. It does not establish ball control, dominance of a zone or the safety of a pass."
     return draft
 
 
@@ -39,19 +39,19 @@ def catalog_reply(introduction, matches):
     ]
     parts = [introduction]
     if names:
-        parts.append("Puedes empezar por:\n" + "\n".join(f"• {name}" for name in names))
-    parts.append("La lista completa está en el selector Partido, debajo del chat.")
+        parts.append("You could start with:\n" + "\n".join(f"• {name}" for name in names))
+    parts.append("The full list is in the Match selector below the chat.")
     return "\n\n".join(parts)
 
 
 def report_reply(analysis, *, reused=False, partial=False):
     if reused:
-        return "Hecho. El informe ya tiene el cambio que pediste y conserva sus datos y su análisis."
+        return "Done. The report includes your change and retains its data and analysis."
     statements = []
     if analysis and analysis.status in {"complete", "partial"}:
         for section in analysis.sections:
             if re.search(
-                r"contexto|alcance|fuentes|referencias|límites",
+                r"context|scope|sources|references|limitations|contexto|alcance|fuentes|referencias|límites",
                 section.heading,
                 re.IGNORECASE,
             ):
@@ -66,13 +66,13 @@ def report_reply(analysis, *, reused=False, partial=False):
         synthetic = facts and all(
             f.provenance.get("is_synthetic") is True for f in facts
         )
-        lead = "Con los datos sintéticos de este partido: " if synthetic else ""
+        lead = "Using this match’s synthetic data: " if synthetic else ""
         reply = lead + "\n\n".join(statements)
         if partial:
             reply += (
-                "\n\nEsta lectura tiene un alcance limitado, explicado en el informe."
+                "\n\nThis reading has a limited scope, explained in the report."
             )
-        return reply + "\n\nPuedes explorar los gráficos y sus fuentes en el informe."
+        return reply + "\n\nExplore the charts and their sources in the report."
     if partial:
-        return "El informe está disponible, pero no pude completar toda la explicación. Puedes revisar sus gráficos y volver a intentar el análisis."
-    return "El informe está listo. Puedes explorar los gráficos y leer el análisis del partido."
+        return "The report is available, but the explanation is incomplete. You can review the charts and retry the analysis."
+    return "The report is ready. Explore the charts and read the match analysis."
