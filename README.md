@@ -37,16 +37,16 @@ The screenshot includes Spanish output; analysis and conversation support six la
   evidence retain their original forms; interface translation coverage varies.
 - **Take the result with you:** download interactive HTML and execution traces.
 
-## Demo Video - Youtube
-https://youtu.be/gAaK0JdoFLY
+## Demo video
 
+[Watch the demo on YouTube](https://youtu.be/gAaK0JdoFLY).
 
 ## Evaluation access
 
 | Resource | Access and current status |
 | --- | --- |
 | Source code | This public repository. |
-| Walkthrough video | In preparation. The public video URL still needs to be added here and to the submission. |
+| Walkthrough video | [YouTube](https://youtu.be/gAaK0JdoFLY). Also add this URL to the submission. |
 | Full agent workspace | Run locally using the setup below. It requires authorized data access and a configured model. A hosted workspace URL is not currently provided here. |
 | Offline visual preview | Generate the synthetic chart gallery below, without a model, Azure account or data credentials. This previews the renderer. |
 | Deployed data service | [API / Swagger](https://api-inside-game.redhill-f7b17d2a.canadacentral.azurecontainerapps.io/docs). Match queries require an individual credential. This endpoint serves API/MCP, not the complete agent workspace. |
@@ -57,10 +57,10 @@ not mandatory. Evaluators must receive a working route, configuration and any
 required access for the judging period; private access instructions are allowed.
 The public video must be **under two minutes** and show the application working.
 
-Before submitting, publish the video URL and provide evaluator setup and access
-in the submission's private testing instructions. Keep access valid throughout
-judging. Never place API keys, model sessions or private credential files in this
-README, the video, issues or Git. The offline gallery alone does not exercise the
+Before submitting, add the video URL to the submission and provide evaluator
+setup and access (data credential and NVIDIA NIM key) in its private testing
+instructions. Keep access valid throughout judging. Never place API keys, model
+sessions or private credential files in this README, the video, issues or Git. The offline gallery alone does not exercise the
 four agents.
 
 ## Run locally
@@ -109,24 +109,26 @@ INSIDE_GAME_DATA_MCP_URL=https://api-inside-game.redhill-f7b17d2a.canadacentral.
 INSIDE_GAME_DATA_MCP_CREDENTIAL_FILE=C:/private/inside-game/agent-data.json
 INSIDE_GAME_DATA_AGENT_URL=http://127.0.0.1:8090
 INSIDE_GAME_INSIGHTS_AGENT_URL=http://127.0.0.1:8090
-INSIDE_GAME_MODEL_PROVIDER=opencode-go
-INSIDE_GAME_OPENCODE_MODEL=beam-free
-INSIDE_GAME_OPENCODE_API=chat_completions
-INSIDE_GAME_OPENCODE_AUTH_MODE=cli_session
-INSIDE_GAME_OPENCODE_FREE_ONLY=1
+INSIDE_GAME_MODEL_PROVIDER=nim
+INSIDE_GAME_NIM_API_KEY=nvapi-...
+# Optional; these are the defaults:
+# INSIDE_GAME_NIM_MODEL=nvidia/nemotron-3-ultra-550b-a55b
+# INSIDE_GAME_NIM_THINKING=0
 ```
 
-The documented reference configuration uses **Beam Free through OpenCode Go**
-and requires an authorized, active OpenCode CLI session on that machine. The
-client reads that session privately and stops if it cannot verify zero model
-prices. It does not switch to Console/Zen or another model as a fallback.
-See [model authentication and setup](docs/opencode.md).
+The model in use is served by the **NVIDIA NIM API** (build.nvidia.com) through
+its fixed free endpoint `https://integrate.api.nvidia.com/v1`, compatible with
+Chat Completions. It needs a free NVIDIA Developer Program account and an
+`nvapi-…` key kept only in `.env.local`. Paid partner endpoints are not used, and
+the client does not fall back to another provider. The free tier is rate limited
+(about 40 requests per minute, depending on the model); check your own limit on
+build.nvidia.com. See [NVIDIA NIM setup](docs/nim.md).
 
 Other explicitly configured providers are implemented:
-[Ollama on your own hardware](docs/ollama.md), [NVIDIA NIM](docs/nim.md), and the
-Azure model adapters described in [the data agent guide](docs/data-agent.md).
+[OpenCode Go with Beam Free](docs/opencode.md), [Ollama on your own hardware](docs/ollama.md),
+and the Azure model adapters described in [the data agent guide](docs/data-agent.md).
 They have their own access, hardware and usage requirements. Implemented support
-does not mean they passed the same live evaluation as the reference model;
+does not mean they passed the same live evaluation as the recorded Beam Free run;
 selecting an alternative is a separate setup decision. No model is downloaded or
 provisioned by the workspace launcher.
 
@@ -220,7 +222,7 @@ route names alone do not establish external A2A interoperability.
 **Stack:** Python, FastAPI, Pydantic, MCP, NumPy/SciPy and topology libraries;
 React, TypeScript and Vite; Azure SQL and a data API/MCP deployment on Azure
 Container Apps. The cloud data service uses managed identity for SQL access.
-The current reference inference provider is OpenCode Go; previous Azure model
+Inference uses the NVIDIA NIM API; OpenCode Go, Ollama and earlier Azure model
 experiments are documented separately and are not the active model configuration.
 
 ### Context and evidence
@@ -260,10 +262,12 @@ in [data provenance](docs/data-provenance.md) and [data quality](database/azure-
 
 The [recorded agent evaluation](docs/agent-quality-2026-10-27.md) includes an
 **8/8 live scenario batch**, a subsequent canary and **6/6 language-detection
-checks**, using Beam Free with the data MCP/API. The report records its 546-test
-local baseline, exact scope and failures found during diagnosis. It does not
-certify all possible questions, all source/recipe combinations or providers
-added in later commits. [Machine-readable results](docs/agent-quality-verification.json).
+checks**, run with Beam Free (OpenCode Go) and the data MCP/API before the
+switch to NVIDIA NIM. The report records its 546-test local baseline, exact scope
+and failures found during diagnosis. It does not certify all possible questions,
+all source/recipe combinations or the NIM provider; the initial NIM check (three
+tool-selection prompts, no MCP) is described in [NIM setup](docs/nim.md#prueba-inicial).
+[Machine-readable results](docs/agent-quality-verification.json).
 
 Run local checks from the repository root:
 
@@ -312,7 +316,7 @@ provided in English or with an English translation.
 | Tracking, topology and Hodge definitions | [Topology Lab](docs/topology-lab.md) |
 | API and data MCP | [API](docs/api.md) · [MCP](docs/mcp.md) |
 | Cloud access and individual credentials | [Azure operation](docs/azure-demo.md) |
-| Model configuration | [OpenCode Go](docs/opencode.md) · [Ollama](docs/ollama.md) · [NIM](docs/nim.md) |
+| Model configuration | [NVIDIA NIM](docs/nim.md) · [OpenCode Go](docs/opencode.md) · [Ollama](docs/ollama.md) |
 | A2A SDK services | [A2A](docs/a2a.md) |
 | Recorded model/tool/data execution | [Traced data-agent example](docs/examples/agent-live-demo-20261024/README.md) |
 | Repository map | [Source structure](docs/repository-structure.md) |
