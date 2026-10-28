@@ -75,18 +75,23 @@ REQUESTED_VISUALS = [
     ),
     (("regate", "conducci"), "ball_progression", "regates y conducciones"),
     (("mapa de calor", "ocupaci"), "occupation_heatmap", "mapa de ocupación"),
-    (("forma del", "bloque"), "team_shape", "forma del bloque"),
+    (
+        ("forma del bloque", "forma del equipo", "bloque defensivo", "compacidad"),
+        "team_shape",
+        "forma del bloque",
+    ),
     (("voronoi", "partición", "particion"), "space_partition", "partición Voronoi"),
     (("compar",), "entity_comparison", "comparación"),
 ]
 
 
 def requested_visuals(text):
+    """Gráficos pedidos por palabras clave o por su identificador técnico."""
     text = text.lower()
     return [
         (recipe, label)
         for keywords, recipe, label in REQUESTED_VISUALS
-        if any(k in text for k in keywords)
+        if recipe in text or any(k in text for k in keywords)
     ]
 
 

@@ -285,3 +285,57 @@ def test_label_mismatch_detects_goals_cited_as_shots():
         facts,
         TOKEN,
     )
+
+
+def test_window_samples_are_summarized_only_with_flag(monkeypatch):
+    import pytest
+
+    from inside_game.agents.analyst_facts import evidence_facts, summarize_samples
+    from inside_game.agents.contracts import Evidence
+
+    shape = next(
+        e for e in evidence_result().evidence if e.operation == "get_team_shape"
+    )
+    sample = shape.response.data["samples"][0]
+    window = [
+        {**sample, "time_ms": 1740000 + 1000 * i, "result": sample["result"]}
+        for i in range(60)
+    ]
+    data = {**shape.response.data, "samples": window}
+    evidence = Evidence.model_validate(
+        {
+            **shape.model_dump(mode="json"),
+            "response": {**shape.response.model_dump(mode="json"), "data": data},
+        }
+    )
+
+    monkeypatch.delenv("INSIDE_GAME_EXPERIMENTS", raising=False)
+    with pytest.raises(ValueError, match="FACT_BUDGET_EXCEEDED"):
+        evidence_facts([evidence])
+
+    monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "samples")
+    facts = evidence_facts([evidence])
+    assert 0 < len(facts) <= 220
+    summary = summarize_samples(window)
+    assert summary["samples"] == 60
+    assert summary["time_ms_start"] == 1740000 and summary["time_ms_end"] == 1799000
+
+
+def test_recipe_sources_cover_requested_visuals():
+    from inside_game.agents.experiments import REQUESTED_VISUALS
+    from inside_game.agents.page_builder import RECIPE_SOURCES
+
+    assert all(recipe in RECIPE_SOURCES for _, recipe, _ in REQUESTED_VISUALS)
+
+
+def test_requested_visuals_ignore_generic_block_and_accept_recipe_ids():
+    added = requested_visuals(
+        'Añade el bloque "Cronología del partido". Mantén los bloques existentes.'
+    )
+    assert added == [("match_timeline", "cronología")]
+    assert requested_visuals("Incluir el bloque match_timeline") == [
+        ("match_timeline", "cronología")
+    ]
+    assert requested_visuals("la forma del bloque en el minuto 30") == [
+        ("team_shape", "forma del bloque")
+    ]

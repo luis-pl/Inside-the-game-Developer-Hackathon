@@ -6,6 +6,7 @@ import re
 from math import isfinite
 
 from inside_game.agents.analyst_contracts import Fact
+from inside_game.agents.experiments import experiment
 
 TOKEN = re.compile(r"\{\{(f-[0-9a-f]{12})\}\}")
 
@@ -81,6 +82,46 @@ def fact(value, label, evidence, path, *, block_id=None, scope=None, operation=N
         if label.endswith(("_rate", "_fraction"))
         else None,
     )
+
+
+SAMPLE_SUMMARY_THRESHOLD = 5
+
+
+def numeric_leaves(value, prefix=""):
+    """Métricas numéricas de un resultado anidado, con nombre aplanado."""
+    if type(value) in (int, float) and isfinite(value):
+        return {prefix: value}
+    if isinstance(value, dict):
+        leaves = {}
+        for key, item in value.items():
+            if key in {"interpretation", "method", "note", "description", "warnings"}:
+                continue
+            leaves.update(
+                numeric_leaves(item, f"{prefix}_{key}" if prefix else str(key))
+            )
+        return leaves
+    return {}
+
+
+def summarize_samples(samples):
+    """Resumen de una ventana: número de muestras, extremos y estadísticos."""
+    series = {}
+    for sample in samples:
+        for name, number in numeric_leaves(sample.get("result", {})).items():
+            series.setdefault(name, []).append(number)
+    summary = {
+        "samples": len(samples),
+        "period": samples[0].get("period"),
+        "time_ms_start": samples[0].get("time_ms"),
+        "time_ms_end": samples[-1].get("time_ms"),
+    }
+    for name, values in series.items():
+        summary[f"{name}_mean"] = round(sum(values) / len(values), 3)
+        summary[f"{name}_min"] = min(values)
+        summary[f"{name}_max"] = max(values)
+        summary[f"{name}_first"] = values[0]
+        summary[f"{name}_last"] = values[-1]
+    return {k: v for k, v in summary.items() if v is not None}
 
 
 def scalar_facts(value, evidence, path, *, block_id=None, scope=None, depth=0):
@@ -246,7 +287,20 @@ def evidence_facts(evidence):
                 )
                 if len(facts) > 220:
                     raise ValueError("FACT_BUDGET_EXCEEDED")
-        for i, sample in enumerate(data.get("samples", [])):
+        samples = data.get("samples", [])
+        if experiment("samples") and len(samples) > SAMPLE_SUMMARY_THRESHOLD:
+            # EXPERIMENTO LOCAL: una ventana a 1 Hz generaba un hecho por métrica
+            # y segundo (más de 220). Se resume cada métrica de la ventana.
+            facts.extend(
+                scalar_facts(
+                    summarize_samples(samples),
+                    ev,
+                    "/data/samples_summary",
+                    scope={**ev.response.scope, **ev.arguments},
+                )
+            )
+            samples = []
+        for i, sample in enumerate(samples):
             facts.extend(
                 scalar_facts(
                     {k: sample[k] for k in ("period", "time_ms") if k in sample},

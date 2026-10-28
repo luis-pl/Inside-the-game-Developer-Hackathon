@@ -117,7 +117,17 @@ class SportsAnalyst:
             return state.result("error", issues=["DEADLINE_EXCEEDED"])
         except ModelFailure as exc:
             return state.result("error", issues=[exc.code])
-        except (ValidationError, ValueError):
+        except (ValidationError, ValueError) as exc:
+            # EXPERIMENTO LOCAL "guards": mostrar la causa conocida en lugar del
+            # genérico, que ocultaba p. ej. FACT_BUDGET_EXCEEDED.
+            code = str(exc)
+            known = {
+                "FACT_BUDGET_EXCEEDED",
+                "EVIDENCE_BUDGET_EXCEEDED",
+                "EVIDENCE_MATCH_MISMATCH",
+            }
+            if experiment("guards") and code in known:
+                return state.result("error", issues=[code])
             return state.result("error", issues=["INVALID_ANALYSIS_DATA"])
         except Exception:  # noqa: BLE001 - no exponer respuestas SDK ni cabeceras.
             return state.result("error", issues=["ANALYST_EXECUTION_FAILED"])

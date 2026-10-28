@@ -17,14 +17,42 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.staticfiles import StaticFiles
 
+from inside_game.agents.experiments import experiment
 from inside_game.agents_cli import app_from_env, load_local_env
 from inside_game.tools.mcp_client import DataMcpSettings
+
+
+async def keep_api_warm(key, interval=240):
+    """Consulta el catálogo de partidos al arrancar y cada `interval` segundos."""
+    url = (
+        DataMcpSettings.from_env().url.removesuffix("/mcp")
+        + "/api/operations/list_matches"
+    )
+    async with httpx.AsyncClient(
+        timeout=120, trust_env=False, follow_redirects=False
+    ) as client:
+        while True:
+            try:
+                await client.post(
+                    url, headers={"Authorization": "Bearer " + key}, json={"limit": 1}
+                )
+            except httpx.HTTPError:
+                pass
+            await asyncio.sleep(interval)
 
 
 def create_workspace(agent_app, *, frontend_dir, local_key=None):
     @asynccontextmanager
     async def lifespan(app):
+        warmer = None
+        if local_key and experiment("guards"):
+            # EXPERIMENTO LOCAL: la API de Azure arranca en frío tras un rato sin
+            # uso y la primera consulta fallaba. Se calienta al iniciar y se
+            # mantiene despierta con la misma consulta fija del catálogo.
+            warmer = asyncio.create_task(keep_api_warm(local_key))
         yield
+        if warmer:
+            warmer.cancel()
         tasks = list(agent_app.state.chat.tasks)
         for task in tasks:
             task.cancel()
