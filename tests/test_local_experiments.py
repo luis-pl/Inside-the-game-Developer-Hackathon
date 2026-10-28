@@ -241,3 +241,21 @@ def test_requested_visuals_ignore_generic_block_and_accept_recipe_ids():
     assert requested_visuals("la forma del bloque en el minuto 30") == [
         ("team_shape", "forma del bloque")
     ]
+
+
+def test_repair_hints_point_each_number_to_its_fact():
+    from inside_game.agents.sports_analyst import repair_hints
+
+    facts = [
+        SimpleNamespace(id="f-000000000001", value=14, label="shots"),
+        SimpleNamespace(id="f-000000000002", value=1.062, label="xg"),
+        SimpleNamespace(id="f-000000000003", value=22.2, label="conversion_rate"),
+    ]
+    hints = repair_hints({"literal_numbers": ["14", "1.062", "22,2%", "99"]}, facts)
+    assert hints["use_fact_for_number"]["14"] == [
+        {"cite": "{{f-000000000001}}", "label": "shots"}
+    ]
+    assert hints["use_fact_for_number"]["1.062"][0]["label"] == "xg"
+    assert hints["use_fact_for_number"]["22,2%"][0]["label"] == "conversion_rate"
+    assert hints["numbers_without_fact"] == ["99"]
+    assert repair_hints({"literal_numbers": []}, facts) == {}
