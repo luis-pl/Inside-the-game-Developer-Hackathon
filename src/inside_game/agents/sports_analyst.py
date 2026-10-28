@@ -90,6 +90,25 @@ def repair_hints(field, facts, limit=3):
     return hints
 
 
+def without_invalid_statements(args, fields):
+    """EXPERIMENTO LOCAL "guards": copia de la finalización sin las afirmaciones
+    rechazadas; None si no queda ninguna sección válida o hay otros errores."""
+    drop = set()
+    for field in fields:
+        path = field.get("path", [])
+        if len(path) != 4 or path[0] != "sections" or path[2] != "statements":
+            return None
+        drop.add((path[1], path[3]))
+    sections = []
+    for i, section in enumerate(args.sections):
+        kept = [s for j, s in enumerate(section.statements) if (i, j) not in drop]
+        if kept:
+            sections.append(section.model_copy(update={"statements": kept}))
+    if not sections:
+        return None
+    return args.model_copy(update={"sections": sections, "status": "partial"})
+
+
 class GroundingError(ValueError):
     def __init__(self, fields):
         self.fields = fields
@@ -521,6 +540,39 @@ class _Run:
                     output = await self.query(name, args)
                     entry["status"] = "ok"
                 except GroundingError as exc:
+                    trimmed = (
+                        without_invalid_statements(args, exc.fields)
+                        if experiment("guards")
+                        and name == "finish_analysis"
+                        and self.grounding_failures >= 2
+                        else None
+                    )
+                    if trimmed is not None:
+                        # EXPERIMENTO LOCAL: tras dos reparaciones fallidas se
+                        # publica lo verificable y se informa lo retirado, en
+                        # lugar de perder toda la explicación.
+                        try:
+                            result = self.finish(trimmed)
+                        except GroundingError:
+                            pass
+                        else:
+                            entry.update(
+                                status="ok",
+                                error_fields=exc.fields,
+                                elapsed_ms=round(
+                                    (time.perf_counter() - started) * 1000, 3
+                                ),
+                            )
+                            return result.model_copy(
+                                update={
+                                    "tool_trace": self.trace,
+                                    "issues": [
+                                        *result.issues,
+                                        "UNGROUNDED_STATEMENTS_REMOVED",
+                                    ],
+                                },
+                                deep=True,
+                            )
                     output = {
                         "error": "INVALID_ANALYSIS_FACTS",
                         "fields": exc.fields,

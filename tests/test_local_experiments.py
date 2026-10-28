@@ -259,3 +259,53 @@ def test_repair_hints_point_each_number_to_its_fact():
     assert hints["use_fact_for_number"]["22,2%"][0]["label"] == "conversion_rate"
     assert hints["numbers_without_fact"] == ["99"]
     assert repair_hints({"literal_numbers": []}, facts) == {}
+
+
+def test_both_teams_request_is_not_narrowed_to_one_team(monkeypatch):
+    from inside_game.agents.experiments import wants_both_teams
+
+    assert wants_both_teams("Shot map of both teams and why Test Fixtures United won")
+    assert wants_both_teams("Compara los dos equipos")
+    assert not wants_both_teams("Mapa de tiros del equipo 1")
+
+    # El plan del modelo trae un solo equipo; con "ambos equipos" se descarta.
+    monkeypatch.delenv("INSIDE_GAME_EXPERIMENTS", raising=False)
+    assert interpret("Tiros de ambos equipos", [900001]).context.team_ids == [1]
+    monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "guards")
+    assert interpret("Tiros de ambos equipos", [900001]).context.team_ids == []
+    assert interpret("Tiros del equipo 1", [900001]).context.team_ids == [1]
+
+
+def test_last_resort_drops_only_rejected_statements():
+    from inside_game.agents.analyst_contracts import FinishAnalysis
+    from inside_game.agents.sports_analyst import without_invalid_statements
+
+    args = FinishAnalysis.model_validate(
+        {
+            "status": "complete",
+            "sections": [
+                {
+                    "heading": "Result",
+                    "statements": [
+                        {"kind": "observation", "text": "Away won {{f1}}.", "fact_ids": ["f1"]},
+                        {"kind": "observation", "text": "They scored 2 late.", "fact_ids": ["f1"]},
+                    ],
+                },
+                {
+                    "heading": "Pitch",
+                    "statements": [{"kind": "observation", "text": "105 by 68.", "fact_ids": ["f1"]}],
+                },
+            ],
+        }
+    )
+    bad = [
+        {"path": ["sections", 0, "statements", 1]},
+        {"path": ["sections", 1, "statements", 0]},
+    ]
+    trimmed = without_invalid_statements(args, bad)
+    assert trimmed.status == "partial"
+    assert [s.heading for s in trimmed.sections] == ["Result"]
+    assert [s.text for s in trimmed.sections[0].statements] == ["Away won {{f1}}."]
+    assert without_invalid_statements(args, [{"path": ["title"]}]) is None
+    everything = bad + [{"path": ["sections", 0, "statements", 0]}]
+    assert without_invalid_statements(args, everything) is None

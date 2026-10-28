@@ -47,6 +47,22 @@ def wants_topology(text):
     return any(word in text for word in TOPOLOGY_WORDS)
 
 
+BOTH_TEAMS_WORDS = (
+    "both teams", "both sides", "each team", "two teams",
+    "ambos equipos", "los dos equipos", "cada equipo",
+    "ambas as equipes", "os dois times", "as duas equipes", "cada equipe",
+    "les deux équipes", "chaque équipe",
+    "entrambe le squadre", "le due squadre", "ogni squadra",
+    "beide mannschaften", "beiden mannschaften", "beide teams", "beiden teams",
+)
+
+
+def wants_both_teams(text):
+    """La petición pide explícitamente los dos equipos del partido."""
+    text = text.lower()
+    return any(word in text for word in BOTH_TEAMS_WORDS)
+
+
 # Gráficos que el usuario pide de forma explícita: (palabras clave, receta, etiqueta).
 REQUESTED_VISUALS = [
     (

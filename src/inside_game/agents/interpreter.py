@@ -12,7 +12,7 @@ from pydantic import Field, ValidationError
 
 from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataContext, Message
-from inside_game.agents.experiments import experiment
+from inside_game.agents.experiments import experiment, wants_both_teams
 from inside_game.insights.catalog import InsightId
 from inside_game.language import Language
 from inside_game.providers.models import ModelFailure
@@ -231,9 +231,18 @@ class Interpreter:
                     teams = team_ids_from(
                         text, context, plan.context.match_ids[0], matches
                     )
-                    if len(teams) == 1:
+                    if len(teams) == 1 and not wants_both_teams(text):
                         plan.context.team_ids = teams
                         normalized.append("context.team_ids")
+                if (
+                    experiment("guards")
+                    and len(plan.context.team_ids) == 1
+                    and wants_both_teams(text)
+                ):
+                    # EXPERIMENTO LOCAL: "ambos equipos" no se reduce al equipo
+                    # nombrado; si no, sus cifras se presentan como de los dos.
+                    plan.context.team_ids = []
+                    normalized.append("context.team_ids")
                 if plan.action == "clarify" and plan.reply.count("?") > 1:
                     raise ValueError("ASK_ONE_CLARIFYING_QUESTION")
                 allowed = {m["match_id"] for m in matches}
