@@ -1,0 +1,564 @@
+{
+  "date": "2026-10-27",
+  "provider": "opencode-go",
+  "model": "beam-free",
+  "free_only": true,
+  "full_catalog_natural_language_qa": false,
+  "local_tests": {
+    "passed": 546,
+    "seconds": 18.09
+  },
+  "live_batch": {
+    "model": "beam-free",
+    "free_only": true,
+    "live_model": true,
+    "full_catalog_qa": false,
+    "passed": true,
+    "cases": [
+      {
+        "id": "structural-passes-es",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "narrates_recorded_pass_links": true
+        },
+        "elapsed_seconds": 70.238
+      },
+      {
+        "id": "reconstruct-es",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "narrates_recorded_pass_links": true
+        },
+        "elapsed_seconds": 50.152
+      },
+      {
+        "id": "reconstruct-en",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "narrates_recorded_pass_links": true
+        },
+        "elapsed_seconds": 44.145
+      },
+      {
+        "id": "synthetic-shots-xg",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "plan_language": true,
+          "cited_values_match_sources": true
+        },
+        "elapsed_seconds": 54.099
+      },
+      {
+        "id": "missing-xg-pt",
+        "passed": true,
+        "stage": "clarification",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "no_invented_report": true
+        },
+        "elapsed_seconds": 10.036
+      },
+      {
+        "id": "two-instants-fr",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "plan_language": true,
+          "cited_values_match_sources": true
+        },
+        "elapsed_seconds": 56.093
+      },
+      {
+        "id": "ambiguous-episode-it",
+        "passed": true,
+        "stage": "clarification",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "no_invented_report": true
+        },
+        "elapsed_seconds": 6.031
+      },
+      {
+        "id": "second-half-network-de",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "plan_language": true,
+          "cited_values_match_sources": true
+        },
+        "elapsed_seconds": 62.106
+      }
+    ],
+    "inference_calls": 83
+  },
+  "saved_evidence_reverification": {
+    "network_used": false,
+    "saved_cases": 8,
+    "passed": true,
+    "cases": [
+      {
+        "id": "structural-passes-es",
+        "checks": {
+          "finished_without_error": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true,
+          "narrates_recorded_pass_links": true
+        },
+        "passed": true
+      },
+      {
+        "id": "reconstruct-es",
+        "checks": {
+          "finished_without_error": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true,
+          "narrates_recorded_pass_links": true
+        },
+        "passed": true
+      },
+      {
+        "id": "reconstruct-en",
+        "checks": {
+          "finished_without_error": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true,
+          "narrates_recorded_pass_links": true
+        },
+        "passed": true
+      },
+      {
+        "id": "synthetic-shots-xg",
+        "checks": {
+          "finished_without_error": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "plan_language": true,
+          "cited_values_match_sources": true
+        },
+        "passed": true
+      },
+      {
+        "id": "missing-xg-pt",
+        "checks": {
+          "finished_without_error": true,
+          "no_invented_report": true
+        },
+        "passed": true
+      },
+      {
+        "id": "two-instants-fr",
+        "checks": {
+          "finished_without_error": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true
+        },
+        "passed": true
+      },
+      {
+        "id": "ambiguous-episode-it",
+        "checks": {
+          "finished_without_error": true,
+          "no_invented_report": true
+        },
+        "passed": true
+      },
+      {
+        "id": "second-half-network-de",
+        "checks": {
+          "finished_without_error": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true
+        },
+        "passed": true
+      }
+    ]
+  },
+  "latest_code_canary": {
+    "model": "beam-free",
+    "free_only": true,
+    "live_model": true,
+    "full_catalog_qa": false,
+    "passed": true,
+    "cases": [
+      {
+        "id": "structural-passes-es",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true,
+          "narrates_recorded_pass_links": true
+        },
+        "elapsed_seconds": 52.185
+      }
+    ],
+    "inference_calls": 9
+  },
+  "language_detection": [
+    {
+      "language": "es",
+      "detected": "es",
+      "passed": true
+    },
+    {
+      "language": "en",
+      "detected": "en",
+      "passed": true
+    },
+    {
+      "language": "pt",
+      "detected": "pt",
+      "passed": true
+    },
+    {
+      "language": "fr",
+      "detected": "fr",
+      "passed": true
+    },
+    {
+      "language": "it",
+      "detected": "it",
+      "passed": true
+    },
+    {
+      "language": "de",
+      "detected": "de",
+      "passed": true
+    }
+  ],
+  "availability_matrix": [
+    {
+      "match_id": 900001,
+      "provider": null,
+      "is_synthetic": true,
+      "state_counts": {
+        "ready": 29,
+        "partial": 1
+      },
+      "api_queries": 27
+    },
+    {
+      "match_id": 900011,
+      "provider": "Metrica Sports",
+      "is_synthetic": false,
+      "state_counts": {
+        "ready": 24,
+        "unavailable": 6
+      },
+      "api_queries": 27
+    },
+    {
+      "match_id": 900101,
+      "provider": "SkillCorner",
+      "is_synthetic": false,
+      "state_counts": {
+        "ready": 26,
+        "unavailable": 3,
+        "partial": 1
+      },
+      "api_queries": 28
+    }
+  ],
+  "telemetry": {
+    "structural-repaired": {
+      "calls": 16,
+      "roles": {
+        "analyst": {
+          "calls": 3,
+          "schema_bytes": {
+            "min": 3055,
+            "max": 4042
+          },
+          "wire_bytes": {
+            "min": 31378,
+            "max": 49955
+          }
+        },
+        "data": {
+          "calls": 6,
+          "schema_bytes": {
+            "min": 68955,
+            "max": 68955
+          },
+          "wire_bytes": {
+            "min": 81436,
+            "max": 127251
+          }
+        },
+        "insights": {
+          "calls": 5,
+          "schema_bytes": {
+            "min": 24252,
+            "max": 24252
+          },
+          "wire_bytes": {
+            "min": 46095,
+            "max": 69723
+          }
+        },
+        "interpreter": {
+          "calls": 2,
+          "schema_bytes": {
+            "min": 2829,
+            "max": 2829
+          },
+          "wire_bytes": {
+            "min": 23372,
+            "max": 30370
+          }
+        }
+      },
+      "reported_cost_values": [
+        0
+      ],
+      "context_events": 16,
+      "context_reasons": {
+        "below_threshold": 16
+      },
+      "published_native_windows": [
+        1048576
+      ],
+      "max_observed_input_tokens": 29042
+    },
+    "verified-current": {
+      "calls": 83,
+      "roles": {
+        "analyst": {
+          "calls": 20,
+          "schema_bytes": {
+            "min": 3055,
+            "max": 4042
+          },
+          "wire_bytes": {
+            "min": 22038,
+            "max": 52023
+          }
+        },
+        "data": {
+          "calls": 34,
+          "schema_bytes": {
+            "min": 3844,
+            "max": 8963
+          },
+          "wire_bytes": {
+            "min": 21758,
+            "max": 74784
+          }
+        },
+        "insights": {
+          "calls": 19,
+          "schema_bytes": {
+            "min": 24252,
+            "max": 24252
+          },
+          "wire_bytes": {
+            "min": 38799,
+            "max": 64898
+          }
+        },
+        "interpreter": {
+          "calls": 10,
+          "schema_bytes": {
+            "min": 3698,
+            "max": 3698
+          },
+          "wire_bytes": {
+            "min": 24165,
+            "max": 27511
+          }
+        }
+      },
+      "reported_cost_values": [
+        0
+      ],
+      "context_events": 83,
+      "context_reasons": {
+        "below_threshold": 83
+      },
+      "published_native_windows": [
+        1048576
+      ],
+      "max_observed_input_tokens": 25316
+    },
+    "final-canary": {
+      "calls": 9,
+      "roles": {
+        "analyst": {
+          "calls": 2,
+          "schema_bytes": {
+            "min": 3055,
+            "max": 4042
+          },
+          "wire_bytes": {
+            "min": 32840,
+            "max": 41518
+          }
+        },
+        "data": {
+          "calls": 4,
+          "schema_bytes": {
+            "min": 6534,
+            "max": 6534
+          },
+          "wire_bytes": {
+            "min": 24626,
+            "max": 72452
+          }
+        },
+        "insights": {
+          "calls": 2,
+          "schema_bytes": {
+            "min": 24252,
+            "max": 24252
+          },
+          "wire_bytes": {
+            "min": 46158,
+            "max": 50102
+          }
+        },
+        "interpreter": {
+          "calls": 1,
+          "schema_bytes": {
+            "min": 3698,
+            "max": 3698
+          },
+          "wire_bytes": {
+            "min": 24646,
+            "max": 24646
+          }
+        }
+      },
+      "reported_cost_values": [
+        0
+      ],
+      "context_events": 9,
+      "context_reasons": {
+        "below_threshold": 9
+      },
+      "published_native_windows": [
+        1048576
+      ],
+      "max_observed_input_tokens": 22785
+    }
+  }
+}

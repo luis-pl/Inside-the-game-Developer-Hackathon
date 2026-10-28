@@ -10,6 +10,10 @@ import {
   reportLinkLabel,
 } from "./domain/workspace-feedback.ts";
 import type { ReportChanges } from "./domain/workspace-feedback.ts";
+import {
+  workspaceApi as api,
+  watchConversation,
+} from "./domain/workspace-network.ts";
 
 type Match = {
   match_id: number;
@@ -61,22 +65,6 @@ const stages: Record<string, string> = {
   error: "La ejecución se interrumpió",
 };
 
-async function api(path: string, options: RequestInit = {}) {
-  const result = await fetch("/workspace-api/" + path, {
-    credentials: "same-origin",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "X-Inside-Game": "workspace",
-      ...options.headers,
-    },
-  });
-  if (!result.ok) {
-    const body = await result.json().catch(() => ({}));
-    throw new Error(body.error?.code ?? `HTTP_${result.status}`);
-  }
-  return result.json();
-}
 function Icon({ name }: { name: string }) {
   const paths: Record<string, string> = {
     plus: "M12 5v14M5 12h14",
@@ -152,6 +140,7 @@ export function Workspace() {
     [error, setError] = useState("");
   const [loading, setLoading] = useState(false),
     [catalogLoading, setCatalogLoading] = useState(false);
+  const [pollIssue, setPollIssue] = useState("");
   const [pane, setPane] = useState("document"),
     [view, setView] = useState("report"),
     [sidebar, setSidebar] = useState(false);
@@ -235,7 +224,13 @@ export function Workspace() {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
   useEffect(() => {
-    api("config").then((c) => setLocal(c.local_demo));
+    api("config")
+      .then((c) => setLocal(c.local_demo))
+      .catch(() =>
+        setError(
+          "No pude conectar con el servidor. Recarga la página para reintentar.",
+        ),
+      );
     api("conversations")
       .then((rows) => {
         setAuth(true);
@@ -265,7 +260,7 @@ export function Workspace() {
     } else setUnread(true);
   }, [conversation?.messages.length, conversation?.stage, nearEnd]);
   useEffect(() => {
-    if (!conversation?.busy) return;
+    if (!conversation?.busy || pollIssue || !auth) return;
     const start =
       conversation.started_at ??
       [...(conversation.events ?? [])]
@@ -277,29 +272,50 @@ export function Workspace() {
     tick();
     const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, [conversation?.busy, conversation?.started_at, conversation?.id]);
+  }, [
+    conversation?.busy,
+    conversation?.started_at,
+    conversation?.id,
+    pollIssue,
+    auth,
+  ]);
   useEffect(() => {
-    if (!conversation?.busy) return;
+    if (!conversation?.busy || pollIssue || !auth) return;
     const id = conversation.id;
-    const timer = setInterval(
-      () =>
-        api("conversations/" + id)
-          .then((c) => {
-            if (active.current === id) setConversation(c);
-            if (!c.busy)
-              api("conversations")
-                .then(setSessions)
-                .catch(() => {});
-          })
-          .catch(() =>
-            setError(
-              "Se perdió la conexión. Vuelve a abrir la conversación para recuperar su estado.",
-            ),
-          ),
-      2500,
+    return watchConversation<Conversation>(
+      (signal) => api("conversations/" + id, { signal }),
+      (c) => {
+        if (active.current !== id) return false;
+        setConversation(c);
+        if (!c.busy)
+          api("conversations")
+            .then(setSessions)
+            .catch(() => {});
+        return c.busy;
+      },
+      (failure) => {
+        if (active.current !== id) return;
+        const code = failure instanceof Error ? failure.message : "";
+        if (/UNAUTHORIZED|SESSION_EXPIRED|HTTP_401/.test(code)) {
+          setAuth(false);
+          setError(
+            "Tu sesión ha caducado. Vuelve a entrar para recuperar el estado.",
+          );
+        } else if (/CONVERSATION_NOT_FOUND|HTTP_404/.test(code)) {
+          setConversation((c) =>
+            c?.id === id ? { ...c, busy: false, stage: "error" } : c,
+          );
+          setError(
+            "Esta conversación ha caducado. Puedes descargar el informe visible y crear un nuevo análisis.",
+          );
+        } else {
+          setPollIssue(
+            "Se perdió la conexión. No puedo confirmar si la solicitud terminó. El informe visible se conserva.",
+          );
+        }
+      },
     );
-    return () => clearInterval(timer);
-  }, [conversation?.id, conversation?.busy]);
+  }, [conversation?.id, conversation?.busy, pollIssue, auth]);
   useEffect(() => {
     if (!conversation?.report) return;
     const id = conversation.id;
@@ -308,7 +324,7 @@ export function Workspace() {
     const revision = conversation.report.revision;
     fetch("/workspace-api/conversations/" + id + "/page", {
       credentials: "same-origin",
-      signal: controller.signal,
+      signal: AbortSignal.any([controller.signal, AbortSignal.timeout(12_000)]),
     })
       .then(async (r) => {
         if (!r.ok) throw Error();
@@ -359,6 +375,7 @@ export function Workspace() {
   }
   async function open(id: string) {
     setError("");
+    setPollIssue("");
     if (active.current !== id) {
       setHtml("");
       setLoadedChanges(null);
@@ -380,6 +397,7 @@ export function Workspace() {
     }
   }
   function fresh() {
+    setPollIssue("");
     active.current = null;
     setConversation(null);
     setHtml("");
@@ -631,12 +649,21 @@ export function Workspace() {
             </button>
           </div>
         </header>
-        {error && (
+        {(error || pollIssue) && (
           <div className="workspace-error" role="alert">
-            {error}
-            <button onClick={() => setError("")} aria-label="Cerrar aviso">
-              ×
-            </button>
+            {pollIssue || error}
+            {pollIssue ? (
+              <button
+                className="recover-state"
+                onClick={() => setPollIssue("")}
+              >
+                Recuperar estado
+              </button>
+            ) : (
+              <button onClick={() => setError("")} aria-label="Cerrar aviso">
+                ×
+              </button>
+            )}
           </div>
         )}
         {!auth ? (
@@ -732,7 +759,7 @@ export function Workspace() {
                   )}
                 </div>
               </div>
-              {conversation?.busy && (
+              {conversation?.busy && !pollIssue && (
                 <div className="document-loading" role="status">
                   <span className="activity-spinner" />
                   <span>
@@ -910,7 +937,7 @@ export function Workspace() {
                       <Icon name="arrow" />
                     </button>
                   </div>
-                  {conversation?.busy && (
+                  {conversation?.busy && !pollIssue && (
                     <p className="empty-progress">
                       <span className="busy-dot" />
                       {stages[conversation.stage]}
@@ -1020,7 +1047,7 @@ export function Workspace() {
                       )}
                   </div>
                 ))}
-                {conversation?.busy && (
+                {conversation?.busy && !pollIssue && (
                   <div className="chat-working" role="status">
                     <div className="work-status-line">
                       <span className="activity-spinner" />
@@ -1087,6 +1114,7 @@ export function Workspace() {
                 <select
                   id="chat-match"
                   value={match}
+                  aria-busy={catalogLoading}
                   disabled={conversation?.busy}
                   onChange={(e) => setMatch(e.target.value)}
                 >
@@ -1101,6 +1129,12 @@ export function Workspace() {
                     </option>
                   ))}
                 </select>
+                {catalogLoading && (
+                  <span className="match-source" role="status">
+                    Consultando partidos. La primera carga puede tardar mientras
+                    Azure reactiva la base de datos.
+                  </span>
+                )}
                 {currentMatch && (
                   <span className="match-source">
                     {currentMatch.is_synthetic ||

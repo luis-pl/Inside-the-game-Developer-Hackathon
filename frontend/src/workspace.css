@@ -571,6 +571,13 @@ a {
   background: transparent;
   font-size: 20px;
 }
+.workspace-error .recover-state {
+  flex: none;
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 12px;
+  text-decoration: underline;
+}
 .workspace-login {
   display: grid;
   place-items: center;

@@ -21,6 +21,7 @@ from inside_game.agents.insights_http_client import HttpInsightsAgent
 from inside_game.agents.report_store import ReportError
 from inside_game.agents.sports_analyst import AnalystLimits, SportsAnalyst
 from inside_game.insights.mcp_server import create_server
+from inside_game.language import wording
 from inside_game.providers.models import ModelFailure
 
 
@@ -75,6 +76,7 @@ def register_analyst_routes(
             )
             publication = InsightRequest(
                 request_id=message.request_id,
+                language=plan.language,
                 request_text="Adjuntar el texto validado del analista",
                 context=snapshot.context,
                 report_id=report_id,
@@ -158,7 +160,7 @@ def register_analyst_routes(
                             "issues": [*analysis.issues, code],
                             "limitations": [
                                 *analysis.limitations,
-                                "El texto está disponible, pero no se pudo publicar la página final.",
+                                wording("publication_failed", message.language),
                             ],
                         },
                         deep=True,
@@ -166,6 +168,7 @@ def register_analyst_routes(
                 else:
                     analysis = AnalysisResult(
                         request_id=message.request_id,
+                        language=message.language,
                         status="error",
                         model="configured",
                         issues=[
@@ -174,6 +177,16 @@ def register_analyst_routes(
                             else "DEADLINE_EXCEEDED"
                         ],
                     )
+            if (
+                compose
+                and report is None
+                and analysis.visual_report
+                and analysis.visual_report.report_id
+            ):
+                # A published graph remains useful when prose validation or attachment fails.
+                report = analysis.visual_report
+                if analysis.status == "error":
+                    analysis = analysis.model_copy(update={"status": "partial"})
             result = (
                 AnalysisReportResult(
                     request_id=message.request_id, analysis=analysis, report=report

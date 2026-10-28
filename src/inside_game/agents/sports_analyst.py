@@ -27,8 +27,10 @@ from inside_game.agents.analyst_facts import (
     source_key,
     visual_facts,
 )
+from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataRequest, DataResult
 from inside_game.agents.insight_contracts import InsightRequest, RetrieveData
+from inside_game.language import wording
 from inside_game.providers.models import ModelFailure
 
 
@@ -73,6 +75,10 @@ def normalize_finish_arguments(raw):
         return args, changed
     for key in ("status", "sections", "limitations", "title", "clarification"):
         value = args.get(key)
+        if key == "limitations" and value == "":
+            args[key] = []
+            changed.append(key)
+            continue
         if not isinstance(value, str) or not value.lstrip().startswith(("[", "{", '"')):
             continue
         try:
@@ -86,6 +92,51 @@ def normalize_finish_arguments(raw):
         except ValueError:
             pass
     return args, changed
+
+
+def ground_source_literals(text, facts):
+    """Replace exact source strings, never an arbitrary numeric assertion.
+
+    Canonical player names may contain digits. Reusing the original name through
+    its fact placeholder does not invent an identity, metric or interpretation.
+    """
+    matches = {
+        f.scope.get("match_id") for f in facts if f.scope.get("match_id") is not None
+    }
+    if len(matches) > 1:
+        return text
+    labels = {
+        "player_name",
+        "home_team_name",
+        "away_team_name",
+        "team_name",
+        "recorded_pass_link",
+    }
+    for item in sorted(facts, key=lambda f: len(str(f.value)), reverse=True):
+        if (
+            item.label in labels
+            and isinstance(item.value, str)
+            and re.search(r"\d", item.value)
+            and any(character.isalpha() for character in item.value)
+        ):
+            text = re.sub(
+                r"(?<!\w)" + re.escape(item.value) + r"(?!\w)",
+                lambda _, fact_id=item.id: "{{" + fact_id + "}}",
+                text,
+            )
+        elif item.label == "sampling_hz":
+            value = (
+                str(int(item.value))
+                if float(item.value).is_integer()
+                else str(item.value)
+            )
+            text = re.sub(
+                r"(?<![\w.])" + re.escape(value) + r"\s*(Hz|hertz|hercios)\b",
+                lambda m, fact_id=item.id: "{{" + fact_id + "}} " + m[1],
+                text,
+                flags=re.IGNORECASE,
+            )
+    return text
 
 
 class SportsAnalyst:
@@ -129,6 +180,10 @@ class _Run:
         self.visual = None
         self.reviewed = False
         self.visual_aliases = {}
+        self.sent_catalog = {}
+        self.retrieval_issues = []
+        self.visual_failed = False
+        self.context_window = ContextWindow(agent.limits.max_input_bytes)
 
     def remaining(self):
         return max(
@@ -167,14 +222,17 @@ class _Run:
             raise ValueError("FACT_BUDGET_EXCEEDED")
 
     def result(self, status, **kwargs):
+        kwargs["issues"] = [*self.retrieval_issues, *kwargs.get("issues", [])]
         return AnalysisResult(
             request_id=self.request.request_id,
+            language=self.request.language,
             status=status,
             model=self.agent.model.name,
             prompt_sha256=hashlib.sha256(self.agent.prompt.encode()).hexdigest(),
             elapsed_ms=round((time.perf_counter() - self.started) * 1000, 3),
             model_turns=self.turns,
             total_tokens=self.tokens,
+            context_events=self.context_window.events,
             tool_trace=self.trace,
             data_request_ids=self.data_ids,
             visual_report=self.visual,
@@ -228,6 +286,54 @@ class _Run:
             ],
         }
 
+    def catalog_delta(self):
+        """Send only changed entries, retaining all originals and valid history.
+
+        Compare values, not just IDs: scope mappings may change after a merge.
+        Removed visual facts are explicit so stale evidence cannot be reused.
+        """
+        full = self.catalog()
+        current = {
+            "facts": {f["id"]: f for f in full["facts"]},
+            "scope_catalog": full["scope_catalog"],
+            "method_notes": {e["evidence_id"]: e for e in full["method_notes"]},
+            "evidence_catalog": {e["evidence_id"]: e for e in full["evidence_catalog"]},
+        }
+        delta = {"catalog_is_delta": bool(self.sent_catalog)}
+        delta["removed_fact_ids"] = sorted(
+            self.sent_catalog.get("facts", {}).keys() - current["facts"].keys()
+        )
+        for key, entries in current.items():
+            previous = self.sent_catalog.get(key, {})
+            changed = {k: v for k, v in entries.items() if previous.get(k) != v}
+            delta[key] = changed if key == "scope_catalog" else list(changed.values())
+        self.sent_catalog = current
+        return delta
+
+    def task_state(self):
+        return {
+            "evidence_count": len(self.evidence),
+            "fact_count": len(self.facts),
+            "visual_review_required": self.request.review_visuals,
+            "visual_reviewed": self.reviewed,
+            "visual_failed": self.visual_failed,
+            "visual_status": self.visual.status if self.visual else None,
+            "remaining_data_requests": self.agent.limits.max_data_requests
+            - self.fetches,
+            "remaining_visual_requests": self.agent.limits.max_visual_requests
+            - self.previews,
+            "partial": self.partial,
+        }
+
+    def checkpoint(self):
+        self.sent_catalog = {}
+        return {
+            "request_id": str(self.request.request_id),
+            "request": self.request.model_dump(mode="json", exclude={"data_result"}),
+            "task_state": self.task_state(),
+            **self.catalog_delta(),
+        }
+
     async def execute(self):
         if self.request.data_result:
             self.merge(self.request.data_result)
@@ -264,20 +370,24 @@ class _Run:
                         "request": self.request.model_dump(
                             mode="json", exclude={"data_result"}
                         ),
-                        **self.catalog(),
+                        **self.catalog_delta(),
                     },
                     ensure_ascii=False,
                 ),
             }
         ]
         for _ in range(self.agent.limits.max_turns):
-            if (
-                len(json.dumps([self.agent.prompt, messages, tools]).encode())
-                > self.agent.limits.max_input_bytes
-            ):
-                return self.result("error", issues=["CONTEXT_BUDGET_EXCEEDED"])
+            # Refresh only host state, retaining the original task and all
+            # tool/result pairs. The first message keeps the Go session UUID.
+            root = json.loads(messages[0]["content"])
+            root["task_state"] = self.task_state()
+            messages[0]["content"] = json.dumps(root, ensure_ascii=False)
             active_tools = tools
-            if self.request.review_visuals and not self.reviewed:
+            if (
+                self.request.review_visuals
+                and not self.reviewed
+                and not self.visual_failed
+            ):
                 active_tools = [
                     {
                         **tool,
@@ -288,10 +398,18 @@ class _Run:
                     else tool
                     for tool in tools
                 ]
+            self.context_window.prepare(
+                self.agent.model,
+                self.agent.prompt,
+                messages,
+                active_tools,
+                self.checkpoint,
+            )
             turn = await self.agent.model.respond(
                 self.agent.prompt, messages, active_tools
             )
             self.turns += 1
+            self.context_window.observe(turn)
             self.tokens += turn.total_tokens
             messages.extend(turn.output)
             calls = [c for c in turn.output if c.get("type") == "function_call"]
@@ -302,6 +420,30 @@ class _Run:
                         "content": "Usa una herramienta real. Para terminar llama a finish_analysis; no escribas texto fuera del contrato.",
                     }
                 )
+                continue
+            if len(calls) > 1 and any(
+                c.get("name") == "finish_analysis" for c in calls
+            ):
+                # Reject the whole batch and close every call_id before retrying.
+                # Finishing alongside retrieval must never discard a requested
+                # product or run a query after finalization was proposed.
+                for call in calls:
+                    messages.append(
+                        {
+                            "type": "function_call_output",
+                            "call_id": call["call_id"],
+                            "output": json.dumps({"error": "FINISH_MUST_BE_SEPARATE"}),
+                        }
+                    )
+                    self.trace.append(
+                        {
+                            "tool": call.get("name")
+                            if call.get("name") in contracts
+                            else "unknown",
+                            "status": "error",
+                            "error": "FINISH_MUST_BE_SEPARATE",
+                        }
+                    )
                 continue
             for call in calls:
                 if len(self.trace) >= self.agent.limits.max_calls:
@@ -344,6 +486,7 @@ class _Run:
                         "repair": "Corrige TODAS las afirmaciones indicadas. Sustituye cada cifra por un placeholder real y cita su ID. Escribe primer/segundo tiempo en lugar de P1/P2. Mueve advertencias generales a limitations.",
                     }
                     entry["status"] = "error"
+                    entry["error_fields"] = exc.fields
                 except ValidationError as exc:
                     output = {
                         "error": "INVALID_ARGUMENT",
@@ -353,13 +496,26 @@ class _Run:
                         ],
                     }
                     entry["status"] = "error"
+                    entry["error_fields"] = output["fields"]
                 except ModelFailure as exc:
                     entry.update(
                         status="error",
                         error=exc.code,
                         elapsed_ms=round((time.perf_counter() - started) * 1000, 3),
                     )
-                    raise
+                    if (
+                        name not in {"request_data", "request_insights"}
+                        or not self.facts
+                    ):
+                        raise
+                    self.partial = True
+                    self.retrieval_issues.append(exc.code)
+                    if name == "request_insights":
+                        self.visual_failed = True
+                    output = {
+                        "error": exc.code,
+                        "recovery": "Use only existing fact_ids. Finish with status partial and explain the unavailable evidence or visual review in limitations. Do not claim a page was created.",
+                    }
                 except asyncio.CancelledError:
                     entry.update(
                         status="error",
@@ -415,7 +571,12 @@ class _Run:
                     raise ValueError("INVALID_ANALYSIS_DATA")
                 setattr(context, key, value)
             result = await self.agent.data_client.fetch(
-                DataRequest(request_text=args.request_text, context=context),
+                DataRequest(
+                    request_text=args.request_text,
+                    context=context,
+                    language=self.request.language,
+                    original_request=self.request.original_request,
+                ),
                 timeout=min(40, self.remaining()),
             )
             self.merge(result)
@@ -423,7 +584,7 @@ class _Run:
                 "data_status": result.status,
                 "clarification": result.clarification,
                 "issues": [i.model_dump() for i in result.issues],
-                **self.catalog(),
+                **self.catalog_delta(),
             }
         if not self.evidence:
             raise ValueError("DATA_REQUIRED")
@@ -435,6 +596,9 @@ class _Run:
         self.previews += 1
         result, payload = await self.agent.insights_client.preview(
             InsightRequest(
+                language=self.request.language,
+                original_request=self.request.original_request,
+                required_insights=self.request.required_insights,
                 request_text=args.request_text
                 + " Usa exclusivamente la evidencia suministrada; no pidas nuevos datos ni añadas análisis narrativo.",
                 context=self.request.context,
@@ -472,7 +636,7 @@ class _Run:
             "report_id": str(result.report_id),
             "blocks": result.blocks,
             "issues": result.issues,
-            **self.catalog(),
+            **self.catalog_delta(),
         }
 
     def finish(self, args):
@@ -482,12 +646,13 @@ class _Run:
             return self.result(args.status, clarification=args.clarification)
         if not args.sections or not self.facts:
             raise ValueError("ANALYSIS_REQUIRED")
-        if self.request.review_visuals and not self.reviewed:
+        if self.request.review_visuals and not self.reviewed and not self.visual_failed:
             raise ValueError("VISUAL_REVIEW_REQUIRED")
         fields = []
         known = {f.id for f in self.facts}
         for si, section in enumerate(args.sections):
             for pi, item in enumerate(section.statements):
+                item.text = ground_source_literals(item.text, self.facts)
                 # Referenciar un placeholder conocido ya identifica su fuente;
                 # añadir la cita omitida no crea hechos ni cambia sus valores.
                 item.fact_ids = list(
@@ -533,13 +698,13 @@ class _Run:
             for e in analytical or self.evidence
         }
         parts.append(
-            "Procedencia: "
+            wording("provenance", self.request.language)
             + (
-                "datos sintéticos de demostración."
+                wording("synthetic", self.request.language)
                 if kinds == {True}
-                else "fuentes reales; consultar cobertura."
+                else wording("real", self.request.language)
                 if kinds == {False}
-                else "fuentes separadas por procedencia; no comparables automáticamente."
+                else wording("mixed", self.request.language)
             )
         )
         for section in args.sections:
@@ -558,18 +723,21 @@ class _Run:
             sections.append(section.model_copy(update={"statements": statements}))
         limits = list(dict.fromkeys([*args.limitations, *warnings]))
         if any(f.scope.get("exhaustive") is False for f in self.facts):
-            limits.append(
-                "La lectura de tablas usa las primeras diez filas, en el orden de la fuente; no representa todas las entidades."
-            )
-        if self.visual and self.visual.status != "complete":
-            limits.append(
-                "La revisión visual fue incompleta; consultar estados y límites de cada bloque."
-            )
-        parts.append("\nAlcance y límites\n" + "\n".join(limits))
+            limits.append(wording("table_sample", self.request.language))
+        if self.visual_failed or (self.visual and self.visual.status != "complete"):
+            limits.append(wording("visual_partial", self.request.language))
+        parts.append(
+            "\n" + wording("limits", self.request.language) + "\n" + "\n".join(limits)
+        )
         cited = [next(f for f in self.facts if f.id == key) for key in used]
         parts.append(
-            "\nReferencias\n"
-            + "\n".join(reference_line(i + 1, f) for i, f in enumerate(cited))
+            "\n"
+            + wording("references", self.request.language)
+            + "\n"
+            + "\n".join(
+                reference_line(i + 1, f, language=self.request.language)
+                for i, f in enumerate(cited)
+            )
         )
         text = "\n".join(parts)
         if len(text) > 16000:

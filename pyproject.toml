@@ -36,7 +36,7 @@ inside-game-insights-agent-a2a = "inside_game.a2a_agents.insights_server:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-inside_game = ["sql/*.sql", "insights/catalog.json", "agents/insights_agent/source_profiles.json"]
+inside_game = ["sql/*.sql", "insights/catalog.json", "agents/insights_agent/source_profiles.json", "locales/*.json"]
 
 [tool.setuptools.data-files]
 "share/inside-game/prompts" = ["prompts/data_agent.md", "prompts/insights_planner.md", "prompts/insights_agent.md", "prompts/sports_analyst.md", "prompts/interpreter.md"]

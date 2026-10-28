@@ -249,8 +249,40 @@ def test_http_analysis_data_insights_mcp_and_immutable_attachment(monkeypatch):
             )
             assert (
                 failed["analysis"]["issues"] == ["INSIGHTS_BUSY"]
-                and failed["report"] is None
+                and failed["report"]["report_id"]
+                == failed["analysis"]["visual_report"]["report_id"]
             )
+
+            original_run = SportsAnalyst.run
+
+            async def expires_after_graph(self, message):
+                completed = await original_run(self, message)
+                return completed.model_copy(
+                    update={
+                        "status": "error",
+                        "text": "",
+                        "issues": ["DEADLINE_EXCEEDED"],
+                    }
+                )
+
+            monkeypatch.setattr(SportsAnalyst, "run", expires_after_graph)
+            late = (
+                await client.post(
+                    "/a2a/v1/analysis-reports",
+                    json={
+                        "request_text": "Analiza la forma",
+                        "data_result": evidence_result().model_dump(mode="json"),
+                    },
+                )
+            ).json()
+            assert (
+                late["report"]["report_id"]
+                == late["analysis"]["visual_report"]["report_id"]
+            )
+            assert (
+                late["analysis"]["status"] == "partial" and not late["analysis"]["text"]
+            )
+            assert late["analysis"]["issues"] == ["DEADLINE_EXCEEDED"]
 
     asyncio.run(run())
 

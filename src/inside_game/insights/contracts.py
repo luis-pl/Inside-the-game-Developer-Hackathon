@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from inside_game.agents.contracts import Evidence
 from inside_game.insights.catalog import RECIPES
+from inside_game.language import Language
 from inside_game.service import OPERATIONS
 
 
@@ -85,6 +86,7 @@ class AnalystNote(Closed):
 
 
 class ReportPlan(Closed):
+    language: Language = "es"
     title: str = Field(default="Informe de fútbol", min_length=1, max_length=180)
     template_id: Literal[
         "match_overview",

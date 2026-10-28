@@ -5,6 +5,8 @@ import hashlib
 import json
 import time
 
+from inside_game.language import wording
+
 from .adapters import prepare
 from .analysis_note import analyst_copy
 from .atoms import text
@@ -21,6 +23,8 @@ from .organisms import (
     masthead,
     report_canvas,
 )
+from .source_policy import profile
+from .source_policy import unannotated as source_unannotated
 from .templates import CSS, JS
 
 
@@ -28,10 +32,15 @@ def compile_report(request):
     spec = ReportSpec.model_validate(request)
     zero_only = set(spec.zero_only_insights)
     unannotated = {k: set(v) for k, v in spec.unannotated_metrics.items()}
-    blocks = [
-        prepare(b, spec.evidence, zero_only, unannotated.get(b.insight_id, ()))
-        for b in spec.blocks
-    ]
+    blocks = []
+    for block in spec.blocks:
+        sources = [e for e in spec.evidence if e.evidence_id in block.evidence_ids]
+        source_masks = set(unannotated.get(block.insight_id, ()))
+        source_zeros = set(zero_only)
+        for ev in sources:
+            source_masks.update(source_unannotated(ev, block.insight_id))
+            source_zeros.update(profile(ev).get("zero_only", {}))
+        blocks.append(prepare(block, spec.evidence, source_zeros, source_masks))
     teams, players = identities(spec)
     for block in blocks:
         block.teams = teams
@@ -58,9 +67,11 @@ def report_parts(request):
     organismos) e inicializarlas con el JS de los templates.
     """
     spec, blocks = compile_report(request)
+    t = lambda key: wording(key, spec.language)
     teams, _ = identities(spec)
     payload = {
         "schema_version": "1",
+        "language": spec.language,
         "title": spec.title,
         "template_id": spec.template_id,
         "teams": teams,
@@ -77,16 +88,23 @@ def report_parts(request):
         .replace("\u2028", "\\u2028")
         .replace("\u2029", "\\u2029")
     )
-    options = '<option value="all">Informe completo</option>' + "".join(
-        f'<option value="{text(b.id)}">{text(b.title)}</option>' for b in blocks
+    options = (
+        '<option value="all">'
+        + text(t("full_report"))
+        + "</option>"
+        + "".join(
+            f'<option value="{text(b.id)}">{text(b.title)}</option>' for b in blocks
+        )
     )
     body = "".join(
         insight_section(b, RECIPES[b.insight_id]["organism_family"]) for b in blocks
     )
     if spec.analyst:
         body = (
-            '<section class="analyst-note"><h2>Lectura del analista</h2>'
-            + analyst_copy(spec.analyst.text)
+            '<section class="analyst-note"><h2>'
+            + text(t("analyst_reading"))
+            + "</h2>"
+            + analyst_copy(spec.analyst.text, language=spec.language)
             + (
                 evidence_links(spec.analyst.evidence_ids)
                 if spec.analyst.evidence_ids
@@ -97,9 +115,9 @@ def report_parts(request):
         )
     kinds = sorted(
         {
-            "Sintético"
+            t("synthetic_tag")
             if e.response.provenance.get("is_synthetic")
-            else "Real · consultar proveedor"
+            else t("real")
             for e in spec.evidence
         }
     )
@@ -118,11 +136,13 @@ def report_parts(request):
         scoreboard = f'<div class="match-banner"><div><span class="eyebrow">Local</span><strong style="--team:{home.get("color", "#2463bc")}">{text(home.get("name", "Local"))}</strong></div><p class="score">{text(match.get("home_score", "—"))}<span>:</span>{text(match.get("away_score", "—"))}</p><div><span class="eyebrow">Visitante</span><strong style="--team:{away.get("color", "#bf402e")}">{text(away.get("name", "Visitante"))}</strong></div></div>'
     team_legend = legend([(v["color"], v["name"]) for v in teams.values()])
     header = (
-        f'<p>Inside the game · Informe deportivo</p><h1>{text(spec.title)}</h1><p class="intro">Evidencia del partido, gráficos y métodos en un documento que puedes explorar sin conexión.</p><p class="report-meta">{len(blocks)} bloques · {len(spec.evidence)} evidencias · {text(" / ".join(kinds))}</p>'
+        f'<p>Inside the game · {text(t("sports_report"))}</p><h1>{text(spec.title)}</h1><p class="intro">{text(t("report_intro"))}</p><p class="report-meta">{len(blocks)} {text(t("blocks_label"))} · {len(spec.evidence)} {text(t("evidence_label"))} · {text(" / ".join(kinds))}</p>'
         + scoreboard
         + team_legend
-        + '<p class="palette-note">Paleta configurada para este informe; no representa colores oficiales.</p>'
-        + f'<div class="toolbar"><label>Mostrar <select id="block-filter">{options}</select></label><button id="download-data" type="button">Descargar datos</button><button id="print-report" type="button">Imprimir</button></div>'
+        + '<p class="palette-note">'
+        + text(t("palette_note"))
+        + "</p>"
+        + f'<div class="toolbar"><label>{text(t("show"))} <select id="block-filter">{options}</select></label><button id="download-data" type="button">{text(t("download"))}</button><button id="print-report" type="button">{text(t("print"))}</button></div>'
     )
     return {
         "spec": spec,
@@ -131,7 +151,7 @@ def report_parts(request):
         "payload_json": encoded,
         "header": header,
         "main": body + evidence_footer(spec.evidence),
-        "footer": FOOTER,
+        "footer": t("footer"),
         "template_id": spec.template_id,
     }
 
@@ -142,7 +162,7 @@ def render_report(request):
     spec, blocks = parts["spec"], parts["blocks"]
     script_hash = base64.b64encode(hashlib.sha256(JS.encode()).digest()).decode()
     csp = f"default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-{script_hash}'; connect-src 'none'; img-src data:; base-uri 'none'; form-action 'none'"
-    document = f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="{text(csp)}"><title>{text(spec.title)}</title><style>{CSS}</style></head><body><header>{parts["header"]}</header><main class="report {text(parts["template_id"])}">{parts["main"]}</main><footer>{parts["footer"]}</footer><script type="application/json" id="report-data">{parts["payload_json"]}</script><script>{JS}</script></body></html>'''
+    document = f'''<!doctype html><html lang="{spec.language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="{text(csp)}"><title>{text(spec.title)}</title><style>{CSS}</style></head><body><header>{parts["header"]}</header><main class="report {text(parts["template_id"])}">{parts["main"]}</main><footer>{parts["footer"]}</footer><script type="application/json" id="report-data">{parts["payload_json"]}</script><script>{JS}</script></body></html>'''
     size = len(document.encode())
     if size > 16 * 1024 * 1024:
         raise ValueError("REPORT_SIZE_EXCEEDED")

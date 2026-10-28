@@ -6,6 +6,7 @@ import re
 from math import isfinite
 
 from inside_game.agents.analyst_contracts import Fact
+from inside_game.insights.source_policy import annotated_summary
 
 TOKEN = re.compile(r"\{\{(f-[0-9a-f]{12})\}\}")
 
@@ -152,6 +153,32 @@ def scalar_facts(value, evidence, path, *, block_id=None, scope=None, depth=0):
 
 def evidence_facts(evidence):
     facts = []
+    names = {
+        (ev.arguments.get("match_id"), row["player_id"]): row["player_name"]
+        for ev in evidence
+        if ev.operation == "get_match_context"
+        for row in ev.response.data.get("lineups", [])
+        if row.get("player_id") is not None and row.get("player_name")
+    }
+    episode = any(
+        ev.operation in {"get_tracking_window", "get_event_context"} for ev in evidence
+    )
+    participants = (
+        {
+            player
+            for ev in evidence
+            if ev.operation == "get_passes"
+            and 0 < len(ev.response.data.get("items", [])) <= 8
+            for row in ev.response.data["items"]
+            for player in (
+                row.get("player_id"),
+                (row.get("pass") or {}).get("recipient_player_id"),
+            )
+            if player is not None
+        }
+        if episode
+        else set()
+    )
     ranked_players = {
         row.get("entity_id")
         for ev in evidence
@@ -162,8 +189,60 @@ def evidence_facts(evidence):
     }
     for ev in evidence:
         data = ev.response.data
+        if ev.operation == "get_match_context":
+            for i, row in enumerate(data.get("lineups", [])):
+                if row.get("player_id") in participants and row.get("player_name"):
+                    facts.append(
+                        fact(
+                            row["player_name"],
+                            "player_name",
+                            ev,
+                            f"/data/lineups/{i}/player_name",
+                            scope={
+                                **ev.response.scope,
+                                "match_id": ev.arguments.get("match_id"),
+                                "player_id": row["player_id"],
+                            },
+                        )
+                    )
+        # Short episodes can be narrated from recorded pass links, rather than
+        # only aggregate counts. Never silently sample a longer event sequence.
+        items = data.get("items", [])
+        if (
+            episode
+            and ev.operation == "get_passes"
+            and 0 < len(items) <= 8
+            and data.get("total") == len(items)
+        ):
+            for i, event in enumerate(items):
+                target = (event.get("pass") or {}).get("recipient_player_id")
+                source_name = names.get(
+                    (ev.arguments.get("match_id"), event.get("player_id"))
+                )
+                target_name = names.get((ev.arguments.get("match_id"), target))
+                if not source_name or not target_name or not event.get("timestamp"):
+                    continue
+                facts.append(
+                    fact(
+                        f"{event['timestamp']} · {source_name} → {target_name}",
+                        "recorded_pass_link",
+                        ev,
+                        f"/data/items/{i}#pass_link",
+                        scope={
+                            **ev.response.scope,
+                            "match_id": ev.arguments.get("match_id"),
+                            "period": event.get("period"),
+                            "event_id": event.get("event_id"),
+                            "event_order": i,
+                            "endpoint_observations_only": True,
+                        },
+                    )
+                )
         for key in ("summary", "metrics", "match"):
-            facts.extend(scalar_facts(data.get(key, {}), ev, "/data/" + key))
+            values = data.get(key, {})
+            if key in {"summary", "metrics"} and isinstance(values, dict):
+                values = annotated_summary(ev, values)
+            facts.extend(scalar_facts(values, ev, "/data/" + key))
         ranking_rows = [
             (i, row)
             for i, row in enumerate(data.get("items", []))
@@ -271,6 +350,16 @@ def evidence_facts(evidence):
                 )
             )
         if ev.operation in {"get_tracking_frame", "get_tracking_window"}:
+            step = ev.response.coverage.get("returned_step_ms")
+            if type(step) is int and step > 0:
+                facts.append(
+                    fact(
+                        1000 / step,
+                        "sampling_hz",
+                        ev,
+                        "/coverage/returned_step_ms#frequency_hz",
+                    ).model_copy(update={"unit": "Hz"})
+                )
             facts.append(
                 fact(
                     len(data.get("frames", [])),
@@ -361,8 +450,13 @@ def render_statement(statement, facts):
     stripped = TOKEN.sub("", statement.text)
     if re.search(r"\d", stripped) or "{{" in stripped or "}}" in stripped:
         raise ValueError("USE_FACT_PLACEHOLDERS_FOR_NUMBERS")
+    validate_metric_labels(statement.text, by_id)
+    validate_absolute_claims(stripped)
     if re.search(
-        r"fase de (?:transición|progresión)|(?:presión|bloque) (?:alto|alta|medio|bajo)",
+        r"fase de (?:transición|progresión)|(?:presión|bloque) (?:alto|alta|medio|bajo)"
+        r"|(?:high|mid|low) (?:press|block)|bloc (?:haut|médian|bas)|pression haute"
+        r"|pressão alta|bloco (?:alto|médio|baixo)|blocco (?:alto|medio|basso)"
+        r"|(?:hohes|tiefes) pressing|(?:hoher|tiefer) block",
         statement.text,
         re.IGNORECASE,
     ) and all(
@@ -379,10 +473,98 @@ def render_statement(statement, facts):
         for key in statement.fact_ids
     ):
         raise ValueError("UNSUPPORTED_TACTICAL_PHASE_FROM_GEOMETRY")
-    return TOKEN.sub(lambda m: display(by_id[m[1]]), statement.text)
+    rendered = TOKEN.sub(lambda m: display(by_id[m[1]]), statement.text)
+    validate_score_claim(rendered, [by_id[key] for key in statement.fact_ids])
+    return rendered
 
 
-def reference_line(index, fact):
+def validate_metric_labels(text, by_id):
+    """Narrow cross-language guard against citing goals as shots or vice versa."""
+    shots = r"(?:tiros?|remates?|disparos?|shots?|tirs?|finalizaç(?:ão|ões)|tiri|tiro|schüsse|schuss)"
+    goals = r"(?:goles?|goals?|gols?|buts?|gol|tore?|tor)"
+    for token in TOKEN.finditer(text):
+        item = by_id.get(token[1])
+        if item is None:
+            continue
+        following = text[token.end() :]
+        if item.label in {"goals", "goal_count"} and re.match(
+            r"\s+" + shots + r"\b", following, re.IGNORECASE
+        ):
+            raise ValueError("FACT_METRIC_LABEL_MISMATCH")
+        if item.label in {"shots", "shot_count", "total_shots"} and re.match(
+            r"\s+" + goals + r"\b", following, re.IGNORECASE
+        ):
+            raise ValueError("FACT_METRIC_LABEL_MISMATCH")
+
+
+def validate_absolute_claims(text):
+    """Reject specific unprovable guarantees, preserving scientific caveats.
+
+    This lexical guard is not a general proof of semantic entailment.
+    """
+    for sentence in re.split(r"[.!?;]", text):
+        if re.search(
+            r"\b(?:no|not|never|cannot|can't|doesn't|don't|não|non|nicht|kein\w*)\b|ne .{0,60}\bpas\b",
+            sentence,
+            re.IGNORECASE,
+        ):
+            continue
+        if re.search(
+            r"impenetrab(?:le|les|ile|ili)|impénétrable|undurchdringlich"
+            r"|(?:asegura|garantiza|garante|garantisce) (?:la |a )?(?:victoria|victória|vitória|vittoria)"
+            r"|guarantees? (?:a |the )?(?:win|victory)|garantit la victoire|garantiert (?:den |einen )?sieg",
+            sentence,
+            re.IGNORECASE,
+        ):
+            raise ValueError("UNSUPPORTED_ABSOLUTE_CLAIM")
+
+
+def validate_score_claim(text, cited):
+    """Reject explicit winner/loser claims that contradict cited match scores.
+
+    This is a narrow semantic guard, not a proof of every football inference.
+    Group by match and evidence so a comparison cannot mix different scorelines.
+    """
+    groups = {}
+    for item in cited:
+        if item.operation == "get_match_context" and item.path.startswith(
+            "/data/match/"
+        ):
+            key = (item.scope.get("match_id"), tuple(item.evidence_ids))
+            groups.setdefault(key, {})[item.label] = item.value
+    for values in groups.values():
+        home, away = values.get("home_score"), values.get("away_score")
+        if type(home) is not int or type(away) is not int:
+            continue
+        for side, margin, aliases in (
+            ("home", home - away, ["el equipo local", "el local"]),
+            ("away", away - home, ["el equipo visitante", "el visitante"]),
+        ):
+            name = values.get(side + "_team_name")
+            if isinstance(name, str) and name:
+                aliases.append(name)
+            for alias in aliases:
+                # Require match-result wording, not 'ganó espacio/un duelo'.
+                pattern = (
+                    r"(?<!\w)"
+                    + re.escape(alias)
+                    + r"\s+(ganó|venció|derrotó|perdió|cayó|empató)\s+"
+                    + r"(?:por\s+)?(?:\d|el partido\b|frente\b|ante\b|contra\b|a\b)"
+                )
+                for claim in re.finditer(pattern, text, re.IGNORECASE):
+                    expected = (
+                        1
+                        if claim[1].lower() in {"ganó", "venció", "derrotó"}
+                        else -1
+                        if claim[1].lower() in {"perdió", "cayó"}
+                        else 0
+                    )
+                    actual = (margin > 0) - (margin < 0)
+                    if expected != actual:
+                        raise ValueError("MATCH_RESULT_CONTRADICTS_SCORE")
+
+
+def reference_line(index, fact, *, language="es"):
     """Referencia de lectura; rutas y JSON completos permanecen en el sobre QA."""
     labels = {
         "players": "Jugadores de campo",
@@ -406,6 +588,28 @@ def reference_line(index, fact):
     scope = fact.scope
     if scope.get("visual_scopes"):
         scope = scope["visual_scopes"][0]
+    if language != "es":
+        # Keep canonical metric keys in technical references; prose and headings
+        # are localized. No translation is allowed to change a metric identity.
+        details = {
+            key: scope[key]
+            for key in (
+                "match_id",
+                "team_id",
+                "player_id",
+                "period",
+                "time_ms",
+                "start_ms",
+                "end_ms",
+            )
+            if key in scope
+        }
+        return (
+            f"[{index}] {fact.label}: {display(fact)}"
+            + (f" {fact.unit}" if fact.unit and fact.unit != "proporción" else "")
+            + " · "
+            + json.dumps(details, ensure_ascii=False, sort_keys=True)
+        )
     details = []
     for key, label in [("match_id", "partido"), ("team_id", "equipo")]:
         if scope.get(key) is not None:

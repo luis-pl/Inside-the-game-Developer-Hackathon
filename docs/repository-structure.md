@@ -41,6 +41,8 @@ Inside-the-game-Developer-Hackathon/
 │       │   ├── insights_server.py # Agente de insights: skill ask_insight
 │       │   └── insights_client.py # Cliente del agente de insights
 │       ├── insights/              # Renderer de 30 recetas y su MCP
+│       ├── language.py            # Idiomas compartidos por los agentes
+│       ├── locales/               # Copia revisada en es/en/pt/fr/it/de
 │       ├── local_env.py           # Lectura de entorno y .env.local
 │       ├── tools/
 │       │   ├── __init__.py
@@ -94,5 +96,9 @@ fuente en [insights-availability.md](insights-availability.md) y comunicación
 A2A con el agente de datos en [a2a.md](a2a.md). El analista deportivo ya está
 implementado ([sports-analyst.md](sports-analyst.md)); se comunica por HTTP con Data
 e Insights y devuelve texto con referencias. El compositor también está implementado.
-El intérprete conversacional y la orquestación general mantienen sus módulos reservados. La infraestructura y los datos de Azure SQL
+El intérprete conversacional y su coordinación HTTP están implementados en
+`agents/interpreter.py` y `agents/chat_http.py`; el módulo general `orchestrator.py`
+sigue reservado. La revisión de capacidades e idiomas está en
+[agent-reliability-multilingual.md](agent-reliability-multilingual.md).
+La infraestructura y los datos de Azure SQL
 se conservan en `database/azure-sql/`. Los scripts de despliegue están en `scripts/` y los identificadores públicos del alojamiento en `deployment/cloud.json`.

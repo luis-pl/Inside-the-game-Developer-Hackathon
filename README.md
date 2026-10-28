@@ -9,6 +9,10 @@ Abrir <http://127.0.0.1:8090>. Coordina Data, analista e Insights, admite cambio
 en la página y permite descargar el HTML y la trazabilidad. Las conversaciones
 se conservan en memoria durante una hora; el CLI escucha sólo en este equipo.
 
+Revisión de agentes: [capacidades, contexto e idiomas](docs/agent-reliability-multilingual.md).
+La conversación y el análisis admiten español, inglés, portugués, francés,
+italiano y alemán. [Pruebas reales, contexto y límites de la validación](docs/agent-quality-2026-10-27.md).
+
 La API de analítica deportiva está implementada: **25 consultas predeterminadas y nueve análisis espaciales/topológicos**, conectados a Azure SQL mediante lectura. Inicio local en Windows: `scripts/start-api.ps1`; documentación interactiva: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
 **Datos de la demo:** los partidos `900001`–`900010` son sintéticos, incluidos sus

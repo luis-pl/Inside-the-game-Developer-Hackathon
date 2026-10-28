@@ -10,6 +10,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from inside_game.contracts import ApiResponse, Id, Scope
+from inside_game.language import Language
 
 
 class Message(BaseModel):
@@ -22,10 +23,20 @@ class DataContext(Message):
     player_ids: Annotated[list[Id], Field(max_length=30)] = Field(default_factory=list)
     event_ids: Annotated[list[UUID], Field(max_length=20)] = Field(default_factory=list)
     scope: Scope | None = None
+    sample_step_ms: Literal[200, 1000] | None = None
+
+    @field_validator("sample_step_ms", mode="before")
+    @classmethod
+    def strict_sampling(cls, value):
+        if value is not None and type(value) is not int:
+            raise ValueError("sample_step_ms must be a JSON integer")
+        return value
 
 
 class DataRequest(Message):
     request_id: UUID = Field(default_factory=uuid4)
+    language: Language = "es"
+    original_request: Annotated[str | None, Field(max_length=4000)] = None
     request_text: Annotated[str, Field(min_length=1, max_length=8000)]
     context: DataContext = Field(default_factory=DataContext)
 
@@ -66,6 +77,8 @@ class DataResult(Message):
     tool_calls: int = 0
     model_turns: int = 0
     total_tokens: int = 0
+    context_events: list[dict] = Field(default_factory=list)
+    tool_trace: list[dict] = Field(default_factory=list)
 
 
 class FinishRequest(Message):

@@ -32,12 +32,14 @@ from inside_game.agents.report_store import ReportError
 from inside_game.agents.sports_analyst import AnalystLimits, SportsAnalyst
 from inside_game.contracts import ApiResponse
 from inside_game.insights.contracts import AnalystNote
+from inside_game.language import Language, wording
 from inside_game.providers.models import ModelFailure
 from inside_game.tools.mcp_client import DataMcpSettings
 
 
 class ChatMessage(Message):
     request_id: UUID = Field(default_factory=uuid4)
+    language: Language | None = None
     text: str = Field(min_length=1, max_length=4000)
     context: DataContext | None = None
     retry_analysis: bool = False
@@ -81,48 +83,68 @@ class Conversations:
                 DataMcpSettings.from_env().url.removesuffix("/mcp")
                 + "/api/operations/list_matches"
             )
+            # SQL serverless can wake after the first request has timed out.
+            # Retry this fixed read once, within a total deadline; do not disable
+            # AutoPause or silently switch to old/fixture data to hide the delay.
             try:
-                async with (
-                    httpx.AsyncClient(
-                        timeout=25, trust_env=False, follow_redirects=False
-                    ) as client,
-                    client.stream(
+                async with asyncio.timeout(55):
+                    result = await self._read_catalog(url, key)
+            except (TimeoutError, httpx.HTTPError):
+                raise ModelFailure("MATCH_CATALOG_UNAVAILABLE") from None
+            rows = result.data.get("items", [])
+            if not rows:
+                raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
+            allowed = {
+                "match_id",
+                "home_team_id",
+                "home_team_name",
+                "away_team_id",
+                "away_team_name",
+                "is_synthetic",
+                "data_kind",
+                "provider",
+                "home_score",
+                "away_score",
+            }
+            rows = [{k: v for k, v in row.items() if k in allowed} for row in rows]
+            self.catalogs[owner] = (time.monotonic() + 300, rows)
+            return rows
+
+    async def _read_catalog(self, url, key):
+        async with httpx.AsyncClient(
+            timeout=25, trust_env=False, follow_redirects=False
+        ) as client:
+            for attempt in range(2):
+                try:
+                    async with client.stream(
                         "POST",
                         url,
                         headers={"Authorization": "Bearer " + key},
                         json={"limit": 50},
-                    ) as response,
-                ):
-                    if response.status_code != 200:
-                        raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
-                    raw = bytearray()
-                    async for chunk in response.aiter_bytes():
-                        raw.extend(chunk)
-                        if len(raw) > 1024 * 1024:
-                            raise ModelFailure("MATCH_CATALOG_TOO_LARGE")
-                result = ApiResponse.model_validate_json(raw)
-                if result.operation_id != "list_matches":
-                    raise ModelFailure("INVALID_MATCH_CATALOG")
-            except httpx.HTTPError:
-                raise ModelFailure("MATCH_CATALOG_UNAVAILABLE") from None
-        rows = result.data.get("items", [])
-        if not rows:
-            raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
-        allowed = {
-            "match_id",
-            "home_team_id",
-            "home_team_name",
-            "away_team_id",
-            "away_team_name",
-            "is_synthetic",
-            "data_kind",
-            "provider",
-            "home_score",
-            "away_score",
-        }
-        rows = [{k: v for k, v in row.items() if k in allowed} for row in rows]
-        self.catalogs[owner] = (time.monotonic() + 300, rows)
-        return rows
+                    ) as response:
+                        if (
+                            response.status_code in {429, 502, 503, 504}
+                            and attempt == 0
+                        ):
+                            continue
+                        if response.status_code != 200:
+                            raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
+                        raw = bytearray()
+                        async for chunk in response.aiter_bytes():
+                            raw.extend(chunk)
+                            if len(raw) > 1024 * 1024:
+                                raise ModelFailure("MATCH_CATALOG_TOO_LARGE")
+                    try:
+                        result = ApiResponse.model_validate_json(raw)
+                    except ValueError:
+                        raise ModelFailure("INVALID_MATCH_CATALOG") from None
+                    if result.operation_id != "list_matches":
+                        raise ModelFailure("INVALID_MATCH_CATALOG")
+                    return result
+                except httpx.TransportError:
+                    if attempt:
+                        raise
+        raise ModelFailure("MATCH_CATALOG_UNAVAILABLE")
 
     def stage(self, value, stage):
         value["stage"] = stage
@@ -130,6 +152,7 @@ class Conversations:
         value["events"] = value["events"][-100:]
 
     async def work(self, owner, key, value, message):
+        language = message.language or value.get("language", "es")
         started = time.perf_counter()
         audit = {
             "request_id": str(message.request_id),
@@ -144,6 +167,7 @@ class Conversations:
                         raise ModelFailure("REPORT_REQUIRED_FOR_ANALYSIS")
                     matches = []
                     plan = Interpretation(
+                        language=language,
                         action="modify",
                         title=value["title"],
                         reply="Completo el análisis del informe disponible.",
@@ -169,13 +193,22 @@ class Conversations:
                                 matches=matches,
                                 report=value["report"],
                                 request_id=message.request_id,
+                                language=message.language,
+                                previous_language=language,
                             )
                         finally:
                             audit["interpreter_prompt_sha256"] = (
                                 interpreter.prompt_sha256
                             )
                             audit["interpreter_tools"] = interpreter.trace
+                            audit["interpreter_model_turns"] = interpreter.model_turns
+                            audit["interpreter_total_tokens"] = interpreter.total_tokens
+                            audit["interpreter_context_events"] = (
+                                interpreter.context_window.events
+                            )
                 audit["delegation"] = plan.model_dump(mode="json")
+                language = plan.language
+                value["language"] = language
                 if plan.context.match_ids:
                     value["context"] = plan.context.model_dump(mode="json")
                 if plan.action in {"clarify", "catalog", "answer"}:
@@ -190,9 +223,10 @@ class Conversations:
                             plan.answer_topic,
                             reply,
                             [m for m in matches if m["match_id"] in selected_ids],
+                            language=language,
                         )
                     if plan.action == "catalog":
-                        reply = catalog_reply(plan.reply, matches)
+                        reply = catalog_reply(plan.reply, matches, language=language)
                     self.stage(
                         value,
                         "clarification" if plan.action == "clarify" else "complete",
@@ -205,7 +239,10 @@ class Conversations:
                         self.stage(value, "data")
                         data = await HttpDataAgent(self.data_url, key).fetch(
                             DataRequest(
-                                request_text=plan.data_request, context=plan.context
+                                language=language,
+                                original_request=message.text,
+                                request_text=plan.data_request,
+                                context=plan.context,
                             ),
                             timeout=35,
                         )
@@ -237,6 +274,9 @@ class Conversations:
                             "/a2a/v1/analysis-reports",
                             timeout=56,
                             payload=AnalysisRequest(
+                                language=language,
+                                original_request=message.text,
+                                required_insights=plan.required_insights,
                                 request_text=plan.analysis_request,
                                 context=plan.context,
                                 data_result=data,
@@ -259,6 +299,8 @@ class Conversations:
                             self.stage(value, "data")
                             handoff = await HttpDataAgent(self.data_url, key).fetch(
                                 DataRequest(
+                                    language=language,
+                                    original_request=message.text,
                                     request_text=plan.data_request
                                     + " Recupera sólo lo necesario para esta modificación. En get_rankings usa limit=100 para recuperar este catálogo en una página, no resúmenes jugador por jugador. No repitas tiros o series si ya los aporta el informe.",
                                     context=plan.context,
@@ -290,6 +332,8 @@ class Conversations:
                             self.stage(value, "editing")
                             report, payload = await client.preview(
                                 InsightRequest(
+                                    language=language,
+                                    original_request=message.text,
                                     request_text=plan.analysis_request,
                                     context=DataContext.model_validate(
                                         value["report_context"]
@@ -298,7 +342,7 @@ class Conversations:
                                     expected_revision=current["revision"],
                                     data_result=handoff,
                                     analyst=AnalystNote(
-                                        text="Análisis en actualización.",
+                                        text=wording("updating", language),
                                         evidence_ids=[],
                                     ),
                                 ),
@@ -400,6 +444,8 @@ class Conversations:
                                         ),
                                     ).run(
                                         AnalysisRequest(
+                                            language=language,
+                                            original_request=message.text,
                                             request_text="Analiza sólo los bloques suministrados de esta actualización. Tres apartados breves, máximo dos afirmaciones cada uno. Responde a esta intención: "
                                             + message.text
                                             + " No narres cambios de título o tareas de edición. Declara el alcance y las limitaciones.",
@@ -412,9 +458,8 @@ class Conversations:
                                             ),
                                         )
                                     )
-                                note = (
-                                    analysis.text
-                                    or "No se pudo actualizar el análisis; consulta los gráficos y su procedencia."
+                                note = analysis.text or wording(
+                                    "analysis_unavailable", language
                                 )
                                 aliases = analysis.visual_evidence_aliases
                                 ids = list(
@@ -463,6 +508,10 @@ class Conversations:
                             "clarification"
                             if (analysis and analysis.clarification)
                             or (report and report.clarification)
+                            else "partial"
+                            if analysis
+                            and analysis.status == "partial"
+                            and analysis.text
                             else "error",
                         )
                     else:
@@ -488,7 +537,10 @@ class Conversations:
                         )
                         self.stage(value, "partial" if partial else "complete")
                         reply = report_reply(
-                            analysis, reused=analysis_reused, partial=partial
+                            analysis,
+                            reused=analysis_reused,
+                            partial=partial,
+                            language=language,
                         )
                 value["messages"].append({"role": "assistant", "content": reply})
                 if (
@@ -513,9 +565,9 @@ class Conversations:
                 {
                     "role": "assistant",
                     "content": (
-                        "Los gráficos tardaron más de lo previsto y se agotó la espera. Puedes reintentar la solicitud; el informe disponible se conserva."
+                        wording("timeout", language)
                         if "TIMEOUT" in code or "DEADLINE" in code
-                        else "No pude completar esta petición. Puedes reintentarlo; el informe disponible se conserva."
+                        else wording("failed", language)
                     ),
                     "error": code,
                     "retry_analysis": bool(
@@ -530,7 +582,7 @@ class Conversations:
             value["messages"].append(
                 {
                     "role": "assistant",
-                    "content": "La ejecución se interrumpió. Puedes volver a intentarlo.",
+                    "content": wording("interrupted", language),
                     "error": "CHAT_EXECUTION_FAILED",
                 }
             )

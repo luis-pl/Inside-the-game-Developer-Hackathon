@@ -220,6 +220,7 @@ async def _render(plan, data, blocks, title):
     ]
     report = {
         "title": title,
+        "language": plan.intent.language,
         "template_id": plan.intent.template_id,
         "blocks": blocks,
         "teams": teams,

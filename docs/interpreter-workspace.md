@@ -57,6 +57,23 @@ reales, sin porcentajes o avances simulados. Sólo se permite una ejecución por
 conversación y cuatro globales. Un mismo request_id no ejecuta dos veces la misma
 solicitud y se rechaza si se reutiliza con otro texto.
 
+### Primera carga y recuperación de conexión
+
+Azure SQL conserva AutoPause. Al volver después de una pausa, el primer acceso
+puede exceder el tiempo de espera de la API aunque la página y la autenticación
+estén disponibles. El catálogo reintenta una sola vez su lectura fija ante un
+error transitorio, con un presupuesto total de 55 segundos y sin inferencia.
+No sustituye resultados fallidos por datos de ejemplo ni desactiva la pausa.
+El navegador muestra la espera inicial y permite volver a cargar si no termina.
+
+Las llamadas de control del navegador tienen un límite de 12 segundos; el catálogo
+dispone de 60 segundos para su recuperación acotada. El sondeo del trabajo es
+secuencial: no acumula peticiones cuando una tarda. Si se pierde la conexión,
+detiene la animación y ofrece **Recuperar estado**, conservando el informe visible
+y sin afirmar que el trabajo terminó o repetir la solicitud. Una sesión caducada
+vuelve al acceso; una conversación expirada ofrece crear otra y descargar el HTML
+que siga visible. Conversaciones e informes siguen teniendo una hora de retención.
+
 `concept_reply` revisa las respuestas de bienvenida, xG y Voronoi; `general`
 conserva el borrador del intérprete. La bienvenida propone ocasiones, pases y
 espacios. xG se explica como probabilidad según un modelo, con límites sobre su
