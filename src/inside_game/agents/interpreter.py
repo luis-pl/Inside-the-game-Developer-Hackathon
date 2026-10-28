@@ -10,8 +10,11 @@ from uuid import uuid4
 
 from pydantic import Field, ValidationError
 
+from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataContext, Message
 from inside_game.agents.experiments import experiment
+from inside_game.insights.catalog import InsightId
+from inside_game.language import Language
 from inside_game.providers.models import ModelFailure
 
 
@@ -39,11 +42,20 @@ def team_ids_from(text, context, match_id, matches):
 
 
 class Interpretation(Message):
+    language: Language = "es"
+    required_insights: list[InsightId] = Field(
+        default_factory=list,
+        max_length=40,
+        description="Exact chart recipes requested for a new page, including duplicates only when separate charts were requested. One combined shot map for both teams is one shot_map, not two.",
+    )
     action: Literal["create", "modify", "clarify", "catalog", "answer"]
     title: str = Field(min_length=1, max_length=100)
     reply: str = Field(min_length=1, max_length=1000)
     answer_topic: Literal["general", "welcome", "xg", "voronoi"] = "general"
-    context: DataContext = Field(default_factory=DataContext)
+    context: DataContext = Field(
+        default_factory=DataContext,
+        description="Only explicit changes to selected_context. Use {} to keep the selected match, team and temporal scope; IDs and times must be JSON integers.",
+    )
     data_request: str = Field(default="", max_length=5000)
     analysis_request: str = Field(default="", max_length=5000)
     refresh_analysis: bool = True
@@ -62,9 +74,20 @@ class Interpreter:
         self.prompt = load_prompt()
         self.prompt_sha256 = hashlib.sha256(self.prompt.encode()).hexdigest()
         self.trace = []
+        self.model_turns = self.total_tokens = 0
+        self.context_window = ContextWindow(180000)
 
     async def interpret(
-        self, *, text, context, history, matches, report, request_id=None
+        self,
+        *,
+        text,
+        context,
+        history,
+        matches,
+        report,
+        request_id=None,
+        language=None,
+        previous_language="es",
     ):
         catalog = json.loads(
             (Path(__file__).resolve().parents[1] / "insights/catalog.json").read_text(
@@ -78,6 +101,8 @@ class Interpreter:
                     {
                         "request_id": str(request_id or uuid4()),
                         "request": text,
+                        "language": language,
+                        "previous_language": previous_language,
                         "selected_context": context.model_dump(mode="json"),
                         "history": history[-8:],
                         "available_matches": matches,
@@ -101,7 +126,17 @@ class Interpreter:
             }
         ]
         for _ in range(3):
+            self.context_window.prepare(
+                self.model,
+                self.prompt,
+                messages,
+                tools,
+                lambda: json.loads(messages[0]["content"]),
+            )
             turn = await self.model.respond(self.prompt, messages, tools)
+            self.context_window.observe(turn)
+            self.model_turns += 1
+            self.total_tokens += turn.total_tokens
             calls = [c for c in turn.output if c.get("type") == "function_call"]
             messages.extend(turn.output)
             if not calls:
@@ -111,6 +146,8 @@ class Interpreter:
                 continue
             call = calls[0]
             try:
+                if len(calls) != 1:
+                    raise ValueError("DELEGATE_MUST_BE_SEPARATE")
                 if call["name"] != "delegate_request" or len(call["arguments"]) > 18000:
                     raise ValueError("INVALID_DELEGATION")
                 args = json.loads(call["arguments"])
@@ -126,9 +163,12 @@ class Interpreter:
                     "reply": str,
                     "data_request": str,
                     "analysis_request": str,
+                    "required_insights": list,
                 }.items():
                     value = args.get(key)
-                    if isinstance(value, str) and value.lstrip().startswith(("{", '"')):
+                    if isinstance(value, str) and value.lstrip().startswith(
+                        ("{", "[", '"')
+                    ):
                         try:
                             decoded = json.loads(value)
                             if isinstance(decoded, expected):
@@ -136,24 +176,48 @@ class Interpreter:
                                 normalized.append(key)
                         except ValueError:
                             pass
+                raw_context = args.get("context")
+                if isinstance(raw_context, dict) and raw_context.get(
+                    "sample_step_ms"
+                ) in {"200", "1000"}:
+                    # Only the two finite sampling enums, never identities,
+                    # timestamps or arbitrary numeric values, are normalized.
+                    raw_context["sample_step_ms"] = int(raw_context["sample_step_ms"])
+                    normalized.append("context.sample_step_ms")
                 plan = Interpretation.model_validate(args)
+                # Do not force the model to transcribe immutable selected IDs
+                # and time windows. Omitted fields retain the typed selection;
+                # explicit overrides must still pass the original strict types.
+                plan.context = DataContext.model_validate(
+                    {
+                        **context.model_dump(mode="json"),
+                        **plan.context.model_dump(mode="json", exclude_unset=True),
+                    }
+                )
+                if language is not None:
+                    plan.language = language
+                # Una selección explícita e inequívoca no se pierde si el modelo
+                # omite el partido. Nunca se elige una fila del catálogo al azar.
+                if plan.action in {"create", "modify"} and not plan.context.match_ids:
+                    selected = set(context.match_ids) & {m["match_id"] for m in matches}
+                    if len(selected) == 1:
+                        plan.context.match_ids = list(selected)
+                        normalized.append("context.match_ids")
                 if (
                     experiment("guards")
                     and plan.action in {"create", "modify"}
                     and not plan.context.match_ids
                 ):
-                    # EXPERIMENTO LOCAL: el partido ya es conocido (selector o
-                    # texto); el modelo a veces lo omite en el plan.
+                    # EXPERIMENTO LOCAL: sin selección, el partido nombrado en el
+                    # texto (un único ID del catálogo) no se pierde.
                     known = {m["match_id"] for m in matches}
-                    selected = [m for m in context.match_ids if m in known]
                     named = [
                         int(m)
                         for m in re.findall(r"\b(9\d{5})\b", text)
                         if int(m) in known
                     ]
-                    chosen = selected or list(dict.fromkeys(named))
-                    if len(chosen) == 1:
-                        plan.context.match_ids = chosen
+                    if len(set(named)) == 1:
+                        plan.context.match_ids = [named[0]]
                         normalized.append("context.match_ids")
                 if (
                     experiment("guards")
@@ -161,9 +225,9 @@ class Interpreter:
                     and len(plan.context.match_ids) == 1
                     and not plan.context.team_ids
                 ):
-                    # EXPERIMENTO LOCAL: el equipo pedido (selector, "equipo N"
-                    # o su nombre) no puede perderse; sin él, las cifras serían
-                    # las del partido entero presentadas como del equipo.
+                    # EXPERIMENTO LOCAL: el equipo pedido ("equipo N" o su nombre)
+                    # no puede perderse; sin él, las cifras serían las del
+                    # partido entero presentadas como del equipo.
                     teams = team_ids_from(
                         text, context, plan.context.match_ids[0], matches
                     )
@@ -175,6 +239,20 @@ class Interpreter:
                 allowed = {m["match_id"] for m in matches}
                 if not set(plan.context.match_ids) <= allowed:
                     raise ValueError("MATCH_NOT_IN_CATALOG")
+                selected_rows = [
+                    m for m in matches if m["match_id"] in plan.context.match_ids
+                ]
+                if selected_rows and all(
+                    m.get("home_team_id") and m.get("away_team_id")
+                    for m in selected_rows
+                ):
+                    teams = {
+                        m[k]
+                        for m in selected_rows
+                        for k in ("home_team_id", "away_team_id")
+                    }
+                    if not set(plan.context.team_ids) <= teams:
+                        raise ValueError("TEAM_NOT_IN_MATCH")
                 if plan.action in {"create", "modify"} and not plan.context.match_ids:
                     raise ValueError("MATCH_REQUIRED")
                 if plan.action == "create" and not (
@@ -206,11 +284,17 @@ class Interpreter:
                 self.trace.append(
                     {"tool": "delegate_request", "status": "rejected", **code}
                 )
-                messages.append(
-                    {
-                        "type": "function_call_output",
-                        "call_id": call["call_id"],
-                        "output": json.dumps({"error": code}),
+                if isinstance(exc, ValidationError):
+                    code["repair"] = {
+                        "context_to_reuse": context.model_dump(mode="json"),
+                        "instruction": "Use context={} to retain this exact selected context. If overriding it, use flat scope={kind:window,period:1,start_ms:0,end_ms:20000} with JSON integers, never numeric strings or scope.window. Copy actual values from selected_context, not this structural example.",
                     }
-                )
+                for rejected in calls:
+                    messages.append(
+                        {
+                            "type": "function_call_output",
+                            "call_id": rejected["call_id"],
+                            "output": json.dumps({"error": code}),
+                        }
+                    )
         raise ModelFailure("INTERPRETER_INVALID_PLAN")

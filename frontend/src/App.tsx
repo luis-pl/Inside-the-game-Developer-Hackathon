@@ -6,70 +6,100 @@ import { Timeline } from "./components/Timeline.tsx";
 import { HodgePanel } from "./components/HodgePanel.tsx";
 import { NetworkDetails } from "./components/NetworkDetails.tsx";
 import { AnalysisDisclosure } from "./components/AnalysisDisclosure.tsx";
+import { MatchMetrics } from "./components/MatchMetrics.tsx";
+import "./analyst-viewer.css";
+import { useTheme } from "./hooks/use-theme.ts";
+import { Brand } from "./components/Brand.tsx";
+import { ThemeToggle } from "./components/ThemeToggle.tsx";
 
 export function App({ repository }: { repository: EpisodeRepository }) {
   const lab = useLab(repository);
+  const { theme, toggleTheme } = useTheme();
   return (
-    <>
-      <header className="app-header broadcast-header">
-        <a className="brand" href="/" aria-label="Inside the game, inicio">
-          <span className="brand-icon">◈</span>
-          <span>
-            inside<span className="brand-light">the</span>game
-            <span className="brand-dot">.</span>
-          </span>
-        </a>
-        <span className="broadcast-title">LECTURA DEL PARTIDO</span>
-        <a className="text-button" href="#match-settings">
-          Elegir partido ↓
-        </a>
+    <div className="analyst-viewer app-theme" data-theme={theme}>
+      <a className="skip-link" href="#match-content">
+        Skip to match analysis
+      </a>
+      <header className="viewer-header">
+        <Brand />
+        <nav aria-label="Analysis workspace">
+          <a href="/">Reports</a>
+          <a href="/viewer" aria-current="page">
+            Match viewer
+          </a>
+        </nav>
+        <ThemeToggle
+          theme={theme}
+          onToggle={toggleTheme}
+          className="viewer-theme-toggle"
+        />
       </header>
-      <main className="broadcast-main">
-        <FieldPanel lab={lab} />
-        <div className="below-match" id="match-settings">
-          <details className="panel match-settings" open={!lab.episode}>
-            <summary>Partido y equipo analizado</summary>
-            <Controls lab={lab} />
-          </details>
-          <AnalysisDisclosure title="Explorar la ventana y sus aperturas">
-            <Timeline lab={lab} />
-          </AnalysisDisclosure>
-          <AnalysisDisclosure title="Cómo leer la cancha y cómo funciona la matemática">
-            <div className="visual-key">
-              <p>
-                <b className="key-defender">● Menta:</b>{" "}
-                {lab.episode?.teams[1].name ?? "equipo 2"}.{" "}
-                <b className="key-attacker">● Ámbar:</b>{" "}
-                {lab.episode?.teams[0].name ?? "equipo 1"}. <b>● Blanco:</b>{" "}
-                balón.
-              </p>
-              <p>
-                <b>Zona amarilla:</b> espacio vacío entre defensas; su diámetro
-                se lee arriba. <b>Líneas y aros verdes:</b> atacantes enlazados
-                al balón. <b>Gris discontinuo:</b> nodos o conexiones separados
-                del balón. <b>Línea amarilla:</b> cadena hacia el espacio
-                destacado; su anchura mínima aparece arriba como «corredor
-                libre». No son pases garantizados.
-              </p>
-            </div>
-            <NetworkDetails lab={lab} />
-          </AnalysisDisclosure>
-          <AnalysisDisclosure title="Descomposición de Hodge · pases acumulados">
-            <HodgePanel lab={lab} />
-          </AnalysisDisclosure>
-          {lab.episode?.warnings.map((warning, i) => (
-            <p className="episode-notes" key={i}>
-              {warning}
+      <main className="broadcast-main" id="match-content">
+        <div className="analyst-heading">
+          <div>
+            <p className="eyebrow">
+              <span /> THE ANALYST'S WORKSPACE
             </p>
-          ))}
+            <h1>Read the game.</h1>
+            <p>
+              Explore team shape, passing connections and the spaces in between.
+            </p>
+          </div>
+          <a className="settings-link" href="#match-settings">
+            Configure analysis <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div className="viewer-layout">
+          <aside
+            className="viewer-settings"
+            id="match-settings"
+            aria-label="Match configuration"
+          >
+            <Controls lab={lab} />
+          </aside>
+          <div className="viewer-content">
+            <MatchMetrics lab={lab} />
+            <FieldPanel lab={lab} />
+            <div className="pitch-reading-key" aria-label="Pitch legend">
+              <span>
+                <i className="mint-key" />
+                {lab.episode?.teams[1].name ?? "Team 2"}
+              </span>
+              <span>
+                <i className="amber-key" />
+                {lab.episode?.teams[0].name ?? "Team 1"}
+              </span>
+              <span>
+                <i className="space-key" />
+                Open space
+              </span>
+              <span>
+                <i className="line-key" />
+                Connected to ball
+              </span>
+              <span className="key-note">Geometry at the selected instant</span>
+            </div>
+            <Timeline lab={lab} />
+            <AnalysisDisclosure title="Passing structure · Hodge decomposition">
+              <HodgePanel lab={lab} />
+            </AnalysisDisclosure>
+            <AnalysisDisclosure title="How to read the analysis · methodology & limitations">
+              <NetworkDetails lab={lab} />
+            </AnalysisDisclosure>
+            {lab.episode?.warnings.map((warning, i) => (
+              <p className="episode-notes" key={i}>
+                {warning}
+              </p>
+            ))}
+          </div>
         </div>
         <footer>
-          <span>INSIDE THE GAME / DEVELOPER HACKATHON</span>
+          <span>INSIDE THE GAME / MATCH INTELLIGENCE</span>
           <span>
-            Geometría de posiciones · procedencia visible en la cancha
+            Original samples · transparent methods · visible provenance
           </span>
         </footer>
       </main>
-    </>
+    </div>
   );
 }

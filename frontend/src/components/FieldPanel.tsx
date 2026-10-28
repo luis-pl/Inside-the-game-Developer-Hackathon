@@ -21,10 +21,10 @@ export function FieldPanel({ lab }: { lab: Lab }) {
     !episode
       ? fallback
       : id === lab.teamId
-        ? "DEFIENDE"
+        ? "DEFENDING"
         : lab.automaticTeam
-          ? "ATAQUE ESTIMADO"
-          : "ATACA";
+          ? "ESTIMATED ATTACK"
+          : "ATTACKING";
   const view = lab.hodgeLayer !== "off" ? "passing" : lab.pitchView;
   const path = tactics?.featured?.path ?? tactics?.receiver?.path;
   const connections = tactics && frame ? connectionView(tactics, frame) : null;
@@ -42,8 +42,8 @@ export function FieldPanel({ lab }: { lab: Lab }) {
             className="defending-team"
             style={{ "--team-color": teamColor(leftTeam?.id) } as CSSProperties}
           >
-            {leftTeam?.name ?? "Defensa"}
-            <small>{teamRole(leftTeam?.id, "DEFIENDE")}</small>
+            {leftTeam?.name ?? "Defence"}
+            <small>{teamRole(leftTeam?.id, "DEFENDING")}</small>
           </span>
           <span className="match-versus">vs</span>
           <span
@@ -52,16 +52,16 @@ export function FieldPanel({ lab }: { lab: Lab }) {
               { "--team-color": teamColor(rightTeam?.id) } as CSSProperties
             }
           >
-            {rightTeam?.name ?? "Ataque"}
-            <small>{teamRole(rightTeam?.id, "ATAQUE ESTIMADO")}</small>
+            {rightTeam?.name ?? "Attack"}
+            <small>{teamRole(rightTeam?.id, "ESTIMATED ATTACK")}</small>
           </span>
         </div>
         <div className="match-clock">
-          <span>{episode?.period ?? 1}T</span>
+          <span>H{episode?.period ?? 1}</span>
           <strong>{frame ? matchClock(frame.timeMs) : "00:00"}</strong>
         </div>
         <span className={`play-state ${lab.playing ? "running" : ""}`}>
-          {lab.playing ? "● REPRODUCIENDO" : "Ⅱ EN PAUSA"}
+          {lab.playing ? "● PLAYING" : "Ⅱ PAUSED"}
         </span>
       </div>
       <div className="match-signals" aria-live="off">
@@ -71,53 +71,57 @@ export function FieldPanel({ lab }: { lab: Lab }) {
               <i />
               {tactics?.featured ? (
                 <>
-                  Espacio libre <b>{tactics.featured.diameter.toFixed(0)} m</b>
+                  Open space <b>{tactics.featured.diameter.toFixed(0)} m</b>
                 </>
               ) : (
-                "Sin espacio destacado"
+                "No highlighted space"
               )}
             </span>
             <span className="attacker-signal">
               <i />
-              Enlazados al balón{" "}
+              Connected to ball{" "}
               <b>
-                {connections?.connected ?? 0}/{connections?.total ?? 0}
+                {frame?.ball && connections
+                  ? `${connections.connected}/${connections.total}`
+                  : "—"}
               </b>
-              <small>{connections?.direct ?? 0} directos</small>
+              {frame?.ball && connections && (
+                <small>{connections.direct} direct</small>
+              )}
             </span>
             <span className="connection-signal">
               <i />
               {!frame?.ball ? (
-                "Sin posición del balón"
+                "Ball position unavailable"
               ) : path ? (
                 <>
-                  Corredor libre <b>{(2 * path.clearance).toFixed(1)} m</b>
+                  Clear corridor <b>{(2 * path.clearance).toFixed(1)} m</b>
                 </>
               ) : (
-                "Sin conexión desde el balón"
+                "No connection from the ball"
               )}
             </span>
           </>
         ) : view === "block" ? (
           <span>
-            RED GEOMÉTRICA · {tactics?.network.edges.length ?? 0} conexiones ·{" "}
-            {tactics?.reachablePlayers ?? 0} compañeros conectados al balón
+            GEOMETRIC NETWORK · {tactics?.network.edges.length ?? 0} connections
+            · {tactics?.reachablePlayers ?? 0} teammates connected to the ball
           </span>
         ) : (
           <span>
-            PASES DE {defending?.name} · TODA LA VENTANA · no corresponden al
-            instante del reloj
+            PASSES BY {defending?.name} · FULL WINDOW · aggregated, not the
+            current instant
           </span>
         )}
         {frame && !frame.ballInPlay && (
-          <span className="stopped-ball">BALÓN DETENIDO</span>
+          <span className="stopped-ball">BALL OUT OF PLAY</span>
         )}
         {lab.removed !== null && (
           <button
             className="simulation-flag"
             onClick={() => lab.setRemoved(null)}
           >
-            SIMULACIÓN SIN JUGADOR · RESTAURAR ↺
+            PLAYER REMOVAL SIMULATION · RESTORE ↺
           </button>
         )}
       </div>
@@ -146,17 +150,17 @@ export function FieldPanel({ lab }: { lab: Lab }) {
           />
         ) : (
           <div className="match-empty">
-            <h1>Un tiempo completo. Muchas jugadas.</h1>
+            <h1>See the shape behind the game.</h1>
             <button
               className="button mint"
               disabled={lab.loading || !lab.matchId}
               onClick={() => void lab.load()}
             >
               {lab.loading
-                ? "Conectando con Azure…"
-                : `▶ Cargar ${lab.durationSeconds / 60} minutos de partido`}
+                ? "Connecting to Azure…"
+                : `▶ Load ${lab.durationSeconds / 60} minutes of match play`}
             </button>
-            <a href="#match-settings">Elegir partido ↓</a>
+            <a href="#match-settings">Match settings ↓</a>
           </div>
         )}
       </div>
@@ -165,38 +169,38 @@ export function FieldPanel({ lab }: { lab: Lab }) {
         <span>
           {episode?.source === "azure"
             ? episode.dataKind === "real_pseudonymized"
-              ? "SKILLCORNER · REAL SEUDONIMIZADO · AZURE"
+              ? "SKILLCORNER · REAL, PSEUDONYMISED · AZURE"
               : episode.dataKind === "real_anonymized"
-                ? "METRICA SPORTS · REAL ANONIMIZADO · AZURE"
-                : "AZURE · DATOS SINTÉTICOS"
+                ? "METRICA SPORTS · REAL, ANONYMISED · AZURE"
+                : "AZURE · SYNTHETIC DATA"
             : episode
-              ? "EJEMPLO GEOMÉTRICO LOCAL"
-              : "SIN DATOS CARGADOS"}{" "}
-          · {(episode?.frames.length ?? 0).toLocaleString("es")} MUESTRAS ·{" "}
+              ? "LOCAL GEOMETRIC EXAMPLE"
+              : "NO DATA LOADED"}{" "}
+          · {(episode?.frames.length ?? 0).toLocaleString("en-GB")} SAMPLES ·{" "}
           {1000 / timing.sampleStepMs} Hz
         </span>
         <span>
-          VENTANA DE {durationLabel(timing.durationMs)} ·{" "}
+          WINDOW: {durationLabel(timing.durationMs)} ·{" "}
           {matchClock(timing.startMs)}–{matchClock(timing.endMs)}
-          {" · "}1× = TIEMPO REAL
+          {" · "}1× = REAL TIME
         </span>
       </div>
-      <div className="match-layers" aria-label="Capa de la cancha">
-        <span>Ver</span>
+      <div className="match-layers" aria-label="Pitch layer">
+        <span>View</span>
         <button
           aria-pressed={view === "openings"}
           onClick={() => choose("openings")}
         >
-          Espacios y conexiones
+          Space & connections
         </button>
         <button aria-pressed={view === "block"} onClick={() => choose("block")}>
-          Red completa
+          Full network
         </button>
         <button
           aria-pressed={view === "passing"}
           onClick={() => choose("passing")}
         >
-          Pases acumulados
+          Aggregated passes
         </button>
       </div>
     </section>

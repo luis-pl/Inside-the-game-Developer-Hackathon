@@ -177,6 +177,7 @@ def create_agent_app(
         ),
     ):
         key = request.headers["authorization"][7:]
+        started = time.monotonic()
         try:
             async with asyncio.timeout(x_agent_deadline_ms / 1000):
                 if data_runner:
@@ -190,7 +191,15 @@ def create_agent_app(
                         result = await DataAgent(
                             model,
                             limits=AgentLimits(
-                                timeout_seconds=x_agent_deadline_ms / 1000
+                                # MCP/model setup consumes part of the same
+                                # deadline. Let Data close with its evidence
+                                # before the outer HTTP timeout cancels the run.
+                                timeout_seconds=max(
+                                    0.01,
+                                    x_agent_deadline_ms / 1000
+                                    - (time.monotonic() - started)
+                                    - 0.5,
+                                )
                             ),
                         ).run(message, mcp)
         except TimeoutError:

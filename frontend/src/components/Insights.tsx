@@ -6,25 +6,25 @@ export function Insights({ lab }: { lab: Lab }) {
   return (
     <aside className="insights-column">
       <section className="panel insight">
-        <div className="section-label">03 / LA FORMA QUE PERMANECE</div>
-        <h2>Más allá de las distancias.</h2>
-        <p className="muted small">Intervalos H₁ del equipo seleccionado.</p>
+        <div className="section-label">03 / PERSISTENT STRUCTURE</div>
+        <h2>Beyond player distances.</h2>
+        <p className="muted small">H₁ intervals for the selected team.</p>
         {analysis ? (
           <Persistence bars={analysis.bars} epsilon={lab.epsilon} />
         ) : (
           <p className="placeholder-text">
-            Al cargar una ventana, aquí verás la firma topológica del bloque.
+            Load a match window to see the block's topological signature.
           </p>
         )}
         <div className="legend-line">
-          <i /> Ciclo H₁ <span>| ε actual</span>
+          <i /> H₁ cycle <span>| current ε</span>
         </div>
       </section>
       <section className="panel insight">
-        <div className="section-label">04 / PRUEBA DE ESTRUCTURA</div>
-        <h2>¿Quién mantiene unido al equipo?</h2>
+        <div className="section-label">04 / STRUCTURAL TEST</div>
+        <h2>Who connects the team?</h2>
         <p className="muted small">
-          Retira un jugador del grafo y compara su conectividad.
+          Remove a player from the graph and compare connectivity.
         </p>
         {selected && (
           <div className="removal-banner">
@@ -39,7 +39,7 @@ export function Insights({ lab }: { lab: Lab }) {
               className="text-button"
               onClick={() => lab.setRemoved(null)}
             >
-              Restaurar jugador ↺
+              Restore player ↺
             </button>
           </div>
         )}
@@ -57,7 +57,7 @@ export function Insights({ lab }: { lab: Lab }) {
                 <span className="jersey">{player.number}</span>
                 <span className="player-name">
                   {player.name}
-                  <small>{components} componentes sin este nodo</small>
+                  <small>{components} components without this node</small>
                 </span>
                 <strong>
                   {delta > 0 ? "+" : ""}
@@ -66,20 +66,20 @@ export function Insights({ lab }: { lab: Lab }) {
               </button>
             )) ?? (
             <p className="placeholder-text">
-              Una perturbación pequeña puede cambiar toda la conexión.
+              A small change can reshape connectivity.
             </p>
           )}
         </div>
         <p className="small muted">
-          Ranking de Δ componentes. Retirada estática, sin simular el movimiento
-          del resto.
+          Ranked by change in components. Static removal; other players do not
+          move.
         </p>
       </section>
       <div className="editorial-note">
-        <span>TOPOLOGÍA, CON CONTEXTO.</span>
+        <span>TOPOLOGY IN CONTEXT.</span>
         <p>
-          Un espacio abierto no siempre es una oportunidad. El balón, la
-          dirección y la escala importan.
+          Open space is not always an opportunity. The ball, direction and scale
+          matter.
         </p>
       </div>
     </aside>

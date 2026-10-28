@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
 from inside_game.agents.contracts import Message
 from inside_game.contracts import Id
 from inside_game.insights.catalog import RECIPES
+from inside_game.language import Language
 
 TemplateId = Literal[
     "match_overview",
@@ -21,6 +22,7 @@ TemplateId = Literal[
 class InsightIntent(Message):
     """Qué quiere ver el usuario; sin operaciones, argumentos ni cifras."""
 
+    language: Language = "es"
     template_id: TemplateId
     match_id: Id
     # Equipo protagonista; por defecto, el local.
@@ -131,6 +133,7 @@ class Previous(Message):
 
 class AskRequest(Message):
     request_id: UUID = Field(default_factory=uuid4)
+    language: Language = "es"
     question: Annotated[str | None, Field(min_length=1, max_length=2000)] = None
     intent: InsightIntent | None = None
     previous: Previous | None = None

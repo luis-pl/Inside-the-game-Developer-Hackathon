@@ -60,7 +60,7 @@ export function Pitch(p: Props) {
       className="pitch-svg"
       viewBox={p.broadcast ? "-3 -4 111 76" : "-5 -7 115 82"}
       role="group"
-      aria-label="Cancha de fútbol: jugadores, cobertura y espacio libre"
+      aria-label="Football pitch: players, coverage and open space"
     >
       <defs>
         <clipPath id={clip}>
@@ -207,7 +207,7 @@ export function Pitch(p: Props) {
               !p.broadcast && defender && !v.goalkeeper ? "button" : undefined
             }
             tabIndex={!p.broadcast && defender && !v.goalkeeper ? 0 : undefined}
-            aria-label={`${v.name}, dorsal ${v.number}${!p.broadcast && defender && !v.goalkeeper ? ", " + (excluded ? "restaurar" : "retirar del modelo") : ""}`}
+            aria-label={`${v.name}, shirt number ${v.number}${!p.broadcast && defender && !v.goalkeeper ? ", " + (excluded ? "restaurar" : "remove from the model") : ""}`}
             onClick={() => {
               if (!p.broadcast && defender && !v.goalkeeper)
                 p.onRemove(excluded ? null : v.id);
@@ -231,7 +231,7 @@ export function Pitch(p: Props) {
           >
             <title>
               {v.name}
-              {v.goalkeeper ? " · portero" : ""}
+              {v.goalkeeper ? " · goalkeeper" : ""}
             </title>
             <circle
               cx={v.x}
@@ -320,18 +320,18 @@ export function Pitch(p: Props) {
             fontSize="1.1"
             fontWeight="700"
           >
-            BALÓN
+            BALL
           </text>
         </g>
       )}
       {!p.broadcast && (
         <text x="0" y="-3" className="pitch-label">
-          105 × 68 M · COORDENADAS EN METROS
+          105 × 68 M · COORDINATES IN METRES
         </text>
       )}
       {!p.broadcast && (
         <text x="105" y="73" textAnchor="end" className="pitch-label">
-          ZONA OBJETIVO EN AMARILLO {p.attackRight ? "→" : "←"}
+          TARGET ZONE IN YELLOW {p.attackRight ? "→" : "←"}
         </text>
       )}
     </svg>

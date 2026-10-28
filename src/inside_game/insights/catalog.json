@@ -5,8 +5,8 @@
     {
       "id": "shot_map",
       "number": 1,
-      "title": "Mapa de tiros",
-      "question": "¿Cuántos tiros hubo, cuándo y desde dónde?",
+      "title": "Shot map",
+      "question": "How many shots were recorded, when and from where?",
       "source_operations": [
         "get_shots"
       ],
@@ -31,8 +31,8 @@
     {
       "id": "xg_story",
       "number": 2,
-      "title": "Evolución y distribución del xG",
-      "question": "¿Dónde y cuándo se acumuló el xG disponible?",
+      "title": "xG timeline & distribution",
+      "question": "Where and when did the available xG accumulate?",
       "source_operations": [
         "get_shots",
         "get_metric_series"
@@ -57,8 +57,8 @@
     {
       "id": "match_timeline",
       "number": 3,
-      "title": "Cronología del partido",
-      "question": "¿Cuándo se concentraron las acciones y qué cambios se registraron?",
+      "title": "Match timeline",
+      "question": "When did activity peak, and which changes were recorded?",
       "source_operations": [
         "get_metric_series",
         "get_substitutions",
@@ -86,8 +86,8 @@
     {
       "id": "pass_map",
       "number": 4,
-      "title": "Mapa de pases",
-      "question": "¿Cómo circuló el balón y hacia dónde?",
+      "title": "Pass map",
+      "question": "Where did passes start and finish?",
       "source_operations": [
         "get_passes"
       ],
@@ -113,8 +113,8 @@
     {
       "id": "passing_network",
       "number": 5,
-      "title": "Red de conexiones",
-      "question": "¿Qué parejas intercambiaron más pases completados?",
+      "title": "Passing network",
+      "question": "Which players connected most often through passes?",
       "source_operations": [
         "get_passing_network"
       ],
@@ -138,8 +138,8 @@
     {
       "id": "sequence_explorer",
       "number": 6,
-      "title": "Secuencias y balón parado",
-      "question": "¿Cómo fueron las cadenas de acciones registradas?",
+      "title": "Sequence explorer",
+      "question": "How did the recorded sequences of play develop?",
       "source_operations": [
         "get_possessions",
         "get_sequences",
@@ -167,8 +167,8 @@
     {
       "id": "defensive_actions",
       "number": 7,
-      "title": "Acciones defensivas y duelos",
-      "question": "¿Dónde y cuándo se anotaron quites, intercepciones o duelos ganados?",
+      "title": "Defensive actions",
+      "question": "Where and how did the team defend?",
       "source_operations": [
         "get_defensive_actions"
       ],
@@ -195,8 +195,8 @@
     {
       "id": "pressure_recovery",
       "number": 8,
-      "title": "Presión y recuperación",
-      "question": "¿Qué presiones registradas terminaron en recuperación?",
+      "title": "Pressure & recovery",
+      "question": "Which pressure and recovery actions are recorded?",
       "source_operations": [
         "get_defensive_actions",
         "get_sequences"
@@ -220,8 +220,8 @@
     {
       "id": "ball_progression",
       "number": 9,
-      "title": "Regates y conducciones",
-      "question": "¿Dónde hubo desequilibrio o avance mediante acciones con balón?",
+      "title": "Ball progression",
+      "question": "How did the team move the ball forward?",
       "source_operations": [
         "get_ball_actions"
       ],
@@ -246,8 +246,8 @@
     {
       "id": "occupation_heatmap",
       "number": 10,
-      "title": "Mapa de ocupación",
-      "question": "¿Qué zonas ocupó el jugador o el equipo?",
+      "title": "Occupation heatmap",
+      "question": "Where did players spend their observed time?",
       "source_operations": [
         "get_heatmap"
       ],
@@ -270,8 +270,8 @@
     {
       "id": "movement_profile",
       "number": 11,
-      "title": "Perfil de movimiento",
-      "question": "¿Qué distancia y movimiento se observaron?",
+      "title": "Movement profile",
+      "question": "What movement is visible in the available tracking?",
       "source_operations": [
         "get_movement_summary"
       ],
@@ -296,8 +296,8 @@
     {
       "id": "play_replay",
       "number": 12,
-      "title": "Reproducción y contexto de jugada",
-      "question": "¿Dónde estaban los jugadores alrededor de una acción?",
+      "title": "Play replay",
+      "question": "How did the observed positions change through the sequence?",
       "source_operations": [
         "get_tracking_frame",
         "get_tracking_window",
@@ -326,8 +326,8 @@
     {
       "id": "zone_presence",
       "number": 13,
-      "title": "Presencia y actividad por zonas",
-      "question": "¿En qué zonas se observaron jugadores y acciones?",
+      "title": "Zone presence",
+      "question": "How much observed time did players spend in the selected zone?",
       "source_operations": [
         "get_zone_summary",
         "get_heatmap"
@@ -352,8 +352,8 @@
     {
       "id": "team_shape",
       "number": 14,
-      "title": "Forma del bloque",
-      "question": "¿Qué anchura, profundidad y dispersión tenía el equipo?",
+      "title": "Team shape",
+      "question": "How wide, long and compact was the team at this instant?",
       "source_operations": [
         "get_team_shape"
       ],
@@ -378,8 +378,8 @@
     {
       "id": "proximity_network",
       "number": 15,
-      "title": "Conectividad por proximidad",
-      "question": "¿Cómo se conectaban los jugadores a una distancia dada?",
+      "title": "Proximity network",
+      "question": "How were players connected at the selected distance?",
       "source_operations": [
         "get_proximity_connectivity"
       ],
@@ -403,8 +403,8 @@
     {
       "id": "space_partition",
       "number": 16,
-      "title": "Partición espacial Voronoi",
-      "question": "¿Cómo se repartía geométricamente el espacio?",
+      "title": "Space partition",
+      "question": "Which parts of the pitch were closest to each player?",
       "source_operations": [
         "get_space_coverage"
       ],
@@ -427,8 +427,8 @@
     {
       "id": "persistent_structure",
       "number": 17,
-      "title": "Persistencia de la estructura",
-      "question": "¿Qué componentes y ciclos aparecen según la escala?",
+      "title": "Persistent structure",
+      "question": "Which components and cycles persist across distance scales?",
       "source_operations": [
         "get_persistent_structure"
       ],
@@ -451,8 +451,8 @@
     {
       "id": "node_robustness",
       "number": 18,
-      "title": "Sensibilidad al retirar jugadores",
-      "question": "¿Qué jugadores alteran más la conectividad del grafo al retirarlos?",
+      "title": "Network robustness",
+      "question": "How does removing a player change the network?",
       "source_operations": [
         "get_node_removal_robustness"
       ],
@@ -475,8 +475,8 @@
     {
       "id": "entity_comparison",
       "number": 19,
-      "title": "Comparación de jugadores y equipos",
-      "question": "¿En qué métricas comparables se diferencian?",
+      "title": "Player & team comparison",
+      "question": "How do the selected players or teams compare on available measures?",
       "source_operations": [
         "compare_entities",
         "get_player_summary",
@@ -507,8 +507,8 @@
     {
       "id": "defensive_geometry",
       "number": 20,
-      "title": "Corredores y rupturas defensivas",
-      "question": "¿Qué evidencia geométrica hay alrededor de pases o tiros rivales?",
+      "title": "Defensive geometry",
+      "question": "How did opposition actions intersect the defensive structure?",
       "source_operations": [
         "get_pass_corridor",
         "get_line_breaks",
@@ -535,8 +535,8 @@
     {
       "number": 21,
       "id": "defensive_line_height",
-      "title": "Altura de la línea defensiva",
-      "question": "¿A qué altura estaba la línea defensiva en el instante analizado?",
+      "title": "Defensive line height",
+      "question": "How far from the goal line was the deepest defender?",
       "organism_family": "topology",
       "source_operations": [
         "get_tracking_frame",
@@ -554,8 +554,8 @@
     {
       "number": 22,
       "id": "goalkeeper_connection",
-      "title": "Conexión portero-defensa",
-      "question": "¿Qué distancia había entre el portero y la línea defensiva?",
+      "title": "Goalkeeper connection",
+      "question": "What was the gap between goalkeeper and defensive line?",
       "organism_family": "topology",
       "source_operations": [
         "get_tracking_frame",
@@ -573,8 +573,8 @@
     {
       "number": 23,
       "id": "final_third_channels",
-      "title": "Entradas al último tercio por carril",
-      "question": "¿Por qué carriles entró el equipo al último tercio?",
+      "title": "Final-third channels",
+      "question": "Which channels were used to enter the final third?",
       "organism_family": "pitch_map",
       "source_operations": [
         "get_passes",
@@ -591,8 +591,8 @@
     {
       "number": 24,
       "id": "between_lines_receptions",
-      "title": "Recepciones entre líneas",
-      "question": "¿Qué recepciones se dieron entre las líneas del rival?",
+      "title": "Between-lines receptions",
+      "question": "Where did passes reach relative to the opposition lines?",
       "organism_family": "pitch_map",
       "source_operations": [
         "get_passes",
@@ -610,8 +610,8 @@
     {
       "number": 25,
       "id": "ball_recovery_time",
-      "title": "Tiempo de recuperación observado",
-      "question": "¿Cuánto tardó el equipo en recuperar el balón tras perderlo?",
+      "title": "Ball recovery time",
+      "question": "How long did recorded recoveries take after losing the ball?",
       "organism_family": "time_series",
       "source_operations": [
         "get_events",
@@ -628,8 +628,8 @@
     {
       "number": 26,
       "id": "pressure_turnovers",
-      "title": "Recuperaciones precedidas por presión",
-      "question": "¿Qué recuperaciones vinieron precedidas por presión?",
+      "title": "Recoveries after pressure",
+      "question": "Which recorded pressures were followed by a recovery?",
       "organism_family": "sequence",
       "source_operations": [
         "get_events",
@@ -646,8 +646,8 @@
     {
       "number": 27,
       "id": "structural_pass",
-      "title": "Ventaja estructural del pase",
-      "question": "¿Qué ventaja estructural aportó cada pase completado?",
+      "title": "Structural passing",
+      "question": "Which passes bypassed lines or changed the available space?",
       "organism_family": "pitch_map",
       "source_operations": [
         "get_passes",
@@ -664,8 +664,8 @@
     {
       "number": 28,
       "id": "hodge_flow",
-      "title": "Flujo de pases: gradiente, curl y armónico",
-      "question": "¿Cómo se reparte el flujo de pases entre gradiente, rotación y componente armónico?",
+      "title": "Passing flow decomposition",
+      "question": "How is net passing flow energy distributed?",
       "organism_family": "network",
       "source_operations": [
         "get_passing_network"
@@ -682,8 +682,8 @@
     {
       "number": 29,
       "id": "topological_change",
-      "title": "Cambio temporal de estructura",
-      "question": "¿Cuánto cambió la estructura del equipo entre instantes comparables?",
+      "title": "Structural change over time",
+      "question": "How did connectivity change between comparable snapshots?",
       "organism_family": "time_series",
       "source_operations": [
         "get_tracking_window"
@@ -699,8 +699,8 @@
     {
       "number": 30,
       "id": "clearance_connectivity",
-      "title": "Anchura de conexión libre desde el balón",
-      "question": "¿Con qué compañeros había una conexión libre desde el balón y de qué anchura?",
+      "title": "Clearance connectivity",
+      "question": "Which players had a clear geometric connection from the ball?",
       "organism_family": "topology",
       "source_operations": [
         "get_tracking_frame",

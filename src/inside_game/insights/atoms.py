@@ -20,12 +20,12 @@ def numeric(value):
 
 def status(value):
     labels = {
-        "ready": "Disponible",
-        "partial": "Parcial",
-        "unavailable": "No disponible",
+        "ready": "Available",
+        "partial": "Partial",
+        "unavailable": "Unavailable",
         "incompatible": "Incompatible",
         "error": "Error",
-        "empty_with_coverage": "Vacío · revisar cobertura",
+        "empty_with_coverage": "Empty · check coverage",
     }
     return f'<span class="status {text(value)}">{labels[value]}</span>'
 

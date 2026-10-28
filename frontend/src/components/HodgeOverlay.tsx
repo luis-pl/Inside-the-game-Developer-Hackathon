@@ -25,7 +25,7 @@ export function HodgeOverlay({
   const largest = Math.max(...values.map(Math.abs), 1e-9);
   const positions = new Map(frame.players.map((p) => [p.id, p]));
   return (
-    <g className="hodge-overlay" aria-label={`Flujo Hodge: ${component}`}>
+    <g className="hodge-overlay" aria-label={`Hodge flow: ${component}`}>
       <defs>
         <marker
           id={marker}
@@ -61,8 +61,7 @@ export function HodgeOverlay({
             opacity=".95"
           >
             <title>
-              {a.name} → {b.name}: {Math.abs(value).toFixed(3)} unidades de
-              flujo
+              {a.name} → {b.name}: {Math.abs(value).toFixed(3)} flow units
             </title>
           </line>
         );

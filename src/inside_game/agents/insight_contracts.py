@@ -6,11 +6,16 @@ from uuid import UUID, uuid4
 from pydantic import Field, field_validator, model_validator
 
 from inside_game.agents.contracts import DataContext, DataResult, Evidence, Message
+from inside_game.insights.catalog import InsightId
 from inside_game.insights.contracts import AnalystNote, BlockSpec, ReportPlan, TeamStyle
+from inside_game.language import Language
 
 
 class InsightRequest(Message):
     request_id: UUID = Field(default_factory=uuid4)
+    language: Language = "es"
+    original_request: str | None = Field(default=None, max_length=4000)
+    required_insights: list[InsightId] = Field(default_factory=list, max_length=40)
     request_text: str = Field(min_length=1, max_length=8000)
     context: DataContext = Field(default_factory=DataContext)
     data_result: DataResult | None = None
@@ -100,6 +105,7 @@ class InsightResult(Message):
     tool_calls: int = 0
     tool_trace: list[dict] = Field(default_factory=list)
     total_tokens: int = 0
+    context_events: list[dict] = Field(default_factory=list)
     elapsed_ms: float = 0
     timings_ms: dict[str, float] = Field(default_factory=dict)
     data_request_ids: list[UUID] = Field(default_factory=list)

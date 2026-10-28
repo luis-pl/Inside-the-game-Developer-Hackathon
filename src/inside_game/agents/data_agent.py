@@ -15,14 +15,16 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 
+from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import (
     AgentIssue,
     DataRequest,
     DataResult,
     Evidence,
     FinishRequest,
+    Message,
 )
 from inside_game.agents.experiments import (
     TOPOLOGY_TOOLS,
@@ -30,12 +32,63 @@ from inside_game.agents.experiments import (
     original_question,
 )
 from inside_game.contracts import ApiResponse
+from inside_game.mcp_server import DESCRIPTIONS
 from inside_game.providers.models import ModelFailure, ModelProvider
 from inside_game.service import OPERATIONS
 
 log = logging.getLogger("inside_game.data_agent")
 FINISH = "finish_data_request"
+DISCOVER = "describe_data_tools"
+DISCOVERY_BASE = {
+    "describe_dataset",
+    "list_matches",
+    "find_entities",
+    "get_match_context",
+}
 TRANSIENT = {"RATE_LIMITED", "BUSY", "API_UNAVAILABLE"}
+
+
+class DescribeTools(Message):
+    tool_names: list[str] = Field(min_length=1, max_length=40)
+    full_schema: bool = False
+
+
+def contextual_schema(name, schema, context):
+    """Project fixed filters out when the host supplies validated defaults.
+
+    Discovery can restore the complete schema for explicit refinements.
+    """
+    schema = json.loads(json.dumps(schema))
+    properties = schema.get("properties", {})
+    required = set(schema.get("required", []))
+    for field, selected in (
+        ("match_id", context.match_ids),
+        ("team_id", context.team_ids),
+        ("player_id", context.player_ids),
+    ):
+        if (
+            field in properties
+            and len(selected) == 1
+            and not (name == "get_tracking_window" and field != "match_id")
+        ):
+            properties.pop(field)
+            required.discard(field)
+    if (
+        "scope" in properties
+        and context.scope is not None
+        and context.scope.kind == "window"
+    ):
+        properties.pop("scope")
+        required.discard("scope")
+    if "sample_step_ms" in properties and context.sample_step_ms is not None:
+        properties["sample_step_ms"] = {
+            "type": "integer",
+            "const": context.sample_step_ms,
+            "default": context.sample_step_ms,
+            "description": "Omit to inherit the requested sampling interval.",
+        }
+    schema["required"] = sorted(required)
+    return schema
 
 
 @dataclass(frozen=True)
@@ -78,10 +131,15 @@ def preview(value, depth=0, *, list_limit=8):
             else items
         )
     if isinstance(value, dict):
-        return {
+        items = {
             k: preview(v, depth + 1, list_limit=list_limit)
             for k, v in list(value.items())[:50]
         }
+        return (
+            {"items": items, "total_keys": len(value), "preview_only": True}
+            if len(value) > 50
+            else items
+        )
     if isinstance(value, str) and len(value) > 800:
         return value[:800] + " [preview truncated]"
     return value
@@ -194,10 +252,9 @@ def tool_subset(request_text, names):
 
 
 def allowed_values(error):
-    """EXPERIMENTO LOCAL: valores válidos que Pydantic conoce, para que el modelo
-    corrija el argumento en vez de repetirlo. Sólo texto del esquema, no la entrada."""
-    ctx = error.get("ctx") or {}
-    allowed = ctx.get("expected_tags") or ctx.get("expected")
+    """Schema-authored enum hints only; never echo invalid input or secrets."""
+    context = error.get("ctx") or {}
+    allowed = context.get("expected_tags") or context.get("expected")
     return {"allowed": str(allowed)[:300]} if allowed else {}
 
 
@@ -207,7 +264,17 @@ class StopRun(Exception):
 
 
 class DataAgent:
-    def __init__(self, model: ModelProvider, *, limits=None, prompt=None):
+    def __init__(
+        self,
+        model: ModelProvider,
+        *,
+        limits=None,
+        prompt=None,
+        tool_schema_mode="progressive",
+    ):
+        if tool_schema_mode not in {"full", "progressive"}:
+            raise ValueError("INVALID_TOOL_SCHEMA_MODE")
+        self.tool_schema_mode = tool_schema_mode
         self.model = model
         self.limits = limits or AgentLimits()
         self.prompt = prompt if prompt is not None else load_prompt()
@@ -242,6 +309,15 @@ class _Run:
         self.tools = {}
         self.text_only_replies = 0
         self.topology_queries = 0
+        self.context_window = ContextWindow(agent.limits.max_input_bytes)
+        self.trace = []
+        self.active_tools = set()
+        self.full_schemas = set()
+
+    def tool_manifest(self):
+        return [
+            {"name": name, "description": DESCRIPTIONS[name]} for name in self.tools
+        ]
 
     def result(self, status, *, clarification=None, notes=None, evidence=None):
         return DataResult(
@@ -255,12 +331,32 @@ class _Run:
             tool_calls=self.calls,
             model_turns=self.turns,
             total_tokens=self.tokens,
+            context_events=self.context_window.events,
+            tool_trace=self.trace,
             prompt_sha256=hashlib.sha256(self.agent.prompt.encode()).hexdigest(),
         )
 
     def failed(self, code):
         self.issues.append(AgentIssue(code=code))
         return self.result("partial" if self.evidence else "error")
+
+    def checkpoint(self):
+        return {
+            **self.request.model_dump(mode="json"),
+            "completed_queries": [
+                {
+                    "operation": json.loads(key)[0],
+                    "arguments": json.loads(key)[1],
+                    **value,
+                }
+                for key, value in self.cache.items()
+            ],
+            "incomplete_queries": sorted(self.incomplete_queries),
+            "issues": [i.model_dump() for i in self.issues],
+            "remaining_tool_calls": self.agent.limits.max_tool_calls - self.calls,
+            "tool_catalog": self.tool_manifest(),
+            "enabled_tool_schemas": sorted(self.active_tools),
+        }
 
     async def execute(self):
         # Cruce de listas: descubrimiento remoto + registro local cerrado. No se
@@ -278,21 +374,17 @@ class _Run:
             fast = await self.fast_path()
             if fast is not None:
                 return fast
-        subset = (
-            tool_subset(self.request.request_text, self.tools)
-            if experiment("subset")
-            else set(self.tools)
-        )
         functions = [
             {
                 "type": "function",
                 "name": t.name,
-                "description": t.description or t.name,
+                "description": DESCRIPTIONS[t.name]
+                + " Sólo lectura; conserva la procedencia (sintética o real "
+                "anonimizada/seudonimizada), la cobertura y las advertencias.",
                 "parameters": t.input_schema,
                 "strict": False,
             }
             for t in self.tools.values()
-            if t.name in subset
         ]
         functions.append(
             {
@@ -303,19 +395,73 @@ class _Run:
                 "strict": True,
             }
         )
-        messages = [{"role": "user", "content": self.request.model_dump_json()}]
+        text = self.request.request_text + " " + (self.request.original_request or "")
+        self.active_tools = (
+            set(self.tools)
+            if self.agent.tool_schema_mode == "full"
+            else (
+                DISCOVERY_BASE
+                | {
+                    name
+                    for name in self.tools
+                    if re.search(r"(?<!\w)" + re.escape(name) + r"(?!\w)", text)
+                }
+            )
+            & set(self.tools)
+        )
+        discovery = {
+            "type": "function",
+            "name": DISCOVER,
+            "strict": False,
+            "description": "Enable ANY tools in tool_catalog. Selected IDs/windows are applied by the host. Set full_schema=true to expose all original parameters when you need subwindows or other explicit refinements. No data query is executed.",
+            "parameters": DescribeTools.model_json_schema(),
+        }
+        messages = [
+            {
+                "role": "user",
+                "content": json.dumps(
+                    {
+                        **self.request.model_dump(mode="json"),
+                        "tool_catalog": self.tool_manifest(),
+                        "tool_schema_mode": self.agent.tool_schema_mode,
+                    },
+                    ensure_ascii=False,
+                ),
+            }
+        ]
         while self.turns < self.agent.limits.max_turns:
             if self.tokens >= self.agent.limits.max_tokens:
                 raise StopRun("TOKEN_BUDGET_EXCEEDED")
-            if (
-                len(json.dumps([self.agent.prompt, messages, functions]).encode())
-                > self.agent.limits.max_input_bytes
-            ):
-                raise StopRun("CONTEXT_BUDGET_EXCEEDED")
+            active_functions = [
+                f
+                for f in functions
+                if f["name"] in self.active_tools or f["name"] == FINISH
+            ]
+            if self.agent.tool_schema_mode == "progressive":
+                active_functions = [
+                    {
+                        **f,
+                        "parameters": contextual_schema(
+                            f["name"], f["parameters"], self.request.context
+                        ),
+                    }
+                    if f["name"] in self.tools and f["name"] not in self.full_schemas
+                    else f
+                    for f in active_functions
+                ]
+                active_functions.append(discovery)
+            self.context_window.prepare(
+                self.agent.model,
+                self.agent.prompt,
+                messages,
+                active_functions,
+                self.checkpoint,
+            )
             turn = await self.agent.model.respond(
-                self.agent.prompt, messages, functions
+                self.agent.prompt, messages, active_functions
             )
             self.turns += 1
+            self.context_window.observe(turn)
             self.tokens += turn.total_tokens
             messages.extend(turn.output)
             calls = [
@@ -361,12 +507,43 @@ class _Run:
                 except (ValueError, TypeError, KeyError):
                     output = {"error": {"code": "INVALID_ARGUMENT"}}
                 else:
-                    if call.get("name") == FINISH:
+                    if call.get("name") == DISCOVER:
+                        try:
+                            selection = DescribeTools.model_validate(args)
+                            requested = selection.tool_names
+                            if not set(requested) <= self.tools.keys():
+                                raise ValueError
+                            self.active_tools.update(requested)
+                            if selection.full_schema:
+                                self.full_schemas.update(requested)
+                            output = {
+                                "enabled_tool_schemas": sorted(self.active_tools),
+                                "instruction": "Full schemas are in the next turn's function definitions. Call the needed data tools, then finish separately.",
+                            }
+                        except (ValidationError, ValueError):
+                            output = {
+                                "error": {
+                                    "code": "UNKNOWN_TOOL_SCHEMA",
+                                    "allowed_names": sorted(self.tools),
+                                }
+                            }
+                    elif call.get("name") == FINISH:
                         finished, output = self.finish(args)
                         if finished is not None:
+                            self.trace.append({"tool": FINISH, "status": "ok"})
+                            finished.tool_trace = list(self.trace)
                             return finished
                     else:
                         output = await self.query(call.get("name"), args)
+                self.trace.append(
+                    {
+                        "tool": call.get("name")
+                        if call.get("name") in {*self.tools, FINISH, DISCOVER}
+                        else "unknown",
+                        "status": "error" if output.get("error") else "ok",
+                        "error": output.get("error"),
+                    }
+                )
                 messages.append(
                     {
                         "type": "function_call_output",
@@ -379,8 +556,26 @@ class _Run:
     def finish(self, arguments):
         try:
             final = FinishRequest.model_validate(arguments)
-        except ValidationError:
-            return None, {"error": {"code": "INVALID_FINISH_ARGUMENT"}}
+        except ValidationError as exc:
+            return None, {
+                "error": {
+                    "code": "INVALID_FINISH_ARGUMENT",
+                    "fields": [
+                        {
+                            "location": list(e["loc"]),
+                            "type": e["type"],
+                            **allowed_values(e),
+                        }
+                        for e in exc.errors()
+                    ],
+                    "repair": {
+                        "evidence_ids": [e.evidence_id for e in self.evidence],
+                        "clarification": None,
+                        "notes": [],
+                    },
+                    "instruction": "Keep your intended status. evidence_ids and notes must be JSON arrays; notes=[] if none. Never double-encode arrays or write a tool call as text.",
+                }
+            }
         ids = set(final.evidence_ids)
         available = {e.evidence_id for e in self.evidence}
         if not ids <= available:
@@ -443,7 +638,11 @@ class _Run:
         Sólo cuando la pregunta toca únicamente el tema de tiros y el partido es
         inequívoco. Si la consulta no queda completa, sigue el flujo con modelo.
         """
-        text = original_question(self.request.request_text).lower()
+        # La pregunta original (campo de main o marcador del chat) decide el atajo.
+        text = (
+            self.request.original_request
+            or original_question(self.request.request_text)
+        ).lower()
         topics = [
             tools for keywords, tools in TOOL_TOPICS if any(k in text for k in keywords)
         ]
@@ -489,6 +688,68 @@ class _Run:
             return {"error": {"code": "UNREGISTERED_OPERATION"}}
         if arguments.get("cursor") is not None:
             return {"error": {"code": "CURSOR_MANAGED_BY_AGENT"}}
+        # Preserve the explicit handoff even if the model omits a filter.
+        # Discovery remains unfiltered; only fields in the approved schema can
+        # be supplied. Multiple selected entities are never reduced to the first.
+        arguments = dict(arguments)
+        fields = OPERATIONS[name].model_fields
+        sampling = self.request.context.sample_step_ms
+        if name == "get_tracking_window" and sampling is not None:
+            if (
+                arguments.get("sample_step_ms") not in (None, sampling)
+                or arguments.get("stride_s", 1) != 1
+            ):
+                return {"error": {"code": "CONTEXT_RESOLUTION_MISMATCH"}}
+            arguments["sample_step_ms"] = sampling
+            arguments["stride_s"] = 1
+        if name not in {"describe_dataset", "find_entities", "list_matches"}:
+            for field, selected in (
+                ("match_id", self.request.context.match_ids),
+                ("team_id", self.request.context.team_ids),
+                ("player_id", self.request.context.player_ids),
+            ):
+                if field not in fields or not selected:
+                    continue
+                if (
+                    type(arguments.get(field)) is int
+                    and arguments[field] not in selected
+                ):
+                    return {
+                        "error": {
+                            "code": "CONTEXT_SCOPE_MISMATCH",
+                            "field": field,
+                            "allowed": selected,
+                            "repair": f"Omit {field} to inherit the selection when unique.",
+                        }
+                    }
+                if (
+                    arguments.get(field) is None
+                    and len(selected) == 1
+                    and not (
+                        name == "get_tracking_window"
+                        and field in {"team_id", "player_id"}
+                    )
+                ):
+                    arguments[field] = selected[0]
+            if "scope" in fields and self.request.context.scope is not None:
+                selected_scope = self.request.context.scope.model_dump(mode="json")
+                if (
+                    arguments.get("time_ms") is not None
+                    or arguments.get("event_id") is not None
+                ):
+                    # Spatial snapshots and interval queries are mutually
+                    # exclusive at the API. A point is a valid narrowing of the
+                    # selected window; do not inject that window as a second
+                    # temporal selector.
+                    if (
+                        arguments.get("time_ms") is not None
+                        and "period" in fields
+                        and arguments.get("period") is None
+                        and selected_scope.get("period") is not None
+                    ):
+                        arguments["period"] = selected_scope["period"]
+                else:
+                    arguments.setdefault("scope", selected_scope)
         if experiment("topo") and name in TOPOLOGY_TOOLS:
             # EXPERIMENTO LOCAL: una sola consulta topológica, acotada y resumida.
             if self.topology_queries >= 1:
@@ -520,13 +781,62 @@ class _Run:
                 "error": {
                     "code": "INVALID_ARGUMENT",
                     "fields": [
-                        {"location": list(e["loc"]), "type": e["type"]}
-                        | allowed_values(e)
+                        {
+                            "location": list(e["loc"]),
+                            "type": e["type"],
+                            **allowed_values(e),
+                        }
                         for e in exc.errors()
                     ],
+                    "repair": "Omit match_id, team_id, player_id or scope when their exact values are already selected in context; the host inherits them. All IDs/times are JSON integers. A window is flat {kind,period,start_ms,end_ms}, never {window:{...}}.",
                 }
             }
         args = request.model_dump(mode="json")
+        if self.request.context.scope is not None and args.get("time_ms") is not None:
+            selected = self.request.context.scope.model_dump(mode="json")
+            if (
+                "scope" in args
+                and args["scope"].get("kind") != "match"
+                and args.get("period") is not None
+            ):
+                return {
+                    "error": {
+                        "code": "SNAPSHOT_OR_SCOPE_REQUIRED",
+                        "repair": {"scope": {"kind": "match"}},
+                        "instruction": "For a point use period + time_ms and default match scope; for an interval use scope window and omit period/time_ms.",
+                    }
+                }
+            if selected["kind"] in {"period", "window"} and (
+                args.get("period", args.get("scope", {}).get("period"))
+                != selected["period"]
+                or (
+                    selected["kind"] == "window"
+                    and not selected["start_ms"] <= args["time_ms"] < selected["end_ms"]
+                )
+            ):
+                return {"error": {"code": "CONTEXT_SCOPE_MISMATCH", "field": "time_ms"}}
+        elif (
+            "scope" in args
+            and self.request.context.scope is not None
+            and args.get("event_id") is None
+        ):
+            selected = self.request.context.scope.model_dump(mode="json")
+            actual = args["scope"]
+            # Narrowing is allowed (including splitting a long window), widening
+            # or crossing a period is not. Match scope imposes no time filter.
+            if selected["kind"] in {"period", "window"} and (
+                actual.get("kind") not in {"period", "window"}
+                or actual.get("period") != selected["period"]
+                or (
+                    selected["kind"] == "window"
+                    and (
+                        actual.get("kind") != "window"
+                        or actual["start_ms"] < selected["start_ms"]
+                        or actual["end_ms"] > selected["end_ms"]
+                    )
+                )
+            ):
+                return {"error": {"code": "CONTEXT_SCOPE_MISMATCH", "field": "scope"}}
         key = json.dumps([name, args], sort_keys=True)
         if key in self.cache:
             return self.cache[key]

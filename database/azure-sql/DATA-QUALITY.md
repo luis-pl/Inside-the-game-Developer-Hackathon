@@ -1,6 +1,16 @@
 # Calidad y procedencia de los datos
 
-## Mínimo del catálogo: diez partidos reales distintos
+## Clasificación para la demo
+
+El catálogo contiene dos conjuntos separados: diez partidos **sintéticos**
+(`900001`–`900010`) y diez partidos de referencia con identidades enmascaradas.
+Para una demostración basada en datos sintéticos se selecciona el primer conjunto.
+Cambiar nombres, normalizar coordenadas o calcular métricas derivadas no convierte
+las observaciones de referencia en una simulación. Si se generan atributos sobre
+una fuente observada, se documentan por campo como enriquecimiento sintético,
+conservando la procedencia de la base. Véase [clasificación por campo](../../docs/data-provenance.md).
+
+## Catálogo de referencia: diez partidos de fuentes distintas
 
 El conjunto actual incorpora **2 partidos de Metrica y 8 de SkillCorner**. Los
 diez partidos sintéticos históricos no cuentan para este mínimo. Los ocho nuevos

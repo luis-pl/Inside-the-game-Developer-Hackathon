@@ -155,8 +155,8 @@ def test_web_accumulates_what_a_continuous_conversation_asks_for():
         second = ask(client, custom("pass_map"), append_to=first["report_id"])
         assert second["merged"] is True
         assert second["report_id"] != first["report_id"]
-        titles = [h for h in headings(second) if "Mapa" in h]
-        assert titles[1] == "Mapa de tiros" and titles[0].startswith("Mapa de pases")
+        titles = [h for h in headings(second) if "map" in h]
+        assert titles[1] == "Shot map" and titles[0].startswith("Pass map")
         assert len(titles) == 2
         assert "ahora tiene 2 piezas" in second["message_html"]
         assert "2 piezas" in second["title"]
@@ -171,9 +171,9 @@ def test_web_replaces_the_report_when_the_conversation_is_new_or_the_id_is_unkno
     with web() as client:
         first = ask(client, custom("shot_map"))
         fresh = ask(client, custom("pass_map"))  # «Nueva conversación»: sin append_to
-        assert fresh["merged"] is False and "Mapa de tiros" not in headings(fresh)
+        assert fresh["merged"] is False and "Shot map" not in headings(fresh)
         unknown = ask(client, custom("pass_map"), append_to="0" * 32)
-        assert unknown["merged"] is False and "Mapa de tiros" not in headings(unknown)
+        assert unknown["merged"] is False and "Shot map" not in headings(unknown)
         assert first["report_id"] not in {fresh["report_id"], unknown["report_id"]}
 
 
@@ -182,7 +182,7 @@ def test_web_does_not_repeat_a_piece_that_is_already_in_the_report():
         first = ask(client, custom("shot_map"))
         again = ask(client, custom("shot_map"), append_to=first["report_id"])
         assert again["merged"] is True
-        assert headings(again).count("Mapa de tiros") == 1
+        assert headings(again).count("Shot map") == 1
         assert "ya estaba en el informe" in again["message_html"]
 
 

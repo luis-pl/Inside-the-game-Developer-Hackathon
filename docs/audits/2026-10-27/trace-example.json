@@ -1,0 +1,1696 @@
+{
+  "artifact_type": "audit_snapshot_not_product_feature",
+  "captured_at_utc": "2026-10-27T17:57:54.275796+00:00",
+  "source_commit": "77b2e798c7e37d54ee21144fe32b2fe290e64a8a",
+  "request_id": "a97c1a39-1110-41e6-8266-053afadcbcff",
+  "conversation_id": "8c454636-5d83-4424-bb12-ae67103001f8",
+  "elapsed_ms": 45954,
+  "nodes": [
+    {
+      "id": "interpreter",
+      "name": "Intérprete",
+      "prompt_file": "prompts/interpreter.md",
+      "prompt_sha256": "1dc5687a4dac30193e6aef43d7204b2ee971206af6a8478c4bb3c86dac6aff67",
+      "input": {
+        "text": {
+          "request_id": "a97c1a39-1110-41e6-8266-053afadcbcff",
+          "text": "Muéstrame los tiros de los dos equipos y cómo evolucionó su xG durante el partido. Explícame lo más importante con palabras sencillas.",
+          "context": {
+            "match_ids": [
+              900001
+            ],
+            "team_ids": [],
+            "player_ids": [],
+            "event_ids": [],
+            "scope": null
+          },
+          "retry_analysis": false
+        },
+        "selected_context": {
+          "match_ids": [
+            900001
+          ],
+          "team_ids": [],
+          "player_ids": [],
+          "event_ids": [],
+          "scope": null
+        },
+        "other_context": "Catalog, last 8 messages and report; not fully retained in this run."
+      },
+      "output": {
+        "action": "create",
+        "title": "Tiros y evolución del xG — Mock Objects FC vs Test Fixtures United",
+        "reply": "Te muestro los tiros de ambos equipos y cómo fue evolucionando su xG durante el partido. Voy a preparar los gráficos y una explicación sencilla.",
+        "answer_topic": "general",
+        "context": {
+          "match_ids": [
+            900001
+          ],
+          "team_ids": [],
+          "player_ids": [],
+          "event_ids": [],
+          "scope": null
+        },
+        "data_request": "get_match_context(match_id=900001), get_shots(match_id=900001)",
+        "analysis_request": "Genera dos gráficos: el mapa de tiros de ambos equipos (shot_map) y la evolución y distribución del xG a lo largo del partido (xg_story). Explica los resultados con palabras sencillas, destacando las ocasiones más claras y cómo fue acumulando cada equipo su xG. No uses jerga técnica.",
+        "refresh_analysis": true
+      },
+      "usage": {
+        "total_tokens": null,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "elapsed_ms": null,
+      "tools": [
+        {
+          "tool": "delegate_request",
+          "status": "validated",
+          "normalized_fields": []
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "name": "Data",
+      "prompt_file": "prompts/data_agent.md",
+      "prompt_sha256": "9fb38908d19134c09049f8f6edf2d355526c2b5c892f0874c510189d867452c1",
+      "input": {
+        "request_text": "get_match_context(match_id=900001), get_shots(match_id=900001)",
+        "context": {
+          "match_ids": [
+            900001
+          ],
+          "team_ids": [],
+          "player_ids": [],
+          "event_ids": [],
+          "scope": null
+        }
+      },
+      "output": {
+        "request_id": "6a35fcbf-ea35-4772-a37e-c2238ed78c85",
+        "status": "complete",
+        "clarification": null,
+        "notes": [
+          "Contexto del partido 900001 (Synthetic Demo League, 2026): Mock Objects FC 1-2 Test Fixtures United, fecha 2026-10-01. Partido sintético (generator v3.0.0, 1 Hz). 28 participantes en alineaciones, intervalos de posición incluidos, 4 tarjetas amarillas, formaciones 4-3-3 para ambos equipos, run sintético con 2 períodos de 45 min. Procedencia: datos sintéticos con xG ilustrativo (toy-distance-angle-v2).",
+          "Tiros del partido 900001: 23 tiros totales, 3 goles, 10 a puerta, xG 1.69, conversión 13.0%, tasa a puerta 43.5%. Resultados: 9 bloqueados, 7 parados, 3 goles, 4 fuera. Partes del cuerpo: 12 pie derecho, 5 pie izquierdo, 6 cabeza. Procedencia: datos sintéticos con xG ilustrativo (toy-distance-angle-v2)."
+        ],
+        "issues": [],
+        "model": "beam-free",
+        "prompt_version": "data-agent-2",
+        "prompt_sha256": "9fb38908d19134c09049f8f6edf2d355526c2b5c892f0874c510189d867452c1",
+        "tool_calls": 2,
+        "model_turns": 3,
+        "total_tokens": 45040,
+        "evidence_catalog": [
+          {
+            "evidence_id": "e1",
+            "operation": "get_match_context",
+            "arguments": {
+              "match_id": 900001
+            },
+            "source_sha256": "4ef676753b0d3b3b13af04a9f29a3c5dabf06a51b4e663d979327220d711753d"
+          },
+          {
+            "evidence_id": "e2",
+            "operation": "get_shots",
+            "arguments": {
+              "limit": 100,
+              "cursor": null,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "source_sha256": "cfd344b835bc87c4179c0c30258de2030c410a34dc48db596d9128cc0a426438"
+          }
+        ]
+      },
+      "usage": {
+        "total_tokens": 45040,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "elapsed_ms": null
+    },
+    {
+      "id": "analyst",
+      "name": "Analista deportivo",
+      "prompt_file": "prompts/sports_analyst.md",
+      "prompt_sha256": "e4457c00a62734031535cbafc2ebe1a7ad4e342e8c77db718d093dd24ce63984",
+      "input": {
+        "request_text": "Genera dos gráficos: el mapa de tiros de ambos equipos (shot_map) y la evolución y distribución del xG a lo largo del partido (xg_story). Explica los resultados con palabras sencillas, destacando las ocasiones más claras y cómo fue acumulando cada equipo su xG. No uses jerga técnica.",
+        "context": {
+          "match_ids": [
+            900001
+          ],
+          "team_ids": [],
+          "player_ids": [],
+          "event_ids": [],
+          "scope": null
+        },
+        "data_request_id": "6a35fcbf-ea35-4772-a37e-c2238ed78c85",
+        "evidence_catalog": [
+          {
+            "evidence_id": "e1",
+            "operation": "get_match_context",
+            "arguments": {
+              "match_id": 900001
+            },
+            "source_sha256": "4ef676753b0d3b3b13af04a9f29a3c5dabf06a51b4e663d979327220d711753d"
+          },
+          {
+            "evidence_id": "e2",
+            "operation": "get_shots",
+            "arguments": {
+              "limit": 100,
+              "cursor": null,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "source_sha256": "cfd344b835bc87c4179c0c30258de2030c410a34dc48db596d9128cc0a426438"
+          }
+        ]
+      },
+      "output": {
+        "request_id": "d62ca204-0c7f-487a-aea8-107268c8ab35",
+        "status": "complete",
+        "text": "Análisis de tiros y xG — Mock Objects FC vs Test Fixtures United\nProcedencia: datos sintéticos de demostración.\n\nLo más importante\nMock Objects FC tuvo más tiros (14 frente a 9), pero marcó menos goles (1 frente a 2). Su xG total fue de 1.06 frente a 0.63 del rival, lo que indica que generó ocasiones de mayor peligro aunque no las convirtió. [1, 2, 3, 4, 5, 6, 7, 8]\nDe los 23 tiros del partido, solo 3 acabaron en gol. La tasa de conversión fue del 13.0% y el 43.5% de los tiros fue a puerta. Esto sugiere que hubo muchas ocasiones pero pocas se materializaron en gol. [8, 9, 10, 7]\n\nMapa de tiros (shot_map)\nMock Objects FC disparó 14 veces, con 6 a puerta. Test Fixtures United disparó 9 veces, con 4 a puerta. Hubo 9 tiros bloqueados, 7 parados por el portero y 4 fuera de portería. [1, 11, 4, 12, 13, 14, 15]\nEl xG de Mock Objects FC (1.06) es mayor que el de Test Fixtures United (0.63), lo que indica que sus tiros fueron desde posiciones más favorables en promedio. El xG por tiro fue de 0.073. [3, 6, 16]\n\nEvolución del xG (xg_story)\nEl xG acumulado fue de 1.062 para Mock Objects FC y de 0.629 para Test Fixtures United, sumando un total de 1.69 en el partido. [17, 18, 19]\nMock Objects FC acumuló más xG a lo largo del partido pero marcó menos goles (1 frente a 2). Esto es compatible con que generó mejores ocasiones pero fue menos efectivo en la definición. [17, 18, 2, 5]\n\nSiguiente comprobación\nSería útil analizar qué parte del cuerpo se usó en los tiros: 12 con pie derecho, 5 con pie izquierdo y 6 de cabeza. Esto ayudaría a entender qué tipo de jugadas generaron las mejores ocasiones. [20, 21, 22]\n\nAlcance y límites\nSynthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.\n\nReferencias\n[1] shots: 14 · partido 900001\n[2] goals: 1 · partido 900001\n[3] xg: 1.06 · partido 900001\n[4] shots: 9 · partido 900001\n[5] goals: 2 · partido 900001\n[6] xg: 0.63 · partido 900001\n[7] shots: 23 · partido 900001\n[8] goals: 3 · partido 900001\n[9] conversion_rate: 13.0% · partido 900001\n[10] on_target_rate: 43.5% · partido 900001\n[11] shots_on_target: 6 · partido 900001\n[12] shots_on_target: 4 · partido 900001\n[13] Blocked: 9 · partido 900001\n[14] Saved: 7 · partido 900001\n[15] Off T: 4 · partido 900001\n[16] xg_per_shot: 0.073 · partido 900001\n[17] xg: 1.062 · partido 900001\n[18] xg: 0.629 · partido 900001\n[19] xg: 1.69 · partido 900001\n[20] Right Foot: 12 · partido 900001\n[21] Left Foot: 5 · partido 900001\n[22] Head: 6 · partido 900001",
+        "sections": [
+          {
+            "heading": "Lo más importante",
+            "statements": [
+              {
+                "kind": "observation",
+                "text": "Mock Objects FC tuvo más tiros (14 frente a 9), pero marcó menos goles (1 frente a 2). Su xG total fue de 1.06 frente a 0.63 del rival, lo que indica que generó ocasiones de mayor peligro aunque no las convirtió.",
+                "fact_ids": [
+                  "f-bc64b33a1ca2",
+                  "f-cd76cbf45a4c",
+                  "f-7d4bcc651492",
+                  "f-440bc7da7fa9",
+                  "f-2bdcf850f946",
+                  "f-9934a7611366",
+                  "f-3f69b2a736c5",
+                  "f-08edbd7e1e4e"
+                ]
+              },
+              {
+                "kind": "interpretation",
+                "text": "De los 23 tiros del partido, solo 3 acabaron en gol. La tasa de conversión fue del 13.0% y el 43.5% de los tiros fue a puerta. Esto sugiere que hubo muchas ocasiones pero pocas se materializaron en gol.",
+                "fact_ids": [
+                  "f-08edbd7e1e4e",
+                  "f-b19b7de1f6b4",
+                  "f-c7d336fada94",
+                  "f-3f69b2a736c5"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "Mapa de tiros (shot_map)",
+            "statements": [
+              {
+                "kind": "observation",
+                "text": "Mock Objects FC disparó 14 veces, con 6 a puerta. Test Fixtures United disparó 9 veces, con 4 a puerta. Hubo 9 tiros bloqueados, 7 parados por el portero y 4 fuera de portería.",
+                "fact_ids": [
+                  "f-bc64b33a1ca2",
+                  "f-dac34ab08f4d",
+                  "f-440bc7da7fa9",
+                  "f-0b4881ba8081",
+                  "f-149088ecc9be",
+                  "f-4bf19558b33b",
+                  "f-640fbc6c6932"
+                ]
+              },
+              {
+                "kind": "interpretation",
+                "text": "El xG de Mock Objects FC (1.06) es mayor que el de Test Fixtures United (0.63), lo que indica que sus tiros fueron desde posiciones más favorables en promedio. El xG por tiro fue de 0.073.",
+                "fact_ids": [
+                  "f-7d4bcc651492",
+                  "f-9934a7611366",
+                  "f-c148b9fedf81"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "Evolución del xG (xg_story)",
+            "statements": [
+              {
+                "kind": "observation",
+                "text": "El xG acumulado fue de 1.062 para Mock Objects FC y de 0.629 para Test Fixtures United, sumando un total de 1.69 en el partido.",
+                "fact_ids": [
+                  "f-474474d0634f",
+                  "f-9f30444d6b6c",
+                  "f-b025062d64ca"
+                ]
+              },
+              {
+                "kind": "interpretation",
+                "text": "Mock Objects FC acumuló más xG a lo largo del partido pero marcó menos goles (1 frente a 2). Esto es compatible con que generó mejores ocasiones pero fue menos efectivo en la definición.",
+                "fact_ids": [
+                  "f-474474d0634f",
+                  "f-9f30444d6b6c",
+                  "f-cd76cbf45a4c",
+                  "f-2bdcf850f946"
+                ]
+              }
+            ]
+          },
+          {
+            "heading": "Siguiente comprobación",
+            "statements": [
+              {
+                "kind": "recommendation",
+                "text": "Sería útil analizar qué parte del cuerpo se usó en los tiros: 12 con pie derecho, 5 con pie izquierdo y 6 de cabeza. Esto ayudaría a entender qué tipo de jugadas generaron las mejores ocasiones.",
+                "fact_ids": [
+                  "f-39d118a84340",
+                  "f-e6ccd05313a4",
+                  "f-ec8fdb53a803"
+                ]
+              }
+            ]
+          }
+        ],
+        "facts": [
+          {
+            "id": "f-bc64b33a1ca2",
+            "value": 14,
+            "label": "shots",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/1/shots",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-cd76cbf45a4c",
+            "value": 1,
+            "label": "goals",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/1/goals",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-7d4bcc651492",
+            "value": 1.06,
+            "label": "xg",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/1/xg",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-440bc7da7fa9",
+            "value": 9,
+            "label": "shots",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/2/shots",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-2bdcf850f946",
+            "value": 2,
+            "label": "goals",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/2/goals",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-9934a7611366",
+            "value": 0.63,
+            "label": "xg",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/2/xg",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-3f69b2a736c5",
+            "value": 23,
+            "label": "shots",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/shots",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-08edbd7e1e4e",
+            "value": 3,
+            "label": "goals",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/goals",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-b19b7de1f6b4",
+            "value": 0.13043478260869565,
+            "label": "conversion_rate",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/conversion_rate",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": "proporción"
+          },
+          {
+            "id": "f-c7d336fada94",
+            "value": 0.43478260869565216,
+            "label": "on_target_rate",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/on_target_rate",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": "proporción"
+          },
+          {
+            "id": "f-dac34ab08f4d",
+            "value": 6,
+            "label": "shots_on_target",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/1/shots_on_target",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-0b4881ba8081",
+            "value": 4,
+            "label": "shots_on_target",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/shot_map/by_team/2/shots_on_target",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "shot_map"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "shot_map",
+            "unit": null
+          },
+          {
+            "id": "f-149088ecc9be",
+            "value": 9,
+            "label": "Blocked",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/outcomes/Blocked",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-4bf19558b33b",
+            "value": 7,
+            "label": "Saved",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/outcomes/Saved",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-640fbc6c6932",
+            "value": 4,
+            "label": "Off T",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/outcomes/Off T",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-c148b9fedf81",
+            "value": 0.07349478813938999,
+            "label": "xg_per_shot",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/xg_per_shot",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-474474d0634f",
+            "value": 1.0615838865393195,
+            "label": "xg",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/xg_story/by_team/1/xg",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "xg_story"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "xg_story",
+            "unit": null
+          },
+          {
+            "id": "f-9f30444d6b6c",
+            "value": 0.6287962406666504,
+            "label": "xg",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/blocks/xg_story/by_team/2/xg",
+            "scope": {
+              "visual_scopes": [
+                {
+                  "limit": 100,
+                  "match_id": 900001,
+                  "team_id": null,
+                  "player_id": null,
+                  "scope": {
+                    "kind": "match"
+                  },
+                  "zone_id": "all",
+                  "score_state": "all",
+                  "pressure": "all",
+                  "view": "events",
+                  "bin_s": 300,
+                  "outcome": "all",
+                  "body_part": "all"
+                }
+              ],
+              "block_id": "xg_story"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": "xg_story",
+            "unit": null
+          },
+          {
+            "id": "f-b025062d64ca",
+            "value": 1.6903801272059698,
+            "label": "xg",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/xg",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-39d118a84340",
+            "value": 12,
+            "label": "Right Foot",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/body_parts/Right Foot",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-e6ccd05313a4",
+            "value": 5,
+            "label": "Left Foot",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/body_parts/Left Foot",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          },
+          {
+            "id": "f-ec8fdb53a803",
+            "value": 6,
+            "label": "Head",
+            "evidence_ids": [
+              "e2"
+            ],
+            "operation": "get_shots",
+            "path": "/data/summary/body_parts/Head",
+            "scope": {
+              "limit": 100,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "provenance": {
+              "is_synthetic": true,
+              "data_kinds": [
+                "synthetic"
+              ],
+              "datasets": [
+                {
+                  "match_id": 900001,
+                  "generator_version": "3.0.0",
+                  "provider": null,
+                  "data_kind": "synthetic",
+                  "dataset_revision": "d91d6a0698d10e1e93cc218f816215e243555552888149ac13fe64a9507eca3c",
+                  "run_ids": [
+                    "bcfd4a43-5f9e-872b-82cf-9dbdd7fdc0b0"
+                  ]
+                }
+              ]
+            },
+            "block_id": null,
+            "unit": null
+          }
+        ],
+        "limitations": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model."
+        ],
+        "clarification": null,
+        "issues": [],
+        "model": "beam-free",
+        "prompt_sha256": "e4457c00a62734031535cbafc2ebe1a7ad4e342e8c77db718d093dd24ce63984",
+        "elapsed_ms": 33183.83,
+        "model_turns": 4,
+        "total_tokens": 52907,
+        "tool_trace": [
+          {
+            "tool": "request_insights",
+            "status": "ok",
+            "elapsed_ms": 7697.857,
+            "error": null
+          },
+          {
+            "tool": "finish_analysis",
+            "status": "error",
+            "json_normalized_fields": [],
+            "elapsed_ms": 17.662,
+            "error": "INVALID_ARGUMENT"
+          },
+          {
+            "tool": "finish_analysis",
+            "status": "error",
+            "json_normalized_fields": [],
+            "elapsed_ms": 0.16,
+            "error": "INVALID_ARGUMENT"
+          },
+          {
+            "tool": "finish_analysis",
+            "status": "ok",
+            "json_normalized_fields": [],
+            "elapsed_ms": 0.976
+          }
+        ],
+        "data_request_ids": [
+          "6a35fcbf-ea35-4772-a37e-c2238ed78c85"
+        ]
+      },
+      "usage": {
+        "total_tokens": 52907,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "elapsed_ms": 33183.83
+    },
+    {
+      "id": "insights",
+      "name": "Insights",
+      "prompt_file": "prompts/insights_agent.md",
+      "prompt_sha256": "ef61baea69b0e6ab740d2f118d4402d64f80ef5c499bfe8a37f2322006394205",
+      "input": {
+        "request_text": "Exact HTTP input is not retained in run. See analyst request_insights trace.",
+        "evidence_catalog": [
+          {
+            "evidence_id": "e1",
+            "operation": "get_match_context",
+            "arguments": {
+              "match_id": 900001
+            },
+            "source_sha256": "4ef676753b0d3b3b13af04a9f29a3c5dabf06a51b4e663d979327220d711753d"
+          },
+          {
+            "evidence_id": "e2",
+            "operation": "get_shots",
+            "arguments": {
+              "limit": 100,
+              "cursor": null,
+              "match_id": 900001,
+              "team_id": null,
+              "player_id": null,
+              "scope": {
+                "kind": "match"
+              },
+              "zone_id": "all",
+              "score_state": "all",
+              "pressure": "all",
+              "view": "events",
+              "bin_s": 300,
+              "outcome": "all",
+              "body_part": "all"
+            },
+            "source_sha256": "cfd344b835bc87c4179c0c30258de2030c410a34dc48db596d9128cc0a426438"
+          }
+        ]
+      },
+      "output": {
+        "request_id": "0428afa8-b8e2-43c9-8d8f-c4b3b6880a41",
+        "status": "complete",
+        "report_id": "aa06dc20-1926-46e3-ae47-bfb65c7404b6",
+        "revision": 2,
+        "artifact_url": "/a2a/v1/reports/aa06dc20-1926-46e3-ae47-bfb65c7404b6/revisions/2/html",
+        "clarification": null,
+        "issues": [],
+        "blocks": [
+          {
+            "id": "shot_map",
+            "insight_id": "shot_map",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+            ]
+          },
+          {
+            "id": "xg_story",
+            "insight_id": "xg_story",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+            ]
+          }
+        ],
+        "model": "beam-free",
+        "model_turns": 2,
+        "tool_calls": 2,
+        "tool_trace": [
+          {
+            "tool": "render_report",
+            "status": "error",
+            "fields": [
+              {
+                "path": [
+                  "teams",
+                  0,
+                  "team_id"
+                ],
+                "type": "int_type"
+              },
+              {
+                "path": [
+                  "teams",
+                  1,
+                  "team_id"
+                ],
+                "type": "int_type"
+              }
+            ],
+            "elapsed_ms": 0.108
+          },
+          {
+            "tool": "render_report",
+            "status": "ok",
+            "elapsed_ms": 16.981
+          }
+        ],
+        "total_tokens": 20311,
+        "elapsed_ms": 7618.073,
+        "timings_ms": {
+          "model": 7574.611,
+          "data_http": 0.0,
+          "mcp": 16.524
+        },
+        "data_request_ids": [
+          "e6e428f8-7e90-4adc-9e13-fb137da3802b"
+        ],
+        "data_runs": [
+          {
+            "request_id": "e6e428f8-7e90-4adc-9e13-fb137da3802b",
+            "status": "complete",
+            "issues": [],
+            "clarification": null,
+            "notes": [],
+            "notes_are_model_text": true,
+            "model_turns": 0,
+            "tool_calls": 0
+          }
+        ],
+        "prompt_sha256": "ef61baea69b0e6ab740d2f118d4402d64f80ef5c499bfe8a37f2322006394205"
+      },
+      "usage": {
+        "total_tokens": 20311,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "elapsed_ms": 7618.073
+    }
+  ],
+  "edges": [
+    [
+      "user",
+      "interpreter"
+    ],
+    [
+      "interpreter",
+      "data"
+    ],
+    [
+      "data",
+      "analyst"
+    ],
+    [
+      "analyst",
+      "insights"
+    ],
+    [
+      "insights",
+      "analyst"
+    ],
+    [
+      "analyst",
+      "interpreter"
+    ],
+    [
+      "interpreter",
+      "user"
+    ]
+  ],
+  "observable_token_sum": 118258,
+  "token_sum_is_complete": false,
+  "limitations": [
+    "Inputs summarized or reconstructed from the stored run are marked; these are not complete wire/model envelopes.",
+    "Interpreter usage, input/output/cached/reasoning usage and failed-call usage are unavailable, not zero.",
+    "Analyst elapsed time includes Insights; elapsed times must not be summed.",
+    "No private reasoning, authentication headers, keys, or provider sessions are exported."
+  ],
+  "raw_fact_checks": [
+    {
+      "fact_id": "f-bc64b33a1ca2",
+      "path": "/blocks/shot_map/by_team/1/shots",
+      "passed": true
+    },
+    {
+      "fact_id": "f-cd76cbf45a4c",
+      "path": "/blocks/shot_map/by_team/1/goals",
+      "passed": true
+    },
+    {
+      "fact_id": "f-7d4bcc651492",
+      "path": "/blocks/shot_map/by_team/1/xg",
+      "passed": true
+    },
+    {
+      "fact_id": "f-440bc7da7fa9",
+      "path": "/blocks/shot_map/by_team/2/shots",
+      "passed": true
+    },
+    {
+      "fact_id": "f-2bdcf850f946",
+      "path": "/blocks/shot_map/by_team/2/goals",
+      "passed": true
+    },
+    {
+      "fact_id": "f-9934a7611366",
+      "path": "/blocks/shot_map/by_team/2/xg",
+      "passed": true
+    },
+    {
+      "fact_id": "f-3f69b2a736c5",
+      "path": "/data/summary/shots",
+      "passed": true
+    },
+    {
+      "fact_id": "f-08edbd7e1e4e",
+      "path": "/data/summary/goals",
+      "passed": true
+    },
+    {
+      "fact_id": "f-b19b7de1f6b4",
+      "path": "/data/summary/conversion_rate",
+      "passed": true
+    },
+    {
+      "fact_id": "f-c7d336fada94",
+      "path": "/data/summary/on_target_rate",
+      "passed": true
+    },
+    {
+      "fact_id": "f-dac34ab08f4d",
+      "path": "/blocks/shot_map/by_team/1/shots_on_target",
+      "passed": true
+    },
+    {
+      "fact_id": "f-0b4881ba8081",
+      "path": "/blocks/shot_map/by_team/2/shots_on_target",
+      "passed": true
+    },
+    {
+      "fact_id": "f-149088ecc9be",
+      "path": "/data/summary/outcomes/Blocked",
+      "passed": true
+    },
+    {
+      "fact_id": "f-4bf19558b33b",
+      "path": "/data/summary/outcomes/Saved",
+      "passed": true
+    },
+    {
+      "fact_id": "f-640fbc6c6932",
+      "path": "/data/summary/outcomes/Off T",
+      "passed": true
+    },
+    {
+      "fact_id": "f-c148b9fedf81",
+      "path": "/data/summary/xg_per_shot",
+      "passed": true
+    },
+    {
+      "fact_id": "f-474474d0634f",
+      "path": "/blocks/xg_story/by_team/1/xg",
+      "passed": true
+    },
+    {
+      "fact_id": "f-9f30444d6b6c",
+      "path": "/blocks/xg_story/by_team/2/xg",
+      "passed": true
+    },
+    {
+      "fact_id": "f-b025062d64ca",
+      "path": "/data/summary/xg",
+      "passed": true
+    },
+    {
+      "fact_id": "f-39d118a84340",
+      "path": "/data/summary/body_parts/Right Foot",
+      "passed": true
+    },
+    {
+      "fact_id": "f-e6ccd05313a4",
+      "path": "/data/summary/body_parts/Left Foot",
+      "passed": true
+    },
+    {
+      "fact_id": "f-ec8fdb53a803",
+      "path": "/data/summary/body_parts/Head",
+      "passed": true
+    }
+  ],
+  "prompt_files_match_current": {
+    "interpreter": true,
+    "data": true,
+    "analyst": true,
+    "insights": true
+  }
+}

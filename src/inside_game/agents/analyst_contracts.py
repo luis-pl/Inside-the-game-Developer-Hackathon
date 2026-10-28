@@ -13,12 +13,15 @@ from inside_game.agents.contracts import (
     Message,
 )
 from inside_game.agents.insight_contracts import InsightResult
+from inside_game.insights.catalog import InsightId
 from inside_game.insights.contracts import AnalystNote
+from inside_game.language import Language
 
 
 class AnalysisRequest(DataRequest):
     data_result: DataResult | None = None
     review_visuals: bool = True
+    required_insights: list[InsightId] = Field(default_factory=list, max_length=40)
 
 
 class Fact(Message):
@@ -70,6 +73,7 @@ class AttachAnalysis(Message):
 
 class AnalysisResult(Message):
     request_id: UUID
+    language: Language = "es"
     status: Literal[
         "complete", "partial", "needs_clarification", "unsupported", "error"
     ]
@@ -84,6 +88,7 @@ class AnalysisResult(Message):
     elapsed_ms: float = 0
     model_turns: int = 0
     total_tokens: int = 0
+    context_events: list[dict] = Field(default_factory=list)
     tool_trace: list[dict] = Field(default_factory=list)
     data_request_ids: list[UUID] = Field(default_factory=list)
     visual_report: InsightResult | None = None

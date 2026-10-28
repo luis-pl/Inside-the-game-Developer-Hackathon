@@ -5,7 +5,7 @@ import json
 from types import SimpleNamespace
 from uuid import uuid4
 
-from inside_game.agents.analyst_contracts import AnalysisRequest, FinishAnalysis
+from inside_game.agents.analyst_contracts import AnalysisRequest
 from inside_game.agents.data_agent import tool_subset
 from inside_game.agents.experiments import T, requested_visuals, wants_topology
 from inside_game.agents.sports_analyst import SportsAnalyst, _Run
@@ -54,61 +54,6 @@ def test_tool_subset_keeps_discovery_and_falls_back_to_all():
     assert {"get_shots", "get_match_context", "describe_dataset"} <= shots
     assert "get_defensive_actions" not in shots
     assert tool_subset("Hola", OPERATIONS) == set(OPERATIONS)
-
-
-def test_task_state_tracks_requested_visual_and_outdated_page():
-    state = run_for("Mapa de tiros del equipo 2 y lectura de sus goles")
-    assert "Página: pendiente" in state.task_state()
-    assert "mapa de tiros [PENDIENTE]" in state.task_state()
-
-    state.merge(evidence_result())
-    state.visual = SimpleNamespace(blocks=[{"id": "xg_story"}], report_id=uuid4())
-    text = state.task_state()
-    assert "generada con xg_story" in text
-    assert "pidiendo lo que falta: mapa de tiros" in text
-
-    state.merge(evidence_result())
-    assert state.page_outdated
-    assert "DESACTUALIZADA" in state.task_state()
-
-
-def test_ensure_page_regenerates_missing_page_only_with_graceful(monkeypatch):
-    insights = Insights([{"id": "shot_map"}])
-    finish = FinishAnalysis(status="partial", sections=[])
-
-    monkeypatch.delenv("INSIDE_GAME_EXPERIMENTS", raising=False)
-    state = run_for("Mapa de tiros del equipo 2", insights)
-    state.merge(evidence_result())
-    asyncio.run(state.ensure_page(finish))
-    assert insights.calls == [] and state.visual is None
-
-    monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "graceful")
-    asyncio.run(state.ensure_page(finish))
-    assert len(insights.calls) == 1
-    assert insights.calls[0][0].startswith("mapa de tiros")
-    assert state.visual is not None and not state.page_outdated
-
-
-class FlakyInsights(Insights):
-    """El primer intento no publica página; el segundo sí."""
-
-    async def preview(self, request, *, timeout):
-        result, payload = await super().preview(request, timeout=timeout)
-        if len(self.calls) == 1:
-            result.report_id = None
-        return result, payload
-
-
-def test_ensure_page_falls_back_to_available_charts(monkeypatch):
-    monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "graceful")
-    insights = FlakyInsights([{"id": "shot_map"}])
-    state = run_for("Compara los tiros de los dos equipos", insights)
-    state.merge(evidence_result())
-    asyncio.run(state.ensure_page(FinishAnalysis(status="partial", sections=[])))
-    assert len(insights.calls) == 2
-    assert insights.calls[0][0].startswith("comparación")
-    assert "sólo con los gráficos que se puedan construir" in insights.calls[1][0]
-    assert state.has_page() and not state.insights_failed
 
 
 class PlanModel:
@@ -160,9 +105,14 @@ def test_interpreter_fills_known_match_only_with_guards(monkeypatch):
 
     from inside_game.providers.models import ModelFailure
 
+    # main ya recupera un único partido seleccionado; la bandera añade el
+    # partido nombrado en el texto cuando no hay selección.
     monkeypatch.delenv("INSIDE_GAME_EXPERIMENTS", raising=False)
+    assert interpret("Mapa de tiros del equipo 1", [900001]).context.match_ids == [
+        900001
+    ]
     with pytest.raises(ModelFailure, match="INTERPRETER_INVALID_PLAN"):
-        interpret("Mapa de tiros del equipo 1", [900001])
+        interpret("Mapa de tiros del partido 900002", [])
 
     monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "guards")
     assert interpret("Mapa de tiros del equipo 1", [900001]).context.match_ids == [
@@ -215,54 +165,6 @@ def test_fast_path_decides_with_original_question(monkeypatch):
     )
     assert original_question(text) == "¿Qué goles marcó el equipo 2?"
     assert original_question("sin pregunta original") == "sin pregunta original"
-
-
-def test_finish_publishes_valid_statements_after_repeated_rejection(monkeypatch):
-    import pytest
-
-    from inside_game.agents.sports_analyst import GroundingError
-
-    monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "graceful")
-    state = run_for("Lectura del equipo")
-    state.merge(evidence_result())
-    state.reviewed = True
-    good = state.facts[0].id
-    args = FinishAnalysis.model_validate(
-        {
-            "status": "complete",
-            "sections": [
-                {
-                    "heading": "Lectura",
-                    "statements": [
-                        {
-                            "kind": "observation",
-                            "text": "Dato verificado {{" + good + "}}.",
-                            "fact_ids": [good],
-                        },
-                        {
-                            "kind": "observation",
-                            "text": "Hubo 99 tiros escritos a mano.",
-                            "fact_ids": [good],
-                        },
-                    ],
-                }
-            ],
-        }
-    )
-    with pytest.raises(GroundingError):
-        state.finish(args.model_copy(deep=True))
-    result = state.finish(args.model_copy(deep=True))
-    assert result.status == "partial"
-    assert "99 tiros" not in result.text
-    assert any("Se omitieron 1" in item for item in result.limitations)
-
-
-def test_spent_budget_message(monkeypatch):
-    monkeypatch.setenv("INSIDE_GAME_EXPERIMENTS", "graceful,state")
-    state = run_for("Mapa de tiros del equipo 2")
-    state.merge(evidence_result())
-    state.previews = state.agent.limits.max_visual_requests
-    assert "no quedan peticiones de gráficos" in state.task_state()
 
 
 def test_label_mismatch_detects_goals_cited_as_shots():

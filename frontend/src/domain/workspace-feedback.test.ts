@@ -21,10 +21,10 @@ test("update targets identify changed graphs without accepting executable select
     analysis_updated: true,
   };
   assert.deepEqual(changedIds(changes), ["xg"]);
-  assert.match(changeLabel(changes), /gráficos añadidos/);
+  assert.match(changeLabel(changes), /charts added/);
   assert.equal(
     changeLabel({ ...changes, added: [], updated: [], title_changed: true }),
-    "Título actualizado",
+    "Title updated",
   );
 });
 test("panel sizes respect usable document space and persistable integer bounds", () => {
@@ -35,18 +35,18 @@ test("panel sizes respect usable document space and persistable integer bounds",
   assert.equal(clampPanel(350.4, 900, "chat"), 350);
 });
 test("an Insights timeout is explained as latency rather than missing data", () => {
-  assert.match(friendlyIssue("INSIGHTS_TIMEOUT"), /tardó/);
-  assert.doesNotMatch(friendlyIssue("INSIGHTS_TIMEOUT"), /no hay datos/);
-  assert.match(friendlyIssue("DATA_EVIDENCE_UNAVAILABLE"), /información/);
+  assert.match(friendlyIssue("INSIGHTS_TIMEOUT"), /longer than expected/);
+  assert.doesNotMatch(friendlyIssue("INSIGHTS_TIMEOUT"), /no data/);
+  assert.match(friendlyIssue("DATA_EVIDENCE_UNAVAILABLE"), /evidence/);
 });
 
 test("a conversational explanation does not claim the report was updated", () => {
   assert.equal(
     reportLinkLabel([{ delegation: { action: "answer" } }]),
-    "Ver el informe",
+    "View report",
   );
   assert.equal(
     reportLinkLabel([{ delegation: { action: "modify" } }]),
-    "Ver la actualización",
+    "View update",
   );
 });

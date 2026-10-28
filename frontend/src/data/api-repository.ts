@@ -9,7 +9,13 @@ async function read<T>(path: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch("/dashboard-api/" + path, { signal });
   const body = await response.json();
   if (!response.ok)
-    throw new Error(body.error || "No se pudo consultar el servidor de datos.");
+    throw new Error(
+      typeof body.error === "string"
+        ? body.error
+        : typeof body.error?.message === "string"
+          ? body.error.message
+          : "Could not reach the data server. Reconnect to the match catalogue or explore the local example.",
+    );
   return body as T;
 }
 

@@ -3,50 +3,46 @@ import type { Lab } from "../hooks/use-lab.ts";
 export function SummaryMetrics({ lab }: { lab: Lab }) {
   const { analysis, frame } = lab;
   const noPath = analysis?.free.startCovered
-    ? "Balón dentro de cobertura"
+    ? "Ball inside coverage"
     : frame?.ball
-      ? "Sin camino en esta malla"
-      : "Sin posición de balón";
+      ? "No path in this grid"
+      : "Ball position unavailable";
   return (
     <div className="metric-row">
       <Metric
-        label="GRUPOS DEL EQUIPO"
+        label="TEAM GROUPS"
         value={analysis ? String(analysis.h0) : "—"}
         note={
           analysis
-            ? `${analysis.baseline.groups.length} antes de retirar`
-            : "Conectividad del bloque"
+            ? `${analysis.baseline.groups.length} before removal`
+            : "Block connectivity"
         }
       />
       <Metric
-        label="APERTURAS DESTACADAS"
+        label="HIGHLIGHTED SPACES"
         value={analysis ? String(analysis.openings.length) : "—"}
-        note="Espacios interiores · hasta 3"
+        note="Interior spaces · up to 3"
       />
       <Metric
-        label="MAYOR APERTURA"
+        label="LARGEST SPACE"
         value={
           analysis?.openings[0]
             ? `${analysis.openings[0].diameter.toFixed(1)} m`
             : "—"
         }
-        note="Diámetro del círculo libre"
+        note="Diameter of the empty circle"
       />
       <Metric
-        label="CAMINO AL OBJETIVO"
+        label="PATH TO TARGET"
         value={
-          analysis
-            ? analysis.free.reachable
-              ? "Hay camino"
-              : "Sin camino"
-            : "—"
+          analysis ? (analysis.free.reachable ? "Connected" : "No path") : "—"
         }
         note={
           analysis
             ? analysis.free.reachable
-              ? "Bajo el radio elegido"
+              ? "At the selected radius"
               : noPath
-            : "Desde el balón"
+            : "From the ball"
         }
         compact
       />

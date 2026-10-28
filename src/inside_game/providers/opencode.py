@@ -209,7 +209,8 @@ class _ConsoleAuthorization:
                     raise ModelFailure("MODEL_FREE_STATUS_UNVERIFIED")
                 try:
                     provider = response.json()["config"]["provider"]["opencode-go"]
-                    cost = provider["models"][self.settings.deployment]["cost"]
+                    model_info = provider["models"][self.settings.deployment]
+                    cost = model_info["cost"]
                     if (
                         provider["api"] != GO_ENDPOINT
                         or not all(
@@ -221,6 +222,11 @@ class _ConsoleAuthorization:
                         )
                     ):
                         raise ValueError
+                    limits = model_info.get("limit")
+                    native = limits.get("context") if isinstance(limits, dict) else None
+                    self.context_window_tokens = (
+                        native if type(native) is int and native > 0 else None
+                    )
                 except (ValueError, TypeError, KeyError):
                     raise ModelFailure("MODEL_FREE_STATUS_UNVERIFIED") from None
         if self.settings.provider == "opencode-go":

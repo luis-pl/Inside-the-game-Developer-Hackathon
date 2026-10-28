@@ -1,0 +1,212 @@
+{
+  "date": "2026-10-27",
+  "base_commit": "77b2e798c7e37d54ee21144fe32b2fe290e64a8a",
+  "scope": "audit; documentation-only provenance clarification authorized during review",
+  "application_code_changed": false,
+  "cloud_changes": false,
+  "push_performed": false,
+  "python_tests": {
+    "passed": 435,
+    "duration_seconds": 16.39
+  },
+  "frontend_tests": {
+    "passed": 46
+  },
+  "typescript": "passed",
+  "frontend_build": "passed",
+  "pip_check": "passed",
+  "http_negative_checks": [
+    {
+      "case": "browser_without_session",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "case": "agents_without_bearer",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "case": "mutation_without_header",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "case": "cross_origin",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "case": "arbitrary_sql_route",
+      "status": 404,
+      "expected": 404,
+      "passed": true
+    },
+    {
+      "case": "invalid_request_id",
+      "status": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "case": "empty_message",
+      "status": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "case": "too_long_message",
+      "status": 422,
+      "expected": 422,
+      "passed": true
+    },
+    {
+      "case": "unknown_conversation",
+      "status": 404,
+      "expected": 404,
+      "passed": true
+    }
+  ],
+  "new_live_run": {
+    "elapsed_ms": 45954,
+    "report_status": "complete",
+    "blocks": [
+      {
+        "id": "shot_map",
+        "insight_id": "shot_map",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+        ]
+      },
+      {
+        "id": "xg_story",
+        "insight_id": "xg_story",
+        "state": "ready",
+        "warnings": [
+          "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+          "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+        ]
+      }
+    ],
+    "facts_checked": 22,
+    "fact_checks_passed": 22,
+    "tokens_observed": 118258,
+    "tokens_complete": false,
+    "model": "beam-free",
+    "repaired_tool_errors": 3
+  },
+  "dependencies": {
+    "frontend_npm_advisories": 0,
+    "sql_npm_high_dependency_paths": 3,
+    "sql_unique_root_advisories": [
+      "GHSA-xcx6-jx8p-x3h5"
+    ],
+    "sql_exploitable_flow_not_demonstrated": true,
+    "python_unique_advisories": [
+      "PYSEC-2026-1795",
+      "PYSEC-2026-1796",
+      "PYSEC-2026-196",
+      "PYSEC-2026-2875",
+      "PYSEC-2026-2876",
+      "PYSEC-2026-3721"
+    ],
+    "python_affected_package": "pip==25.0.1",
+    "python_runtime_library_findings": 0
+  },
+  "controlled_proofs": {
+    "semantic_guard": {
+      "unsupported_statement_accepted": true,
+      "statement": {
+        "kind": "interpretation",
+        "text": "La defensa es impenetrable y asegura la victoria.",
+        "fact_ids": [
+          "f-123456789abc"
+        ]
+      },
+      "fact": {
+        "id": "f-123456789abc",
+        "value": 100,
+        "label": "hull_area_m2",
+        "evidence_ids": [
+          "e-test"
+        ],
+        "operation": "get_team_shape",
+        "path": "/shape/hull_area_m2",
+        "scope": {
+          "match_id": 900001
+        },
+        "provenance": {
+          "is_synthetic": true
+        },
+        "block_id": null,
+        "unit": null
+      },
+      "scope": "controlled validator test; no LLM or persisted report"
+    },
+    "memory_accounting": {
+      "configured_html_limit_bytes": 64,
+      "html_bytes": 9,
+      "retained_serialized_result_bytes": 1000465,
+      "published": true,
+      "scope": "isolated in-memory fixture; no production state"
+    },
+    "known_agent_key_scan": {
+      "tracked_files_matched": [],
+      "built_frontend_files_matched": [],
+      "scope": "exact current agent-data key only; not a general secret/history scan"
+    }
+  },
+  "ui": {
+    "desktop": [
+      1280,
+      720
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "horizontal_overflow_observed": false,
+    "keyboard_chat_separator_values": [
+      350,
+      340,
+      350
+    ],
+    "team_name_dark_contrast_ratios": [
+      3.683198136170125,
+      3.534406611068968
+    ],
+    "team_name_font": {
+      "size_px": 17.6,
+      "weight": 700,
+      "required_contrast": 4.5
+    },
+    "trace_view": "raw JSON",
+    "flow_graph_in_product": false,
+    "mechanical_detector_findings": 0,
+    "score": {
+      "accessibility": 2,
+      "performance": 2,
+      "responsive": 3,
+      "theming": 2,
+      "integrity": 3,
+      "total": 12
+    }
+  },
+  "repo_visibility": "PRIVATE",
+  "deadlines_bogota": {
+    "submission": "2026-10-28T01:59:00-05:00",
+    "judging_end": "2026-11-11T02:59:00-05:00"
+  },
+  "compliance_certified": false,
+  "limitations": [
+    "No full penetration, load, browser/screen-reader, Git history secret or container CVE audit.",
+    "One fresh live end-to-end case does not prove a latency SLO or every metric/source/recipe.",
+    "No billing, credentials, access policy, application code, prompts or data rows changed."
+  ]
+}

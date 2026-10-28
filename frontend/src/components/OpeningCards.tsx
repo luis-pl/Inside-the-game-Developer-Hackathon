@@ -20,13 +20,13 @@ export function OpeningCards({
           >
             <span className="opening-number">{opening.id}</span>
             <span>
-              <strong>{opening.diameter.toFixed(1)} m de espacio</strong>
+              <strong>{opening.diameter.toFixed(1)} m of space</strong>
               <small>
                 {opening.ballConnected === null
-                  ? "Conexión al balón desconocida"
+                  ? "Ball connection unknown"
                   : opening.ballConnected
-                    ? "Conectada con el balón"
-                    : "Sin conexión con el balón"}
+                    ? "Connected to the ball"
+                    : "Not connected to the ball"}
               </small>
             </span>
             <span className="opening-status">
@@ -36,14 +36,14 @@ export function OpeningCards({
         ))
       ) : (
         <p className="small muted">
-          No se detectan círculos libres de al menos 1 m de radio dentro del
-          bloque con este ajuste. Puede haber espacio por fuera del bloque.
+          No empty circles with radius at least 1 m are detected within the
+          block at this setting. Space may exist outside the block.
         </p>
       )}
       <p className="opening-help">
-        Cada círculo cabe sin tocar las zonas de cobertura. Su tamaño es el
-        diámetro. Se destacan hasta tres aperturas; las etiquetas se recalculan
-        en cada muestra.
+        Each circle fits without touching coverage zones. Size is its diameter.
+        Up to three spaces are highlighted; labels are recalculated at each
+        sample.
       </p>
     </div>
   );

@@ -26,6 +26,27 @@ class ModelFailure(Exception):
 class ModelTurn:
     output: list[dict]
     total_tokens: int = 0
+    input_tokens: int | None = None
+    output_tokens: int | None = None
+    cached_tokens: int | None = None
+
+
+def token_usage(payload):
+    usage = payload.get("usage") or {}
+
+    def count(value):
+        return value if type(value) is int and value >= 0 else None
+
+    details = (
+        usage.get("input_tokens_details", usage.get("prompt_tokens_details")) or {}
+    )
+    return {
+        "input_tokens": count(usage.get("input_tokens", usage.get("prompt_tokens"))),
+        "output_tokens": count(
+            usage.get("output_tokens", usage.get("completion_tokens"))
+        ),
+        "cached_tokens": count(details.get("cached_tokens")),
+    }
 
 
 class ModelProvider(Protocol):
@@ -158,7 +179,9 @@ class AzureResponsesModel:
         ):
             raise ModelFailure("MODEL_INCOMPLETE_RESPONSE")
         return ModelTurn(
-            payload["output"], int((payload.get("usage") or {}).get("total_tokens", 0))
+            payload["output"],
+            int((payload.get("usage") or {}).get("total_tokens", 0)),
+            **token_usage(payload),
         )
 
     def _base_url(self):
@@ -353,7 +376,9 @@ class AzureChatModel(AzureResponsesModel):
                     }
                 )
             return ModelTurn(
-                output, int((payload.get("usage") or {}).get("total_tokens", 0))
+                output,
+                int((payload.get("usage") or {}).get("total_tokens", 0)),
+                **token_usage(payload),
             )
         except (KeyError, IndexError, TypeError, ValueError):
             raise ModelFailure("MODEL_INVALID_RESPONSE") from None

@@ -31,16 +31,16 @@ export function localScenario(): Episode {
   return {
     window: { startMs: 600000, endMs: 900000, sampleStepMs: 1000 },
     source: "local",
-    matchLabel: "Laboratorio · apertura del bloque",
+    matchLabel: "Local lab · opening the defensive block",
     period: 1,
     homeAttacksRight: true,
     teams: [
-      { id: 1, name: "Equipo Ámbar" },
-      { id: 2, name: "Equipo Menta" },
+      { id: 1, name: "Amber Team" },
+      { id: 2, name: "Mint Team" },
     ],
     warnings: [
-      "Escenario geométrico generado localmente. No corresponde a un partido de la base Azure.",
-      "Pases ilustrativos: un triángulo y un cuadrado sin diagonales para explorar Hodge.",
+      "Locally generated geometric scenario. This is not a match from the Azure database.",
+      "Illustrative passes: a triangle and a square without diagonals for exploring Hodge decomposition.",
     ],
     passes: [1, 2].flatMap((team) =>
       [
@@ -63,8 +63,8 @@ export function localScenario(): Episode {
       ),
     ),
     events: [
-      { timeMs: 675000, label: "Inicio del desplazamiento ilustrativo" },
-      { timeMs: 750000, label: "Separación máxima del escenario" },
+      { timeMs: 675000, label: "Start of illustrative movement" },
+      { timeMs: 750000, label: "Maximum separation in this scenario" },
     ],
     frames: Array.from({ length: 300 }, (_, second) => {
       const phase = second / 5;
@@ -79,7 +79,7 @@ export function localScenario(): Episode {
             id: team * 100 + i + 1,
             teamId: team,
             number: i + 1,
-            name: `${team === 1 ? "Ámbar" : "Menta"} ${i + 1}`,
+            name: `${team === 1 ? "Amber" : "Mint"} ${i + 1}`,
             goalkeeper: i === 0,
             x:
               x +

@@ -16,6 +16,7 @@ from uuid import uuid4
 from pydantic import ValidationError
 
 from inside_game.insights.catalog import RECIPES
+from inside_game.language import wording
 
 from .composer import compose
 from .contracts import (
@@ -61,13 +62,19 @@ class InsightsAgent:
                 result = await self._ask(request, timings)
         except TimeoutError:
             result = error_result(
-                request.request_id, "DEADLINE_EXCEEDED", request.previous
+                request.request_id,
+                "DEADLINE_EXCEEDED",
+                request.previous,
+                language=request.language,
             )
         except Exception:
             # Frontera pública: el detalle queda en el log, no en la respuesta.
             log.exception("insights ask failed request=%s", request.request_id)
             result = error_result(
-                request.request_id, "INSIGHTS_AGENT_FAILED", request.previous
+                request.request_id,
+                "INSIGHTS_AGENT_FAILED",
+                request.previous,
+                language=request.language,
             )
         timings["total_ms"] = _ms(started)
         result.answer.timings_ms.update(timings)
@@ -78,11 +85,17 @@ class InsightsAgent:
         intent = request.intent
         if intent is None:
             if self.planner is None:
-                return error_result(request.request_id, "MODEL_UNAVAILABLE", previous)
+                return error_result(
+                    request.request_id,
+                    "MODEL_UNAVAILABLE",
+                    previous,
+                    language=request.language,
+                )
             started = time.perf_counter()
             planned = await self.planner.plan(
                 InsightQuestion(
                     request_id=request.request_id,
+                    language=request.language,
                     question=request.question,
                     previous_intent=previous.intent,
                     clarification=previous.clarification,
@@ -124,14 +137,17 @@ class InsightsAgent:
                     request.request_id,
                     planned.issues[-1] if planned.issues else "PLANNER_FAILED",
                     previous,
+                    language=request.language,
                 )
-            intent = planned.intent
+            intent = planned.intent.model_copy(update={"language": request.language})
         started = time.perf_counter()
         try:
             plan = await self.resolver.resolve(intent)
         except ValueError as exc:
             code, cause = resolver_error(exc)
-            return error_result(request.request_id, code, previous, cause)
+            return error_result(
+                request.request_id, code, previous, cause, language=request.language
+            )
         timings["resolve_ms"] = _ms(started)
         started = time.perf_counter()
         title = report_title(plan)
@@ -186,8 +202,10 @@ def resolver_error(exc):
     return code, cause if CODE.match(cause) else None
 
 
-def error_result(request_id, code, previous, cause=None):
-    if code in ERROR_TEXT:
+def error_result(request_id, code, previous, cause=None, *, language="es"):
+    if language != "es":
+        summary = wording("failed", language)
+    elif code in ERROR_TEXT:
         summary = ERROR_TEXT[code]
     elif code.startswith("MODEL_"):
         summary = "El modelo no pudo interpretar la pregunta: envía una intención estructurada o inténtalo más tarde."
@@ -226,6 +244,27 @@ def clock(ms):
 
 def report_title(plan: ResolvedPlan):
     intent, labels = plan.intent, plan.labels
+    if intent.language != "es":
+        key = {
+            "match_overview": "overview",
+            "player_dossier": "dossier",
+            "entity_comparison": "comparison",
+            "tactical_episode": "episode",
+        }.get(intent.template_id, "report")
+        topic = wording(key, intent.language)
+        if intent.player_id and labels.player:
+            topic += " " + labels.player
+        title = f"{topic} · {labels.match}"
+        period, moment = plan.decisions.get("period"), plan.decisions.get("time_ms")
+        if moment is not None:
+            title += f" · P{period} {clock(moment)}"
+        elif intent.period:
+            title += f" · P{intent.period}"
+        return title + (
+            " (" + wording("synthetic_tag", intent.language) + ")"
+            if labels.synthetic
+            else ""
+        )
     if intent.template_id == "match_overview":
         title = f"Resumen · {labels.match}"
     elif intent.template_id == "player_dossier":
@@ -267,6 +306,36 @@ def source_phrase(labels):
 def summarize(plan, composition, title):
     """Qué se muestra, qué no y por qué. Sin cifras deportivas ni interpretación."""
     labels = plan.labels
+    language = plan.intent.language
+    if language != "es":
+        source = (
+            wording("synthetic", language)
+            if labels.synthetic
+            else wording(
+                labels.data_kind
+                if labels.data_kind in {"real_anonymized", "real_pseudonymized"}
+                else "real",
+                language,
+            )
+        )
+        if labels.provider:
+            source += " · " + labels.provider
+        lines = [f"{title}. {wording('source_tag', language)}: {source}"]
+        lines.append(
+            wording("displayed", language).format(
+                count=len(composition.blocks),
+                shown="; ".join(b.title for b in composition.blocks),
+            )
+            if composition.blocks
+            else wording("no_blocks", language)
+        )
+        lines.extend(
+            wording("not_displayed", language).format(
+                name=RECIPES[b.insight_id]["title"], reason=b.reason
+            )
+            for b in composition.discarded
+        )
+        return " ".join([*lines, *decision_notes(plan, composition)])
     team_names = {
         plan.home_team_id: labels.home_team,
         plan.away_team_id: labels.away_team,
@@ -295,6 +364,33 @@ def summarize(plan, composition, title):
 def decision_notes(plan, composition):
     """Lo que el agente decidió sin que el usuario lo dijera: equipo e instante."""
     labels = plan.labels
+    language = plan.intent.language
+    if language != "es":
+        lines = []
+        if plan.intent.team_id is None and plan.intent.player_id is None:
+            lines.append(
+                wording("focus_default", language).format(team=labels.focus_team)
+            )
+        if adjusted := plan.decisions.get("team_adjusted_from"):
+            names = {
+                plan.home_team_id: labels.home_team,
+                plan.away_team_id: labels.away_team,
+            }
+            lines.append(
+                wording("focus_adjusted", language).format(
+                    team=labels.focus_team, requested=names.get(adjusted, str(adjusted))
+                )
+            )
+        if any(b.insight_id in SNAPSHOT for b in composition.blocks):
+            moment = f"P{plan.decisions['period']} {clock(plan.decisions['time_ms'])}"
+            key = (
+                "instant_adjusted"
+                if "instant_adjusted_from_ms" in plan.decisions
+                or "moment_ms" in plan.decisions
+                else "instant"
+            )
+            lines.append(wording(key, language).format(moment=moment))
+        return lines
     team_names = {
         plan.home_team_id: labels.home_team,
         plan.away_team_id: labels.away_team,

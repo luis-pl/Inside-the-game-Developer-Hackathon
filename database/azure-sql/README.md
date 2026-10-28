@@ -1,5 +1,10 @@
 # Base de fútbol en Azure SQL
 
+La demo sintética utiliza los diez partidos `900001`–`900010`, con eventos,
+seguimiento y xG ilustrativo generados. Las importaciones de referencia que se
+describen a continuación son un conjunto separado con identidades enmascaradas.
+[Procedencia por campo y enriquecimiento sintético](../../docs/data-provenance.md).
+
 ## Datos actuales: partidos reales anonimizados
 
 El visor usa por defecto **diez partidos reales distintos**, sin contar el historial sintético:

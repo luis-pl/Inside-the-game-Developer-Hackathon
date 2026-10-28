@@ -27,15 +27,11 @@ from inside_game.agents.analyst_facts import (
     source_key,
     visual_facts,
 )
+from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataRequest, DataResult
-from inside_game.agents.experiments import (
-    T,
-    experiment,
-    label_mismatches,
-    requested_visuals,
-    wants_topology,
-)
+from inside_game.agents.experiments import T
 from inside_game.agents.insight_contracts import InsightRequest, RetrieveData
+from inside_game.language import wording
 from inside_game.providers.models import ModelFailure
 
 
@@ -80,6 +76,10 @@ def normalize_finish_arguments(raw):
         return args, changed
     for key in ("status", "sections", "limitations", "title", "clarification"):
         value = args.get(key)
+        if key == "limitations" and value == "":
+            args[key] = []
+            changed.append(key)
+            continue
         if not isinstance(value, str) or not value.lstrip().startswith(("[", "{", '"')):
             continue
         try:
@@ -93,6 +93,51 @@ def normalize_finish_arguments(raw):
         except ValueError:
             pass
     return args, changed
+
+
+def ground_source_literals(text, facts):
+    """Replace exact source strings, never an arbitrary numeric assertion.
+
+    Canonical player names may contain digits. Reusing the original name through
+    its fact placeholder does not invent an identity, metric or interpretation.
+    """
+    matches = {
+        f.scope.get("match_id") for f in facts if f.scope.get("match_id") is not None
+    }
+    if len(matches) > 1:
+        return text
+    labels = {
+        "player_name",
+        "home_team_name",
+        "away_team_name",
+        "team_name",
+        "recorded_pass_link",
+    }
+    for item in sorted(facts, key=lambda f: len(str(f.value)), reverse=True):
+        if (
+            item.label in labels
+            and isinstance(item.value, str)
+            and re.search(r"\d", item.value)
+            and any(character.isalpha() for character in item.value)
+        ):
+            text = re.sub(
+                r"(?<!\w)" + re.escape(item.value) + r"(?!\w)",
+                lambda _, fact_id=item.id: "{{" + fact_id + "}}",
+                text,
+            )
+        elif item.label == "sampling_hz":
+            value = (
+                str(int(item.value))
+                if float(item.value).is_integer()
+                else str(item.value)
+            )
+            text = re.sub(
+                r"(?<![\w.])" + re.escape(value) + r"\s*(Hz|hertz|hercios)\b",
+                lambda m, fact_id=item.id: "{{" + fact_id + "}} " + m[1],
+                text,
+                flags=re.IGNORECASE,
+            )
+    return text
 
 
 class SportsAnalyst:
@@ -118,16 +163,13 @@ class SportsAnalyst:
         except ModelFailure as exc:
             return state.result("error", issues=[exc.code])
         except (ValidationError, ValueError) as exc:
-            # EXPERIMENTO LOCAL "guards": mostrar la causa conocida en lugar del
-            # genérico, que ocultaba p. ej. FACT_BUDGET_EXCEEDED.
-            code = str(exc)
-            known = {
+            # Port of d534334's bounded diagnostics; never expose arbitrary errors.
+            if str(exc) in {
                 "FACT_BUDGET_EXCEEDED",
                 "EVIDENCE_BUDGET_EXCEEDED",
                 "EVIDENCE_MATCH_MISMATCH",
-            }
-            if experiment("guards") and code in known:
-                return state.result("error", issues=[code])
+            }:
+                return state.result("error", issues=[str(exc)])
             return state.result("error", issues=["INVALID_ANALYSIS_DATA"])
         except Exception:  # noqa: BLE001 - no exponer respuestas SDK ni cabeceras.
             return state.result("error", issues=["ANALYST_EXECUTION_FAILED"])
@@ -146,33 +188,16 @@ class _Run:
         self.visual = None
         self.reviewed = False
         self.visual_aliases = {}
-        # EXPERIMENTO LOCAL: elementos del catálogo ya enviados al modelo.
-        self.sent = {"facts": set(), "scopes": set(), "evidence": set()}
-        # EXPERIMENTO LOCAL "graceful": cierre con lo disponible.
-        self.closing_notified = False
-        self.insights_failed = False
-        self.state_message = None
-        self.page_outdated = False
-        self.grounding_failures = 0
+        self.sent_catalog = {}
+        self.retrieval_issues = []
+        self.visual_failed = False
+        self.context_window = ContextWindow(agent.limits.max_input_bytes)
 
     def remaining(self):
         return max(
             0.01,
             self.agent.limits.timeout_seconds - (time.perf_counter() - self.started),
         )
-
-    def query_budget(self, cap):
-        """Plazo de una consulta a Data/Insights.
-
-        EXPERIMENTO LOCAL "graceful": deja libre el 30 % final del plazo para que
-        el modelo redacte con lo que ya tiene; sin tiempo, la consulta no se hace.
-        """
-        if not experiment("graceful"):
-            return min(cap, self.remaining())
-        budget = self.remaining() - 0.3 * self.agent.limits.timeout_seconds
-        if self.facts and budget < 5:
-            raise ModelFailure("NO_TIME_FOR_MORE_QUERIES")
-        return max(0.01, min(cap, budget if self.facts else self.remaining()))
 
     def merge(self, result):
         self.partial |= result.status != "complete"
@@ -198,8 +223,6 @@ class _Run:
         ):
             raise ValueError("EVIDENCE_BUDGET_EXCEEDED")
         self.facts = evidence_facts(self.evidence)
-        # Los gráficos anteriores ya no cubren toda la evidencia.
-        self.page_outdated = self.visual is not None
         self.reviewed = False
         self.visual = None
         self.visual_aliases = {}
@@ -207,14 +230,17 @@ class _Run:
             raise ValueError("FACT_BUDGET_EXCEEDED")
 
     def result(self, status, **kwargs):
+        kwargs["issues"] = [*self.retrieval_issues, *kwargs.get("issues", [])]
         return AnalysisResult(
             request_id=self.request.request_id,
+            language=self.request.language,
             status=status,
             model=self.agent.model.name,
             prompt_sha256=hashlib.sha256(self.agent.prompt.encode()).hexdigest(),
             elapsed_ms=round((time.perf_counter() - self.started) * 1000, 3),
             model_turns=self.turns,
             total_tokens=self.tokens,
+            context_events=self.context_window.events,
             tool_trace=self.trace,
             data_request_ids=self.data_ids,
             visual_report=self.visual,
@@ -269,53 +295,61 @@ class _Run:
         }
 
     def catalog_delta(self):
-        """EXPERIMENTO LOCAL: el historial ya contiene lo enviado antes; reenviar
-        el catálogo completo en cada respuesta de herramienta lo multiplicaba.
-        Los IDs se calculan sobre el catálogo completo, así que siguen estables."""
+        """Send only changed entries, retaining all originals and valid history.
+
+        Compare values, not just IDs: scope mappings may change after a merge.
+        Removed visual facts are explicit so stale evidence cannot be reused.
+        """
         full = self.catalog()
-        facts = [f for f in full["facts"] if f["id"] not in self.sent["facts"]]
-        scopes = {
-            k: v
-            for k, v in full["scope_catalog"].items()
-            if k not in self.sent["scopes"]
+        current = {
+            "facts": {f["id"]: f for f in full["facts"]},
+            "scope_catalog": full["scope_catalog"],
+            "method_notes": {e["evidence_id"]: e for e in full["method_notes"]},
+            "evidence_catalog": {e["evidence_id"]: e for e in full["evidence_catalog"]},
         }
-        notes = [
-            n
-            for n in full["method_notes"]
-            if n["evidence_id"] not in self.sent["evidence"]
-        ]
-        evidence = [
-            e
-            for e in full["evidence_catalog"]
-            if e["evidence_id"] not in self.sent["evidence"]
-        ]
-        self.sent["facts"].update(f["id"] for f in facts)
-        self.sent["scopes"].update(scopes)
-        self.sent["evidence"].update(e["evidence_id"] for e in evidence)
+        delta = {"catalog_is_delta": bool(self.sent_catalog)}
+        delta["removed_fact_ids"] = sorted(
+            self.sent_catalog.get("facts", {}).keys() - current["facts"].keys()
+        )
+        for key, entries in current.items():
+            previous = self.sent_catalog.get(key, {})
+            changed = {k: v for k, v in entries.items() if previous.get(k) != v}
+            delta[key] = changed if key == "scope_catalog" else list(changed.values())
+        self.sent_catalog = current
+        return delta
+
+    def task_state(self):
         return {
-            "catalog_is_delta": True,
-            "scope_catalog": scopes,
-            "method_notes": notes,
-            "facts": facts,
-            "evidence_catalog": evidence,
+            "evidence_count": len(self.evidence),
+            "fact_count": len(self.facts),
+            "visual_review_required": self.request.review_visuals,
+            "visual_reviewed": self.reviewed,
+            "visual_failed": self.visual_failed,
+            "visual_status": self.visual.status if self.visual else None,
+            "remaining_data_requests": self.agent.limits.max_data_requests
+            - self.fetches,
+            "remaining_visual_requests": self.agent.limits.max_visual_requests
+            - self.previews,
+            "partial": self.partial,
+        }
+
+    def checkpoint(self):
+        self.sent_catalog = {}
+        return {
+            "request_id": str(self.request.request_id),
+            "request": self.request.model_dump(mode="json", exclude={"data_result"}),
+            "task_state": self.task_state(),
+            **self.catalog_delta(),
         }
 
     async def execute(self):
         if self.request.data_result:
             self.merge(self.request.data_result)
-        data_description = "Solicita evidencia original a Data por HTTP. Agrupa consultas; conserva contexto. Topología: get_team_shape, get_proximity_connectivity, get_space_coverage, get_persistent_structure, get_node_removal_robustness, con instante/ventana explícitos."
-        if experiment("topo"):
-            # EXPERIMENTO LOCAL: ofrecer topología sólo si la petición la pide.
-            data_description = (
-                "Solicita evidencia original a Data por HTTP. Agrupa consultas; conserva contexto. "
-                + (
-                    "Topología: como máximo una consulta, de un instante (event_id o time_ms) o ventana corta, vista summary."
-                    if wants_topology(self.request.request_text)
-                    else "La petición no requiere topología ni tracking: no los pidas."
-                )
-            )
         contracts = {
-            "request_data": (RetrieveData, data_description),
+            "request_data": (
+                RetrieveData,
+                "Solicita evidencia original a Data por HTTP. Agrupa consultas; conserva contexto. Topología: get_team_shape, get_proximity_connectivity, get_space_coverage, get_persistent_structure, get_node_removal_robustness, con instante/ventana explícitos.",
+            ),
             "request_insights": (
                 VisualRequest,
                 "Pide gráficos a Insights usando sólo evidencia suministrada. Devuelve hechos del renderer y estados; revísalos antes de redactar.",
@@ -344,24 +378,24 @@ class _Run:
                         "request": self.request.model_dump(
                             mode="json", exclude={"data_result"}
                         ),
-                        **(
-                            self.catalog_delta()
-                            if experiment("delta")
-                            else self.catalog()
-                        ),
+                        **self.catalog_delta(),
                     },
                     ensure_ascii=False,
                 ),
             }
         ]
         for _ in range(self.agent.limits.max_turns):
-            if (
-                len(json.dumps([self.agent.prompt, messages, tools]).encode())
-                > self.agent.limits.max_input_bytes
-            ):
-                return self.result("error", issues=["CONTEXT_BUDGET_EXCEEDED"])
+            # Refresh only host state, retaining the original task and all
+            # tool/result pairs. The first message keeps the Go session UUID.
+            root = json.loads(messages[0]["content"])
+            root["task_state"] = self.task_state()
+            messages[0]["content"] = json.dumps(root, ensure_ascii=False)
             active_tools = tools
-            if self.request.review_visuals and not self.reviewed:
+            if (
+                self.request.review_visuals
+                and not self.reviewed
+                and not self.visual_failed
+            ):
                 active_tools = [
                     {
                         **tool,
@@ -372,54 +406,18 @@ class _Run:
                     else tool
                     for tool in tools
                 ]
-                if experiment("graceful") and self.insights_failed:
-                    active_tools = tools
-            if (
-                experiment("graceful")
-                and self.facts
-                and self.remaining() < 0.3 * self.agent.limits.timeout_seconds
-            ):
-                # EXPERIMENTO LOCAL: reservar el final del plazo para redactar.
-                allowed = {"finish_analysis"}
-                if (
-                    self.request.review_visuals
-                    and not self.reviewed
-                    and not self.insights_failed
-                ):
-                    allowed.add("request_insights")
-                active_tools = [t for t in active_tools if t["name"] in allowed]
-                if not self.closing_notified:
-                    self.closing_notified = True
-                    messages.append(
-                        {
-                            "role": "user",
-                            "content": "Tiempo casi agotado. No pidas más datos. "
-                            + (
-                                "Llama una vez a request_insights y después a finish_analysis"
-                                if "request_insights" in allowed
-                                else "Llama ya a finish_analysis"
-                            )
-                            + " con status partial, usando sólo los hechos disponibles e indicando en limitations lo que quedó fuera.",
-                        }
-                    )
-            if experiment("graceful"):
-                # EXPERIMENTO LOCAL: herramientas sin presupuesto no se ofrecen.
-                spent = set()
-                if self.previews >= self.agent.limits.max_visual_requests:
-                    spent.add("request_insights")
-                if self.fetches >= self.agent.limits.max_data_requests:
-                    spent.add("request_data")
-                active_tools = [t for t in active_tools if t["name"] not in spent]
-            if experiment("state"):
-                # EXPERIMENTO LOCAL: un único mensaje de estado, siempre al final.
-                if self.state_message in messages:
-                    messages.remove(self.state_message)
-                self.state_message = {"role": "user", "content": self.task_state()}
-                messages.append(self.state_message)
+            self.context_window.prepare(
+                self.agent.model,
+                self.agent.prompt,
+                messages,
+                active_tools,
+                self.checkpoint,
+            )
             turn = await self.agent.model.respond(
                 self.agent.prompt, messages, active_tools
             )
             self.turns += 1
+            self.context_window.observe(turn)
             self.tokens += turn.total_tokens
             messages.extend(turn.output)
             calls = [c for c in turn.output if c.get("type") == "function_call"]
@@ -431,26 +429,30 @@ class _Run:
                     }
                 )
                 continue
-            finishes = [c for c in calls if c.get("name") == "finish_analysis"]
-            if experiment("graceful") and len(calls) > 1 and finishes:
-                # EXPERIMENTO LOCAL: varios finish en un turno (p. ej. uno por
-                # sección). Se procesa el primero y se explica cómo corregirlo.
-                for extra in calls:
-                    if extra is not finishes[0]:
-                        messages.append(
-                            {
-                                "type": "function_call_output",
-                                "call_id": extra["call_id"],
-                                "output": json.dumps(
-                                    {
-                                        "error": "IGNORED_EXTRA_CALL",
-                                        "fix": "Llama a finish_analysis UNA sola vez, con todas las secciones dentro de esa llamada.",
-                                    },
-                                    ensure_ascii=False,
-                                ),
-                            }
-                        )
-                calls = finishes[:1]
+            if len(calls) > 1 and any(
+                c.get("name") == "finish_analysis" for c in calls
+            ):
+                # Reject the whole batch and close every call_id before retrying.
+                # Finishing alongside retrieval must never discard a requested
+                # product or run a query after finalization was proposed.
+                for call in calls:
+                    messages.append(
+                        {
+                            "type": "function_call_output",
+                            "call_id": call["call_id"],
+                            "output": json.dumps({"error": "FINISH_MUST_BE_SEPARATE"}),
+                        }
+                    )
+                    self.trace.append(
+                        {
+                            "tool": call.get("name")
+                            if call.get("name") in contracts
+                            else "unknown",
+                            "status": "error",
+                            "error": "FINISH_MUST_BE_SEPARATE",
+                        }
+                    )
+                continue
             for call in calls:
                 if len(self.trace) >= self.agent.limits.max_calls:
                     return self.result("error", issues=["TOOL_BUDGET_EXCEEDED"])
@@ -475,7 +477,6 @@ class _Run:
                     if len(calls) > 1 and name == "finish_analysis":
                         raise ValueError("FINISH_MUST_BE_SEPARATE")
                     if name == "finish_analysis":
-                        await self.ensure_page(args)
                         result = self.finish(args)
                         entry.update(
                             status="ok",
@@ -484,23 +485,8 @@ class _Run:
                         return result.model_copy(
                             update={"tool_trace": self.trace}, deep=True
                         )
-                    try:
-                        output = await self.query(name, args)
-                    except ModelFailure as exc:
-                        # EXPERIMENTO LOCAL: un fallo de Data/Insights no aborta el
-                        # análisis si ya hay hechos; el modelo propio sí aborta.
-                        if not experiment("graceful"):
-                            raise
-                        self.partial = True
-                        if name == "request_insights":
-                            self.insights_failed = True
-                        output = {
-                            "error": exc.code,
-                            "fix": "Esa consulta no está disponible. No la repitas. Redacta con los hechos que ya tienes: finish_analysis con status partial y explica en limitations lo que faltó.",
-                        }
-                        entry["status"] = "error"
-                    else:
-                        entry["status"] = "ok"
+                    output = await self.query(name, args)
+                    entry["status"] = "ok"
                 except GroundingError as exc:
                     output = {
                         "error": "INVALID_ANALYSIS_FACTS",
@@ -508,6 +494,7 @@ class _Run:
                         "repair": "Corrige TODAS las afirmaciones indicadas. Sustituye cada cifra por un placeholder real y cita su ID. Escribe primer/segundo tiempo en lugar de P1/P2. Mueve advertencias generales a limitations.",
                     }
                     entry["status"] = "error"
+                    entry["error_fields"] = exc.fields
                 except ValidationError as exc:
                     output = {
                         "error": "INVALID_ARGUMENT",
@@ -517,13 +504,26 @@ class _Run:
                         ],
                     }
                     entry["status"] = "error"
+                    entry["error_fields"] = output["fields"]
                 except ModelFailure as exc:
                     entry.update(
                         status="error",
                         error=exc.code,
                         elapsed_ms=round((time.perf_counter() - started) * 1000, 3),
                     )
-                    raise
+                    if (
+                        name not in {"request_data", "request_insights"}
+                        or not self.facts
+                    ):
+                        raise
+                    self.partial = True
+                    self.retrieval_issues.append(exc.code)
+                    if name == "request_insights":
+                        self.visual_failed = True
+                    output = {
+                        "error": exc.code,
+                        "recovery": "Use only existing fact_ids. Finish with status partial and explain the unavailable evidence or visual review in limitations. Do not claim a page was created.",
+                    }
                 except asyncio.CancelledError:
                     entry.update(
                         status="error",
@@ -548,17 +548,10 @@ class _Run:
                         "VISUAL_WITHOUT_EVIDENCE",
                         "ANALYSIS_TOO_LONG",
                         "ANALYSIS_REQUIRED",
-                        "FACTS_AVAILABLE_USE_PARTIAL",
                     }
                     output = {
                         "error": code if code in allowed else "INVALID_ANALYSIS_DATA"
                     }
-                    if code == "FACTS_AVAILABLE_USE_PARTIAL":
-                        output["fix"] = (
-                            "Ya hay hechos disponibles. Llama a finish_analysis con "
-                            "status partial y secciones que citen esos fact_ids; "
-                            "explica en limitations lo que no se pudo obtener."
-                        )
                     entry["status"] = "error"
                 entry["elapsed_ms"] = round((time.perf_counter() - started) * 1000, 3)
                 entry["error"] = output.get("error")
@@ -571,104 +564,7 @@ class _Run:
                 )
         return self.result("error", issues=["TURN_BUDGET_EXCEEDED"])
 
-    def task_state(self):
-        """EXPERIMENTO LOCAL "state": lo pedido, lo hecho y lo que falta."""
-        wanted = requested_visuals(self.request.request_text)
-        blocks = {
-            value
-            for block in (self.visual.blocks if self.visual else [])
-            for value in (block.get("id"), block.get("insight_id"))
-            if value
-        }
-        lines = ["ESTADO DE LA TAREA (lo actualiza el ejecutor en cada turno)."]
-        lines.append(
-            f"Datos: {len(self.evidence)} evidencias ("
-            + ", ".join(sorted({e.operation for e in self.evidence}) or ["ninguna"])
-            + f"); hechos citables: {len(self.facts)}."
-        )
-        if self.has_page():
-            lines.append("Página: generada con " + ", ".join(sorted(blocks)) + ".")
-        elif self.visual:
-            lines.append(
-                "Página: Insights no la publicó (algún gráfico no se pudo construir); "
-                "pide sólo gráficos disponibles con la evidencia."
-            )
-        elif self.page_outdated:
-            lines.append(
-                "Página: DESACTUALIZADA por datos nuevos; vuelve a llamar a request_insights antes de terminar."
-            )
-        else:
-            lines.append("Página: pendiente; llama a request_insights.")
-        for recipe, label in wanted:
-            done = recipe in blocks
-            lines.append(
-                f"Pedido por el usuario: {label} [{'hecho' if done else 'PENDIENTE'}]."
-            )
-        missing = [label for recipe, label in wanted if recipe not in blocks]
-        if not self.evidence:
-            step = "pedir los datos necesarios con request_data."
-        elif not self.visual:
-            step = (
-                "request_insights pidiendo explícitamente: "
-                + (", ".join(label for _, label in wanted) or "los gráficos adecuados")
-                + "."
-            )
-        elif missing:
-            step = "request_insights pidiendo lo que falta: " + ", ".join(missing) + "."
-        else:
-            step = "redactar con finish_analysis; no hacen falta más datos."
-        if self.evidence and self.previews >= self.agent.limits.max_visual_requests:
-            step = (
-                "redactar ya con finish_analysis usando los hechos disponibles; "
-                "no quedan peticiones de gráficos."
-            )
-        lines.append(f"Siguiente paso recomendado: {step}")
-        lines.append(f"Tiempo restante: {round(self.remaining())} s.")
-        return "\n".join(lines)
-
-    def has_page(self):
-        """Una revisión sin report_id no publicó página (p. ej. gráfico imposible)."""
-        return bool(self.visual and getattr(self.visual, "report_id", None))
-
-    async def ensure_page(self, args):
-        """EXPERIMENTO LOCAL "graceful": no terminar un análisis sin página.
-
-        Primero se piden los gráficos solicitados; si Insights no publica página,
-        se pide una con los gráficos que la evidencia permita construir.
-        """
-        if (
-            not experiment("graceful")
-            or args.status not in {"complete", "partial"}
-            or self.has_page()
-            or not self.evidence
-            or not self.agent.insights_client
-        ):
-            return
-        wanted = ", ".join(
-            label for _, label in requested_visuals(self.request.request_text)
-        )
-        attempts = [wanted] if wanted else []
-        attempts.append(
-            "Crea la página sólo con los gráficos que se puedan construir con la "
-            "evidencia suministrada; omite los que no estén disponibles."
-        )
-        for text in attempts:
-            if self.remaining() < 5:
-                break
-            try:
-                await self.query(
-                    "request_insights",
-                    VisualRequest(request_text=text[:3900]),
-                    final=True,
-                )
-            except (ModelFailure, ValueError):
-                continue
-            if self.has_page():
-                return
-        self.partial = True
-        self.insights_failed = True
-
-    async def query(self, name, args, final=False):
+    async def query(self, name, args):
         if name == "request_data":
             if (
                 not self.agent.data_client
@@ -683,25 +579,34 @@ class _Run:
                     raise ValueError("INVALID_ANALYSIS_DATA")
                 setattr(context, key, value)
             result = await self.agent.data_client.fetch(
-                DataRequest(request_text=args.request_text, context=context),
-                timeout=self.query_budget(T(40)),
+                DataRequest(
+                    request_text=args.request_text,
+                    context=context,
+                    language=self.request.language,
+                    original_request=self.request.original_request,
+                ),
+                timeout=min(T(40), self.remaining()),
             )
             self.merge(result)
             return {
                 "data_status": result.status,
                 "clarification": result.clarification,
                 "issues": [i.model_dump() for i in result.issues],
-                **(self.catalog_delta() if experiment("delta") else self.catalog()),
+                **self.catalog_delta(),
             }
         if not self.evidence:
             raise ValueError("DATA_REQUIRED")
-        if not self.agent.insights_client or (
-            self.previews >= self.agent.limits.max_visual_requests and not final
+        if (
+            not self.agent.insights_client
+            or self.previews >= self.agent.limits.max_visual_requests
         ):
             raise ValueError("INSIGHTS_BUDGET_EXCEEDED")
         self.previews += 1
         result, payload = await self.agent.insights_client.preview(
             InsightRequest(
+                language=self.request.language,
+                original_request=self.request.original_request,
+                required_insights=self.request.required_insights,
                 request_text=args.request_text
                 + " Usa exclusivamente la evidencia suministrada; no pidas nuevos datos ni añadas análisis narrativo.",
                 context=self.request.context,
@@ -712,12 +617,8 @@ class _Run:
                     evidence=self.evidence,
                 ),
             ),
-            # La página final usa la reserva de cierre, salvo 2 s de margen.
-            timeout=max(0.01, self.remaining() - 2)
-            if final
-            else self.query_budget(T(35)),
+            timeout=min(T(35), self.remaining()),
         )
-        self.page_outdated = False
         self.visual = result
         self.reviewed = True
         if payload:
@@ -743,34 +644,23 @@ class _Run:
             "report_id": str(result.report_id),
             "blocks": result.blocks,
             "issues": result.issues,
-            **(self.catalog_delta() if experiment("delta") else self.catalog()),
+            **self.catalog_delta(),
         }
 
     def finish(self, args):
-        if (
-            experiment("graceful")
-            and args.status == "unsupported"
-            and self.facts
-            and (self.reviewed or self.insights_failed)
-        ):
-            # EXPERIMENTO LOCAL: con hechos disponibles, redactar en parcial.
-            raise ValueError("FACTS_AVAILABLE_USE_PARTIAL")
         if args.status in {"needs_clarification", "unsupported"}:
             if not args.clarification:
                 raise ValueError("ANALYSIS_REQUIRED")
             return self.result(args.status, clarification=args.clarification)
         if not args.sections or not self.facts:
             raise ValueError("ANALYSIS_REQUIRED")
-        if (
-            self.request.review_visuals
-            and not self.reviewed
-            and not (experiment("graceful") and self.insights_failed)
-        ):
+        if self.request.review_visuals and not self.reviewed and not self.visual_failed:
             raise ValueError("VISUAL_REVIEW_REQUIRED")
         fields = []
         known = {f.id for f in self.facts}
         for si, section in enumerate(args.sections):
             for pi, item in enumerate(section.statements):
+                item.text = ground_source_literals(item.text, self.facts)
                 # Referenciar un placeholder conocido ya identifica su fuente;
                 # añadir la cita omitida no crea hechos ni cambia sus valores.
                 item.fact_ids = list(
@@ -782,18 +672,6 @@ class _Run:
                     )
                 )
                 try:
-                    if experiment("guards"):
-                        wrong = label_mismatches(
-                            item.text, {f.id: f for f in self.facts}, TOKEN
-                        )
-                        if wrong:
-                            raise ValueError(
-                                "FACT_LABEL_MISMATCH: "
-                                + "; ".join(
-                                    f"{fid} mide {label}, no {word}"
-                                    for fid, label, word in wrong
-                                )
-                            )
                     render_statement(item, self.facts)
                 except ValueError as exc:
                     fields.append(
@@ -810,34 +688,7 @@ class _Run:
                             ],
                         }
                     )
-        if fields and experiment("graceful") and self.grounding_failures >= 1:
-            # EXPERIMENTO LOCAL: tras un rechazo previo, publicar sólo las
-            # afirmaciones verificables y marcar el análisis como parcial.
-            bad = {(f["path"][1], f["path"][3]) for f in fields}
-            kept = []
-            for si, section in enumerate(args.sections):
-                statements = [
-                    item
-                    for pi, item in enumerate(section.statements)
-                    if (si, pi) not in bad
-                ]
-                if statements:
-                    kept.append(section.model_copy(update={"statements": statements}))
-            if kept:
-                args = args.model_copy(
-                    update={
-                        "status": "partial",
-                        "sections": kept,
-                        "limitations": [
-                            *args.limitations,
-                            f"Se omitieron {len(bad)} afirmaciones cuyas cifras no se pudieron verificar.",
-                        ],
-                    }
-                )
-                self.partial = True
-                fields = []
         if fields:
-            self.grounding_failures += 1
             raise GroundingError(fields)
         used = []
         sections = []
@@ -855,13 +706,13 @@ class _Run:
             for e in analytical or self.evidence
         }
         parts.append(
-            "Procedencia: "
+            wording("provenance", self.request.language)
             + (
-                "datos sintéticos de demostración."
+                wording("synthetic", self.request.language)
                 if kinds == {True}
-                else "fuentes reales; consultar cobertura."
+                else wording("real", self.request.language)
                 if kinds == {False}
-                else "fuentes separadas por procedencia; no comparables automáticamente."
+                else wording("mixed", self.request.language)
             )
         )
         for section in args.sections:
@@ -880,18 +731,21 @@ class _Run:
             sections.append(section.model_copy(update={"statements": statements}))
         limits = list(dict.fromkeys([*args.limitations, *warnings]))
         if any(f.scope.get("exhaustive") is False for f in self.facts):
-            limits.append(
-                "La lectura de tablas usa las primeras diez filas, en el orden de la fuente; no representa todas las entidades."
-            )
-        if self.visual and self.visual.status != "complete":
-            limits.append(
-                "La revisión visual fue incompleta; consultar estados y límites de cada bloque."
-            )
-        parts.append("\nAlcance y límites\n" + "\n".join(limits))
+            limits.append(wording("table_sample", self.request.language))
+        if self.visual_failed or (self.visual and self.visual.status != "complete"):
+            limits.append(wording("visual_partial", self.request.language))
+        parts.append(
+            "\n" + wording("limits", self.request.language) + "\n" + "\n".join(limits)
+        )
         cited = [next(f for f in self.facts if f.id == key) for key in used]
         parts.append(
-            "\nReferencias\n"
-            + "\n".join(reference_line(i + 1, f) for i, f in enumerate(cited))
+            "\n"
+            + wording("references", self.request.language)
+            + "\n"
+            + "\n".join(
+                reference_line(i + 1, f, language=self.request.language)
+                for i, f in enumerate(cited)
+            )
         )
         text = "\n".join(parts)
         if len(text) > 16000:

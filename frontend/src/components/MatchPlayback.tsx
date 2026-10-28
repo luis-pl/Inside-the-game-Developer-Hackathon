@@ -20,7 +20,7 @@ export function MatchPlayback({ lab }: { lab: Lab }) {
         <button
           className="match-play"
           disabled={!lab.episode || lab.loading}
-          aria-label={lab.playing ? "Pausar partido" : "Reproducir partido"}
+          aria-label={lab.playing ? "Pause match" : "Play match"}
           onClick={() => {
             if (lab.episode && lab.index === lab.episode.frames.length - 1)
               lab.setIndex(0);
@@ -31,7 +31,7 @@ export function MatchPlayback({ lab }: { lab: Lab }) {
         </button>
         <input
           type="range"
-          aria-label="Momento del partido"
+          aria-label="Match time"
           min={lab.episode?.frames[0].timeMs ?? 0}
           max={lab.episode ? episodeTiming(lab.episode).endMs : 1}
           step="any"
@@ -46,8 +46,8 @@ export function MatchPlayback({ lab }: { lab: Lab }) {
           {lab.episode ? matchClock(episodeTiming(lab.episode).endMs) : "00:00"}
         </span>
         <select
-          aria-label="Velocidad del partido"
-          title="1× = tiempo real: un segundo de partido por segundo de pantalla"
+          aria-label="Playback speed"
+          title="1× = real time: one second of match play per second on screen"
           value={lab.speed}
           onChange={(e) => lab.setSpeed(Number(e.target.value))}
         >
@@ -69,19 +69,19 @@ export function MatchPlayback({ lab }: { lab: Lab }) {
             }
           }}
         >
-          Próxima acción ▷
+          Next action ▷
         </button>
       </div>
       {lab.episode && (
         <div className="match-action-strip">
           <span>
-            {lab.episode.events.length.toLocaleString("es")} acciones ·{" "}
-            {passCount} pases · {shotCount} tiros
+            {lab.episode.events.length.toLocaleString("en-GB")} actions ·{" "}
+            {passCount} passes · {shotCount} shots
           </span>
           <strong>
             {current
               ? `${matchClock(current.timeMs)} · ${current.displayLabel}`
-              : "Inicio de la secuencia"}
+              : "Start of sequence"}
           </strong>
         </div>
       )}

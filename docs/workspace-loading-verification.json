@@ -1,0 +1,170 @@
+{
+  "date": "2026-10-27",
+  "reported_issue": "workspace appeared to remain loading",
+  "initial_diagnosis": {
+    "cloud_health_http": 200,
+    "cloud_identity_http": 200,
+    "catalog_during_wakeup": "read timeout",
+    "workspace_catalog_http": 503,
+    "sql_resumed_at_utc": "2026-10-27T22:17:23.430000Z",
+    "catalog_after_wakeup_http": 200,
+    "catalog_after_wakeup_seconds": 0.65
+  },
+  "changes": {
+    "catalog_attempts": 2,
+    "catalog_total_timeout_seconds": 55,
+    "browser_control_timeout_seconds": 12,
+    "browser_catalog_timeout_seconds": 60,
+    "sequential_polling": true,
+    "explicit_reconnect": true,
+    "score_claim_guard": "MATCH_RESULT_CONTRADICTS_SCORE"
+  },
+  "tests": {
+    "python_passed": 453,
+    "frontend_passed": 51,
+    "typescript": "passed",
+    "build": "passed",
+    "ruff": "passed",
+    "fact_checks": [
+      {
+        "case": "corrected-analysis",
+        "facts_checked": 14,
+        "all_values_match": true
+      },
+      {
+        "case": "final-create",
+        "facts_checked": 27,
+        "all_values_match": true
+      }
+    ]
+  },
+  "live_cases": [
+    {
+      "case": "corrected-analysis",
+      "conversation_id": "a5d00bd5-830a-466d-bf21-833d9f3f6391",
+      "stage": "complete",
+      "elapsed_ms": 36381,
+      "report": {
+        "report_id": "3137d79f-9f39-4731-a494-03f188e914dc",
+        "revision": 3,
+        "blocks": [
+          {
+            "id": "shot_map_home",
+            "insight_id": "shot_map",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+            ]
+          },
+          {
+            "id": "shot_map_away",
+            "insight_id": "shot_map",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+            ]
+          },
+          {
+            "id": "xg_story",
+            "insight_id": "xg_story",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+            ]
+          }
+        ],
+        "status": "complete"
+      },
+      "reply": {
+        "role": "assistant",
+        "content": "Con los datos sintéticos de este partido: Test Fixtures United ganó el partido con 2 goles frente a 1 de Mock Objects FC.\n\nEl marcador final fue 1–2 a favor del visitante.\n\nPuedes explorar los gráficos y sus fuentes en el informe."
+      },
+      "analysis": "complete"
+    },
+    {
+      "case": "final-create",
+      "conversation_id": "a8a35c98-fd6b-4591-9bf5-1b837b509ba0",
+      "stage": "complete",
+      "elapsed_ms": 45655,
+      "report": {
+        "report_id": "9fdd0fcb-2389-4aa1-bf66-f123f428820e",
+        "revision": 2,
+        "blocks": [
+          {
+            "id": "shot_map",
+            "insight_id": "shot_map",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+            ]
+          },
+          {
+            "id": "xg_story",
+            "insight_id": "xg_story",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+            ]
+          }
+        ],
+        "status": "complete"
+      },
+      "reply": {
+        "role": "assistant",
+        "content": "Con los datos sintéticos de este partido: Mock Objects FC marcó 1 gol y Test Fixtures United marcó 2 goles, por lo que el visitante ganó el partido.\n\nEl equipo local disparó 14 veces con un xG de 1.06, mientras el visitante disparó 9 veces con un xG de 0.63.\n\nPuedes explorar los gráficos y sus fuentes en el informe."
+      },
+      "analysis": "complete"
+    },
+    {
+      "case": "final-modify",
+      "conversation_id": "a8a35c98-fd6b-4591-9bf5-1b837b509ba0",
+      "stage": "complete",
+      "elapsed_ms": 5675,
+      "report": {
+        "report_id": "9fdd0fcb-2389-4aa1-bf66-f123f428820e",
+        "revision": 4,
+        "blocks": [
+          {
+            "id": "shot_map",
+            "insight_id": "shot_map",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Eventos: referencia de ataque del equipo actuante, normalizada a 105×68 m. No superpuesta a tracking fijo."
+            ]
+          },
+          {
+            "id": "xg_story",
+            "insight_id": "xg_story",
+            "state": "ready",
+            "warnings": [
+              "Synthetic football data; xG is toy-distance-angle-v2, not a calibrated provider model.",
+              "Acumulado independiente por período: P2 vuelve a cero. El total suma los períodos incluidos."
+            ]
+          }
+        ],
+        "status": "complete"
+      },
+      "reply": {
+        "role": "assistant",
+        "content": "Hecho. El informe ya tiene el cambio que pediste y conserva sus datos y su análisis."
+      },
+      "analysis": null
+    }
+  ],
+  "limitations": [
+    "Cold-start recovery is regression-tested with simulated transient failure; final live cases used an already active Azure SQL database.",
+    "The score guard covers explicit score-backed claims, not every semantic football inference.",
+    "Original user request was not available in the current conversation store; a natural-language shot/xG case was used.",
+    "Final visual viewport was 839x831; the attempted 390px override was not applied."
+  ],
+  "cloud_or_billing_changes": false,
+  "current_model": "beam-free",
+  "free_only": true,
+  "application_url": "http://localhost:8091/"
+}

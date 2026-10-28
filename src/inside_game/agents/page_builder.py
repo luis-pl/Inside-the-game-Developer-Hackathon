@@ -5,12 +5,14 @@ import hashlib
 import json
 import sysconfig
 import time
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
 from mcp import Client
 from pydantic import ValidationError
 
+from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataRequest, DataResult, Evidence
 from inside_game.agents.data_agent import preview
 from inside_game.agents.evidence_pages import include_query_pages
@@ -23,7 +25,12 @@ from inside_game.agents.insight_contracts import (
     RetrieveData,
 )
 from inside_game.insights.contracts import ReportPlan
-from inside_game.insights.mcp_server import MODELS, RenderInsightRequest, create_server
+from inside_game.insights.mcp_server import (
+    DESCRIPTIONS,
+    MODELS,
+    RenderInsightRequest,
+    create_server,
+)
 from inside_game.providers.models import ModelFailure
 
 RECIPE_SOURCES = {
@@ -94,6 +101,8 @@ class _InsightRun:
         self.data_request_ids = []
         self.data_runs = []
         self.trace = []
+        self.context_window = ContextWindow(agent.limits.max_input_bytes)
+        self.observations = {}
         self.data_partial = False
         self.analyst = request.analyst or (
             self.previous.analyst if self.previous else None
@@ -164,6 +173,7 @@ class _InsightRun:
             tool_calls=self.calls,
             tool_trace=self.trace,
             total_tokens=self.tokens,
+            context_events=self.context_window.events,
             elapsed_ms=round((time.perf_counter() - self.started) * 1000, 3),
             timings_ms={k: round(v, 3) for k, v in self.timings.items()},
             data_request_ids=self.data_request_ids,
@@ -182,10 +192,30 @@ class _InsightRun:
                 "scope": e.response.scope,
                 "provenance": e.response.provenance,
                 "coverage": e.response.coverage,
+                "warnings": e.response.warnings,
+                "coordinates": e.response.coordinates,
+                "method_id": e.response.method_id,
                 "preview": preview(e.response.data, list_limit=2),
             }
             for e in self.evidence
         ]
+
+    def checkpoint(self):
+        return {
+            "request_id": str(self.request.request_id),
+            "request": self.request.model_dump(mode="json", exclude={"data_result"}),
+            "previous_plan": self.previous.model_dump(mode="json")
+            if self.previous
+            else None,
+            "evidence_catalog": self.catalog(),
+            "data_partial": self.data_partial,
+            "tool_observations": list(self.observations.values()),
+            "remaining_seconds": max(
+                0,
+                self.agent.limits.timeout_seconds
+                - (time.perf_counter() - self.started),
+            ),
+        }
 
     async def execute(self):
         if self.request.data_result:
@@ -211,7 +241,7 @@ class _InsightRun:
                         {
                             "type": "function",
                             "name": t.name,
-                            "description": t.description,
+                            "description": DESCRIPTIONS[t.name],
                             "parameters": t.input_schema,
                             "strict": False,
                         }
@@ -267,11 +297,13 @@ class _InsightRun:
             }
         ]
         while self.turns < self.agent.limits.max_turns:
-            if (
-                len(json.dumps([self.agent.prompt, messages, functions]).encode())
-                > self.agent.limits.max_input_bytes
-            ):
-                return self.result("error", issues=["CONTEXT_BUDGET_EXCEEDED"])
+            self.context_window.prepare(
+                self.agent.model,
+                self.agent.prompt,
+                messages,
+                functions,
+                self.checkpoint,
+            )
             before = time.perf_counter()
             try:
                 turn = await self.agent.model.respond(
@@ -300,6 +332,7 @@ class _InsightRun:
                 )
             self.timings["model"] += (time.perf_counter() - before) * 1000
             self.turns += 1
+            self.context_window.observe(turn)
             self.tokens += turn.total_tokens
             messages.extend(turn.output)
             calls = [c for c in turn.output if c.get("type") == "function_call"]
@@ -353,6 +386,18 @@ class _InsightRun:
                         raise ValueError("ARGUMENT_BUDGET")
                     args = json.loads(call["arguments"])
                     output, finished = await self.call(call["name"], args)
+                    if call["name"] in {
+                        "list_insights",
+                        "describe_insight",
+                        "validate_report",
+                    }:
+                        self.observations[
+                            json.dumps([call["name"], args], sort_keys=True)
+                        ] = {
+                            "operation": call["name"],
+                            "arguments": args,
+                            "result": output,
+                        }
                     entry.update(
                         status="error" if output.get("error") else "ok",
                         elapsed_ms=round((time.perf_counter() - before_call) * 1000, 3),
@@ -478,7 +523,12 @@ class _InsightRun:
             )
             before = time.perf_counter()
             result = await self.agent.data_client.fetch(
-                DataRequest(request_text=requested.request_text, context=context),
+                DataRequest(
+                    request_text=requested.request_text,
+                    context=context,
+                    language=self.request.language,
+                    original_request=self.request.original_request,
+                ),
                 timeout=max(0.01, min(T(40), remaining - 3)),
             )
             self.timings["data_http"] += (time.perf_counter() - before) * 1000
@@ -506,8 +556,21 @@ class _InsightRun:
             args = {
                 **args,
                 "analyst": self.analyst,
+                "language": self.request.language,
             }
             plan = ReportPlan.model_validate(args)
+            if (
+                not self.previous
+                and self.request.required_insights
+                and Counter(b.insight_id for b in plan.blocks)
+                != Counter(self.request.required_insights)
+            ):
+                return {
+                    "error": "REQUESTED_INSIGHTS_MISMATCH",
+                    "required_insights": self.request.required_insights,
+                    "actual_insights": [b.insight_id for b in plan.blocks],
+                    "repair": "Create exactly the requested recipe counts. A combined chart for both teams is a single block; do not duplicate by team unless requested.",
+                }, None
             plan = include_query_pages(plan, self.evidence)
             selected = {key for block in plan.blocks for key in block.evidence_ids}
             if self.request.context.match_ids and any(

@@ -17,9 +17,11 @@ from uuid import UUID, uuid4
 
 from pydantic import Field, ValidationError
 
+from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import Message
 from inside_game.contracts import Id
 from inside_game.insights.catalog import RECIPES
+from inside_game.language import Language
 from inside_game.providers.models import ModelFailure, ModelProvider
 
 from .contracts import Clarification, InsightIntent
@@ -34,10 +36,12 @@ class PlannerLimits:
     max_turns: int = 8
     max_tokens: int = 60000
     timeout_seconds: float = 40
+    max_input_bytes: int = 180000
 
 
 class InsightQuestion(Message):
     request_id: UUID = Field(default_factory=uuid4)
+    language: Language = "es"
     question: Annotated[str, Field(min_length=1, max_length=2000)]
     previous_intent: InsightIntent | None = None
     # Aclaración que el agente pidió en el turno anterior y la pregunta que la originó.
@@ -57,6 +61,7 @@ class PlannerResult(Message):
     model_turns: int = 0
     tool_calls: int = 0
     total_tokens: int = 0
+    context_events: list[dict] = Field(default_factory=list)
 
 
 class _Empty(Message):
@@ -134,6 +139,8 @@ class _Run:
         self.planner, self.question = planner, question
         self.turns = self.calls = self.tokens = 0
         self.issues = []
+        self.context_window = ContextWindow(planner.limits.max_input_bytes)
+        self.observations = {}
 
     def result(self, status, *, intent=None, message=None, options=(), issue=None):
         if issue:
@@ -150,7 +157,14 @@ class _Run:
             model_turns=self.turns,
             tool_calls=self.calls,
             total_tokens=self.tokens,
+            context_events=self.context_window.events,
         )
+
+    def checkpoint(self):
+        return {
+            **self.question.model_dump(mode="json"),
+            "observed_tools": list(self.observations.values()),
+        }
 
     async def execute(self):
         functions = [
@@ -172,6 +186,11 @@ class _Run:
         except Exception:  # noqa: BLE001 - sin catálogo precargado el modelo lo pide.
             catalog = {"error": {"code": "PRELOAD_FAILED"}}
         if "error" not in catalog:
+            self.observations["list_matches"] = {
+                "operation": "list_matches",
+                "arguments": {},
+                "result": catalog,
+            }
             call_id = "preloaded-list-matches"
             messages += [
                 {
@@ -190,10 +209,18 @@ class _Run:
         while self.turns < self.planner.limits.max_turns:
             if self.tokens >= self.planner.limits.max_tokens:
                 return self.result("error", issue="TOKEN_BUDGET_EXCEEDED")
+            self.context_window.prepare(
+                self.planner.model,
+                self.planner.prompt,
+                messages,
+                functions,
+                self.checkpoint,
+            )
             turn = await self.planner.model.respond(
                 self.planner.prompt, messages, functions
             )
             self.turns += 1
+            self.context_window.observe(turn)
             self.tokens += turn.total_tokens
             messages.extend(turn.output)
             calls = [i for i in turn.output if i.get("type") == "function_call"]
@@ -247,7 +274,13 @@ class _Run:
         if name == "list_matches":
             return None, await self.matches()
         if name == "get_match_roster":
-            return None, await self.roster(request.match_id)
+            output = await self.roster(request.match_id)
+            self.observations[f"roster:{request.match_id}"] = {
+                "operation": name,
+                "arguments": {"match_id": request.match_id},
+                "result": output,
+            }
+            return None, output
         if name == CLARIFY:
             return self.result(
                 "clarification", message=request.question, options=request.options
@@ -257,6 +290,7 @@ class _Run:
         error = await self.check(request)
         if error:
             return None, {"error": {"code": error}}
+        request.language = self.question.language
         return self.result("intent", intent=request), None
 
     async def matches(self):

@@ -18,28 +18,28 @@ export function ReadingGuide({
       analysis.openings.find((o) => o.id === selectedOpening) ??
       analysis.openings[0];
     title = opening
-      ? `${analysis.openings.length} ${analysis.openings.length === 1 ? "apertura destacada" : "aperturas destacadas"} entre defensores`
-      : "Sin aperturas interiores destacadas";
+      ? `${analysis.openings.length} ${analysis.openings.length === 1 ? "highlighted space" : "highlighted spaces"} between defenders`
+      : "No highlighted interior spaces";
     description = opening
-      ? `${opening.id} permite un círculo libre de ${opening.diameter.toFixed(1)} m de diámetro. `
-      : "Prueba otro instante o reduce la cobertura para explorar el modelo. ";
+      ? `${opening.id} contains an empty circle of ${opening.diameter.toFixed(1)} m in diameter. `
+      : "Try another instant or reduce coverage to explore the model. ";
     description += !frame.ball
-      ? "Falta la posición del balón para comprobar el acceso."
+      ? "Ball position is needed to check access."
       : analysis.free.startCovered
-        ? "El balón está dentro de una zona de cobertura: espacio libre no significa acceso inmediato."
+        ? "The ball is inside a coverage zone: open space does not imply immediate access."
         : analysis.free.reachable
-          ? "Además, existe un camino libre desde el balón hasta el objetivo amarillo."
-          : "El balón no está conectado al objetivo con el radio elegido.";
+          ? "A clear path also connects the ball to the yellow target."
+          : "The ball is not connected to the target at the selected radius.";
   } else if (view === "block") {
     title =
       analysis.h0 === 1
-        ? "El equipo forma un solo grupo conectado"
-        : `El equipo está separado en ${analysis.h0} grupos`;
-    description = `Las líneas unen jugadores a ${lab.epsilon} m o menos. Los bordes del mismo color identifican un grupo. Eso describe cercanía, no calidad defensiva.`;
+        ? "The team forms one connected group"
+        : `The team is separated into ${analysis.h0} groups`;
+    description = `Lines connect players within ${lab.epsilon} m. Matching outlines identify a group. This describes proximity, not defensive quality.`;
   } else {
-    title = "Las flechas explican la circulación del balón";
+    title = "Arrows show passing circulation";
     description =
-      "Representan la componente seleccionada de los pases de toda la ventana. La punta marca su dirección; el grosor, su magnitud relativa. No son pases que estén ocurriendo en este segundo.";
+      "They represent the selected passing component over the entire window. Arrowheads indicate direction; thickness indicates relative magnitude. These are not passes occurring at this instant.";
   }
   return (
     <div
@@ -54,7 +54,8 @@ export function ReadingGuide({
         <p>{description}</p>
         {lab.removed !== null && (
           <small>
-            Comparación matemática activa: retiraste un jugador del modelo.
+            Geometric comparison active: a player has been removed from the
+            model.
           </small>
         )}
       </div>

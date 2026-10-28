@@ -9,7 +9,7 @@ export function PitchLegend({
   rivalName: string;
 }) {
   return (
-    <div className="pitch-legend" aria-label="Leyenda de la cancha">
+    <div className="pitch-legend" aria-label="Pitch legend">
       <span>
         <i className="legend-player defender" />
         Bloque: {teamName}
@@ -20,17 +20,17 @@ export function PitchLegend({
       </span>
       <span>
         <i className="legend-ball" />
-        Balón
+        Ball
       </span>
       {view === "openings" && (
         <>
           <span>
             <i className="legend-opening" />
-            A1, A2…: espacio libre
+            A1, A2…: open space
           </span>
           <span>
             <i className="legend-route" />
-            Camino al objetivo
+            Path to target
           </span>
         </>
       )}
@@ -38,18 +38,18 @@ export function PitchLegend({
         <>
           <span>
             <i className="legend-group" />
-            Mismo borde: mismo grupo
+            Same outline: same group
           </span>
           <span>
             <i className="legend-link" />
-            Jugadores conectados
+            Connected players
           </span>
         </>
       )}
       {view === "passing" && (
         <span>
           <i className="legend-arrow" />
-          Sentido del flujo seleccionado
+          Selected flow direction
         </span>
       )}
     </div>
