@@ -22,6 +22,31 @@ import {
   watchConversation,
 } from "./domain/workspace-network.ts";
 
+// Languages the agents support (src/inside_game/language.py). "" lets the
+// interpreter infer the language from the message.
+const LANGUAGES: [string, string][] = [
+  ["en", "English"],
+  ["es", "Español"],
+  ["pt", "Português"],
+  ["fr", "Français"],
+  ["it", "Italiano"],
+  ["de", "Deutsch"],
+  ["", "Detect from message"],
+];
+const LANGUAGE_KEY = "inside-game-answer-language";
+
+function initialLanguage() {
+  try {
+    const saved = localStorage.getItem(LANGUAGE_KEY);
+    if (saved !== null && LANGUAGES.some(([code]) => code === saved)) {
+      return saved;
+    }
+  } catch {
+    // Storage unavailable: fall back to the interface language.
+  }
+  return "en";
+}
+
 type Match = {
   match_id: number;
   home_team_name: string;
@@ -107,6 +132,7 @@ export function Workspace() {
     [conversation, setConversation] = useState<Conversation | null>(null);
   const [matches, setMatches] = useState<Match[]>([]),
     [match, setMatch] = useState("");
+  const [language, setLanguage] = useState<string>(initialLanguage);
   const [text, setText] = useState(""),
     [html, setHtml] = useState(""),
     [error, setError] = useState("");
@@ -407,6 +433,9 @@ export function Workspace() {
         method: "POST",
         body: JSON.stringify({
           request_id: crypto.randomUUID(),
+          // Explicit answer language: the host propagates it to Data,
+          // Analysis and Insights instead of relying on model inference.
+          language: language || null,
           text: value,
           context,
           retry_analysis: retryAnalysis,
@@ -1095,6 +1124,28 @@ export function Workspace() {
                   {matches.map((m) => (
                     <option key={m.match_id} value={m.match_id}>
                       {m.home_team_name} — {m.away_team_name} · {m.match_id}
+                    </option>
+                  ))}
+                </select>
+                <label className="match-label" htmlFor="chat-language">
+                  Answer language
+                </label>
+                <select
+                  id="chat-language"
+                  value={language}
+                  disabled={conversation?.busy}
+                  onChange={(e) => {
+                    setLanguage(e.target.value);
+                    try {
+                      localStorage.setItem(LANGUAGE_KEY, e.target.value);
+                    } catch {
+                      // Private mode or blocked storage: keep the choice in memory.
+                    }
+                  }}
+                >
+                  {LANGUAGES.map(([code, label]) => (
+                    <option key={code} value={code}>
+                      {label}
                     </option>
                   ))}
                 </select>
