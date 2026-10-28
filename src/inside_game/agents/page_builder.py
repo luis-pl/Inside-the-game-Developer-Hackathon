@@ -16,6 +16,7 @@ from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataRequest, DataResult, Evidence
 from inside_game.agents.data_agent import preview
 from inside_game.agents.evidence_pages import include_query_pages
+from inside_game.agents.experiments import T, experiment, requested_visuals
 from inside_game.agents.insight_contracts import (
     FinishInsight,
     InsightRequest,
@@ -32,17 +33,26 @@ from inside_game.insights.mcp_server import (
 )
 from inside_game.providers.models import ModelFailure
 
+RECIPE_SOURCES = {
+    item["id"]: item.get("source_operations", [])
+    for item in json.loads(
+        (Path(__file__).resolve().parents[1] / "insights/catalog.json").read_text(
+            encoding="utf-8"
+        )
+    )["insights"]
+}
+
 
 @dataclass(frozen=True)
 class InsightLimits:
-    timeout_seconds: float = 55
+    timeout_seconds: float = T(55)
     max_turns: int = 6
     max_tool_calls: int = 10
     max_input_bytes: int = 180000
     max_evidence_bytes: int = 8 * 1024 * 1024
 
     def __post_init__(self):
-        if not 0 < self.timeout_seconds < 60 or any(
+        if not 0 < self.timeout_seconds < T(60) or any(
             v <= 0 for v in self.__dict__.values()
         ):
             raise ValueError("INSIGHT_LIMITS_INVALID")
@@ -262,6 +272,11 @@ class _InsightRun:
                     "strict": False,
                 }
             )
+        if experiment("fastpath") and self.previous:
+            finished = await self.add_requested_blocks()
+            if finished is not None:
+                finished.tool_trace = self.trace
+                return finished
         messages = [
             {
                 "role": "user",
@@ -418,6 +433,63 @@ class _InsightRun:
                 )
         return self.result("error", issues=["TURN_BUDGET_EXCEEDED"])
 
+    async def add_requested_blocks(self):
+        """EXPERIMENTO LOCAL "fastpath": añadir un gráfico conocido sin modelo.
+
+        Sólo para modificaciones que piden gráficos del catálogo que aún no están
+        en la página y cuya evidencia ya existe. Si algo falta o el render no es
+        compatible, sigue el flujo normal con el modelo.
+        """
+        existing = {b.insight_id for b in self.previous.blocks}
+        ids = {b.id for b in self.previous.blocks}
+        wanted = requested_visuals(self.request.request_text)
+        blocks = []
+        for recipe, _label in wanted:
+            if recipe in existing:
+                continue
+            sources = set(RECIPE_SOURCES.get(recipe, ()))
+            evidence_ids = [
+                e.evidence_id for e in self.evidence if e.operation in sources
+            ]
+            if not evidence_ids:
+                # Un gráfico sin datos no impide añadir los que sí los tienen.
+                self.trace.append(
+                    {
+                        "tool": "update_report",
+                        "status": "skipped",
+                        "deterministic": True,
+                        "reason": "MISSING_EVIDENCE",
+                        "insight_id": recipe,
+                    }
+                )
+                continue
+            block_id = recipe if recipe not in ids else recipe + "_added"
+            blocks.append(
+                {"id": block_id, "insight_id": recipe, "evidence_ids": evidence_ids}
+            )
+        if not blocks:
+            self.trace.append(
+                {
+                    "tool": "update_report",
+                    "status": "skipped",
+                    "deterministic": True,
+                    "reason": "NO_NEW_KNOWN_BLOCK",
+                    "requested": [recipe for recipe, _ in wanted],
+                }
+            )
+            return None
+        entry = {"tool": "update_report", "status": "started", "deterministic": True}
+        self.trace.append(entry)
+        try:
+            output, finished = await self.call("update_report", {"add_blocks": blocks})
+        except (ValidationError, ValueError, KeyError, TypeError) as exc:
+            entry.update(status="error", reason=type(exc).__name__)
+            return None
+        entry["status"] = "error" if output.get("error") else "ok"
+        if output.get("error"):
+            entry["reason"] = output["error"]
+        return finished
+
     async def call(self, name, args):
         if name == "update_report":
             if self.previous is None:
@@ -457,7 +529,7 @@ class _InsightRun:
                     language=self.request.language,
                     original_request=self.request.original_request,
                 ),
-                timeout=max(0.01, min(40, remaining - 3)),
+                timeout=max(0.01, min(T(40), remaining - 3)),
             )
             self.timings["data_http"] += (time.perf_counter() - before) * 1000
             result = DataResult.model_validate(result)

@@ -29,7 +29,7 @@ datos sintéticos como historial separado. [Procedencia, verificación y límite
 
 El servidor MCP también está implementado: expone las mismas 34 operaciones por `stdio` o HTTP local en `http://127.0.0.1:8001/mcp`, a través de la API. Inicio HTTP: `scripts/start-mcp.ps1 -Transport streamable-http`.
 
-El [agente de datos](docs/data-agent.md) recibe texto y contexto opcional, selecciona consultas MCP y devuelve evidencia original. Incluye prompt editable, proveedores Responses/Chat Completions y CLI `inside-game-data-agent`. El modelo local seleccionado es **Beam Free mediante OpenCode Go**, autenticado con la sesión autorizada del CLI. Estado en [agent-model.json](deployment/agent-model.json).
+El [agente de datos](docs/data-agent.md) recibe texto y contexto opcional, selecciona consultas MCP y devuelve evidencia original. Incluye prompt editable, proveedores Responses/Chat Completions y CLI `inside-game-data-agent`. El modelo local seleccionado es **Beam Free mediante OpenCode Go**, autenticado con la sesión autorizada del CLI. Estado en [agent-model.json](deployment/agent-model.json). Alternativa opcional en un equipo propio: [Ollama](docs/ollama.md), seleccionada explícitamente con `INSIDE_GAME_MODEL_PROVIDER=ollama`.
 
 [Ejecutar el visor y probar el agente paso a paso](docs/run-and-review-data-agent.md).
 

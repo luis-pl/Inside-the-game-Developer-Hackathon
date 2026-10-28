@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 import httpx
 
 from inside_game.agents.contracts import DataResult
+from inside_game.agents.experiments import T
 from inside_game.providers.models import ModelFailure
 
 
@@ -42,7 +43,7 @@ class HttpDataAgent:
                     headers={
                         "Authorization": "Bearer " + self.key,
                         "X-Agent-Deadline-Ms": str(
-                            max(1000, min(45000, int(timeout * 1000)))
+                            max(1000, min(int(T(45000)), int(timeout * 1000)))
                         ),
                         "X-Request-ID": str(request.request_id),
                     },

@@ -29,6 +29,7 @@ from inside_game.agents.analyst_facts import (
 )
 from inside_game.agents.context_window import ContextWindow
 from inside_game.agents.contracts import DataRequest, DataResult
+from inside_game.agents.experiments import T, experiment
 from inside_game.agents.insight_contracts import InsightRequest, RetrieveData
 from inside_game.language import wording
 from inside_game.providers.models import ModelFailure
@@ -44,7 +45,7 @@ def load_prompt():
 
 @dataclass(frozen=True)
 class AnalystLimits:
-    timeout_seconds: float = 45
+    timeout_seconds: float = T(45)
     max_turns: int = 8
     max_calls: int = 10
     max_data_requests: int = 2
@@ -55,6 +56,57 @@ class AnalystLimits:
     def __post_init__(self):
         if any(v <= 0 for v in self.__dict__.values()):
             raise ValueError("INVALID_ANALYST_LIMITS")
+
+
+def repair_hints(field, facts, limit=3):
+    """EXPERIMENTO LOCAL "guards": hechos cuyo valor coincide con cada cifra
+    escrita a mano, para que el modelo cite el placeholder correcto."""
+    suggestions = {}
+    missing = []
+    for literal in field.get("literal_numbers", []):
+        text = literal.rstrip("%").replace(",", ".")
+        try:
+            number = float(text)
+        except ValueError:
+            continue
+        decimals = len(text.split(".")[1]) if "." in text else 0
+        matches = [
+            f
+            for f in facts
+            if type(f.value) in (int, float)
+            and round(float(f.value), decimals) == round(number, decimals)
+        ][:limit]
+        if matches:
+            suggestions[literal] = [
+                {"cite": "{{" + f.id + "}}", "label": f.label} for f in matches
+            ]
+        else:
+            missing.append(literal)
+    hints = {}
+    if suggestions:
+        hints["use_fact_for_number"] = suggestions
+    if missing:
+        hints["numbers_without_fact"] = missing
+    return hints
+
+
+def without_invalid_statements(args, fields):
+    """EXPERIMENTO LOCAL "guards": copia de la finalización sin las afirmaciones
+    rechazadas; None si no queda ninguna sección válida o hay otros errores."""
+    drop = set()
+    for field in fields:
+        path = field.get("path", [])
+        if len(path) != 4 or path[0] != "sections" or path[2] != "statements":
+            return None
+        drop.add((path[1], path[3]))
+    sections = []
+    for i, section in enumerate(args.sections):
+        kept = [s for j, s in enumerate(section.statements) if (i, j) not in drop]
+        if kept:
+            sections.append(section.model_copy(update={"statements": kept}))
+    if not sections:
+        return None
+    return args.model_copy(update={"sections": sections, "status": "partial"})
 
 
 class GroundingError(ValueError):
@@ -191,6 +243,7 @@ class _Run:
         self.retrieval_issues = []
         self.visual_failed = False
         self.context_window = ContextWindow(agent.limits.max_input_bytes)
+        self.grounding_failures = 0
 
     def remaining(self):
         return max(
@@ -487,11 +540,57 @@ class _Run:
                     output = await self.query(name, args)
                     entry["status"] = "ok"
                 except GroundingError as exc:
+                    trimmed = (
+                        without_invalid_statements(args, exc.fields)
+                        if experiment("guards")
+                        and name == "finish_analysis"
+                        and self.grounding_failures >= 2
+                        else None
+                    )
+                    if trimmed is not None:
+                        # EXPERIMENTO LOCAL: tras dos reparaciones fallidas se
+                        # publica lo verificable y se informa lo retirado, en
+                        # lugar de perder toda la explicación.
+                        try:
+                            result = self.finish(trimmed)
+                        except GroundingError:
+                            pass
+                        else:
+                            entry.update(
+                                status="ok",
+                                error_fields=exc.fields,
+                                elapsed_ms=round(
+                                    (time.perf_counter() - started) * 1000, 3
+                                ),
+                            )
+                            return result.model_copy(
+                                update={
+                                    "tool_trace": self.trace,
+                                    "issues": [
+                                        *result.issues,
+                                        "UNGROUNDED_STATEMENTS_REMOVED",
+                                    ],
+                                },
+                                deep=True,
+                            )
                     output = {
                         "error": "INVALID_ANALYSIS_FACTS",
                         "fields": exc.fields,
                         "repair": "Corrige TODAS las afirmaciones indicadas. Sustituye cada cifra por un placeholder real y cita su ID. Escribe primer/segundo tiempo en lugar de P1/P2. Mueve advertencias generales a limitations.",
                     }
+                    if experiment("guards"):
+                        # EXPERIMENTO LOCAL: el modelo repetía el mismo error.
+                        # Se le indica qué hecho citar para cada cifra escrita a
+                        # mano; la corrección sigue siendo suya, nada se borra.
+                        self.grounding_failures += 1
+                        output["fields"] = [
+                            {**f, **repair_hints(f, self.facts)} for f in exc.fields
+                        ]
+                        if self.grounding_failures >= 2:
+                            output["repair"] += (
+                                " Si una cifra no tiene hecho con su valor, reformula"
+                                " la afirmación sin ella o elimínala tú mismo."
+                            )
                     entry["status"] = "error"
                     entry["error_fields"] = exc.fields
                 except ValidationError as exc:
@@ -584,7 +683,7 @@ class _Run:
                     language=self.request.language,
                     original_request=self.request.original_request,
                 ),
-                timeout=min(40, self.remaining()),
+                timeout=min(T(40), self.remaining()),
             )
             self.merge(result)
             return {
@@ -616,7 +715,7 @@ class _Run:
                     evidence=self.evidence,
                 ),
             ),
-            timeout=min(35, self.remaining()),
+            timeout=min(T(35), self.remaining()),
         )
         self.visual = result
         self.reviewed = True
@@ -637,6 +736,13 @@ class _Run:
                 }.values()
             )
         self.partial |= result.status != "complete"
+        if len(self.facts) > self.agent.limits.max_facts and experiment("guards"):
+            # EXPERIMENTO LOCAL: un gráfico con muchas series (p. ej. cronología)
+            # superaba el límite y se descartaba entero. Se conservan todos los
+            # hechos de los datos y los primeros del gráfico; el resto no se cita.
+            self.facts = self.facts[: self.agent.limits.max_facts]
+            self.partial = True
+            self.retrieval_issues.append("VISUAL_FACTS_TRUNCATED")
         if len(self.facts) > self.agent.limits.max_facts:
             raise ValueError("FACT_BUDGET_EXCEEDED")
         return {

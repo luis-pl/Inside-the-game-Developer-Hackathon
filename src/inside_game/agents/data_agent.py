@@ -26,6 +26,11 @@ from inside_game.agents.contracts import (
     FinishRequest,
     Message,
 )
+from inside_game.agents.experiments import (
+    TOPOLOGY_TOOLS,
+    experiment,
+    original_question,
+)
 from inside_game.contracts import ApiResponse
 from inside_game.mcp_server import DESCRIPTIONS
 from inside_game.providers.models import ModelFailure, ModelProvider
@@ -93,10 +98,9 @@ class AgentLimits:
     max_pages_per_query: int = 20
     max_evidence_bytes: int = 8 * 1024 * 1024
     max_input_bytes: int = 300 * 1024
-    max_tokens: int = (
-        160000  # Consumo observado; una respuesta en curso puede excederlo.
-    )
-    timeout_seconds: float = 240
+    # EXPERIMENTO LOCAL (Ollama, no subir): antes 160000 tokens y 240 s.
+    max_tokens: int = 400000
+    timeout_seconds: float = 600
 
     def __post_init__(self):
         if any(value <= 0 for value in self.__dict__.values()):
@@ -139,6 +143,112 @@ def preview(value, depth=0, *, list_limit=8):
     if isinstance(value, str) and len(value) > 800:
         return value[:800] + " [preview truncated]"
     return value
+
+
+# EXPERIMENTO LOCAL: herramientas por tema. Las de descubrimiento van siempre;
+# si ningún tema coincide se envía el catálogo completo, como antes.
+BASE_TOOLS = {"describe_dataset", "list_matches", "find_entities", "get_match_context"}
+TOOL_TOPICS = [
+    (
+        ("tiro", "remate", "gol", "xg", "ocasi", "disparo", "shot"),
+        {"get_shots", "get_event_context"},
+    ),
+    (
+        ("pase", "red de pase", "circulaci", "corredor", "línea", "linea", "pass"),
+        {"get_passes", "get_passing_network", "get_pass_corridor", "get_line_breaks"},
+    ),
+    (
+        ("defens", "duelo", "intercep", "quite", "entrada", "presi", "recuperaci"),
+        {"get_defensive_actions", "get_defensive_profile"},
+    ),
+    (
+        ("posesi", "secuencia", "jugada", "córner", "corner", "balón parado", "saque"),
+        {"get_possessions", "get_sequences", "get_set_piece_sequences"},
+    ),
+    (
+        ("tarjeta", "falta", "amonest", "expuls", "sustituc", "cambio"),
+        {"get_discipline", "get_substitutions", "get_events"},
+    ),
+    (
+        ("regate", "conducci", "control", "pérdida", "perdida", "despeje"),
+        {"get_ball_actions", "get_events"},
+    ),
+    (
+        (
+            "posici",
+            "tracking",
+            "segundo",
+            "instante",
+            "frame",
+            "mapa de calor",
+            "calor",
+            "movimiento",
+            "distancia",
+            "velocidad",
+            "zona",
+        ),
+        {
+            "get_tracking_frame",
+            "get_tracking_window",
+            "get_heatmap",
+            "get_movement_summary",
+            "get_zone_summary",
+            "get_event_context",
+        },
+    ),
+    (
+        (
+            "forma",
+            "espacio",
+            "voronoi",
+            "topolog",
+            "conectiv",
+            "proximidad",
+            "compact",
+            "estructura",
+            "robustez",
+            "bloque",
+        ),
+        {
+            "get_team_shape",
+            "get_proximity_connectivity",
+            "get_space_coverage",
+            "get_persistent_structure",
+            "get_node_removal_robustness",
+        },
+    ),
+    (
+        (
+            "resumen",
+            "compar",
+            "ranking",
+            "mejor",
+            "estadística",
+            "estadistica",
+            "evoluci",
+            "serie",
+            "rendimiento",
+        ),
+        {
+            "get_team_summary",
+            "get_player_summary",
+            "get_metric_series",
+            "compare_entities",
+            "get_rankings",
+        },
+    ),
+]
+
+
+def tool_subset(request_text, names):
+    text = request_text.lower()
+    selected = set()
+    for keywords, tools in TOOL_TOPICS:
+        if any(k in text for k in keywords):
+            selected |= tools
+    if not selected:
+        return set(names)
+    return (selected | BASE_TOOLS) & set(names)
 
 
 def allowed_values(error):
@@ -198,6 +308,7 @@ class _Run:
         self.incomplete_queries = set()
         self.tools = {}
         self.text_only_replies = 0
+        self.topology_queries = 0
         self.context_window = ContextWindow(agent.limits.max_input_bytes)
         self.trace = []
         self.active_tools = set()
@@ -259,6 +370,10 @@ class _Run:
                 self.tools[tool.name] = tool
         if not self.tools:
             raise StopRun("NO_COMPATIBLE_TOOLS")
+        if experiment("fastpath"):
+            fast = await self.fast_path()
+            if fast is not None:
+                return fast
         functions = [
             {
                 "type": "function",
@@ -488,14 +603,20 @@ class _Run:
                 and e.query_id not in selected_queries
             }
             if omitted_queries:
+                omitted = [
+                    e.evidence_id
+                    for e in self.evidence
+                    if e.query_id in omitted_queries
+                ]
                 return None, {
                     "error": {
                         "code": "OMITTED_QUERY_EVIDENCE",
-                        "evidence_ids": [
-                            e.evidence_id
-                            for e in self.evidence
-                            if e.query_id in omitted_queries
-                        ],
+                        "evidence_ids": omitted,
+                        # EXPERIMENTO LOCAL: indicar la corrección al modelo.
+                        "fix": "Llama de nuevo a finish_data_request con status "
+                        "complete y evidence_ids "
+                        + json.dumps(sorted(ids | set(omitted)))
+                        + ", o con status partial si no quieres incluir esas evidencias.",
                     }
                 }
             all_pages = {
@@ -510,6 +631,57 @@ class _Run:
             notes=final.notes,
             evidence=selected,
         ), None
+
+    async def fast_path(self):
+        """EXPERIMENTO LOCAL: tiros/goles de un partido sin inferencia.
+
+        Sólo cuando la pregunta toca únicamente el tema de tiros y el partido es
+        inequívoco. Si la consulta no queda completa, sigue el flujo con modelo.
+        """
+        # La pregunta original (campo de main o marcador del chat) decide el atajo.
+        text = (
+            self.request.original_request
+            or original_question(self.request.request_text)
+        ).lower()
+        topics = [
+            tools for keywords, tools in TOOL_TOPICS if any(k in text for k in keywords)
+        ]
+        if (
+            len(topics) != 1
+            or "get_shots" not in topics[0]
+            or "get_shots" not in self.tools
+        ):
+            return None
+        if any(
+            k in text
+            for k in ("compar", "evoluci", "xg", "contexto", "antes", "después")
+        ):
+            return None
+        context = self.request.context
+        matches = set(context.match_ids) or {
+            int(m) for m in re.findall(r"\b(9\d{5})\b", text)
+        }
+        teams = set(context.team_ids) or {
+            int(m) for m in re.findall(r"equipo\s+(\d+)", text)
+        }
+        if len(matches) != 1 or len(teams) > 1:
+            return None
+        # Siempre todos los tiros: filtrar sólo goles o tiros a puerta hacía que
+        # el analista tomara ese subconjunto por el total (p. ej. "2 tiros, 100 %
+        # de conversión"). Cada tiro conserva su resultado para distinguirlos.
+        args = {"match_id": matches.pop(), "outcome": "all", "view": "events"}
+        if teams:
+            args["team_id"] = teams.pop()
+        result = await self.query("get_shots", args)
+        if "error" in result or not result.get("complete"):
+            return None
+        return self.result(
+            "complete",
+            notes=[
+                "Plan determinista sin modelo: get_shots "
+                + json.dumps(args, ensure_ascii=False)
+            ],
+        )
 
     async def query(self, name, arguments):
         if name not in self.tools:
@@ -578,6 +750,30 @@ class _Run:
                         arguments["period"] = selected_scope["period"]
                 else:
                     arguments.setdefault("scope", selected_scope)
+        if experiment("topo") and name in TOPOLOGY_TOOLS:
+            # EXPERIMENTO LOCAL: una sola consulta topológica, acotada y resumida.
+            if self.topology_queries >= 1:
+                return {
+                    "error": {
+                        "code": "TOPOLOGY_BUDGET_EXCEEDED",
+                        "fix": "Ya hay una consulta topológica. Usa su evidencia y finaliza.",
+                    }
+                }
+            scope = arguments.get("scope") or {}
+            if (
+                arguments.get("event_id") is None
+                and arguments.get("time_ms") is None
+                and scope.get("kind", "match") == "match"
+            ):
+                return {
+                    "error": {
+                        "code": "INVALID_ARGUMENT",
+                        "fix": "La topología del partido completo es demasiado costosa. "
+                        "Indica event_id o time_ms, o scope window con period.",
+                    }
+                }
+            arguments = {**arguments, "view": "summary"}
+            self.topology_queries += 1
         try:
             request = OPERATIONS[name].model_validate(arguments)
         except ValidationError as exc:

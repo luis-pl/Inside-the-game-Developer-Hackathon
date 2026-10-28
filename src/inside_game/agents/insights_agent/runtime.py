@@ -35,6 +35,14 @@ def model_label():
         return None
     if os.getenv("INSIDE_GAME_MODEL_PROVIDER") == "azure":
         return os.getenv("AZURE_OPENAI_DEPLOYMENT")
+    if os.getenv("INSIDE_GAME_MODEL_PROVIDER") == "ollama":
+        from inside_game.providers.ollama import DEFAULT_MODEL
+
+        return os.getenv("INSIDE_GAME_OLLAMA_MODEL", DEFAULT_MODEL)
+    if os.getenv("INSIDE_GAME_MODEL_PROVIDER") == "nim":
+        from inside_game.providers.nim import DEFAULT_MODEL as NIM_DEFAULT
+
+        return os.getenv("INSIDE_GAME_NIM_MODEL", NIM_DEFAULT)
     return os.getenv("INSIDE_GAME_OPENCODE_MODEL")
 
 

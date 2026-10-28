@@ -23,6 +23,7 @@ from inside_game.agents.conversation_copy import (
     concept_reply,
     report_reply,
 )
+from inside_game.agents.experiments import T
 from inside_game.agents.http_client import HttpDataAgent
 from inside_game.agents.insight_contracts import InsightRequest
 from inside_game.agents.insights_http_client import HttpInsightsAgent, PayloadParser
@@ -161,7 +162,7 @@ class Conversations:
         previous_plan = None
         analysis_reused = False
         try:
-            async with asyncio.timeout(110):
+            async with asyncio.timeout(T(110)):
                 if message.retry_analysis:
                     if not value["report"]:
                         raise ModelFailure("REPORT_REQUIRED_FOR_ANALYSIS")
@@ -244,7 +245,7 @@ class Conversations:
                                 request_text=plan.data_request,
                                 context=plan.context,
                             ),
-                            timeout=35,
+                            timeout=T(35),
                         )
                         audit["data"] = {
                             **data.model_dump(mode="json", exclude={"evidence"}),
@@ -272,7 +273,7 @@ class Conversations:
                         raw = await client._request(
                             "POST",
                             "/a2a/v1/analysis-reports",
-                            timeout=56,
+                            timeout=T(56),
                             payload=AnalysisRequest(
                                 language=language,
                                 original_request=message.text,
@@ -305,7 +306,7 @@ class Conversations:
                                     + " Recupera sólo lo necesario para esta modificación. En get_rankings usa limit=100 para recuperar este catálogo en una página, no resúmenes jugador por jugador. No repitas tiros o series si ya los aporta el informe.",
                                     context=plan.context,
                                 ),
-                                timeout=25,
+                                timeout=T(25),
                             )
                             audit["data"] = {
                                 "request_id": str(handoff.request_id),
@@ -347,7 +348,8 @@ class Conversations:
                                     ),
                                 ),
                                 timeout=min(
-                                    52, max(1, 95 - (time.perf_counter() - started))
+                                    T(52),
+                                    max(1, T(95) - (time.perf_counter() - started)),
                                 ),
                             )
                         analysis = None
@@ -434,10 +436,10 @@ class Conversations:
                                         insights_client=CurrentPage(),
                                         limits=AnalystLimits(
                                             timeout_seconds=min(
-                                                40,
+                                                T(40),
                                                 max(
                                                     1,
-                                                    102
+                                                    T(102)
                                                     - (time.perf_counter() - started),
                                                 ),
                                             )

@@ -5,6 +5,7 @@ from html.parser import HTMLParser
 
 import httpx
 
+from inside_game.agents.experiments import T
 from inside_game.agents.http_client import HttpDataAgent
 from inside_game.agents.insight_contracts import InsightResult
 from inside_game.providers.models import ModelFailure
@@ -48,7 +49,7 @@ class HttpInsightsAgent(HttpDataAgent):
                     headers={
                         "Authorization": "Bearer " + self.key,
                         "X-Agent-Deadline-Ms": str(
-                            max(1000, min(55000, int(timeout * 1000)))
+                            max(1000, min(int(T(55000)), int(timeout * 1000)))
                         ),
                     },
                 ) as response:

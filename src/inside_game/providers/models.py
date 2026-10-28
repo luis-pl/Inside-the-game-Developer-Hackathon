@@ -184,10 +184,14 @@ class AzureResponsesModel:
             **token_usage(payload),
         )
 
-    async def _post(self, path, body):
+    def _base_url(self):
         endpoint = self.settings.endpoint.rstrip("/")
         if not endpoint.endswith("/openai/v1"):
             endpoint += "/openai/v1"
+        return endpoint
+
+    async def _post(self, path, body):
+        endpoint = self._base_url()
         # Un único reintento transitorio. No reenviar errores/cuerpos al modelo.
         for attempt in range(2):
             try:
@@ -326,8 +330,8 @@ class AzureChatModel(AzureResponsesModel):
     de esquema por compatibilidad GPT-OSS no sustituyen validación del ejecutor.
     """
 
-    async def respond(self, instructions, messages, tools):
-        body = {
+    def _chat_body(self, instructions, messages, tools):
+        return {
             "model": self.name,
             "messages": chat_messages(instructions, messages),
             "tools": [
@@ -346,7 +350,11 @@ class AzureChatModel(AzureResponsesModel):
             "reasoning_effort": self.settings.reasoning_effort,
             "max_tokens": self.settings.max_output_tokens,
         }
-        payload = await self._post("chat/completions", body)
+
+    async def respond(self, instructions, messages, tools):
+        payload = await self._post(
+            "chat/completions", self._chat_body(instructions, messages, tools)
+        )
         try:
             choice = payload["choices"][0]
             if choice["finish_reason"] not in {"tool_calls", "stop"}:
@@ -383,6 +391,14 @@ def model_settings_from_env():
         from inside_game.providers.opencode import OpenCodeModelSettings
 
         return OpenCodeModelSettings.from_env(provider=provider)
+    if provider == "ollama":
+        from inside_game.providers.ollama import OllamaModelSettings
+
+        return OllamaModelSettings.from_env()
+    if provider == "nim":
+        from inside_game.providers.nim import NimModelSettings
+
+        return NimModelSettings.from_env()
     if provider != "azure":
         raise ValueError("Unsupported model provider")
     return AzureModelSettings.from_env()
@@ -390,6 +406,14 @@ def model_settings_from_env():
 
 def create_model(settings=None):
     settings = settings or model_settings_from_env()
+    if getattr(settings, "provider", "azure") == "ollama":
+        from inside_game.providers.ollama import OllamaChatModel
+
+        return OllamaChatModel(settings)
+    if getattr(settings, "provider", "azure") == "nim":
+        from inside_game.providers.nim import NimChatModel
+
+        return NimChatModel(settings)
     if getattr(settings, "provider", "azure") in {"opencode", "opencode-go"}:
         from inside_game.providers.opencode import (
             OpenCodeChatModel,

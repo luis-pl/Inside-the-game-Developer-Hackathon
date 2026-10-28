@@ -15,6 +15,7 @@ from inside_game.agents.analyst_contracts import (
     AnalysisResult,
     AttachAnalysis,
 )
+from inside_game.agents.experiments import T, experiment
 from inside_game.agents.http_client import HttpDataAgent
 from inside_game.agents.insight_contracts import InsightRequest
 from inside_game.agents.insights_http_client import HttpInsightsAgent
@@ -117,7 +118,7 @@ def register_analyst_routes(
                             insights_client=insights,
                             limits=AnalystLimits(
                                 timeout_seconds=max(
-                                    0.1, deadline - (8 if compose else 0)
+                                    0.1, deadline - (T(8) if compose else 0)
                                 )
                             ),
                         ).run(message)
@@ -132,11 +133,20 @@ def register_analyst_routes(
                                 e for f in analysis.facts for e in f.evidence_ids
                             )
                         )
-                        if any(
-                            key not in analysis.visual_evidence_aliases for key in ids
-                        ):
+                        missing = [
+                            key
+                            for key in ids
+                            if key not in analysis.visual_evidence_aliases
+                        ]
+                        if missing and not experiment("graceful"):
                             raise ModelFailure("ANALYST_REFERENCE_NOT_IN_REPORT")
-                        mapped = [analysis.visual_evidence_aliases[key] for key in ids]
+                        # EXPERIMENTO LOCAL: publicar citando sólo la evidencia
+                        # presente en la página, en vez de no publicar nada.
+                        mapped = [
+                            analysis.visual_evidence_aliases[key]
+                            for key in ids
+                            if key not in missing
+                        ]
                         from inside_game.insights.contracts import AnalystNote
 
                         report = await insights.attach(
@@ -207,7 +217,9 @@ def register_analyst_routes(
     async def analyze(
         message: AnalysisRequest,
         request: Request,
-        x_agent_deadline_ms: int = Header(default=55000, ge=1000, le=55000),
+        x_agent_deadline_ms: int = Header(
+            default=int(T(55000)), ge=1000, le=int(T(55000))
+        ),
     ):
         return await execute(message, request, False, x_agent_deadline_ms / 1000)
 
@@ -215,6 +227,8 @@ def register_analyst_routes(
     async def analysis_report(
         message: AnalysisRequest,
         request: Request,
-        x_agent_deadline_ms: int = Header(default=55000, ge=1000, le=55000),
+        x_agent_deadline_ms: int = Header(
+            default=int(T(55000)), ge=1000, le=int(T(55000))
+        ),
     ):
         return await execute(message, request, True, x_agent_deadline_ms / 1000)
