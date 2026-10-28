@@ -11,12 +11,12 @@ export function advanceReplayTime(
 }
 
 const ACTION_LABELS: Record<string, string> = {
-  Pass: "Pase",
-  Shot: "Tiro",
-  Carry: "Conducción",
-  Dribble: "Regate",
-  Interception: "Intercepción",
-  "Ball Recovery": "Recuperación",
+  Pass: "Pass",
+  Shot: "Shot",
+  Carry: "Carry",
+  Dribble: "Dribble",
+  Interception: "Interception",
+  "Ball Recovery": "Recovery",
 };
 
 export function episodeActions(episode: Episode | null) {

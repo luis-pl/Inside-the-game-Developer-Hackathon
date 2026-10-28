@@ -15,7 +15,7 @@ export function Persistence({
         <span>20</span>
         <span>40 m</span>
       </div>
-      <div className="bars" aria-label="Intervalos de persistencia H1">
+      <div className="bars" aria-label="H1 persistence intervals">
         {epsilon !== undefined && (
           <div
             className="scale-marker"
@@ -27,7 +27,7 @@ export function Persistence({
             <div key={i} className="bar-row">
               <div
                 className="bar"
-                title={`Nacimiento ${bar.birth.toFixed(2)} m; ${bar.death === null ? "censurado a 40 m" : "muerte " + bar.death.toFixed(2) + " m"}`}
+                title={`Birth ${bar.birth.toFixed(2)} m; ${bar.death === null ? "censored at 40 m" : "death " + bar.death.toFixed(2) + " m"}`}
                 style={{
                   left: `${(bar.birth / 40) * 100}%`,
                   width: `${(((bar.death ?? 40) - bar.birth) / 40) * 100}%`,
@@ -39,13 +39,13 @@ export function Persistence({
           ))
         ) : (
           <p className="muted small">
-            No hay ciclos H₁ con persistencia positiva en este frame.
+            No H₁ cycles with positive persistence in this frame.
           </p>
         )}
       </div>
       <p className="small muted">
-        Rips · F₂ · corte a 40 m. Persistencia en distancia, no duración
-        temporal. Un ciclo no delimita por sí solo un hueco táctico.
+        Rips · F₂ · truncated at 40 m. Persistence measures distance, not time.
+        A cycle alone does not define a tactical space.
       </p>
     </div>
   );

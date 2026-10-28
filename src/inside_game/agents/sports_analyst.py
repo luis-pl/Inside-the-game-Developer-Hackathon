@@ -161,7 +161,14 @@ class SportsAnalyst:
             return state.result("error", issues=["DEADLINE_EXCEEDED"])
         except ModelFailure as exc:
             return state.result("error", issues=[exc.code])
-        except (ValidationError, ValueError):
+        except (ValidationError, ValueError) as exc:
+            # Port of d534334's bounded diagnostics; never expose arbitrary errors.
+            if str(exc) in {
+                "FACT_BUDGET_EXCEEDED",
+                "EVIDENCE_BUDGET_EXCEEDED",
+                "EVIDENCE_MATCH_MISMATCH",
+            }:
+                return state.result("error", issues=[str(exc)])
             return state.result("error", issues=["INVALID_ANALYSIS_DATA"])
         except Exception:  # noqa: BLE001 - no exponer respuestas SDK ni cabeceras.
             return state.result("error", issues=["ANALYST_EXECUTION_FAILED"])

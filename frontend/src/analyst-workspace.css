@@ -1,0 +1,666 @@
+/* Shared agent workspace: low-glare surfaces and a clear evidence hierarchy. */
+.workspace {
+  font-size: 14px;
+}
+.workspace :is(button, a, select, input, textarea):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+.workspace .work-sidebar {
+  padding-top: 28px;
+  gap: 20px;
+}
+.workspace .work-brand {
+  letter-spacing: -0.6px;
+  font-size: 16px;
+}
+.workspace .work-brand > svg {
+  color: var(--accent);
+  width: 30px;
+  height: 30px;
+}
+.workspace .new-analysis {
+  background: var(--primary);
+  color: var(--inverse);
+  border-color: var(--primary);
+  border-radius: 8px;
+  min-height: 44px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+.workspace .new-analysis:hover:not(:disabled) {
+  background: var(--primary);
+  filter: brightness(0.95);
+}
+.workspace .sidebar-label {
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: 10px;
+  font-weight: 650;
+}
+.workspace .conversation-list button {
+  min-height: 42px;
+  border: 1px solid transparent;
+  font-size: 13px;
+}
+.workspace .conversation-list button.selected {
+  border-color: var(--line);
+  background: var(--panel);
+}
+.workspace .session-avatar {
+  color: var(--accent);
+  font-weight: 650;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+}
+.workspace .sidebar-empty {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.workspace .workspace-topbar {
+  min-height: 66px;
+  height: 66px;
+  background: var(--panel);
+  padding-inline: 22px;
+}
+.workspace .workspace-name {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.3px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.workspace .workspace-name small {
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.workspace .viewer-link {
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 8px 12px;
+  color: var(--text);
+}
+.workspace .icon-button {
+  width: 36px;
+  height: 36px;
+}
+.workspace .agent-context {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 24px;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+.workspace .agent-context-title {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.workspace :is(.context-label, .workspace-eyebrow) {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 650;
+}
+.workspace .agent-context-title > strong {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.35px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.workspace .agent-status {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+.workspace .agent-status i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.workspace .agent-status.is-working i {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--hover);
+}
+.workspace .agent-pipeline {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+}
+.workspace .agent-pipeline li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.workspace .pipeline-number {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--muted);
+  flex: none;
+}
+.workspace .agent-pipeline strong {
+  font-size: 11px;
+  display: block;
+  font-weight: 600;
+}
+.workspace .agent-pipeline small {
+  color: var(--muted);
+  display: block;
+  font-size: 10px;
+  margin-top: 3px;
+}
+.workspace .agent-pipeline [data-active="true"] .pipeline-number {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--inverse);
+}
+.workspace .agent-pipeline [data-active="true"] strong {
+  color: var(--accent);
+}
+.workspace .document-panel {
+  background: var(--panel);
+}
+.workspace .document-toolbar {
+  height: 55px;
+  background: var(--panel);
+  font-size: 13px;
+}
+.workspace .document-toolbar > div > svg {
+  color: var(--accent);
+}
+.workspace .document-actions button {
+  font-size: 12px;
+  padding: 7px 10px;
+}
+.workspace .document-actions button[aria-pressed="true"] {
+  background: var(--input);
+  font-weight: 600;
+}
+.workspace .document-empty {
+  padding: 30px 28px;
+}
+.workspace .empty-pitch {
+  width: min(205px, 60%);
+  margin: 14px 0 0;
+  stroke: var(--line);
+}
+.workspace .pitch-connection {
+  stroke: var(--accent);
+  opacity: 0.6;
+}
+.workspace .pitch-players {
+  fill: var(--accent);
+}
+.workspace .document-empty h1 {
+  font-size: clamp(29px, 2.7vw, 37px);
+  letter-spacing: -1.2px;
+  line-height: 1.15;
+  margin: 8px 0 14px;
+}
+.workspace .document-empty > p {
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 42ch;
+}
+.workspace .starting-points {
+  width: min(470px, 100%);
+  display: grid;
+  gap: 0;
+  margin-top: 25px;
+  border-top: 1px solid var(--line);
+}
+.workspace .starting-points button,
+.workspace .starting-points button:last-child {
+  padding: 15px 4px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+.workspace .starting-points button > span {
+  font-size: 14px;
+  font-weight: 600;
+}
+.workspace .starting-points small {
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 400;
+}
+.workspace .starting-points button > svg {
+  color: var(--accent);
+}
+.workspace .chat-panel {
+  background: var(--bg);
+}
+.workspace .chat-heading {
+  height: 55px;
+  font-size: 13px;
+  font-weight: 650;
+  background: var(--panel);
+  padding-inline: 20px;
+}
+.workspace .agent-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent);
+  border: 0;
+  background: var(--input);
+  border-radius: 20px;
+  padding: 4px 8px;
+}
+.workspace .assistant-mark {
+  background: var(--hover);
+  color: var(--accent);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.workspace .chat-welcome h2 {
+  font-size: 23px;
+  letter-spacing: -0.6px;
+  font-weight: 600;
+  margin-top: 19px;
+}
+.workspace :is(.chat-welcome p, .chat-message p) {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.workspace .chat-tip {
+  padding: 14px 15px;
+  border-left: 2px solid var(--line);
+  margin-top: 25px;
+  line-height: 1.9;
+}
+.workspace .chat-message.user {
+  background: var(--hover);
+  border: 1px solid var(--line);
+  border-radius: 12px 12px 3px 12px;
+}
+.workspace .chat-composer {
+  background: var(--panel);
+  padding: 18px;
+}
+.workspace .match-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.workspace .chat-composer select {
+  font-size: 12px;
+  min-height: 40px;
+  border-radius: 7px;
+}
+.workspace .match-source {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.workspace .composer-input {
+  background: var(--bg);
+  border-radius: 11px;
+  padding: 12px 12px 43px;
+}
+.workspace .composer-input:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--hover);
+}
+.workspace .composer-input textarea {
+  min-height: 68px;
+  font-size: 14px;
+}
+.workspace .send-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+}
+.workspace .chat-composer > small {
+  font-size: 10px;
+}
+.workspace .workspace-login {
+  background: var(--bg);
+}
+.workspace .login-content {
+  max-width: 480px;
+}
+.workspace .login-content > svg {
+  padding: 12px;
+  width: 54px;
+  height: 54px;
+  background: var(--hover);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  display: block;
+  margin-bottom: 24px;
+  color: var(--accent);
+}
+.workspace .login-content h1 {
+  font-size: clamp(38px, 4vw, 57px);
+  letter-spacing: -2px;
+  line-height: 1.12;
+  margin: 17px 0 22px;
+  font-weight: 600;
+}
+.workspace .login-content p {
+  font-size: 16px;
+  line-height: 1.75;
+}
+.workspace .login-capabilities {
+  display: flex;
+  gap: 24px;
+  margin-top: 27px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.workspace .login-capabilities b {
+  color: var(--text);
+  font-size: 13px;
+  margin-left: 7px;
+  font-weight: 500;
+}
+.workspace .primary-button {
+  min-height: 46px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+.workspace .report-navigation {
+  padding-block: 10px;
+  gap: 22px;
+  background: var(--bg);
+}
+.workspace .report-navigation button {
+  font-size: 12px;
+  color: var(--accent);
+}
+.workspace .document-update {
+  background: var(--input);
+  border-color: var(--line);
+}
+.workspace :is(.document-update strong, .work-status-line strong) {
+  font-size: 13px;
+}
+.workspace .work-steps {
+  font-size: 11px;
+}
+.workspace .trace-view {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.workspace .run-activity {
+  max-width: 800px;
+  margin: auto;
+}
+.workspace .activity-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.workspace .activity-heading h2 {
+  margin: 4px 0 20px;
+  font-size: 27px;
+  letter-spacing: -0.7px;
+  font-weight: 600;
+}
+.workspace .activity-heading label {
+  display: grid;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.workspace .activity-heading select {
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+  max-width: 150px;
+}
+.workspace .activity-brief {
+  border-block: 1px solid var(--line);
+  padding: 20px 0;
+}
+.workspace .activity-brief > span {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.workspace .activity-brief p {
+  font-size: 16px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.workspace .activity-brief small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.workspace .activity-agents {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+.workspace .activity-agents li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 15px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.workspace .activity-number {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.workspace .activity-row-title {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.workspace .activity-agents h3 {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 600;
+}
+.workspace .activity-row-title span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.workspace .activity-agents p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 7px 0;
+  overflow-wrap: anywhere;
+}
+.workspace .activity-agents strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+.workspace .activity-disclaimer {
+  font-size: 12px;
+  color: var(--muted);
+}
+.workspace :is(.activity-issues, .activity-notice) {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  background: var(--input);
+  border-radius: 6px;
+  font-size: 13px;
+}
+.workspace .activity-issues code {
+  display: block;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.workspace .activity-evidence {
+  margin-top: 32px;
+}
+.workspace .activity-evidence h3 {
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+.workspace .activity-evidence h3 span {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 6px;
+}
+.workspace .activity-evidence > p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.workspace .activity-evidence details {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.workspace .activity-evidence summary {
+  cursor: pointer;
+  font-size: 13px;
+}
+.workspace .activity-evidence summary small {
+  display: block;
+  color: var(--muted);
+  margin-left: 14px;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.workspace .activity-raw {
+  margin-top: 28px;
+  font-size: 12px;
+}
+.workspace .activity-raw summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.workspace .trace-view pre {
+  font-size: 11px;
+  padding: 16px;
+  max-height: 400px;
+  background: var(--input);
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.workspace .trace-download {
+  margin: 20px 0;
+  padding: 9px 14px;
+  background: var(--input);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+@media (max-width: 1200px) {
+  .workspace .agent-pipeline {
+    gap: 12px;
+  }
+  .workspace .agent-pipeline small {
+    display: none;
+  }
+  .workspace .agent-context {
+    padding: 18px 22px;
+  }
+}
+@media (max-width: 1000px) {
+  .workspace .agent-pipeline {
+    gap: 8px;
+  }
+  .workspace .agent-pipeline strong {
+    font-size: 10px;
+  }
+  .workspace .agent-context-title > strong {
+    font-size: 15px;
+  }
+  .workspace .agent-context {
+    gap: 12px;
+  }
+}
+@media (max-width: 760px) {
+  .workspace .workspace-topbar {
+    height: 66px;
+    padding: 0 12px;
+    gap: 7px;
+  }
+  .workspace .workspace-name {
+    font-size: 14px;
+  }
+  .workspace .workspace-name small {
+    font-size: 8px;
+  }
+  .workspace .agent-context {
+    padding: 13px 17px;
+  }
+  .workspace .agent-pipeline {
+    display: none;
+  }
+  .workspace .agent-context-title {
+    width: 100%;
+  }
+  .workspace .agent-context-title > strong {
+    font-size: 15px;
+  }
+  .workspace :is(.context-label, .viewer-link) {
+    display: none;
+  }
+  .workspace .document-toolbar {
+    padding-inline: 12px;
+  }
+  .workspace .document-toolbar span {
+    max-width: 15ch;
+  }
+  .workspace .document-actions button {
+    font-size: 11px;
+    padding: 6px;
+  }
+  .workspace .document-empty {
+    padding: 22px 20px 30px;
+  }
+  .workspace .document-empty h1 {
+    font-size: 32px;
+  }
+  .workspace .chat-messages {
+    padding: 22px 20px;
+  }
+  .workspace .chat-composer {
+    padding: 12px 16px;
+  }
+  .workspace .workspace-login {
+    padding: 24px;
+  }
+  .workspace .login-content h1 {
+    font-size: 40px;
+  }
+}

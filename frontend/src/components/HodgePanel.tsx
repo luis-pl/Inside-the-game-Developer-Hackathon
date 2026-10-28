@@ -6,19 +6,19 @@ import "./hodge.css";
 const PARTS = [
   {
     key: "gradient",
-    name: "Potencial",
-    description: "Flujo de gradiente; no equivale a avance hacia portería.",
+    name: "Potential",
+    description: "Gradient flow; this does not measure progress towards goal.",
   },
   {
     key: "curl",
-    name: "Circulación local",
-    description: "Combinación de fronteras de los triángulos rellenos.",
+    name: "Local circulation",
+    description: "Flow around the boundaries of filled triangles.",
   },
   {
     key: "harmonic",
-    name: "Armónico",
+    name: "Harmonic",
     description:
-      "Flujo sin divergencia ni rotación local; depende del complejo.",
+      "Flow with no divergence or local curl; depends on the complex.",
   },
 ] as const;
 const percent = (value: number | null) =>
@@ -34,59 +34,59 @@ export function HodgePanel({ lab }: { lab: Lab }) {
     <section className="panel hodge-panel">
       <div className="hodge-header">
         <div>
-          <div className="section-label">05 / ANATOMÍA DE LA CIRCULACIÓN</div>
-          <h2>El balón también tiene estructura.</h2>
+          <div className="section-label">PASSING STRUCTURE</div>
+          <h2>How the ball moves through the team.</h2>
         </div>
         <label>
-          Complejo de pases
+          Passing complex
           <select
-            aria-label="Complejo de pases"
+            aria-label="Passing complex"
             value={lab.complexMode}
             onChange={(e) =>
               lab.setComplexMode(e.target.value as "clique" | "graph")
             }
           >
-            <option value="clique">Triángulos rellenos</option>
-            <option value="graph">Sólo grafo</option>
+            <option value="clique">Filled triangles</option>
+            <option value="graph">Graph only</option>
           </select>
         </label>
       </div>
       {!lab.episode ? (
         <p className="muted small">
-          Carga un episodio para descomponer la red de pases completados.
+          Load a match window to analyse the completed-pass network.
         </p>
       ) : !h ? (
         <p className="notice error" role="status">
-          Hodge no disponible: faltan datos completos de pases. No se interpreta
-          como cero circulación.
+          Hodge analysis is unavailable because complete passing data is
+          missing. This does not mean zero circulation.
         </p>
       ) : (
         <>
           <p className="small muted">
-            Red agregada de toda la ventana cargada (
+            Network aggregated over the loaded window (
             {Math.round(
               (lab.episode.frames.at(-1)!.timeMs -
                 lab.episode.frames[0].timeMs +
                 1000) /
                 1000,
             )}{" "}
-            s), no del instante.{" "}
+            s), not the current instant.{" "}
             {lab.removed !== null
-              ? "Red perturbada: se excluyen los pases del jugador retirado."
-              : "Incluye porteros si participaron en los pases."}
+              ? "Modified network: passes involving the removed player are excluded."
+              : "Includes goalkeepers who participated in passes."}
           </p>
           <div className="hodge-facts">
             <span>
-              <strong>{h.completedCount}</strong> pases completos
+              <strong>{h.completedCount}</strong> completed passes
             </span>
             <span>
-              <strong>{h.edges.length}</strong> interacciones
+              <strong>{h.edges.length}</strong> interactions
             </span>
             <span>
-              <strong>{h.triangles.length}</strong> triángulos
+              <strong>{h.triangles.length}</strong> triangles
             </span>
             <span>
-              <strong>{h.firstBetti}</strong> dimensión H¹(ℝ)
+              <strong>{h.firstBetti}</strong> H¹(ℝ) dimension
             </span>
           </div>
           <div className="hodge-parts">
@@ -102,26 +102,26 @@ export function HodgePanel({ lab }: { lab: Lab }) {
             ))}
           </div>
           <p className="small muted">
-            Porcentajes de energía ‖componente‖² / ‖flujo neto‖². No son
-            porcentajes de posesión ni de eficacia.
+            Share of energy: ‖component‖² / ‖net flow‖². These values do not
+            measure possession or effectiveness.
           </p>
           {!h.fractions && (
             <div className="notice">
               {h.completedCount
-                ? "Los pases en ambos sentidos se equilibran: el flujo neto es nulo."
-                : "No hay pases completados atribuibles a este equipo en esta ventana."}{" "}
-              No se calculan porcentajes.
+                ? "Passes in both directions balance out: net flow is zero."
+                : "No completed passes are attributable to this team in the selected window."}{" "}
+              Percentages are unavailable.
             </div>
           )}
           <div
             className="hodge-layer-buttons"
-            aria-label="Capa de Hodge sobre la cancha"
+            aria-label="Hodge layer on the pitch"
           >
-            <span>VER EN CANCHA</span>
+            <span>SHOW ON PITCH</span>
             {(
               [
-                { key: "off", name: "Oculto" },
-                { key: "net", name: "Flujo neto" },
+                { key: "off", name: "Hidden" },
+                { key: "net", name: "Net flow" },
                 ...PARTS,
               ] as const
             ).map((part) => (
@@ -139,37 +139,38 @@ export function HodgePanel({ lab }: { lab: Lab }) {
           </div>
           {missing > 0 && (
             <p className="small muted">
-              {missing} nodos de la red no están presentes en este frame. Sus
-              aristas se incluyen en el cálculo, pero no se dibujan con
-              posiciones inventadas.
+              {missing} network nodes are absent from this frame. Their edges
+              are included in the calculation but are not drawn at invented
+              positions.
             </p>
           )}
           <details className="hodge-method">
-            <summary>Definición y control numérico</summary>
+            <summary>Definitions & numerical checks</summary>
             <p>
-              Orientación canónica por ID: fᵢⱼ = Nᵢ→ⱼ − Nⱼ→ᵢ. Producto interno
-              euclídeo sin pesos. f = B₁ᵀφ + B₂ψ + h. El soporte conserva pares
-              con pases equilibrados; cada triángulo exige las tres
-              interacciones observadas, sin afirmar que ocurrieran en secuencia.
+              Canonical orientation by ID: fᵢⱼ = Nᵢ→ⱼ − Nⱼ→ᵢ. Unweighted
+              Euclidean inner product. f = B₁ᵀφ + B₂ψ + h. The support retains
+              pairs with balanced passes. Each triangle requires all three
+              observed interactions; they need not occur in sequence.
             </p>
             <p>
-              La componente armónica satisface B₁h = 0 y B₂ᵀh = 0. Su espacio
-              representa H¹ con coeficientes reales del complejo de pases; es
-              distinto del H₁ de Rips espacial sobre F₂. No se equipara
-              gradiente con progresión ni circulación con posesión improductiva.
+              The harmonic component satisfies B₁h = 0 and B₂ᵀh = 0. Its space
+              represents H¹ over real coefficients of the passing complex,
+              distinct from spatial Rips H₁ over F₂. Gradient is not equivalent
+              to progression; circulation is not equivalent to unproductive
+              possession.
             </p>
             <p>
-              Residuos relativos: reconstrucción{" "}
-              {h.diagnostics.reconstruction.toExponential(1)}, divergencia
-              armónica {h.diagnostics.harmonicDivergence.toExponential(1)},
-              rotación armónica {h.diagnostics.harmonicCurl.toExponential(1)},
-              ortogonalidad {h.diagnostics.orthogonality.toExponential(1)}.
+              Relative residuals: reconstruction{" "}
+              {h.diagnostics.reconstruction.toExponential(1)}, harmonic
+              divergence {h.diagnostics.harmonicDivergence.toExponential(1)},
+              harmonic curl {h.diagnostics.harmonicCurl.toExponential(1)},
+              orthogonality {h.diagnostics.orthogonality.toExponential(1)}.
             </p>
           </details>
           {!h.reliable && (
             <p role="alert" className="notice error">
-              Los residuos numéricos superan la tolerancia. No se dibuja esta
-              descomposición.
+              Numerical residuals exceed the tolerance. This decomposition is
+              not displayed.
             </p>
           )}
         </>

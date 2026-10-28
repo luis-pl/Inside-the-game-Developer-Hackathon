@@ -1,4 +1,4 @@
-"""Etiquetas legibles, datos por equipo y cifras que no engañan, sin red ni LLM."""
+"""Labels legibles, datos por team y cifras que no engañan, sin red ni LLM."""
 
 import copy
 
@@ -11,37 +11,37 @@ from inside_game.insights.molecules import team_breakdown as breakdown_table
 from inside_game.insights.organisms import comparison_bars
 
 TEAMS = {
-    "1": {"name": "Local", "color": "#2463bc"},
+    "1": {"name": "Home", "color": "#2463bc"},
     "2": {"name": "Visita", "color": "#bf402e"},
 }
 
 
-def test_metric_labels_are_spanish_and_drop_internal_prefixes():
-    assert metric_label("data-26f04bfbb2d34a57959e557b2e30aa79-q3.shots") == "Tiros"
-    assert metric_label("q15.tackles_won") == "Entradas ganadas"
-    assert metric_label("a1-q3.aggregate.shots") == "Tiros"
-    assert metric_label("summary.interceptions") == "Intercepciones"
-    assert metric_label("q5.outcomes.Off T") == "Resultado: Fuera"
-    assert metric_label("q5.body_parts.Left Foot") == "Parte del cuerpo: Pie izquierdo"
-    assert metric_label("event_counts.Ball Recovery") == "Eventos · Recuperaciones"
-    assert metric_label("team_area_m2.2", TEAMS) == "Área de Visita (m²)"
-    assert metric_label("baseline.component_count") == "Referencia: Componentes"
+def test_metric_labels_are_english_and_drop_internal_prefixes():
+    assert metric_label("data-26f04bfbb2d34a57959e557b2e30aa79-q3.shots") == "Shots"
+    assert metric_label("q15.tackles_won") == "Tackles won"
+    assert metric_label("a1-q3.aggregate.shots") == "Shots"
+    assert metric_label("summary.interceptions") == "Interceptions"
+    assert metric_label("q5.outcomes.Off T") == "Outcome: Off target"
+    assert metric_label("q5.body_parts.Left Foot") == "Body part: Left foot"
+    assert metric_label("event_counts.Ball Recovery") == "Events · Recoveries"
+    assert metric_label("team_area_m2.2", TEAMS) == "Area of Visita (m²)"
+    assert metric_label("baseline.component_count") == "Baseline: Components"
     assert metric_label("clave_nueva_sin_traducir") == "clave nueva sin traducir"
 
 
 def test_lanes_do_not_claim_a_side_the_sources_do_not_define():
-    assert metric_label("channel_1") == "Carril 1 (banda)"
-    assert metric_label("channel_3") == "Carril 3 (centro)"
-    assert metric_label("channel_5") == "Carril 5 (banda)"
+    assert metric_label("channel_1") == "Channel 1 (wide)"
+    assert metric_label("channel_3") == "Channel 3 (central)"
+    assert metric_label("channel_5") == "Channel 5 (wide)"
     text = " ".join(metric_label(f"channel_{n}") for n in range(1, 6))
-    assert "izquierda" not in text and "derecha" not in text
+    assert "left" not in text and "right" not in text
 
 
 def test_table_headers_and_rates_read_naturally():
     html = data_table([{"event_id": "e1", "time_ms": 1000, "player": "Ana", "x": 3}])
-    assert "ID del evento" in html and "Tiempo (ms)" in html and "x (m)" in html
+    assert "Event ID" in html and "Time (ms)" in html and "x (m)" in html
     assert "event_id" not in html and "time_ms" not in html
-    assert column_label("tackles_won") == "Entradas ganadas"
+    assert column_label("tackles_won") == "Tackles won"
     assert "62.5%" in metric_reading("q1.completion_rate", 0.625)
 
 
@@ -105,8 +105,8 @@ def test_breakdown_table_names_each_team_with_its_color():
     html = breakdown_table(
         {"1": {"shots": 2, "completion_rate": 0.5}, "2": {"shots": 1}}, TEAMS
     )
-    assert "<th>Tiros</th>" in html and "<th>Acierto de pase</th>" in html
-    assert "Local" in html and "Visita" in html and "#2463bc" in html
+    assert "<th>Shots</th>" in html and "<th>Pass completion</th>" in html
+    assert "Home" in html and "Visita" in html and "#2463bc" in html
     assert "50.0%" in html
     assert breakdown_table({}, TEAMS) == ""
 
@@ -125,8 +125,8 @@ def test_comparison_names_teams_and_metrics_instead_of_ids_and_keys():
         ],
     )
     html = comparison_bars(block)
-    assert "Local" in html and "Visita" in html
-    assert "Tiros" in html and "Goles" in html
+    assert "Home" in html and "Visita" in html
+    assert "Shots" in html and "Goals" in html
     assert "aggregate" not in html
     assert ">1<" not in html and ">2<" not in html, "ids como etiqueta"
 
@@ -215,9 +215,9 @@ def test_pass_map_fills_missing_api_totals_from_events_and_labels_the_subset():
         item["attacking_x_m"], item["attacking_y_m"] = 40, 34
         item["pass"].update(end_x=100, end_y=40, outcome=None)
     _, [compiled] = compile_report(
-        {"title": "Pases", "blocks": [block], "evidence": evidence}
+        {"title": "Passes", "blocks": [block], "evidence": evidence}
     )
     keys = {k.split(".")[-1] for k in compiled.metrics}
     assert "progressive_passes_with_geometry" in keys
     assert not keys & {"progressive_passes", "final_third_entries"}
-    assert "sólo con coordenadas" in metric_label("progressive_passes_with_geometry")
+    assert "with coordinates" in metric_label("progressive_passes_with_geometry")

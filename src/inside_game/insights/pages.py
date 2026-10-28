@@ -116,8 +116,10 @@ def report_parts(request):
     kinds = sorted(
         {
             t("synthetic_tag")
-            if e.response.provenance.get("is_synthetic")
+            if e.response.provenance.get("is_synthetic") is True
             else t("real")
+            if e.response.provenance.get("is_synthetic") is False
+            else t("unknown_provenance")
             for e in spec.evidence
         }
     )

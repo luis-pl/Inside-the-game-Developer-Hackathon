@@ -1,0 +1,65 @@
+/* Shared neutral surfaces. Analytical colours belong to the charts and pitch. */
+.app-theme[data-theme="dark"] {
+  --bg: #181818;
+  --side: #131313;
+  --panel: #1c1c1c;
+  --input: #252525;
+  --hover: #2c2c2c;
+  --line: #363636;
+  --text: #ededed;
+  --muted: #adadad;
+  --inverse: #171717;
+  --primary: #e6e6e6;
+  --chart-ink: #a4d2bd;
+  --warning-bg: #30291f;
+  --warning-text: #e6c99e;
+  color-scheme: dark;
+}
+.app-theme[data-theme="light"] {
+  --bg: #f7f7f7;
+  --side: #f0f0f0;
+  --panel: #fdfdfd;
+  --input: #ededed;
+  --hover: #e5e5e5;
+  --line: #d7d7d7;
+  --text: #242424;
+  --muted: #626262;
+  --inverse: #fff;
+  --primary: #292929;
+  --chart-ink: #33745f;
+  --warning-bg: #f5ede1;
+  --warning-text: #775326;
+  color-scheme: light;
+}
+.app-theme {
+  --accent: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  font-size: 14px;
+}
+.app-theme :is(button, a, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+.app-theme .work-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.6px;
+  white-space: nowrap;
+}
+.app-theme .brand-period {
+  color: var(--muted);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+html[data-theme="light"] {
+  color-scheme: light;
+}

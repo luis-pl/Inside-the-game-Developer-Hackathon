@@ -18,7 +18,7 @@ def identities(spec):
             key = match.get(f"{side}_team_id")
             if key is not None:
                 teams[str(key)] = {
-                    "name": match.get(f"{side}_team_name") or f"Equipo {key}"
+                    "name": match.get(f"{side}_team_name") or f"Team {key}"
                 }
         for player in data.get("lineups", []):
             players[str(player["player_id"])] = {
@@ -32,7 +32,7 @@ def identities(spec):
     for style in spec.teams:
         previous = teams.get(str(style.team_id), {})
         teams[str(style.team_id)] = {
-            "name": style.name or previous.get("name", f"Equipo {style.team_id}"),
+            "name": style.name or previous.get("name", f"Team {style.team_id}"),
             "color": style.color,
         }
     return teams, players
@@ -43,7 +43,7 @@ def team(block, key):
     return block.teams.get(
         key,
         {
-            "name": f"Equipo {key}" if key != "None" else "Sin equipo",
+            "name": f"Team {key}" if key != "None" else "Unassigned team",
             "color": PALETTE[(int(key) - 1) % len(PALETTE)]
             if key.isdigit()
             else "#52675f",

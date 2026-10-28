@@ -24,19 +24,22 @@ def test_catalog_preserves_orientation_and_omits_internal_identifiers():
     result = catalog_reply(
         "Podemos mirar ocasiones y pases.",
         [{"match_id": 900001, "home_team_name": "Azul", "away_team_name": "Rojo"}],
+        language="en",
     )
     assert result.startswith("Podemos mirar ocasiones y pases.")
     assert "Azul — Rojo" in result and "900001" not in result
-    assert "selector Partido" in result
+    assert "Match selector" in result
 
 
 def test_definitions_do_not_promise_missing_xg_or_geometric_control():
-    reply = concept_reply("xg", "Cualquier partido", [{"provider": "Metrica Sports"}])
-    assert "no tiene xG disponible" in reply and "Cualquier" not in reply
-    assert "ilustrativa" in concept_reply("xg", "")
-    assert "No demuestra" in concept_reply("voronoi", "")
-    assert "Elige un partido" not in concept_reply(
-        "welcome", "", [{"match_id": 900001}]
+    reply = concept_reply(
+        "xg", "Cualquier partido", [{"provider": "Metrica Sports"}], language="en"
+    )
+    assert "has no xG available" in reply and "Cualquier" not in reply
+    assert "illustrative" in concept_reply("xg", "", language="en")
+    assert "does not prove" in concept_reply("voronoi", "", language="en")
+    assert "Select a match" not in concept_reply(
+        "welcome", "", [{"match_id": 900001}], language="en"
     )
     assert concept_reply("general", "Otra explicación") == "Otra explicación"
 
@@ -68,21 +71,22 @@ def test_chat_uses_grounded_sports_statements_and_keeps_scope_visible():
         ],
         facts=[SimpleNamespace(provenance={"is_synthetic": True})],
     )
-    reply = report_reply(analysis, partial=True)
-    assert "14 tiros" in reply and "sintéticos" in reply and "alcance limitado" in reply
+    reply = report_reply(analysis, partial=True, language="en")
+    assert "14 tiros" in reply and "synthetic" in reply and "limited scope" in reply
     assert "El partido consultado" not in reply and "Creé" not in reply
-    assert "conserva sus datos" in report_reply(None, reused=True)
+    assert "retains its data" in report_reply(None, reused=True, language="en")
     analysis.status = "error"
     assert "14 tiros" not in report_reply(analysis, partial=True)
 
 
 def test_report_reader_preserves_sources_and_escapes_untrusted_copy():
     result = analyst_copy(
-        "Análisis\nProcedencia: datos sintéticos.\n\nOcasiones\nLectura <script>danger()</script> [1].\nAlcance y límites\nUna muestra, no todo el partido.\nOtra limitación.\nReferencias\n[1] fuente: <unsafe>"
+        "Análisis\nProcedencia: datos sintéticos.\n\nOcasiones\nLectura <script>danger()</script> [1].\nAlcance y límites\nUna muestra, no todo el partido.\nOtra limitación.\nReferencias\n[1] fuente: <unsafe>",
+        language="en",
     )
     assert "<script>" not in result and "&lt;script&gt;" in result
     assert "Una muestra, no todo el partido." in result.split("<details")[0]
-    assert "<summary>Fuentes y referencias</summary>" in result
+    assert "<summary>Sources and references</summary>" in result
     assert "[1] fuente: &lt;unsafe&gt;" in result and "Otra limitación." in result
     assert "open=" not in result
 

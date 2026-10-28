@@ -16,7 +16,7 @@ export function AttackingConnections({
     <g
       className="attacking-connections"
       pointerEvents="none"
-      aria-label="Conexiones de los atacantes"
+      aria-label="Attacking connections"
     >
       {view.edges.map((edge) => (
         <line
@@ -35,11 +35,11 @@ export function AttackingConnections({
         >
           <title>
             {edge.kind === "separate"
-              ? "Conexión entre atacantes sin enlace al balón"
+              ? "Connection between attackers without a link to the ball"
               : edge.kind === "direct"
-                ? "Conexión directa desde el balón"
-                : "Conexión a través de compañeros"}{" "}
-            · corredor {(2 * edge.clearance).toFixed(1)} m
+                ? "Direct connection from the ball"
+                : "Connection through teammates"}{" "}
+            · corridor {(2 * edge.clearance).toFixed(1)} m
           </title>
         </line>
       ))}
@@ -65,12 +65,12 @@ export function AttackingConnections({
           <title>
             #{player.number}:{" "}
             {kind === "separate"
-              ? "sin conexión al balón en esta red"
+              ? "not connected to the ball in this network"
               : kind === "direct"
-                ? "enlace directo al balón"
+                ? "direct link to the ball"
                 : kind === "source"
-                  ? "coincide con el balón"
-                  : "enlazado a través de compañeros"}
+                  ? "coincides with the ball"
+                  : "connected through teammates"}
           </title>
         </circle>
       ))}

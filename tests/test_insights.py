@@ -22,6 +22,17 @@ def one_block(key):
     return manifest
 
 
+def test_unknown_provenance_is_never_presented_as_recorded_data():
+    manifest = one_block("shot_map")
+    manifest["language"] = "en"
+    for evidence in manifest["evidence"]:
+        evidence["response"]["provenance"].pop("is_synthetic", None)
+    html = render_report(manifest)["html"]
+    assert "Provenance not specified" in html
+    assert "Mixed or unspecified provenance" in html
+    assert "Recorded · see provider" not in html
+
+
 def test_thirty_recipes_all_bind_real_registered_operations():
     assert len(RECIPES) == 30
     assert all(set(r["source_operations"]) <= set(OPERATIONS) for r in RECIPES.values())
@@ -362,7 +373,7 @@ def test_team_palette_and_player_identity_shared_without_mutating_evidence():
     assert all(b.teams["1"]["color"] == "#123456" for b in blocks)
     assert spec.model_dump()["evidence"] == original
     html = render_report(manifest)["html"]
-    assert '"color": "#123456"' in html and "Paleta configurada" in html
+    assert '"color": "#123456"' in html and "no representa colores oficiales" in html
     manifest["teams"][0]["color"] = "#fff; background:url(https://invalid.test)"
     with pytest.raises(ValueError):
         ReportSpec.model_validate(manifest)
@@ -494,8 +505,10 @@ def test_possession_graph_labels_recorded_spans_without_claiming_official_share(
         },
     ]
     html = render_report(manifest)["html"]
-    assert "No equivale a porcentaje oficial" in html and "tramo registrado" in html
-    assert 'aria-label="Secuencias de posesión registradas"' in html
+    assert (
+        "not an official possession percentage" in html and "recorded sequence" in html
+    )
+    assert 'aria-label="Recorded possession sequences"' in html
 
 
 def test_network_display_threshold_only_changes_visible_edges_not_metrics():
@@ -504,7 +517,7 @@ def test_network_display_threshold_only_changes_visible_edges_not_metrics():
     spec, blocks = compile_report(manifest)
     assert len(blocks[0].vectors) == 3
     html = render_report(spec)["html"]
-    assert "Enlaces visibles con peso ≥ 4" in html
+    assert "Visible links have weight ≥ 4" in html
     assert 'marker-end="url(' not in html  # All fixture edges weigh 3.
 
 
@@ -797,7 +810,7 @@ def test_match_timeline_lists_goals_substitutions_and_cards_without_duplicates()
         ("substitution", 1200000),
         ("card", 1300000),
     ]
-    assert compiled.markers[2]["label"] == "Tarjeta amarilla"
+    assert compiled.markers[2]["label"] == "Yellow card"
 
 
 def test_timeline_chart_draws_markers_in_team_lanes_with_tooltips():
@@ -844,13 +857,15 @@ def test_timeline_chart_draws_markers_in_team_lanes_with_tooltips():
             },
         ],
         teams={
-            "1": {"name": "Local", "color": "#2463bc"},
+            "1": {"name": "Home", "color": "#2463bc"},
             "2": {"name": "Visita", "color": "#bf402e"},
         },
     )
     html = series(block)
-    assert "P1 10′ · Gol · Local" in html and "P1 15′ · Tarjeta roja · Visita" in html
-    assert "Cambio" not in html  # el período 2 no tiene serie: sólo lo muestra la lista
+    assert "P1 10′ · Goal · Home" in html and "P1 15′ · Tarjeta roja · Visita" in html
+    assert (
+        "Substitution" not in html
+    )  # el período 2 no tiene serie: sólo lo muestra la lista
     assert "#c0392b" in html  # tarjeta roja
     assert 'viewBox="0 0 690 258"' in html
     # el eje se extiende hasta el último marcador para que no se salga del gráfico
@@ -933,6 +948,6 @@ def test_xg_probability_range_and_period_reset_are_explicit():
     block = compile_report(manifest)[1][0]
     assert [row["value"] for row in block.series] == pytest.approx([0.2, 0.3])
     assert block.metrics["observed_xg"] == pytest.approx(0.5)
-    assert "cada período comienza en cero" in render_report(manifest)["html"]
+    assert "each period starts at zero" in render_report(manifest)["html"]
     rows[1]["shot"]["statsbomb_xg"] = 1.01
     assert compile_report(manifest)[1][0].state == "unavailable"

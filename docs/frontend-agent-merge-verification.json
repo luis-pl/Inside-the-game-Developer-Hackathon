@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-27",
+  "target_branch": "main",
+  "preserved_local_work_commit": "2927ab5",
+  "merged_main_commit": "c9b9e4965c9b861ad993a2343c6f509910f987b7",
+  "reviewed_experimental_commit": "d534334d460feeb0d8eb9b0b8bcbb7a08baac97d",
+  "experimental_selection": {
+    "accepted": [
+      "bounded analyst error diagnostics"
+    ],
+    "not_integrated": [
+      "sample summaries with nonexistent source paths",
+      "keyword-based chart edit fastpath",
+      "periodic API warming",
+      "previous NIM and experimental capability restrictions"
+    ]
+  },
+  "python_tests": {
+    "passed": 563,
+    "seconds": 20.81
+  },
+  "frontend_tests": {
+    "passed": 55
+  },
+  "typescript_and_build": "passed",
+  "ruff": "passed",
+  "impeccable_detector": [],
+  "live_browser_create": {
+    "stage": "complete",
+    "checks": {
+      "finished_without_error": true,
+      "language": true,
+      "has_report": true,
+      "recipes": true,
+      "ready_blocks": true,
+      "same_match": true,
+      "provenance_preserved": true,
+      "plan_language": true,
+      "cited_values_match_sources": true
+    },
+    "passed": true,
+    "report_id": "1488342e-ca93-4635-bf8b-788a7f4b02f1",
+    "revision": 2,
+    "blocks": 2,
+    "elapsed_ms": 57342,
+    "cited_facts": 16
+  },
+  "live_browser_edit": {
+    "checks": {
+      "complete": true,
+      "same_report": true,
+      "new_revision": true,
+      "title": true,
+      "blocks_unchanged": true,
+      "evidence_unchanged": true,
+      "analysis_unchanged": true,
+      "no_data_delegation": true,
+      "language": true
+    },
+    "passed": true,
+    "revision": 4,
+    "elapsed_ms": 5789
+  },
+  "live_structural_canary": {
+    "model": "beam-free",
+    "free_only": true,
+    "live_model": true,
+    "full_catalog_qa": false,
+    "passed": true,
+    "cases": [
+      {
+        "id": "structural-passes-es",
+        "passed": true,
+        "stage": "complete",
+        "checks": {
+          "finished_without_error": true,
+          "language": true,
+          "has_report": true,
+          "recipes": true,
+          "ready_blocks": true,
+          "same_match": true,
+          "provenance_preserved": true,
+          "same_window": true,
+          "observed_frames": true,
+          "tracking_5hz": true,
+          "plan_language": true,
+          "cited_values_match_sources": true,
+          "no_unannotated_pass_claims": true,
+          "narrates_recorded_pass_links": true
+        },
+        "elapsed_seconds": 46.194
+      }
+    ],
+    "inference_calls": 10
+  },
+  "browser_checks": {
+    "desktop_viewport": [
+      1280,
+      900
+    ],
+    "desktop_outer_overflow": false,
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "workspace_mobile_outer_overflow": false,
+    "viewer_mobile_outer_overflow": false,
+    "drawer_escape_and_focus_return": "passed",
+    "theme_switch": "passed",
+    "activity_panel": "four recorded agents; 16 facts; 3 sources; 2 blocks",
+    "history_restored_after_refresh": true,
+    "document_navigation": "passed",
+    "viewer": "Metrica 900011; period 1; [0,60000); 300 observed samples at 5 Hz; play and seek to 30000 ms",
+    "viewer_missing_data": "15 samples without ball retained; no positions fabricated",
+    "console_errors_observed": 0
+  },
+  "model": {
+    "provider": "opencode-go",
+    "deployment": "beam-free",
+    "free_only": true,
+    "reported_cost_values": [
+      0
+    ]
+  },
+  "full_catalog_natural_language_qa": false,
+  "billing_changed": false,
+  "cloud_deployment_performed": false,
+  "remote_push_performed": false
+}

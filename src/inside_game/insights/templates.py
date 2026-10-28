@@ -21,6 +21,28 @@ figure{margin:1.4rem 0 1rem}figure svg{background:#edf1e9;border-radius:4px}.pit
 @media print{.report.match_overview{display:block}.match-banner{break-inside:avoid}.insight{break-inside:avoid}}
 """
 
+CSS += """
+/* The report is a reading surface; colour identifies data, not body copy. */
+:root{--paper:#fbfcfa;--ink:#25382f;--muted:#53665b;--line:#dce3d9;background:var(--paper)}
+body{color:var(--ink);background:var(--paper);line-height:1.7}
+header,main,footer{padding-left:clamp(1.25rem,4vw,3rem);padding-right:clamp(1.25rem,4vw,3rem)}
+header{padding-top:2rem;padding-bottom:1.8rem}header h1{font-size:clamp(1.9rem,4vw,3.25rem);font-weight:650;letter-spacing:-.035em}
+header>p:first-child{color:var(--muted);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.intro{font-size:.95rem;line-height:1.75}.report-meta{font-size:.8rem}.match-banner{margin-top:1.5rem;padding:1.4rem 0;gap:1rem}
+.match-banner strong{color:var(--ink);border-left:3px solid var(--team);padding-left:.6rem;font-size:clamp(1.1rem,2.5vw,1.6rem)}
+.match-banner>div:last-child strong{border-left:0;border-right:3px solid var(--team);padding-left:0;padding-right:.6rem}
+.possession-card strong{color:var(--ink);border-left:3px solid var(--team);padding-left:.5rem}
+.score{font-variant-numeric:tabular-nums}.insight{padding:2rem 0}.section-heading{gap:.8rem}h2{line-height:1.3;font-weight:600}
+.block-question{font-size:.85rem;line-height:1.65;margin:.65rem 0 1rem}.block-answer{font-size:1rem;line-height:1.7}
+.metrics{gap:1.1rem 2rem;margin:1.25rem 0}.reading{max-width:220px}dt{font-size:.8rem;line-height:1.5}dd{font-size:1.9rem;line-height:1.4;font-variant-numeric:tabular-nums}
+.chart-legend li,figcaption,.method,.evidence-links,.palette-note{font-size:.8rem}.chart-legend{gap:.6rem 1.2rem}.legend-key{width:.6rem;height:.6rem}
+.pitch{background:#edf2ec!important}.series{background:#f0f4ee}.series text{font-size:12px}
+summary{font-size:.82rem;line-height:1.6;padding:.5rem 0}.table-scroll{border:1px solid var(--line);border-radius:5px}table{font-size:.82rem}th,td{padding:.75rem .8rem}th{font-weight:600}
+.analyst-note{padding:1.6rem 0}.analyst-copy{font-size:.95rem;line-height:1.85}.analyst-note h3{margin-top:1.3rem}
+@media(max-width:480px){.section-heading{display:block}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.reading{min-width:0}.match-banner{gap:.5rem}.score{font-size:2rem}.match-banner strong{font-size:1rem}.toolbar button{flex:auto}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+"""
+
 JS = """
 "use strict";
 // Inicializa una página de informe dentro de `root` (el documento o una zona de
@@ -35,10 +57,10 @@ for(const holder of root.querySelectorAll(".replay")){
  const layer=holder.querySelector(".replay-points"),seek=holder.querySelector(".seek"),button=holder.querySelector(".play"),output=holder.querySelector("output");
  let index=0,playing=false,baseWall=0,baseGame=0;
  const dot=(x,y,r,fill,label)=>{const node=document.createElementNS(ns,"circle");node.setAttribute("cx",x);node.setAttribute("cy",y);node.setAttribute("r",r);node.setAttribute("fill",fill);const title=document.createElementNS(ns,"title");title.textContent=label;node.appendChild(title);layer.appendChild(node);};
- const draw=()=>{const frame=frames[index];layer.replaceChildren();const palette=["#2463bc","#bf402e","#7752ac","#13796d","#a05c13","#965475"];for(const p of frame.players){const identity=block.teams[String(p.team_id)]||{color:palette[(p.team_id-1)%palette.length]},player=block.players[String(p.player_id)]||{};dot(p.x_m,p.y_m,1.45,identity.color,player.name||String(p.player_id));if(block.visual.show_labels){const label=document.createElementNS(ns,"text");label.setAttribute("x",p.x_m);label.setAttribute("y",p.y_m+.55);label.setAttribute("text-anchor","middle");label.setAttribute("class","jersey");label.textContent=String(player.number??p.player_id);layer.appendChild(label);}}if(frame.ball)dot(frame.ball.x_m,frame.ball.y_m,.65,"#17241c","Balón");seek.value=String(index);output.textContent="P"+frame.period+" · "+(frame.period_time_ms/1000).toFixed(1)+" s · "+frame.players.length+" jugadores"+(frame.ball?"":" · balón sin posición");};
- const stop=()=>{playing=false;button.textContent="Reproducir";};
+ const draw=()=>{const frame=frames[index];layer.replaceChildren();const palette=["#2463bc","#bf402e","#7752ac","#13796d","#a05c13","#965475"];for(const p of frame.players){const identity=block.teams[String(p.team_id)]||{color:palette[(p.team_id-1)%palette.length]},player=block.players[String(p.player_id)]||{};dot(p.x_m,p.y_m,1.45,identity.color,player.name||String(p.player_id));if(block.visual.show_labels){const label=document.createElementNS(ns,"text");label.setAttribute("x",p.x_m);label.setAttribute("y",p.y_m+.55);label.setAttribute("text-anchor","middle");label.setAttribute("class","jersey");label.textContent=String(player.number??p.player_id);layer.appendChild(label);}}if(frame.ball)dot(frame.ball.x_m,frame.ball.y_m,.65,"#17241c","Ball");seek.value=String(index);output.textContent="P"+frame.period+" · "+(frame.period_time_ms/1000).toFixed(1)+" s · "+frame.players.length+" players"+(frame.ball?"":" · ball position unavailable");};
+ const stop=()=>{playing=false;button.textContent="Play";};
  const tick=now=>{if(!playing)return;const target=baseGame+now-baseWall;while(index<frames.length-1&&frames[index+1].period_time_ms<=target)index++;draw();if(index===frames.length-1)stop();else requestAnimationFrame(tick);};
- button.addEventListener("click",()=>{if(playing){stop();return;}if(index===frames.length-1)index=0;playing=true;button.textContent="Pausar";baseGame=frames[index].period_time_ms;baseWall=performance.now();requestAnimationFrame(tick);});
+ button.addEventListener("click",()=>{if(playing){stop();return;}if(index===frames.length-1)index=0;playing=true;button.textContent="Pause";baseGame=frames[index].period_time_ms;baseWall=performance.now();requestAnimationFrame(tick);});
  seek.addEventListener("input",()=>{stop();index=Number(seek.value);draw();});draw();
 }
 }

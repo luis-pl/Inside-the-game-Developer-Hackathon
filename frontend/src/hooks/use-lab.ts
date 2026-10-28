@@ -60,12 +60,12 @@ export function useLab(repository: EpisodeRepository) {
     try {
       const rows = await repository.matches(controller.signal);
       if (!rows.length)
-        throw new Error("No hay partidos disponibles para esta credencial.");
+        throw new Error("No matches are available for this credential.");
       setMatches(rows);
       setMatchId(rows[0].id);
     } catch (e) {
       if (!controller.signal.aborted)
-        setError(e instanceof Error ? e.message : "Error de conexión.");
+        setError(e instanceof Error ? e.message : "Connection failed.");
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }
@@ -86,12 +86,13 @@ export function useLab(repository: EpisodeRepository) {
         { matchId, period, startSeconds, durationSeconds },
         controller.signal,
       );
-      if (!value.frames.length) throw new Error("Episodio sin frames.");
+      if (!value.frames.length)
+        throw new Error("The match window contains no frames.");
       install(value);
     } catch (e) {
       if (!controller.signal.aborted)
         setError(
-          e instanceof Error ? e.message : "No se pudo cargar el episodio.",
+          e instanceof Error ? e.message : "Could not load the match window.",
         );
     } finally {
       if (!controller.signal.aborted) setLoading(false);

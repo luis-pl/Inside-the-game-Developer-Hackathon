@@ -1,17 +1,22 @@
 """Lectura del analista con fuentes desplegables; preserva el texto original."""
 
-from inside_game.language import wording
+from typing import get_args
+
+from inside_game.language import Language, wording
 
 from .atoms import text
 
 
 def analyst_copy(value, *, language="es"):
-    body, separator, references = value.partition(
-        "\n" + wording("references", language) + "\n"
-    )
-    body, limits_separator, limits = body.partition(
-        "\n" + wording("limits", language) + "\n"
-    )
+    def partition_heading(body, key):
+        for candidate in dict.fromkeys([language, *get_args(Language)]):
+            heading = "\n" + wording(key, candidate) + "\n"
+            if heading in body:
+                return body.partition(heading)
+        return body, "", ""
+
+    body, separator, references = partition_heading(value, "references")
+    body, limits_separator, limits = partition_heading(body, "limits")
     paragraphs = []
     for index, paragraph in enumerate(body.strip().split("\n\n")):
         heading, newline, content = paragraph.partition("\n")

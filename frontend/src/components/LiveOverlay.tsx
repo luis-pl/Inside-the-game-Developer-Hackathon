@@ -58,7 +58,7 @@ export function LiveOverlay({
         fontSize="1.3"
         fontWeight="700"
       >
-        {attackRight ? "ATAQUE →" : "← ATAQUE"}
+        {attackRight ? "ATTACK →" : "← ATTACK"}
       </text>
     </g>
   );

@@ -88,9 +88,7 @@ export function useWorkspaceLayout(active = true) {
       tabIndex: 0,
       "aria-orientation": "vertical" as const,
       "aria-label":
-        panel === "chat"
-          ? "Ajustar ancho del chat"
-          : "Ajustar ancho del historial",
+        panel === "chat" ? "Resize assistant panel" : "Resize history panel",
       "aria-valuemin": panel === "chat" ? 250 : 170,
       "aria-valuemax": Math.max(
         panel === "chat" ? 250 : 170,

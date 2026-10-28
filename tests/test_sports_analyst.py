@@ -358,7 +358,7 @@ def test_wrong_match_evidence_is_rejected_before_inference():
             )
         )
     )
-    assert result.status == "error" and result.issues == ["INVALID_ANALYSIS_DATA"]
+    assert result.status == "error" and result.issues == ["EVIDENCE_MATCH_MISMATCH"]
 
 
 def test_public_analyst_contract_rejects_tool_urls_and_auth_required():

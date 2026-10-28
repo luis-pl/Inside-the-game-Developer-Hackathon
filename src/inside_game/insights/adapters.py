@@ -29,9 +29,9 @@ def flatten_metrics(value, prefix="", depth=0):
 
 ACTIVITY_BIN_MS = 300000
 CARD_LABELS = {
-    "Yellow Card": "Tarjeta amarilla",
-    "Second Yellow": "Segunda amarilla",
-    "Red Card": "Tarjeta roja",
+    "Yellow Card": "Yellow card",
+    "Second Yellow": "Second yellow",
+    "Red Card": "Red card",
 }
 
 
@@ -67,7 +67,7 @@ def timeline_markers(evidence, events, params):
                 card = card or (
                     (item.get("details") or {}).get("bad_behaviour") or {}
                 ).get("card")
-                label = CARD_LABELS.get((card or {}).get("name"), "Tarjeta")
+                label = CARD_LABELS.get((card or {}).get("name"), "Card")
                 found[("card", identity(item))] = (("card", label), item)
     markers = []
     for (kind, label), item in found.values():
@@ -571,7 +571,7 @@ def _populate(b, spec, evidence, unannotated=()):
         ]
     elif key == "xg_story":
         b.unit = (
-            "xG sintético · demostración"
+            "Synthetic xG · demonstration"
             if any(e.response.provenance.get("is_synthetic") for e in relevant)
             else "xG"
         )
